@@ -6633,6 +6633,7 @@
 *.log filter=lfs diff=lfs merge=lfs -text
 *.dwlt filter=lfs diff=lfs merge=lfs -text
 *.settings filter=lfs diff=lfs merge=lfs -text
+*.wlt filter=lfs diff=lfs merge=lfs -text
 *.md !text !filter !merge !diff
 *.cs !text !filter !merge !diff
 *.fbx !text !filter !merge !diff
