@@ -38,7 +38,7 @@ namespace UISystem
             _canvasGroup.interactable = state == Visibility.Visible;
         }
 
-        public T InitMenu<T>(bool enable = true) where T : BaseMenu<T>
+        public T InitMenu<T>() where T : BaseMenu<T>
         {
             BaseMenu<T> menu = _spawnedMenuList.Find(x => x.GetType() == typeof(T)) as BaseMenu<T>;
             if (menu == null)
@@ -46,8 +46,7 @@ namespace UISystem
                 CreateNewInstance<T>();
                 menu = _spawnedMenuList.Find(x => x.GetType() == typeof(T)) as BaseMenu<T>;
             }
-            menu.Open();
-            return menu.GetInstance(enable);
+            return menu.Init();
         }
 
         public T OpenMenu<T>() where T : BaseMenu<T>

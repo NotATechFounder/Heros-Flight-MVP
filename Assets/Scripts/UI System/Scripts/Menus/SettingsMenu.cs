@@ -15,16 +15,27 @@ namespace UISystem
         [SerializeField] private RectTransform _content;
         [SerializeField] private Button _backButton;
 
-        JuicerRuntime _openEffect;
-        JuicerRuntime _closeEffect;
+        JuicerRuntime _openEffectBG;
+        JuicerRuntime _openEffectContent;
+
+        JuicerRuntime _closeEffectBG;
+        JuicerRuntime _closeEffectContent;
 
         public override void OnCreated()
         {
-            _openEffect = _content.transform.JuicyLocalMoveY(0, .5f).SetEase(Ease.EaseInExpo);
-            _openEffect.SetOnStart(() => _content.transform.localPosition = new Vector3(0, -Screen.height));
+            _canvasGroup.alpha = 0;
+            _content.transform.localScale = Vector3.zero;
 
-            _closeEffect = _content.transform.JuicyLocalMoveY(-Screen.height, .5f).SetEase(Ease.Linear);
-            _closeEffect.SetOnComplected(CloseMenu);
+            _openEffectBG = _canvasGroup.JuicyAlpha(1, 0.25f);
+            _openEffectBG.SetOnStart(() => _canvasGroup.alpha = 0);
+
+            _openEffectContent = _content.transform.JuicyScale(1, .25f).SetEase(Ease.EaseOutQuart).SetDelay(.15f);
+            _openEffectContent.SetOnStart(() => _content.transform.localScale = Vector3.zero);
+
+            _closeEffectContent = _content.transform.JuicyScale(0, .25f).SetEase(Ease.EaseOutQuart);
+
+            _closeEffectBG = _canvasGroup.JuicyAlpha(0, 0.5f).SetDelay(.25f);
+            _closeEffectBG.SetOnComplected(CloseMenu);
 
             _backButton.onClick.AddListener(() =>
             {
@@ -34,12 +45,15 @@ namespace UISystem
 
         public override void OnOpened()
         {
-            _openEffect.Start();
+            Debug.Log("SettingsMenu opened");
+            _openEffectContent.Start();
+            _openEffectBG.Start();
         }
 
         public override void OnClosed()
         {
-            _closeEffect.Start();
+            _closeEffectContent.Start();
+            _closeEffectBG.Start();
         }
     }
 }

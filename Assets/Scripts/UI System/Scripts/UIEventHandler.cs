@@ -32,25 +32,24 @@ public class UIEventHandler : MonoBehaviour
 
     private void Init()
     {
-        _mainMenu = _uIManager.InitMenu<MainMenu>(false);
+        _mainMenu = _uIManager.InitMenu<MainMenu>();
         _mainMenu.OnPlayButtonPressed += MainMenu_OnPlayButtonPressed;
         _mainMenu.OnSettingsButtonPressed += MainMenu_OnSettingsButtonPressed;
 
-        _settingsMenu = _uIManager.InitMenu<SettingsMenu>(false);
+        _settingsMenu = _uIManager.InitMenu<SettingsMenu>();
         _settingsMenu.OnBackButtonPressed += () =>
         {
             _settingsMenu.Close();
         };
 
-        _loadingMenu = _uIManager.InitMenu<LoadingMenu>(false);
-        _gameMenu = _uIManager.InitMenu<GameMenu>(false);
-        _pauseMenu = _uIManager.InitMenu<PauseMenu>(false);
+        _loadingMenu = _uIManager.InitMenu<LoadingMenu>();
+        _gameMenu = _uIManager.InitMenu<GameMenu>();
+        _pauseMenu = _uIManager.InitMenu<PauseMenu>();
     }
 
     public void OnGameOpened()
     {
         _mainMenu.Open();
-
     }
 
     private void MainMenu_OnPlayButtonPressed()
