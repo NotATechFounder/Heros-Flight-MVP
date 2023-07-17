@@ -5,22 +5,24 @@ using UnityEngine;
 
 public class UIEventHandler : MonoBehaviour
 {
-    MainMenu mainMenu = null;
-    LoadingMenu loadingMenu = null;
+    MainMenu _mainMenu = null;
+    LoadingMenu _loadingMenu = null;
+    GameMenu _gameMenu = null;
+
 
     private void Start()
     {
-        OnGameStarted();
+        OnGameOpened();
     }
 
-    public void Init()
+    public void OnGameOpened()
     {
-
+        _mainMenu = UIManager.OpenMenu<MainMenu>();
     }
 
-    public void OnGameStarted()
+    public void OnGameSessionStarted()
     {
-        loadingMenu = UIManager.OpenMenu<LoadingMenu>();
+        _gameMenu = UIManager.OpenMenu<GameMenu>();
     }
 
     public void OnGamePaused()
