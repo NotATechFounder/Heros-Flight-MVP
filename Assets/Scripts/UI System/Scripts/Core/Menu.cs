@@ -29,6 +29,8 @@ namespace UISystem
         protected Visibility _visibility = Visibility.Visible;
         protected CanvasGroup _canvasGroup;
 
+        public Close_Behaviour CloseBehaviour => _closeBehaviour;
+
         private void OnValidate()
         {
             InitializedAllCanvas();
@@ -68,7 +70,6 @@ namespace UISystem
                     gameObject.SetActive(false);
                     break;
                 case Close_Behaviour.Destory:
-                    UIManager.OnMenuDestroyed(this);
                     OnMenuDestroyed();
                     Destroy(gameObject);
                     break;

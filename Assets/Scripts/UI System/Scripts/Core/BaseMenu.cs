@@ -18,8 +18,9 @@ namespace UISystem
             }
         }
 
-        public T GetInstance()
+        public T GetInstance(bool enable = true)
         {
+            gameObject.SetActive(enable);
             return (T)Convert.ChangeType(Instance, typeof(T));
         }
 
@@ -32,7 +33,6 @@ namespace UISystem
         public void Close()
         {
             OnClosed();
-            CloseMenu();
         }
 
         public abstract void OnCreated();
