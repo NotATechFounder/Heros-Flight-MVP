@@ -13,6 +13,7 @@ public class UIEventHandler : MonoBehaviour
     private  LoadingMenu _loadingMenu = null;
     private GameMenu _gameMenu = null;
     private PauseMenu _pauseMenu = null;
+    private ConfirmationMenu _confirmationMenu = null;
 
     private void Awake()
     {
@@ -33,6 +34,7 @@ public class UIEventHandler : MonoBehaviour
     private void Init()
     {
         _loadingMenu = _uIManager.InitMenu<LoadingMenu>();
+        _confirmationMenu = _uIManager.InitMenu<ConfirmationMenu>();
 
         _mainMenu = _uIManager.InitMenu<MainMenu>();
         _mainMenu.OnPlayButtonPressed += MainMenu_OnPlayButtonPressed;
@@ -63,9 +65,7 @@ public class UIEventHandler : MonoBehaviour
 
         _pauseMenu.OnQuitButtonClicked += () =>
         {
-            _gameMenu.Close();
-            _pauseMenu.Close();
-            _mainMenu.Open();
+            _confirmationMenu.Display("Leaving ?", "Are you sure you  want to leave the game?","If you leave the game you will lose all progress.", ReturnToMaimMenu, null);
         };
     }
 
@@ -93,5 +93,12 @@ public class UIEventHandler : MonoBehaviour
     public void OnGamePaused()
     {
 
+    }
+
+    public void ReturnToMaimMenu()
+    {
+        _gameMenu.Close();
+        _pauseMenu.Close();
+        _mainMenu.Open();
     }
 }

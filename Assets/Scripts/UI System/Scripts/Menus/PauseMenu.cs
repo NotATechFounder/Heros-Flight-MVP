@@ -29,7 +29,7 @@ namespace UISystem
             _openEffectBG = _canvasGroup.JuicyAlpha(1, 0.15f);
             _openEffectBG.SetOnStart(() => _canvasGroup.alpha = 0);
 
-            _closeEffectBG = _canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
+            _closeEffectBG = _canvasGroup.JuicyAlpha(0, 0.15f);
             _closeEffectBG.SetOnComplected(CloseMenu);
 
             _settingsButton.onClick.AddListener(() => OnSettingsButtonClicked?.Invoke());

@@ -23,6 +23,9 @@ namespace UISystem
         [Header("Combo Counter")]
         [SerializeField] private TextMeshProUGUI _comboCounterText;
 
+        [Header("Boss")]
+        [SerializeField] private GroupImageFill _bossHealthFill;
+
         JuicerRuntime _openEffect;
         JuicerRuntime _closeEffect;
 
@@ -92,6 +95,11 @@ namespace UISystem
         {
             UpdateLevelProgressText(value);
             UpdateLevelProgressFill(fill);
+        }
+
+        public void UpdateBossHealthFill(float value)
+        {
+            _bossHealthFill.SetValue(value);
         }
     }
 }
