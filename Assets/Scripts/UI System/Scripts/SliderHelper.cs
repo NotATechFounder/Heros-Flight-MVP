@@ -12,7 +12,7 @@ public class SliderHelper : MonoBehaviour
     public event Action<bool> OnValueChanged;
 
 
-    private bool _isOn = false;
+    private bool _isOn = true;
 
     public void SetValue(bool value)
     {

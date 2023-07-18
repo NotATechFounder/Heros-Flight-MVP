@@ -55,5 +55,10 @@ namespace UISystem
             _closeEffectContent.Start();
             _closeEffectBG.Start();
         }
+
+        public override void ResetMenu()
+        {
+
+        }
     }
 }

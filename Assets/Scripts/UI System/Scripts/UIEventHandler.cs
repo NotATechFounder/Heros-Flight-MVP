@@ -32,6 +32,8 @@ public class UIEventHandler : MonoBehaviour
 
     private void Init()
     {
+        _loadingMenu = _uIManager.InitMenu<LoadingMenu>();
+
         _mainMenu = _uIManager.InitMenu<MainMenu>();
         _mainMenu.OnPlayButtonPressed += MainMenu_OnPlayButtonPressed;
         _mainMenu.OnSettingsButtonPressed += MainMenu_OnSettingsButtonPressed;
@@ -42,9 +44,29 @@ public class UIEventHandler : MonoBehaviour
             _settingsMenu.Close();
         };
 
-        _loadingMenu = _uIManager.InitMenu<LoadingMenu>();
         _gameMenu = _uIManager.InitMenu<GameMenu>();
+        _gameMenu.OnPauseButtonClicked += () =>
+        {
+            _pauseMenu.Open();
+        };
+
         _pauseMenu = _uIManager.InitMenu<PauseMenu>();
+        _pauseMenu.OnSettingsButtonClicked += () =>
+        {
+            _settingsMenu.Open();
+        };
+
+        _pauseMenu.OnResumeButtonClicked += () =>
+        {
+            _pauseMenu.Close();
+        };
+
+        _pauseMenu.OnQuitButtonClicked += () =>
+        {
+            _gameMenu.Close();
+            _pauseMenu.Close();
+            _mainMenu.Open();
+        };
     }
 
     public void OnGameOpened()
@@ -54,7 +76,8 @@ public class UIEventHandler : MonoBehaviour
 
     private void MainMenu_OnPlayButtonPressed()
     {
-        Debug.Log("Play button pressed");
+        _gameMenu.Open();
+        _mainMenu.Close();
     }
 
     private void MainMenu_OnSettingsButtonPressed()
