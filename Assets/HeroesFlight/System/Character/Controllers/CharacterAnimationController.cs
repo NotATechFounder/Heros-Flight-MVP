@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HeroesFlight.Common;
 using HeroesFlight.System.Character.Enum;
 using Spine.Unity;
 using UnityEngine;
@@ -14,8 +15,10 @@ namespace HeroesFlight.System.Character
         [SerializeField] AnimationReferenceAsset m_FlyingForwardAnimation;
         [SerializeField] AnimationReferenceAsset m_TurnLeftAnimation;
         [SerializeField] AnimationReferenceAsset m_TurnRightAnimation;
+        [SerializeField] AnimationReferenceAsset m_AttackAnimation;
         SkeletonAnimation m_SkeletonAnimation;
         ICharacterController m_CharacterController;
+        IAttackController m_AttackController;
         bool m_WasFacingLeft;
         Dictionary<CharacterState, AnimationReferenceAsset> m_AnimationsCache = new();
 
@@ -23,9 +26,12 @@ namespace HeroesFlight.System.Character
         {
             m_CharacterController = GetComponent<CharacterSimpleController>();
             m_SkeletonAnimation = GetComponent<SkeletonAnimation>();
+            m_AttackController = GetComponent<CharacterAttackController>();
             m_CharacterController.OnCharacterMoveStateChanged += AnimateCharacterMovement;
+            m_AttackController.OnAttackTarget += PlayAttackAnimation;
+            m_AttackController.OnStopAttack += StopAttackAnimation;
             CreateAnimationCache();
-            m_WasFacingLeft = false;
+            m_WasFacingLeft = true;
         }
 
         void CreateAnimationCache()
@@ -45,18 +51,17 @@ namespace HeroesFlight.System.Character
             {
                 if (TurnCharacterVisuals(m_CharacterController.IsFacingLeft))
                 {
-                    m_SkeletonAnimation.Skeleton.ScaleX = m_CharacterController.IsFacingLeft ? 1f : -1f;
                     // var targetAnimation =
                     //     m_CharacterController.IsFacingLeft ? m_TurnRightAnimation : m_TurnLeftAnimation;
                     // Debug.Log(targetAnimation);
                     // var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(0, targetAnimation, false);
                     // turnTrack.AttachmentThreshold = 1f;
                     // turnTrack.MixDuration = 0f;
-
-
-                   var track= m_SkeletonAnimation.AnimationState.SetAnimation(0, stateAnimation, true);
-                   track.AttachmentThreshold = 1f;
-                   track.MixDuration = .5f;
+                  
+                    var track= m_SkeletonAnimation.AnimationState.SetAnimation(0, stateAnimation, true);
+                    track.AttachmentThreshold = 1f;
+                    track.MixDuration = .5f;
+                    m_SkeletonAnimation.Skeleton.ScaleX = m_WasFacingLeft ? 1f : -1f;
                 }
                 else
                 {
@@ -71,8 +76,26 @@ namespace HeroesFlight.System.Character
            
         }
 
+        void PlayAttackAnimation(IHealthController target)
+        {
+            Debug.Log("Playing attack aniamtion");
+            var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(1, m_AttackAnimation, false);
+            m_SkeletonAnimation.AnimationState.AddEmptyAnimation(1, .5f, 0);
+            turnTrack.AttachmentThreshold = 1f;
+            turnTrack.MixDuration = .5f;
+        }
+
+        void StopAttackAnimation()
+        {
+            Debug.Log("Stopping animation");
+            var track= m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, .5f);
+            track.AttachmentThreshold = 1f;
+            track.MixDuration = .5f;
+        }
+
         bool TurnCharacterVisuals(bool facingLeft)
         {
+            Debug.Log(facingLeft);
             if (m_WasFacingLeft != facingLeft)
             {
                 m_WasFacingLeft = facingLeft;
