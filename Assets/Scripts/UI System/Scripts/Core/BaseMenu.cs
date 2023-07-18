@@ -13,13 +13,20 @@ namespace UISystem
             else
             {
                 base.Awake();
-                Instance = this;
-                OnCreated();
             }
         }
 
-        public T GetInstance()
+        public T Init()
         {
+            Instance = this;
+            OnCreated();
+            gameObject.SetActive(false);
+            return (T)Convert.ChangeType(Instance, typeof(T));
+        }
+
+        public T GetInstance(bool enable = true)
+        {
+            gameObject.SetActive(enable);
             return (T)Convert.ChangeType(Instance, typeof(T));
         }
 
@@ -32,7 +39,6 @@ namespace UISystem
         public void Close()
         {
             OnClosed();
-            CloseMenu();
         }
 
         public abstract void OnCreated();
