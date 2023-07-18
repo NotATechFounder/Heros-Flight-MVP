@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HeroesFlight.Common;
 using HeroesFlight.System.Character.Enum;
 using Spine.Unity;
@@ -46,22 +45,18 @@ namespace HeroesFlight.System.Character
 
         void AnimateCharacterMovement(CharacterState newState)
         {
-           Debug.Log(newState);
             if (m_AnimationsCache.TryGetValue(newState, out var stateAnimation))
             {
                 if (TurnCharacterVisuals(m_CharacterController.IsFacingLeft))
                 {
-                    var targetAnimation =
-                        m_CharacterController.IsFacingLeft ? m_TurnLeftAnimation : m_TurnRightAnimation;
-                    Debug.Log(targetAnimation);
-                    var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(0, targetAnimation, false);
+                    m_SkeletonAnimation.Skeleton.ScaleX = m_WasFacingLeft ? 1f : -1f;
+                    var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(0, m_TurnLeftAnimation, false);
                     turnTrack.AttachmentThreshold = 1f;
                     turnTrack.MixDuration = 0f;
-                  
-                    var track= m_SkeletonAnimation.AnimationState.SetAnimation(0, stateAnimation, true);
+
+                    var track= m_SkeletonAnimation.AnimationState.AddAnimation(0, stateAnimation, true,0);
                     track.AttachmentThreshold = 1f;
                     track.MixDuration = .5f;
-                    m_SkeletonAnimation.Skeleton.ScaleX = m_WasFacingLeft ? 1f : -1f;
                 }
                 else
                 {
@@ -78,7 +73,6 @@ namespace HeroesFlight.System.Character
 
         void PlayAttackAnimation(IHealthController target)
         {
-            Debug.Log("Playing attack aniamtion");
             var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(1, m_AttackAnimation, false);
             m_SkeletonAnimation.AnimationState.AddEmptyAnimation(1, .5f, 0);
             turnTrack.AttachmentThreshold = 1f;
@@ -87,7 +81,6 @@ namespace HeroesFlight.System.Character
 
         void StopAttackAnimation()
         {
-            Debug.Log("Stopping animation");
             var track= m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, .5f);
             track.AttachmentThreshold = 1f;
             track.MixDuration = .5f;
@@ -95,7 +88,7 @@ namespace HeroesFlight.System.Character
 
         bool TurnCharacterVisuals(bool facingLeft)
         {
-            Debug.Log(facingLeft);
+           
             if (m_WasFacingLeft != facingLeft)
             {
                 m_WasFacingLeft = facingLeft;
@@ -103,9 +96,6 @@ namespace HeroesFlight.System.Character
             }
 
             return false;
-
-
-            // Maybe play a transient turning animation too, then call ChangeStableAnimation.
         }
     }
 }

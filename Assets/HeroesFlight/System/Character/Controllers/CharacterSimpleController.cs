@@ -50,31 +50,38 @@ namespace HeroesFlight.System.Character
                 newState = CharacterState.Idle;
             }
             
-            switch (input.y)
+            if (Mathf.Abs(input.y) < 0.4f)
             {
-                case > 0:
-                    newState = CharacterState.FlyingUp;
-                    break;
-                case < 0:
-                    newState = CharacterState.FlyingDown;
-                    break;
-                case 0:
-                    switch (input.x)
-                    {
-                        case > 0:
-                            newState = CharacterState.FlyingRight;
-                            break;
-                        case < 0:
-                            newState = CharacterState.FlyingLeft;
-                            break;
-                        case 0 :
-                            newState = CharacterState.Idle;
-                            break;
+                switch (input.x)
+                {
+                    case > 0:
+                        newState = CharacterState.FlyingRight;
+                        break;
+                    case < 0:
+                        newState = CharacterState.FlyingLeft;
+                        break;
+                    case 0 :
+                        newState = CharacterState.Idle;
+                        break;
                             
-                    }
-
-                    break;
+                }
             }
+            else
+            {
+                switch (input.y)
+                {
+                    case > 0.4f:
+                        newState = CharacterState.FlyingUp;
+                        break;
+                    case < -0.4f:
+                        newState = CharacterState.FlyingDown;
+                        break;
+              
+                }
+            }
+           
+
+           
 
             bool facingLeft;
             if (input.x != 0)

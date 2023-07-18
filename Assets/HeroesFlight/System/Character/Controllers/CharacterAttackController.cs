@@ -59,7 +59,6 @@ namespace HeroesFlight.System.Character
 
         void ProcessAttackingState()
         {
-            Debug.Log("IN ATTACK STATE");
             var targetSize = m_FoundedColliders[0].bounds.extents;
             var distanceToTarget = Vector2.Distance(transform.position, m_FoundedColliders[0].transform.position);
             if (distanceToTarget - targetSize.x > m_AttackRange || distanceToTarget - targetSize.y > m_AttackRange)
@@ -74,7 +73,6 @@ namespace HeroesFlight.System.Character
 
             if (m_TimeSinceLastAttack >= m_TimeBetweenAttacks)
             {
-                Debug.Log("Attacking STATE");
                 OnAttackTarget?.Invoke(m_Target);
                 m_TimeSinceLastAttack = 0;
             }
@@ -96,7 +94,6 @@ namespace HeroesFlight.System.Character
                     break;
             }
             m_State = newState;
-            Debug.Log(m_State);
         }
 
         void OnDrawGizmos()
