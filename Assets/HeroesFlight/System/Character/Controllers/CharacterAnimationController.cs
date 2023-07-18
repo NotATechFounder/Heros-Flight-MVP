@@ -51,12 +51,12 @@ namespace HeroesFlight.System.Character
             {
                 if (TurnCharacterVisuals(m_CharacterController.IsFacingLeft))
                 {
-                    // var targetAnimation =
-                    //     m_CharacterController.IsFacingLeft ? m_TurnRightAnimation : m_TurnLeftAnimation;
-                    // Debug.Log(targetAnimation);
-                    // var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(0, targetAnimation, false);
-                    // turnTrack.AttachmentThreshold = 1f;
-                    // turnTrack.MixDuration = 0f;
+                    var targetAnimation =
+                        m_CharacterController.IsFacingLeft ? m_TurnLeftAnimation : m_TurnRightAnimation;
+                    Debug.Log(targetAnimation);
+                    var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(0, targetAnimation, false);
+                    turnTrack.AttachmentThreshold = 1f;
+                    turnTrack.MixDuration = 0f;
                   
                     var track= m_SkeletonAnimation.AnimationState.SetAnimation(0, stateAnimation, true);
                     track.AttachmentThreshold = 1f;

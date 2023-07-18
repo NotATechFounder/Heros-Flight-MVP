@@ -4,13 +4,18 @@ namespace HeroesFlight.System.Character
 {
     public class CharacterInputReceiver  : MonoBehaviour
     {
-        Vector3 m_Input = default;
-        void Update()
+        CharacterInputActions.CharacterActions m_InputActions;
+       
+        void Awake()
         {
-            m_Input.x = Input.GetAxis("Horizontal");
-            m_Input.y = Input.GetAxis("Vertical");
-        }
+            var inputActionMap= new CharacterInputActions();
+            m_InputActions = inputActionMap.Character;
+            m_InputActions.Enable();
 
-        public   Vector3 GetInput() => m_Input;
+        }
+       
+       
+
+        public   Vector2 GetInput() =>  m_InputActions.Move.ReadValue<Vector2>();
     }
 }
