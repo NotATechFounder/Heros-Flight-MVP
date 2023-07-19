@@ -12,32 +12,32 @@ namespace UISystem
     {
         public event Action OnBackButtonPressed;
 
-        [SerializeField] private RectTransform _content;
-        [SerializeField] private Button _backButton;
+        [SerializeField] private RectTransform content;
+        [SerializeField] private Button backButton;
 
-        JuicerRuntime _openEffectBG;
-        JuicerRuntime _openEffectContent;
+        JuicerRuntime openEffectBG;
+        JuicerRuntime openEffectContent;
 
-        JuicerRuntime _closeEffectBG;
-        JuicerRuntime _closeEffectContent;
+        JuicerRuntime closeEffectBG;
+        JuicerRuntime closeEffectContent;
 
         public override void OnCreated()
         {
-            _canvasGroup.alpha = 0;
-            _content.transform.localScale = Vector3.zero;
+            canvasGroup.alpha = 0;
+            content.transform.localScale = Vector3.zero;
 
-            _openEffectBG = _canvasGroup.JuicyAlpha(1, 0.15f);
-            _openEffectBG.SetOnStart(() => _canvasGroup.alpha = 0);
+            openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
+            openEffectBG.SetOnStart(() => canvasGroup.alpha = 0);
 
-            _openEffectContent = _content.transform.JuicyScale(1, .15f).SetEase(Ease.EaseOutQuart).SetDelay(.05f);
-            _openEffectContent.SetOnStart(() => _content.transform.localScale = Vector3.zero);
+            openEffectContent = content.transform.JuicyScale(1, .15f).SetEase(Ease.EaseOutQuart).SetDelay(.05f);
+            openEffectContent.SetOnStart(() => content.transform.localScale = Vector3.zero);
 
-            _closeEffectContent = _content.transform.JuicyScale(0, .15f).SetEase(Ease.EaseOutQuart);
+            closeEffectContent = content.transform.JuicyScale(0, .15f).SetEase(Ease.EaseOutQuart);
 
-            _closeEffectBG = _canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
-            _closeEffectBG.SetOnComplected(CloseMenu);
+            closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
+            closeEffectBG.SetOnComplected(CloseMenu);
 
-            _backButton.onClick.AddListener(() =>
+            backButton.onClick.AddListener(() =>
             {
                 OnBackButtonPressed?.Invoke();
             });
@@ -45,15 +45,14 @@ namespace UISystem
 
         public override void OnOpened()
         {
-            Debug.Log("SettingsMenu opened");
-            _openEffectContent.Start();
-            _openEffectBG.Start();
+            openEffectContent.Start();
+            openEffectBG.Start();
         }
 
         public override void OnClosed()
         {
-            _closeEffectContent.Start();
-            _closeEffectBG.Start();
+            closeEffectContent.Start();
+            closeEffectBG.Start();
         }
 
         public override void ResetMenu()

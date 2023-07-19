@@ -20,16 +20,16 @@ namespace UISystem
             Closed 
         }
 
-        [SerializeField] protected int _viewPriority = 0;
-        [SerializeField] protected Close_Behaviour _closeBehaviour = Close_Behaviour.Disable;
+        [SerializeField] protected int viewPriority = 0;
+        [SerializeField] protected Close_Behaviour closeBehaviour = Close_Behaviour.Disable;
 
         [Header("To Make Private")]
-        protected Canvas[] _canvas;
+        protected Canvas[] canvas;
         protected Status status = Status.Closed;
-        protected Visibility _visibility = Visibility.Visible;
-        protected CanvasGroup _canvasGroup;
+        protected Visibility visibility = Visibility.Visible;
+        protected CanvasGroup canvasGroup;
 
-        public Close_Behaviour CloseBehaviour => _closeBehaviour;
+        public Close_Behaviour CloseBehaviour => closeBehaviour;
 
         private void OnValidate()
         {
@@ -38,20 +38,20 @@ namespace UISystem
 
         protected virtual void Awake()
         {
-            _canvasGroup = GetComponent<CanvasGroup>();
+            canvasGroup = GetComponent<CanvasGroup>();
             InitializedAllCanvas();
         }
 
         public void InitializedAllCanvas()
         {
-            _canvas = GetComponentsInChildren<Canvas>();
+            canvas = GetComponentsInChildren<Canvas>();
 
-            if (_canvas == null) return;
+            if (canvas == null) return;
 
-            foreach (Canvas canvas in _canvas)
+            foreach (Canvas canvas in canvas)
             {
                 if (canvas != null)
-                    canvas.sortingOrder = _viewPriority;
+                    canvas.sortingOrder = viewPriority;
             }
         }
 
@@ -64,7 +64,7 @@ namespace UISystem
         protected void CloseMenu()
         {
             status = Status.Closed;
-            switch (_closeBehaviour)
+            switch (closeBehaviour)
             {
                 case Close_Behaviour.Disable:
                     gameObject.SetActive(false);
@@ -78,18 +78,18 @@ namespace UISystem
 
         public void SetVisibility(Visibility state)
         {
-            _visibility = state;
-            switch (_visibility)
+            visibility = state;
+            switch (visibility)
             {
                 case Visibility.Visible:
-                    _canvasGroup.alpha = 1;
-                    _canvasGroup.blocksRaycasts = true;
-                    _canvasGroup.interactable = true;
+                    canvasGroup.alpha = 1;
+                    canvasGroup.blocksRaycasts = true;
+                    canvasGroup.interactable = true;
                     break;
                 case Visibility.Invisible:
-                    _canvasGroup.alpha = 0;
-                    _canvasGroup.blocksRaycasts = false;
-                    _canvasGroup.interactable = false;
+                    canvasGroup.alpha = 0;
+                    canvasGroup.blocksRaycasts = false;
+                    canvasGroup.interactable = false;
                     break;
             }
         }

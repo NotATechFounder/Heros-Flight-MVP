@@ -11,17 +11,17 @@ namespace UISystem
         public event Action OnPlayButtonPressed;
         public event Action OnSettingsButtonPressed;
 
-        [SerializeField] private Button _playButton;
-        [SerializeField] private Button _settingsButton;
+        [SerializeField] private Button playButton;
+        [SerializeField] private Button settingsButton;
 
         public override void OnCreated()
         {
-            _playButton.onClick.AddListener(()=>
+            playButton.onClick.AddListener(()=>
             {
                 OnPlayButtonPressed?.Invoke();
             });
 
-            _settingsButton.onClick.AddListener(() =>
+            settingsButton.onClick.AddListener(() =>
             {
                 OnSettingsButtonPressed?.Invoke();
             });

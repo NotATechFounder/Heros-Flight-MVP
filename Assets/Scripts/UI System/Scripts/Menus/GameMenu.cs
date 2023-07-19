@@ -11,84 +11,84 @@ namespace UISystem
         public event Action OnPauseButtonClicked;
 
         [Header("Main")]
-        [SerializeField] private TextMeshProUGUI _coinText;
-        [SerializeField] private TextMeshProUGUI _timerText;
-        [SerializeField] private TextMeshProUGUI _enemyCountText;
-        [SerializeField] private Button _pauseButton;
+        [SerializeField] private TextMeshProUGUI coinText;
+        [SerializeField] private TextMeshProUGUI timerText;
+        [SerializeField] private TextMeshProUGUI enemyCountText;
+        [SerializeField] private Button pauseButton;
 
         [Header("level Progress")]
-        [SerializeField] private TextMeshProUGUI _levelProgressText;
-        [SerializeField] private Image _levelProgressFill;
+        [SerializeField] private TextMeshProUGUI levelProgressText;
+        [SerializeField] private Image levelProgressFill;
 
         [Header("Combo Counter")]
-        [SerializeField] private TextMeshProUGUI _comboCounterText;
+        [SerializeField] private TextMeshProUGUI comboCounterText;
 
         [Header("Boss")]
-        [SerializeField] private GroupImageFill _bossHealthFill;
+        [SerializeField] private GroupImageFill bossHealthFill;
 
-        JuicerRuntime _openEffect;
-        JuicerRuntime _closeEffect;
+        JuicerRuntime openEffect;
+        JuicerRuntime closeEffect;
 
         public override void OnCreated()
         {
-            _openEffect = _canvasGroup.JuicyAlpha(1, 0.5f);
-            _openEffect.SetOnStart(() => _canvasGroup.alpha = 0);
+            openEffect = canvasGroup.JuicyAlpha(1, 0.5f);
+            openEffect.SetOnStart(() => canvasGroup.alpha = 0);
 
-            _closeEffect = _canvasGroup.JuicyAlpha(0, 0.5f);
-            _closeEffect.SetOnStart(() => _canvasGroup.alpha = 1);
-            _closeEffect.SetOnComplected(CloseMenu);
+            closeEffect = canvasGroup.JuicyAlpha(0, 0.5f);
+            closeEffect.SetOnStart(() => canvasGroup.alpha = 1);
+            closeEffect.SetOnComplected(CloseMenu);
 
-            _pauseButton.onClick.AddListener(() => OnPauseButtonClicked?.Invoke());
+            pauseButton.onClick.AddListener(() => OnPauseButtonClicked?.Invoke());
 
             ResetMenu();
         }
 
         public override void OnOpened()
         {
-            _openEffect.Start();
+            openEffect.Start();
         }
 
         public override void OnClosed()
         {
-            _closeEffect.Start();
+            closeEffect.Start();
         }
 
         public override void ResetMenu()
         {
-            _coinText.text = "0";
-            _timerText.text = "00:00";
-            _enemyCountText.text = "0";
-            _comboCounterText.text = "0";
+            coinText.text = "0";
+            timerText.text = "00:00";
+            enemyCountText.text = "0";
+            comboCounterText.text = "0";
         }
 
         public void UpdateCoinText(int value)
         {
-            _coinText.text = value.ToString();
+            coinText.text = value.ToString();
         }
 
         public void UpdateTimerText(float value)
         {
-            _timerText.text = value.ToString("00:00");
+            timerText.text = value.ToString("00:00");
         }
 
         public void UpdateEnemyCountText(int value)
         {
-            _enemyCountText.text = value.ToString();
+            enemyCountText.text = value.ToString();
         }
 
         public void UpdateComboCounterText(int value)
         {
-            _comboCounterText.text = value.ToString();
+            comboCounterText.text = value.ToString();
         }
 
         public void UpdateLevelProgressText(int value)
         {
-            _levelProgressText.text = value.ToString();
+            levelProgressText.text = value.ToString();
         }
 
         public void UpdateLevelProgressFill(float value)
         {
-            _levelProgressFill.fillAmount = value;
+            levelProgressFill.fillAmount = value;
         }
 
         public void UpdateLevelProgress(int value, float fill)
@@ -99,7 +99,7 @@ namespace UISystem
 
         public void UpdateBossHealthFill(float value)
         {
-            _bossHealthFill.SetValue(value);
+            bossHealthFill.SetValue(value);
         }
     }
 }

@@ -6,14 +6,15 @@ using UnityEngine;
 
 public class UIEventHandler : MonoBehaviour
 {
-    [SerializeField] private UIManager _uIManager;
+    [SerializeField] private UIManager uIManager;
+    [SerializeField] private ConfirmationUISO backToMenu;
 
-    private MainMenu _mainMenu = null;
-    private SettingsMenu _settingsMenu = null;
+    private MainMenu mainMenu = null;
+    private SettingsMenu settingsMenu = null;
     private  LoadingMenu _loadingMenu = null;
-    private GameMenu _gameMenu = null;
-    private PauseMenu _pauseMenu = null;
-    private ConfirmationMenu _confirmationMenu = null;
+    private GameMenu gameMenu = null;
+    private PauseMenu pauseMenu = null;
+    private ConfirmationMenu confirmationMenu = null;
 
     private void Awake()
     {
@@ -22,8 +23,8 @@ public class UIEventHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-        _mainMenu.OnPlayButtonPressed -= MainMenu_OnPlayButtonPressed;
-        _mainMenu.OnSettingsButtonPressed -= MainMenu_OnSettingsButtonPressed;
+        mainMenu.OnPlayButtonPressed -= MainMenu_OnPlayButtonPressed;
+        mainMenu.OnSettingsButtonPressed -= MainMenu_OnSettingsButtonPressed;
     }
 
     private void Start()
@@ -33,61 +34,61 @@ public class UIEventHandler : MonoBehaviour
 
     private void Init()
     {
-        _loadingMenu = _uIManager.InitMenu<LoadingMenu>();
-        _confirmationMenu = _uIManager.InitMenu<ConfirmationMenu>();
+        _loadingMenu = uIManager.InitMenu<LoadingMenu>();
+        confirmationMenu = uIManager.InitMenu<ConfirmationMenu>();
 
-        _mainMenu = _uIManager.InitMenu<MainMenu>();
-        _mainMenu.OnPlayButtonPressed += MainMenu_OnPlayButtonPressed;
-        _mainMenu.OnSettingsButtonPressed += MainMenu_OnSettingsButtonPressed;
+        mainMenu = uIManager.InitMenu<MainMenu>();
+        mainMenu.OnPlayButtonPressed += MainMenu_OnPlayButtonPressed;
+        mainMenu.OnSettingsButtonPressed += MainMenu_OnSettingsButtonPressed;
 
-        _settingsMenu = _uIManager.InitMenu<SettingsMenu>();
-        _settingsMenu.OnBackButtonPressed += () =>
+        settingsMenu = uIManager.InitMenu<SettingsMenu>();
+        settingsMenu.OnBackButtonPressed += () =>
         {
-            _settingsMenu.Close();
+            settingsMenu.Close();
         };
 
-        _gameMenu = _uIManager.InitMenu<GameMenu>();
-        _gameMenu.OnPauseButtonClicked += () =>
+        gameMenu = uIManager.InitMenu<GameMenu>();
+        gameMenu.OnPauseButtonClicked += () =>
         {
-            _pauseMenu.Open();
+            pauseMenu.Open();
         };
 
-        _pauseMenu = _uIManager.InitMenu<PauseMenu>();
-        _pauseMenu.OnSettingsButtonClicked += () =>
+        pauseMenu = uIManager.InitMenu<PauseMenu>();
+        pauseMenu.OnSettingsButtonClicked += () =>
         {
-            _settingsMenu.Open();
+            settingsMenu.Open();
         };
 
-        _pauseMenu.OnResumeButtonClicked += () =>
+        pauseMenu.OnResumeButtonClicked += () =>
         {
-            _pauseMenu.Close();
+            pauseMenu.Close();
         };
 
-        _pauseMenu.OnQuitButtonClicked += () =>
+        pauseMenu.OnQuitButtonClicked += () =>
         {
-            _confirmationMenu.Display("Leaving ?", "Are you sure you  want to leave the game?","If you leave the game you will lose all progress.", ReturnToMaimMenu, null);
+            confirmationMenu.Display(backToMenu, ReturnToMainMenu, null);
         };
     }
 
     public void OnGameOpened()
     {
-        _mainMenu.Open();
+        mainMenu.Open();
     }
 
     private void MainMenu_OnPlayButtonPressed()
     {
-        _gameMenu.Open();
-        _mainMenu.Close();
+        gameMenu.Open();
+        mainMenu.Close();
     }
 
     private void MainMenu_OnSettingsButtonPressed()
     {
-        _settingsMenu.Open();
+        settingsMenu.Open();
     }
 
     public void OnGameSessionStarted()
     {
-        _gameMenu.Open();
+        gameMenu.Open();
     }
 
     public void OnGamePaused()
@@ -95,10 +96,10 @@ public class UIEventHandler : MonoBehaviour
 
     }
 
-    public void ReturnToMaimMenu()
+    public void ReturnToMainMenu()
     {
-        _gameMenu.Close();
-        _pauseMenu.Close();
-        _mainMenu.Open();
+        gameMenu.Close();
+        pauseMenu.Close();
+        mainMenu.Open();
     }
 }
