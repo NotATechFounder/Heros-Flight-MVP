@@ -14,7 +14,7 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI coinText;
         [SerializeField] private TextMeshProUGUI timerText;
         [SerializeField] private TextMeshProUGUI enemyCountText;
-        [SerializeField] private Button pauseButton;
+        [SerializeField] private AdvanceButton pauseButton;
 
         [Header("level Progress")]
         [SerializeField] private TextMeshProUGUI levelProgressText;

@@ -20,9 +20,9 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI descriptionText;
 
         [Header("Buttons")]
-        [SerializeField] private Button closeButton;
-        [SerializeField] private Button yesButton;
-        [SerializeField] private Button noButton;
+        [SerializeField] private AdvanceButton closeButton;
+        [SerializeField] private AdvanceButton yesButton;
+        [SerializeField] private AdvanceButton noButton;
 
         JuicerRuntime _openEffectBG;
         JuicerRuntime _closeEffectBG;

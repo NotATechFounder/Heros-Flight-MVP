@@ -14,10 +14,10 @@ namespace UISystem
         public event Action OnResumeButtonClicked;
         public event Action OnQuitButtonClicked;
 
-        [SerializeField] private Button settingsButton;
-        [SerializeField] private Button closeButton;
-        [SerializeField] private Button resumeButton;
-        [SerializeField] private Button quitButton;
+        [SerializeField] private AdvanceButton settingsButton;
+        [SerializeField] private AdvanceButton closeButton;
+        [SerializeField] private AdvanceButton resumeButton;
+        [SerializeField] private AdvanceButton quitButton;
 
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;

@@ -7,6 +7,9 @@ namespace UISystem
     {
         private static BaseMenu<T> Instance;
 
+        public event Action OnMenuOpened;
+        public event Action OnMenuClosed;
+
         protected override void Awake()
         {
             if (Instance != null) Destroy(gameObject);
@@ -34,11 +37,13 @@ namespace UISystem
         {
             OpenMenu();
             OnOpened();
+            OnMenuOpened?.Invoke();
         }
 
         public void Close()
         {
             OnClosed();
+            OnMenuClosed?.Invoke();
         }
 
         public abstract void OnCreated();

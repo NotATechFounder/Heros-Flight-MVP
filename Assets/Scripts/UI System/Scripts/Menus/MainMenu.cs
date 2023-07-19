@@ -11,8 +11,8 @@ namespace UISystem
         public event Action OnPlayButtonPressed;
         public event Action OnSettingsButtonPressed;
 
-        [SerializeField] private Button playButton;
-        [SerializeField] private Button settingsButton;
+        [SerializeField] private AdvanceButton playButton;
+        [SerializeField] private AdvanceButton settingsButton;
 
         public override void OnCreated()
         {

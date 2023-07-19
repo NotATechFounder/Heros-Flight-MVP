@@ -11,7 +11,7 @@ public class UIEventHandler : MonoBehaviour
 
     private MainMenu mainMenu = null;
     private SettingsMenu settingsMenu = null;
-    private  LoadingMenu _loadingMenu = null;
+    private LoadingMenu loadingMenu = null;
     private GameMenu gameMenu = null;
     private PauseMenu pauseMenu = null;
     private ConfirmationMenu confirmationMenu = null;
@@ -23,12 +23,6 @@ public class UIEventHandler : MonoBehaviour
         Init();
     }
 
-    private void OnDestroy()
-    {
-        mainMenu.OnPlayButtonPressed -= MainMenu_OnPlayButtonPressed;
-        mainMenu.OnSettingsButtonPressed -= MainMenu_OnSettingsButtonPressed;
-    }
-
     private void Start()
     {
         OnGameOpened();
@@ -36,12 +30,20 @@ public class UIEventHandler : MonoBehaviour
 
     private void Init()
     {
-        _loadingMenu = uIManager.InitMenu<LoadingMenu>();
+        loadingMenu = uIManager.InitMenu<LoadingMenu>();
         confirmationMenu = uIManager.InitMenu<ConfirmationMenu>();
 
         mainMenu = uIManager.InitMenu<MainMenu>();
-        mainMenu.OnPlayButtonPressed += MainMenu_OnPlayButtonPressed;
-        mainMenu.OnSettingsButtonPressed += MainMenu_OnSettingsButtonPressed;
+        mainMenu.OnMenuOpened += () =>
+        {
+            AudioManager.PlayMusic("MainMenu");
+        };
+
+        mainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
+        mainMenu.OnSettingsButtonPressed += () =>
+        {
+            settingsMenu.Open();
+        };
 
         settingsMenu = uIManager.InitMenu<SettingsMenu>();
         settingsMenu.OnBackButtonPressed += () =>
@@ -79,7 +81,7 @@ public class UIEventHandler : MonoBehaviour
         mainMenu.Open();
     }
 
-    private void MainMenu_OnPlayButtonPressed()
+    private void OnPlayButtonPressed()
     {
         mainMenu.Close();
         gameMenu.Open();
@@ -99,21 +101,8 @@ public class UIEventHandler : MonoBehaviour
               Debug.Log("Game Time Lapse");
           });
         });
-    }
 
-    private void MainMenu_OnSettingsButtonPressed()
-    {
-        settingsMenu.Open();
-    }
-
-    public void OnGameSessionStarted()
-    {
-        gameMenu.Open();
-    }
-
-    public void OnGamePaused()
-    {
-
+        AudioManager.PlayMusic("Forest");
     }
 
     public void ReturnToMainMenu()
