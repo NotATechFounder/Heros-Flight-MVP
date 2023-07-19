@@ -29,5 +29,10 @@ namespace UISystem
         {
 
         }
+
+        public override void ResetMenu()
+        {
+
+        }
     }
 }
