@@ -16,6 +16,8 @@ public class UIEventHandler : MonoBehaviour
     private PauseMenu pauseMenu = null;
     private ConfirmationMenu confirmationMenu = null;
 
+    private CountDownTimer startTimer;
+
     private void Awake()
     {
         Init();
@@ -68,6 +70,8 @@ public class UIEventHandler : MonoBehaviour
         {
             confirmationMenu.Display(backToMenu, ReturnToMainMenu, null);
         };
+
+        startTimer = new CountDownTimer(this);
     }
 
     public void OnGameOpened()
@@ -77,8 +81,24 @@ public class UIEventHandler : MonoBehaviour
 
     private void MainMenu_OnPlayButtonPressed()
     {
-        gameMenu.Open();
         mainMenu.Close();
+        gameMenu.Open();
+
+        startTimer.Start(3, (time) =>
+        {
+            gameMenu.UpdateTimerText(time);
+        }, 
+        () =>
+        {
+            startTimer.Start(200, (time) =>
+            {
+                gameMenu.UpdateTimerText(time);
+            },
+          () =>
+          {
+              Debug.Log("Game Time Lapse");
+          });
+        });
     }
 
     private void MainMenu_OnSettingsButtonPressed()

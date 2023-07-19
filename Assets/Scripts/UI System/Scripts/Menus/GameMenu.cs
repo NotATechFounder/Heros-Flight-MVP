@@ -68,7 +68,15 @@ namespace UISystem
 
         public void UpdateTimerText(float value)
         {
-            timerText.text = value.ToString("00:00");
+            float minutes = Mathf.FloorToInt(value / 60);
+            float seconds = Mathf.FloorToInt(value % 60);
+            //timerText.text = (minutes == 0) ? $"{seconds.ToString("F0")}s" : $"{minutes:00}m : {seconds:00}s";
+            timerText.text = (minutes == 0) ? $"{seconds.ToString("F0")}" : $"{minutes:00} : {seconds:00}";
+        }
+
+        public void UpdateTimerText(string value)
+        {
+            timerText.text = value;
         }
 
         public void UpdateEnemyCountText(int value)
