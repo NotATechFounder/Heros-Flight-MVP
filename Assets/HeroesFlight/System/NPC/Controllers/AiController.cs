@@ -1,9 +1,7 @@
-using System;
 using HeroesFlightProject.System.NPC.Data;
 using HeroesFlightProject.System.NPC.Utilities;
 using NodeCanvas.Framework;
 using UnityEngine;
-
 
 namespace HeroesFlightProject.System.NPC.Controllers
 {
@@ -15,13 +13,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         void Awake()
         {
-            Init();
+            var player = GameObject.FindWithTag("Player");
+            Init(player.transform);
             Enable();
         }
 
-        public void Init()
+        public void Init(Transform player)
         {
-            var player = GameObject.FindWithTag("Player");
+           
             m_BlackBoard = GetComponent<Blackboard>();
             m_GraphOwner = GetComponent<GraphOwner>();
             m_BlackBoard.SetVariableValue(BlackboardVariableNames.MovementSpeed, m_Model.Speed);
@@ -31,6 +30,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
 
         }
+
+      
 
         public void Enable()
         {
