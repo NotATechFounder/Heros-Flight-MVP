@@ -17,15 +17,23 @@ namespace NodeCanvasAddons.AStarPathfinding
         [BlackboardOnly]
         public BBParameter<Path> OutputPath = new BBParameter<Path>();
 
+        Seeker Seaker;
+
         protected override string info
         {
             get { return string.Format("Creating basic path \nas {0}", OutputPath); }
         }
 
+        protected override string OnInit()
+        {
+            Seaker = ownerSystemAgent.GetComponent<Seeker>();
+            return base.OnInit();
+        }
+
         protected override void OnExecute()
         {
-            var currentPath = ABPath.Construct(agent.transform.position, DestinationPosition.value, PathFinishedDelegate);
-            AstarPath.StartPath(currentPath);
+            Seaker.StartPath(agent.transform.position, DestinationPosition.value, PathFinishedDelegate);
+           // AstarPath.StartPath(currentPath);
         }
 
         private void PathFinishedDelegate(Path path)
