@@ -11,47 +11,47 @@ namespace UISystem
 {
     public class ConfirmationMenu : BaseMenu<ConfirmationMenu>
     {
-        private event Action _onYesButtonPressed;
-        private event Action _onNoButtonPressed;
+        private event Action onYesButtonPressed;
+        private event Action onNoButtonPressed;
 
         [Header("Texts")]
-        [SerializeField] private TextMeshProUGUI _titleText;
-        [SerializeField] private TextMeshProUGUI _questionText;
-        [SerializeField] private TextMeshProUGUI _descriptionText;
+        [SerializeField] private TextMeshProUGUI titleText;
+        [SerializeField] private TextMeshProUGUI questionText;
+        [SerializeField] private TextMeshProUGUI descriptionText;
 
         [Header("Buttons")]
-        [SerializeField] private Button _closeButton;
-        [SerializeField] private Button _yesButton;
-        [SerializeField] private Button _noButton;
+        [SerializeField] private AdvanceButton closeButton;
+        [SerializeField] private AdvanceButton yesButton;
+        [SerializeField] private AdvanceButton noButton;
 
         JuicerRuntime _openEffectBG;
         JuicerRuntime _closeEffectBG;
 
         public override void OnCreated()
         {
-            _canvasGroup.alpha = 0;
+            canvasGroup.alpha = 0;
 
-            _openEffectBG = _canvasGroup.JuicyAlpha(1, 0.15f);
-            _openEffectBG.SetOnStart(() => _canvasGroup.alpha = 0);
+            _openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
+            _openEffectBG.SetOnStart(() => canvasGroup.alpha = 0);
 
-            _closeEffectBG = _canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
+            _closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
             _closeEffectBG.SetOnComplected(CloseMenu);
 
-            _closeButton.onClick.AddListener(() =>
+            closeButton.onClick.AddListener(() =>
             {
-                _onNoButtonPressed?.Invoke();
+                onNoButtonPressed?.Invoke();
                 CloseAndReset();
             });
 
-            _yesButton.onClick.AddListener(() => 
+            yesButton.onClick.AddListener(() => 
             {
-                _onYesButtonPressed?.Invoke();
+                onYesButtonPressed?.Invoke();
                 CloseAndReset();
             });
 
-            _noButton.onClick.AddListener(() =>
+            noButton.onClick.AddListener(() =>
             {
-                _onNoButtonPressed?.Invoke();
+                onNoButtonPressed?.Invoke();
                 CloseAndReset();
             });
         }
@@ -74,20 +74,20 @@ namespace UISystem
 
         public override void ResetMenu()
         {
-            _titleText.text = "";
-            _questionText.text = "";
-            _descriptionText.text = "";
-            _onYesButtonPressed = null;
-            _onNoButtonPressed = null;
+            titleText.text = "";
+            questionText.text = "";
+            descriptionText.text = "";
+            onYesButtonPressed = null;
+            onNoButtonPressed = null;
         }
 
-        public void Display (string title, string question, string description, Action Yes, Action No)
+        public void Display (ConfirmationUISO confirmationUISO, Action Yes, Action No)
         {
-            _titleText.text = title;
-            _questionText.text = question;
-            _descriptionText.text = description;
-            _onYesButtonPressed = Yes;
-            _onNoButtonPressed = No;
+            titleText.text = confirmationUISO.TitleText;
+            questionText.text = confirmationUISO.QuestionText;
+            descriptionText.text = confirmationUISO.DescriptionText;
+            onYesButtonPressed = Yes;
+            onNoButtonPressed = No;
             Open();
         }
     }

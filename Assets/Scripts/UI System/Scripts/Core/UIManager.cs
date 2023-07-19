@@ -13,19 +13,19 @@ namespace UISystem
 
     public class UIManager : MonoBehaviour
     {
-        [SerializeField] private List<Menu> _menuPrefabList;
+        [SerializeField] private List<Menu> menuPrefabList;
 
-        private List<Menu> _spawnedMenuList = new List<Menu>();
-        private CanvasGroup _canvasGroup;
+        private List<Menu> spawnedMenuList = new List<Menu>();
+        private CanvasGroup canvasGroup;
         private Visibility _visibility = Visibility.Visible;
 
         public void CreateNewInstance<T>()
         {
-            Menu menu = _menuPrefabList.Find(x => x.GetType() == typeof(T));
+            Menu menu = menuPrefabList.Find(x => x.GetType() == typeof(T));
             if (menu != null)
             {
                 menu = Instantiate(menu, transform);
-                _spawnedMenuList.Add(menu);
+                spawnedMenuList.Add(menu);
             }
             else Debug.LogError("Menu not found");
         }
@@ -33,29 +33,29 @@ namespace UISystem
         public void ToggleVisibility(Visibility state)
         {
             _visibility = state;
-            _canvasGroup.alpha = state == Visibility.Visible ? 1 : 0;
-            _canvasGroup.blocksRaycasts = state == Visibility.Visible;
-            _canvasGroup.interactable = state == Visibility.Visible;
+            canvasGroup.alpha = state == Visibility.Visible ? 1 : 0;
+            canvasGroup.blocksRaycasts = state == Visibility.Visible;
+            canvasGroup.interactable = state == Visibility.Visible;
         }
 
         public T InitMenu<T>() where T : BaseMenu<T>
         {
-            BaseMenu<T> menu = _spawnedMenuList.Find(x => x.GetType() == typeof(T)) as BaseMenu<T>;
+            BaseMenu<T> menu = spawnedMenuList.Find(x => x.GetType() == typeof(T)) as BaseMenu<T>;
             if (menu == null)
             {
                 CreateNewInstance<T>();
-                menu = _spawnedMenuList.Find(x => x.GetType() == typeof(T)) as BaseMenu<T>;
+                menu = spawnedMenuList.Find(x => x.GetType() == typeof(T)) as BaseMenu<T>;
             }
             return menu.Init();
         }
 
         public T OpenMenu<T>() where T : BaseMenu<T>
         {
-            BaseMenu<T> menu = _spawnedMenuList.Find(x => x.GetType() == typeof(T)) as BaseMenu<T>;
+            BaseMenu<T> menu = spawnedMenuList.Find(x => x.GetType() == typeof(T)) as BaseMenu<T>;
             if (menu == null)
             {
                 CreateNewInstance<T>();
-                menu = _spawnedMenuList.Find(x => x.GetType() == typeof(T)) as BaseMenu<T>;
+                menu = spawnedMenuList.Find(x => x.GetType() == typeof(T)) as BaseMenu<T>;
             }
             menu.Open();
             return menu.GetInstance();
@@ -63,12 +63,12 @@ namespace UISystem
 
         public void CloseMenu<T>() where T : BaseMenu<T>
         {
-            BaseMenu<T> menu = _spawnedMenuList.Find(x => x.GetType() == typeof(T)) as BaseMenu<T>;
+            BaseMenu<T> menu = spawnedMenuList.Find(x => x.GetType() == typeof(T)) as BaseMenu<T>;
             if (menu != null)
             {
                 menu.Close();
                 if(menu.CloseBehaviour == Menu.Close_Behaviour.Destory)
-                    _spawnedMenuList.Remove(menu);
+                    spawnedMenuList.Remove(menu);
             } 
             else Debug.LogError("Menu not found");
         }

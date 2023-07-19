@@ -80,7 +80,7 @@ namespace AssetBank
     [System.Serializable]
     public class AssetInGroup<T>
     {
-        [Range(0, 100)]
+        [Range(0, 1)]
         public float Chance;
         public T Asset;
     }

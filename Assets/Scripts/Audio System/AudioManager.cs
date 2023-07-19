@@ -2,15 +2,16 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Pool;
+using Pelumi_ObjectPool;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
-    [SerializeField] private AudioBank _musicBank;
-    [SerializeField] AudioBank _soundEffectBank;
-    [SerializeField] AudioSource _musicPlayer;
-    [SerializeField] AudioSource _soundEffectPlayer;
+    [SerializeField] private AudioBank musicBank;
+    [SerializeField] AudioBank soundEffectBank;
+    [SerializeField] AudioSource musicPlayer;
+    [SerializeField] AudioSource soundEffectPlayer;
     [SerializeField] Audio3DPlayer audio3DPlayerPrefab;
 
     private void Awake()
@@ -25,94 +26,96 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        AdvanceButton.OnAnyButtonClicked += PlayButtonSoundEffect;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void PlayButtonSoundEffect()
     {
-        if (scene.buildIndex == 0)
-        {
-            ChangeMusicWithFade("Menu", true);
-        }
+        PlaySoundEffect("Button Click");
     }
 
     private void ChangeMusic(AudioClip audioClip, bool loop)
     {
-        _musicPlayer.clip = audioClip;
-        _musicPlayer.loop = loop;
-        _musicPlayer.Play();
+        musicPlayer.clip = audioClip;
+        musicPlayer.loop = loop;
+        musicPlayer.Play();
     }
 
-    private IEnumerator PlayMusicFade(AudioClip audioClip, bool loop = true)
+    private IEnumerator PlayMusicFade(AudioClip audioClip, bool loop = true, float fadeDuration = 1.0f)
     {
-        _musicPlayer.clip = audioClip;
-        _musicPlayer.volume = 0;
-        _musicPlayer.loop = loop;
-        _musicPlayer.Play();
-        while (_musicPlayer.volume < 1)
+        // Fade out the music player
+        float elapsedTime = 0f;
+        float startVolume = 1f;
+        float targetVolume = 0f;
+
+        while (elapsedTime < fadeDuration)
         {
-            _musicPlayer.volume += 0.05f;
-            yield return new WaitForSecondsRealtime(0.1f);
+            elapsedTime += Time.deltaTime;
+            musicPlayer.volume = Mathf.Lerp(startVolume, targetVolume, elapsedTime / fadeDuration);
+            yield return null;
         }
+
+        musicPlayer.volume = 0f; // Ensure the volume is set to the target value
+        musicPlayer.Stop();
+
+        // Start the new audio clip
+        musicPlayer.clip = audioClip;
+        musicPlayer.loop = loop;
+        musicPlayer.Play();
+
+        // Fade in the music player
+        elapsedTime = 0f;
+        startVolume = 0f;
+        targetVolume = 1f;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            musicPlayer.volume = Mathf.Lerp(startVolume, targetVolume, elapsedTime / fadeDuration);
+            yield return null;
+        }
+
+        musicPlayer.volume = 1f; // Ensure the volume is set to the target value
     }
 
     private IEnumerator StopMusicFade()
     {
         float speed = 0.05f;
 
-        while (_musicPlayer.volume >= speed)
+        while (musicPlayer.volume >= speed)
         {
-            _musicPlayer.volume -= speed;
+            musicPlayer.volume -= speed;
             yield return new WaitForSecondsRealtime(0.1f);
         }
 
-        _musicPlayer.Stop();
-    }
-
-    private IEnumerator ChangeMusicWithFadeRoutine(AudioClip audioClip, bool loop)
-    {
-        while (_musicPlayer.volume > 0)
-        {
-            _musicPlayer.volume -= 0.05f;
-            yield return new WaitForSecondsRealtime(0.1f);
-        }
-
-        _musicPlayer.clip = audioClip;
-        _musicPlayer.loop = loop;
-        _musicPlayer.Play();
-
-        while (_musicPlayer.volume < 1)
-        {
-            _musicPlayer.volume += 0.05f;
-            yield return new WaitForSecondsRealtime(0.1f);
-        }
+        musicPlayer.Stop();
     }
 
     private IEnumerator BlendTwoMusicRoutine(AudioClip intro, AudioClip loopMusic, bool loop  = true)
     {
         ChangeMusic(intro, false);
-        yield return new WaitForSecondsRealtime(_musicPlayer.clip.length - 0.5f);
+        yield return new WaitForSecondsRealtime(musicPlayer.clip.length - 0.5f);
         ChangeMusic(loopMusic, loop);
     }
     public static AudioClip GetMusicClip(string audioID)
     {
         if (!InstanceExists()) return null;
-        return  Instance._musicBank.GetAsset(audioID);
+        return  Instance.musicBank.GetAsset(audioID);
     } 
     
     public static AudioClip GetSoundEffectClip(string audioID)
     {
         if (!InstanceExists()) return null;
-        return Instance._soundEffectBank.GetAsset(audioID);
+        return Instance.soundEffectBank.GetAsset(audioID);
     }
 
-    public AudioSource GetSfxAudioSource() => _soundEffectPlayer;
+    public AudioSource GetSfxAudioSource() => soundEffectPlayer;
 
     public static void PlaySoundEffect(string audioID, bool randomPitch = false)
     {
         if (Instance == null) return;
-        Instance._soundEffectPlayer.pitch = randomPitch ? Random.Range(0.8f, 1.2f) : 1;
-        Instance._soundEffectPlayer.PlayOneShot(GetSoundEffectClip(audioID));
+        Instance.soundEffectPlayer.pitch = randomPitch ? Random.Range(0.8f, 1.2f) : 1;
+        Instance.soundEffectPlayer.PlayOneShot(GetSoundEffectClip(audioID));
     }
 
     public static void PlayMusic(string ID, bool loop = true)
@@ -124,13 +127,13 @@ public class AudioManager : MonoBehaviour
     public static void PauseMusic()
     {
         if (!InstanceExists()) return;
-        Instance._musicPlayer.Pause();
+        Instance.musicPlayer.Pause();
     }
 
     public static void ResumeMusic()
     {
         if (!InstanceExists()) return;
-        Instance._musicPlayer.UnPause();
+        Instance.musicPlayer.UnPause();
     }
 
     public static void StopMusic()
@@ -139,36 +142,20 @@ public class AudioManager : MonoBehaviour
         Instance.StartCoroutine(Instance.StopMusicFade());
     }
 
-    public static void ChangeMusicWithFade(string audioID, bool loop = true)
-    {
-        if (!InstanceExists()) return;
-        Instance.StartCoroutine(Instance.ChangeMusicWithFadeRoutine(GetMusicClip(audioID), loop));
-    }
-
     public static void BlendTwoMusic(string startAudioID, string nextAudioID, bool loop = true)
     {
         if (!InstanceExists()) return;
         Instance.StartCoroutine(Instance.BlendTwoMusicRoutine(GetMusicClip(startAudioID), GetMusicClip(nextAudioID), loop));
     }
 
-    //public static Audio3DPlayer Play3DSoundEffect(string audioID, Vector3 position, float _dopplerLevel = 1, float _spread = 0, AudioRolloffMode _audioRolloffMode = AudioRolloffMode.Linear, float _minDistance = 1, float _maxDistance = 500)
-    //{
-    //    if (Instance == null) return null;
-    //    Audio3DPlayer audio3DPlayer = ObjectPoolManager.SpawnObject(Instance.audio3DPlayerPrefab);
-    //    audio3DPlayer.transform.position = position;
-    //    audio3DPlayer.PlaySoundEffect(GetSoundEffectClip(audioID),_dopplerLevel,_spread,_audioRolloffMode,_minDistance,_maxDistance);
-    //    return audio3DPlayer;
-    //}
-
-    //public static Audio3DPlayer Play3DSoundEffect(string audioID, Transform position, float _dopplerLevel = 1, float _spread = 0, AudioRolloffMode _audioRolloffMode = AudioRolloffMode.Linear, float _minDistance = 1, float _maxDistance = 500)
-    //{
-    //    if (Instance == null) return null;
-    //    Audio3DPlayer audio3DPlayer = ObjectPoolManager.SpawnObject(Instance.audio3DPlayerPrefab);
-    //    audio3DPlayer.transform.position = position.position;
-    //    audio3DPlayer.PlaySoundEffect(GetSoundEffectClip(audioID), _dopplerLevel, _spread, _audioRolloffMode, _minDistance, _maxDistance);
-    //    audio3DPlayer.transform.SetParent(position);
-    //    return audio3DPlayer;
-    //}
+    public static Audio3DPlayer Play3DSoundEffect(string audioID, Vector3 position, float _dopplerLevel = 1, float _spread = 0, AudioRolloffMode _audioRolloffMode = AudioRolloffMode.Linear, float _minDistance = 1, float _maxDistance = 500)
+    {
+        if (Instance == null) return null;
+        Audio3DPlayer audio3DPlayer = ObjectPoolManager.SpawnObject(Instance.audio3DPlayerPrefab);
+        audio3DPlayer.transform.position = position;
+        audio3DPlayer.PlaySoundEffect(GetSoundEffectClip(audioID), _dopplerLevel, _spread, _audioRolloffMode, _minDistance, _maxDistance);
+        return audio3DPlayer;
+    }
 
     private static bool InstanceExists()
     {

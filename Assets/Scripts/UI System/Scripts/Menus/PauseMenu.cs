@@ -14,38 +14,38 @@ namespace UISystem
         public event Action OnResumeButtonClicked;
         public event Action OnQuitButtonClicked;
 
-        [SerializeField] private Button _settingsButton;
-        [SerializeField] private Button _closeButton;
-        [SerializeField] private Button _resumeButton;
-        [SerializeField] private Button _quitButton;
+        [SerializeField] private AdvanceButton settingsButton;
+        [SerializeField] private AdvanceButton closeButton;
+        [SerializeField] private AdvanceButton resumeButton;
+        [SerializeField] private AdvanceButton quitButton;
 
-        JuicerRuntime _openEffectBG;
-        JuicerRuntime _closeEffectBG;
+        JuicerRuntime openEffectBG;
+        JuicerRuntime closeEffectBG;
 
         public override void OnCreated()
         {
-            _canvasGroup.alpha = 0;
+            canvasGroup.alpha = 0;
 
-            _openEffectBG = _canvasGroup.JuicyAlpha(1, 0.15f);
-            _openEffectBG.SetOnStart(() => _canvasGroup.alpha = 0);
+            openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
+            openEffectBG.SetOnStart(() => canvasGroup.alpha = 0);
 
-            _closeEffectBG = _canvasGroup.JuicyAlpha(0, 0.15f);
-            _closeEffectBG.SetOnComplected(CloseMenu);
+            closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
+            closeEffectBG.SetOnComplected(CloseMenu);
 
-            _settingsButton.onClick.AddListener(() => OnSettingsButtonClicked?.Invoke());
-            _closeButton.onClick.AddListener(() => OnResumeButtonClicked?.Invoke());
-            _resumeButton.onClick.AddListener(() => OnResumeButtonClicked?.Invoke());
-            _quitButton.onClick.AddListener(() => OnQuitButtonClicked?.Invoke());
+            settingsButton.onClick.AddListener(() => OnSettingsButtonClicked?.Invoke());
+            closeButton.onClick.AddListener(() => OnResumeButtonClicked?.Invoke());
+            resumeButton.onClick.AddListener(() => OnResumeButtonClicked?.Invoke());
+            quitButton.onClick.AddListener(() => OnQuitButtonClicked?.Invoke());
         }
 
         public override void OnOpened()
         {
-            _openEffectBG.Start();
+            openEffectBG.Start();
         }
 
         public override void OnClosed()
         {
-            _closeEffectBG.Start();
+            closeEffectBG.Start();
         }
 
         public override void ResetMenu()

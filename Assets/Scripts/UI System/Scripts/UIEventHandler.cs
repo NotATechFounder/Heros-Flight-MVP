@@ -6,24 +6,21 @@ using UnityEngine;
 
 public class UIEventHandler : MonoBehaviour
 {
-    [SerializeField] private UIManager _uIManager;
+    [SerializeField] private UIManager uIManager;
+    [SerializeField] private ConfirmationUISO backToMenu;
 
-    private MainMenu _mainMenu = null;
-    private SettingsMenu _settingsMenu = null;
-    private  LoadingMenu _loadingMenu = null;
-    private GameMenu _gameMenu = null;
-    private PauseMenu _pauseMenu = null;
-    private ConfirmationMenu _confirmationMenu = null;
+    private MainMenu mainMenu = null;
+    private SettingsMenu settingsMenu = null;
+    private LoadingMenu loadingMenu = null;
+    private GameMenu gameMenu = null;
+    private PauseMenu pauseMenu = null;
+    private ConfirmationMenu confirmationMenu = null;
+
+    private CountDownTimer startTimer;
 
     private void Awake()
     {
         Init();
-    }
-
-    private void OnDestroy()
-    {
-        _mainMenu.OnPlayButtonPressed -= MainMenu_OnPlayButtonPressed;
-        _mainMenu.OnSettingsButtonPressed -= MainMenu_OnSettingsButtonPressed;
     }
 
     private void Start()
@@ -33,72 +30,85 @@ public class UIEventHandler : MonoBehaviour
 
     private void Init()
     {
-        _loadingMenu = _uIManager.InitMenu<LoadingMenu>();
-        _confirmationMenu = _uIManager.InitMenu<ConfirmationMenu>();
+        loadingMenu = uIManager.InitMenu<LoadingMenu>();
+        confirmationMenu = uIManager.InitMenu<ConfirmationMenu>();
 
-        _mainMenu = _uIManager.InitMenu<MainMenu>();
-        _mainMenu.OnPlayButtonPressed += MainMenu_OnPlayButtonPressed;
-        _mainMenu.OnSettingsButtonPressed += MainMenu_OnSettingsButtonPressed;
-
-        _settingsMenu = _uIManager.InitMenu<SettingsMenu>();
-        _settingsMenu.OnBackButtonPressed += () =>
+        mainMenu = uIManager.InitMenu<MainMenu>();
+        mainMenu.OnMenuOpened += () =>
         {
-            _settingsMenu.Close();
+            AudioManager.PlayMusic("MainMenu");
         };
 
-        _gameMenu = _uIManager.InitMenu<GameMenu>();
-        _gameMenu.OnPauseButtonClicked += () =>
+        mainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
+        mainMenu.OnSettingsButtonPressed += () =>
         {
-            _pauseMenu.Open();
+            settingsMenu.Open();
         };
 
-        _pauseMenu = _uIManager.InitMenu<PauseMenu>();
-        _pauseMenu.OnSettingsButtonClicked += () =>
+        settingsMenu = uIManager.InitMenu<SettingsMenu>();
+        settingsMenu.OnBackButtonPressed += () =>
         {
-            _settingsMenu.Open();
+            settingsMenu.Close();
         };
 
-        _pauseMenu.OnResumeButtonClicked += () =>
+        gameMenu = uIManager.InitMenu<GameMenu>();
+        gameMenu.OnPauseButtonClicked += () =>
         {
-            _pauseMenu.Close();
+            pauseMenu.Open();
         };
 
-        _pauseMenu.OnQuitButtonClicked += () =>
+        pauseMenu = uIManager.InitMenu<PauseMenu>();
+        pauseMenu.OnSettingsButtonClicked += () =>
         {
-            _confirmationMenu.Display("Leaving ?", "Are you sure you  want to leave the game?","If you leave the game you will lose all progress.", ReturnToMaimMenu, null);
+            settingsMenu.Open();
         };
+
+        pauseMenu.OnResumeButtonClicked += () =>
+        {
+            pauseMenu.Close();
+        };
+
+        pauseMenu.OnQuitButtonClicked += () =>
+        {
+            confirmationMenu.Display(backToMenu, ReturnToMainMenu, null);
+        };
+
+        startTimer = new CountDownTimer(this);
     }
 
     public void OnGameOpened()
     {
-        _mainMenu.Open();
+        mainMenu.Open();
     }
 
-    private void MainMenu_OnPlayButtonPressed()
+    private void OnPlayButtonPressed()
     {
-        _gameMenu.Open();
-        _mainMenu.Close();
+        mainMenu.Close();
+        gameMenu.Open();
+
+        startTimer.Start(3, (time) =>
+        {
+            gameMenu.UpdateTimerText(time);
+        }, 
+        () =>
+        {
+            startTimer.Start(200, (time) =>
+            {
+                gameMenu.UpdateTimerText(time);
+            },
+          () =>
+          {
+              Debug.Log("Game Time Lapse");
+          });
+        });
+
+        AudioManager.PlayMusic("Forest");
     }
 
-    private void MainMenu_OnSettingsButtonPressed()
+    public void ReturnToMainMenu()
     {
-        _settingsMenu.Open();
-    }
-
-    public void OnGameSessionStarted()
-    {
-        _gameMenu.Open();
-    }
-
-    public void OnGamePaused()
-    {
-
-    }
-
-    public void ReturnToMaimMenu()
-    {
-        _gameMenu.Close();
-        _pauseMenu.Close();
-        _mainMenu.Open();
+        gameMenu.Close();
+        pauseMenu.Close();
+        mainMenu.Open();
     }
 }
