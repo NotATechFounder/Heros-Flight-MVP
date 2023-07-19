@@ -343,6 +343,16 @@ namespace Pelumi.Juicer
             JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
             return juicerRuntime;
         }
+
+        public static JuicerRuntime JuicyValue(this Slider slider, float to, float duration)
+        {
+            Init();
+            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
+            juicerTargetParam.SetCurrentValue(() => slider.value);
+            juicerTargetParam.Set(slider.value, (value) => slider.value = value, to);
+            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            return juicerRuntime;
+        }
         #endregion
     }
 }

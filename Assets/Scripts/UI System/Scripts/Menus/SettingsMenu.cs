@@ -26,15 +26,15 @@ namespace UISystem
             _canvasGroup.alpha = 0;
             _content.transform.localScale = Vector3.zero;
 
-            _openEffectBG = _canvasGroup.JuicyAlpha(1, 0.25f);
+            _openEffectBG = _canvasGroup.JuicyAlpha(1, 0.15f);
             _openEffectBG.SetOnStart(() => _canvasGroup.alpha = 0);
 
-            _openEffectContent = _content.transform.JuicyScale(1, .25f).SetEase(Ease.EaseOutQuart).SetDelay(.15f);
+            _openEffectContent = _content.transform.JuicyScale(1, .15f).SetEase(Ease.EaseOutQuart).SetDelay(.05f);
             _openEffectContent.SetOnStart(() => _content.transform.localScale = Vector3.zero);
 
-            _closeEffectContent = _content.transform.JuicyScale(0, .25f).SetEase(Ease.EaseOutQuart);
+            _closeEffectContent = _content.transform.JuicyScale(0, .15f).SetEase(Ease.EaseOutQuart);
 
-            _closeEffectBG = _canvasGroup.JuicyAlpha(0, 0.5f).SetDelay(.25f);
+            _closeEffectBG = _canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
             _closeEffectBG.SetOnComplected(CloseMenu);
 
             _backButton.onClick.AddListener(() =>
@@ -54,6 +54,11 @@ namespace UISystem
         {
             _closeEffectContent.Start();
             _closeEffectBG.Start();
+        }
+
+        public override void ResetMenu()
+        {
+
         }
     }
 }

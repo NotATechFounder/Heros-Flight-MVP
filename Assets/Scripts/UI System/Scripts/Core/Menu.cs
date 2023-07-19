@@ -44,9 +44,9 @@ namespace UISystem
 
         public void InitializedAllCanvas()
         {
-            if (_canvas == null) return;
-
             _canvas = GetComponentsInChildren<Canvas>();
+
+            if (_canvas == null) return;
 
             foreach (Canvas canvas in _canvas)
             {
@@ -95,6 +95,8 @@ namespace UISystem
         }
 
         public abstract void OnMenuDestroyed();
+
+        public abstract void ResetMenu();
     }
 }
 

@@ -34,6 +34,11 @@ namespace UISystem
 
         public override void OnClosed()
         {
+            CloseMenu();
+        }
+
+        public override void ResetMenu()
+        {
 
         }
     }
