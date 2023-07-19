@@ -20,6 +20,7 @@ namespace NodeCanvasAddons.AStarPathfinding.Examples
         {
             var followPosition = FollowTarget.value.transform.position;
             followPosition -= (FollowTarget.value.transform.forward.normalized*FollowDistance.value);
+            followPosition.z = 0;
             FollowPosition.value = followPosition;
             EndAction(true);
         }

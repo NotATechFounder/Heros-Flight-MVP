@@ -24,7 +24,7 @@ namespace NodeCanvasAddons.AStarPathfinding
         protected override bool OnCheck()
         {
             var distance = Vector3.Distance(Waypoint.value, agent.transform.position);
-            return distance <= AcceptableDistance.value;
+           return distance <= AcceptableDistance.value;
         }
     }
 }
