@@ -23,14 +23,9 @@ namespace UISystem
 
         public override void OnCreated()
         {
-            canvasGroup.alpha = 0;
-            content.transform.localScale = Vector3.zero;
-
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
-            openEffectBG.SetOnStart(() => canvasGroup.alpha = 0);
 
             openEffectContent = content.transform.JuicyScale(1, .15f).SetEase(Ease.EaseOutQuart).SetDelay(.05f);
-            openEffectContent.SetOnStart(() => content.transform.localScale = Vector3.zero);
 
             closeEffectContent = content.transform.JuicyScale(0, .15f).SetEase(Ease.EaseOutQuart);
 
@@ -45,6 +40,9 @@ namespace UISystem
 
         public override void OnOpened()
         {
+            canvasGroup.alpha = 0;
+            content.transform.localScale = Vector3.zero;
+
             openEffectContent.Start();
             openEffectBG.Start();
         }

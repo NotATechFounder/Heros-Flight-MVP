@@ -24,10 +24,7 @@ namespace UISystem
 
         public override void OnCreated()
         {
-            canvasGroup.alpha = 0;
-
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
-            openEffectBG.SetOnStart(() => canvasGroup.alpha = 0);
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
             closeEffectBG.SetOnComplected(CloseMenu);
@@ -40,6 +37,7 @@ namespace UISystem
 
         public override void OnOpened()
         {
+            canvasGroup.alpha = 0;
             openEffectBG.Start();
         }
 
