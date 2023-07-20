@@ -1,25 +1,35 @@
 using System;
-using HeroesFlight.Common;
-using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Character;
+using HeroesFlight.System.Gameplay.Enum;
 using UnityEngine;
 
-namespace HeroesFlight.System.Character
+namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class CharacterAttackController : MonoBehaviour, IAttackController
+    public class CharacterAttackController : MonoBehaviour, IAttackControllerInterface
     {
         [SerializeField] LayerMask m_TargetMask;
         [SerializeField] float m_AttackRange;
         [SerializeField] float m_TimeBetweenAttacks;
         [SerializeField] Collider2D[] m_FoundedColliders;
-        public event Action<IHealthController> OnAttackTarget;
+        public event Action OnAttackAnimation;
+        public event Action<IHealthController> OnDealDamageRequest;
+
         public event Action OnStopAttack;
 
         IHealthController m_Target;
-       [SerializeField] AttackControllerState m_State;
+
+        CharacterAnimationControllerInterface m_CharacterAnimationController;
+
+        [SerializeField] AttackControllerState m_State;
+
+        IHealthController m_CurrentTarget;
+
         float m_TimeSinceLastAttack = 0;
 
         void Awake()
         {
+            m_CharacterAnimationController = GetComponent<CharacterAnimationController>();
+            m_CharacterAnimationController.OnDealDamageRequest += HandleDamageDealRequest;
             m_FoundedColliders = new Collider2D[10];
             m_State = AttackControllerState.LookingForTarget;
             m_TimeSinceLastAttack = m_TimeBetweenAttacks;
@@ -28,6 +38,12 @@ namespace HeroesFlight.System.Character
         void Update()
         {
             ProcessCurrentState();
+        }
+
+        public void AttackTarget()
+        {
+            m_CharacterAnimationController.PlayAttackSequence();
+            m_TimeSinceLastAttack = 0;
         }
 
         void ProcessCurrentState()
@@ -43,6 +59,7 @@ namespace HeroesFlight.System.Character
             }
         }
 
+
         void ProcessLookingState()
         {
             if (m_FoundedColliders[0] == null)
@@ -52,6 +69,7 @@ namespace HeroesFlight.System.Character
                         m_TargetMask);
                 if (foundedTargetsCount > 0)
                 {
+                    m_CurrentTarget = m_FoundedColliders[0].GetComponent<IHealthController>();
                     ChangeState(AttackControllerState.Attacking);
                 }
             }
@@ -60,21 +78,22 @@ namespace HeroesFlight.System.Character
         void ProcessAttackingState()
         {
             var targetSize = m_FoundedColliders[0].bounds.extents;
-            var distanceToTarget = Vector2.Distance(transform.position, m_FoundedColliders[0].transform.position);
+            var distanceToTarget = Vector2.Distance(transform.position, 
+                m_FoundedColliders[0].transform.position);
             if (distanceToTarget - targetSize.x > m_AttackRange || distanceToTarget - targetSize.y > m_AttackRange)
             {
                 m_Target = null;
                 m_FoundedColliders[0] = null;
-                OnStopAttack?.Invoke();
+                m_CurrentTarget = null;
+                m_CharacterAnimationController.StopAttackSequence();
                 ChangeState(AttackControllerState.LookingForTarget);
                 return;
             }
 
-
+            
             if (m_TimeSinceLastAttack >= m_TimeBetweenAttacks)
             {
-                OnAttackTarget?.Invoke(m_Target);
-                m_TimeSinceLastAttack = 0;
+                AttackTarget();
             }
 
             m_TimeSinceLastAttack += Time.deltaTime;
@@ -94,6 +113,11 @@ namespace HeroesFlight.System.Character
                     break;
             }
             m_State = newState;
+        }
+
+        void HandleDamageDealRequest(string attackId)
+        {
+            OnDealDamageRequest?.Invoke(m_CurrentTarget);
         }
 
         void OnDrawGizmos()

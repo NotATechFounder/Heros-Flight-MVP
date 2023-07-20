@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using HeroesFlight.Common;
+﻿using System;
+using System.Collections.Generic;
 using HeroesFlight.System.Character.Enum;
 using Spine.Unity;
 using UnityEngine;
 
 namespace HeroesFlight.System.Character
 {
-    public class CharacterAnimationController : MonoBehaviour
+    public class CharacterAnimationController : MonoBehaviour,CharacterAnimationControllerInterface
     {
         [SerializeField] AnimationReferenceAsset m_IdleAnimation;
         [SerializeField] AnimationReferenceAsset m_FlyingUpAnimation;
@@ -17,18 +17,18 @@ namespace HeroesFlight.System.Character
         [SerializeField] AnimationReferenceAsset m_AttackAnimation;
         SkeletonAnimation m_SkeletonAnimation;
         ICharacterController m_CharacterController;
-        IAttackController m_AttackController;
+      
         bool m_WasFacingLeft;
         Dictionary<CharacterState, AnimationReferenceAsset> m_AnimationsCache = new();
+
+        public event Action<string> OnDealDamageRequest;
 
         void Awake()
         {
             m_CharacterController = GetComponent<CharacterSimpleController>();
             m_SkeletonAnimation = GetComponent<SkeletonAnimation>();
-            m_AttackController = GetComponent<CharacterAttackController>();
             m_CharacterController.OnCharacterMoveStateChanged += AnimateCharacterMovement;
-            m_AttackController.OnAttackTarget += PlayAttackAnimation;
-            m_AttackController.OnStopAttack += StopAttackAnimation;
+          
             CreateAnimationCache();
             m_WasFacingLeft = true;
         }
@@ -71,7 +71,7 @@ namespace HeroesFlight.System.Character
            
         }
 
-        void PlayAttackAnimation(IHealthController target)
+        void PlayAttackAnimation()
         {
             var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(1, m_AttackAnimation, false);
             m_SkeletonAnimation.AnimationState.AddEmptyAnimation(1, .5f, 0);
@@ -96,6 +96,16 @@ namespace HeroesFlight.System.Character
             }
 
             return false;
+        }
+
+        public void PlayAttackSequence()
+        {
+            PlayAttackAnimation();
+        }
+
+        public void StopAttackSequence()
+        {
+            StopAttackAnimation();
         }
     }
 }

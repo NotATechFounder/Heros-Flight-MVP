@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace HeroesFlight.System.Gameplay
 {
-    public class GamePlaySystem : IGamePlaySystem
+    public class GamePlaySystem : GamePlaySystemInterface
     {
         public GamePlaySystem(IUISystem uiSystem,ICharacterSystem characterSystem)
         {

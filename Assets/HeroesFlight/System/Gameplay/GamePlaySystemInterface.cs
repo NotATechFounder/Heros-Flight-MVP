@@ -1,6 +1,6 @@
 ﻿namespace HeroesFlight.System.Gameplay
 {
-    public interface IGamePlaySystem : ISystem
+    public interface GamePlaySystemInterface : ISystemInterface
     {
         
     }

@@ -1,6 +1,6 @@
 using System;
 
-namespace HeroesFlight.Common.Enum
+namespace HeroesFlight.System.Gameplay.Enum
 {
     [Serializable]
     public enum AttackControllerState

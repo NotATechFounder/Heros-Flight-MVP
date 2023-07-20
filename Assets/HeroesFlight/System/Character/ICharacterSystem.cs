@@ -1,6 +1,6 @@
 ﻿namespace HeroesFlight.System.Character
 {
-    public interface ICharacterSystem : ISystem
+    public interface ICharacterSystem : ISystemInterface
     {
     }
 }

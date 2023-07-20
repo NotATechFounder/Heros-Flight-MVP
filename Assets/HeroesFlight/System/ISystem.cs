@@ -3,9 +3,9 @@ using UnityEngine.SceneManagement;
 
 namespace HeroesFlight.System
 {
-    public interface ISystem
+    public interface ISystemInterface
     {
-        void Init(Scene scene = default, Action OnComplete = null);
+        void Init(Scene scene = default, Action onComplete = null);
         void Reset();
     }
 }

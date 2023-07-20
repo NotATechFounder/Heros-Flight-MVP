@@ -3,7 +3,7 @@ using HeroesFlight.System.UI.Enum;
 
 namespace HeroesFlight.System.UI
 {
-    public interface IUISystem : ISystem
+    public interface IUISystem : ISystemInterface
     {
         event Action OnStartGameSessionRequest;
         event Action OnReturnToMainMenuRequest;

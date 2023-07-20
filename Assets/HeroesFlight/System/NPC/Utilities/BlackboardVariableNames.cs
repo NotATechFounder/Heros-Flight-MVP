@@ -7,5 +7,6 @@ namespace HeroesFlightProject.System.NPC.Utilities
         public const string Target = "Target";
         public const string AttackRange = "AttackRange";
         public const string TimeBetweenAttacks = "TimeBetweenAttacks";
+        public const string AgroDistance = "AgroDistance";
     }
 }

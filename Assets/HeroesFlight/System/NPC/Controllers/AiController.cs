@@ -1,3 +1,4 @@
+using System;
 using HeroesFlightProject.System.NPC.Data;
 using HeroesFlightProject.System.NPC.Utilities;
 using NodeCanvas.Framework;
@@ -11,10 +12,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
         [SerializeField] Blackboard m_BlackBoard;
         [SerializeField] GraphOwner m_GraphOwner;
 
+        public event Action OnInitialized;
+        public AiAgentModel AgentMode => m_Model;
+        public Transform CurrentTarget { get; private set; }
+
         void Awake()
         {
-            var player = GameObject.FindWithTag("Player");
-            Init(player.transform);
+            CurrentTarget = GameObject.FindWithTag("Player").transform;
+            Init(CurrentTarget);
             Enable();
         }
 
@@ -27,6 +32,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             m_BlackBoard.SetVariableValue(BlackboardVariableNames.AttackRange, m_Model.AttackRange);
             m_BlackBoard.SetVariableValue(BlackboardVariableNames.TimeBetweenAttacks, m_Model.Speed);
             m_BlackBoard.SetVariableValue(BlackboardVariableNames.Target, player);
+            m_BlackBoard.SetVariableValue(BlackboardVariableNames.AgroDistance, m_Model.AgroDistance);
 
 
         }
