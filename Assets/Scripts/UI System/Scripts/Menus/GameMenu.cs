@@ -1,14 +1,16 @@
-using Pelumi.Juicer;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System;
+using Pelumi.Juicer;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace UISystem
 {
     public class GameMenu : BaseMenu<GameMenu>
     {
         public event Action OnPauseButtonClicked;
+        public event Action OnSpecialAttackButtonClicked;
 
         [Header("Main")]
         [SerializeField] private TextMeshProUGUI coinText;
@@ -26,8 +28,18 @@ namespace UISystem
         [Header("Boss")]
         [SerializeField] private GroupImageFill bossHealthFill;
 
+        [Header("Warning")]
+        [SerializeField] private RectTransform warningPanel;
+
+        [Header("Special Attack")]
+        [SerializeField] private AdvanceButton specialAttackButton;
+        [SerializeField] private Image specialAttackButtonFill;
+        [SerializeField] private Image specialAttackIcon;
+
         JuicerRuntime openEffect;
         JuicerRuntime closeEffect;
+        JuicerRuntime specialEffect;
+        JuicerRuntime specialIconEffect;
 
         public override void OnCreated()
         {
@@ -38,7 +50,16 @@ namespace UISystem
             closeEffect.SetOnStart(() => canvasGroup.alpha = 1);
             closeEffect.SetOnComplected(CloseMenu);
 
+            specialEffect = specialAttackButtonFill.JuicyAlpha(0, 0.25f);
+            specialEffect.SetEase(Ease.EaseInBounce);
+            specialEffect.SetLoop( -1);
+
+            specialIconEffect = specialAttackIcon.transform.JuicyScale(5f, 0.25f);
+            specialIconEffect.SetOnComplected(() => ToggleSpecialAttackButton(false));
+
             pauseButton.onClick.AddListener(() => OnPauseButtonClicked?.Invoke());
+
+            specialAttackButton.onClick.AddListener(SpecialAttackButtonClicked);
 
             ResetMenu();
         }
@@ -46,6 +67,9 @@ namespace UISystem
         public override void OnOpened()
         {
             openEffect.Start();
+
+            // Test
+            ToggleSpecialAttackButton(true);
         }
 
         public override void OnClosed()
@@ -108,6 +132,29 @@ namespace UISystem
         public void UpdateBossHealthFill(float value)
         {
             bossHealthFill.SetValue(value);
+        }
+
+        public void ToggleSpecialAttackButton(bool value)
+        {
+            switch (value)
+            {
+                case true:
+                    specialAttackButton.gameObject.SetActive(value);
+                    specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r, specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
+                    specialEffect.Start();
+                    break;
+                case false:
+                    specialEffect.Stop();
+                    specialAttackButton.gameObject.SetActive(value);
+                    break;
+            }
+
+        }
+
+        private void SpecialAttackButtonClicked()
+        {
+            specialIconEffect.Start();
+            OnSpecialAttackButtonClicked?.Invoke();
         }
     }
 }

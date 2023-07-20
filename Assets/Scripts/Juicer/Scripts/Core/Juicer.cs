@@ -32,6 +32,7 @@ namespace Pelumi.Juicer
 
         public static void StopCoroutine(CoroutineHandle coroutine)
         {
+            if (JuicerController == null) return;
             Init();
             JuicerController.StopCoroutine(coroutine);
         }
@@ -292,6 +293,16 @@ namespace Pelumi.Juicer
             return juicerRuntime;
         }
 
+        public static JuicerRuntime JuicyColour(this Image image, Color to, float duration)
+        {
+            Init();
+            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
+            juicerTargetParam.SetCurrentValue(() => image.color);
+            juicerTargetParam.Set(image.color, (value) => image.color = value, to);
+            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            return juicerRuntime;
+        }
+
         public static JuicerRuntime JuicyColour(this TMP_Text textMeshPro, Color to, float duration)
         {
             Init();
@@ -309,6 +320,17 @@ namespace Pelumi.Juicer
             Color color = TextMeshPro.color;
             juicerTargetParam.SetCurrentValue(() => TextMeshPro.color);
             juicerTargetParam.Set(color.a, (value) => TextMeshPro.color = new Color(color.r, color.g, color.b, value), to);
+            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            return juicerRuntime;
+        }
+
+        public static JuicerRuntime JuicyAlpha(this Image image, float to, float duration)
+        {
+            Init();
+            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
+            Color color = image.color;
+            juicerTargetParam.SetCurrentValue(() => image.color.a);
+            juicerTargetParam.Set(color.a, (value) => image.color = new Color(color.r, color.g, color.b, value), to);
             JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
             return juicerRuntime;
         }
