@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Pool;
-using Pelumi_ObjectPool;
+using Pelumi.ObjectPool;
 
 public class AudioManager : MonoBehaviour
 {

@@ -1,4 +1,4 @@
-using Pelumi_ObjectPool;
+using Pelumi.ObjectPool;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
