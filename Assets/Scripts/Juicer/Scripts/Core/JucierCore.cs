@@ -95,7 +95,6 @@ namespace Pelumi.Juicer
                                     break;
 
                                 case LoopType.Incremental:
-
                                     previousDestination = destination;
                                     destination = AddValue( destination , SubtractValue(destination, startingValue));
                                     startingValue = previousDestination;

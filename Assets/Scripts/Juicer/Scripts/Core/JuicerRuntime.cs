@@ -57,10 +57,13 @@ namespace Pelumi.Juicer
         {
             if (_coroutine != null && !_coroutine.IsDone)
             {
-                Stop();
+                Resume();
             }
-            _juicerTargetParam?.ResetStartValue();
-            _coroutine = Juicer.StartCoroutine(JuicerCore.Do(_juicerTargetParam.StartingValue, _juicerTargetParam.ValueModifyEvent, _juicerTargetParam.DestinationValue, _runtimeParam, _juicerRuntimeController));
+            else
+            {
+                _juicerTargetParam?.ResetStartValue();
+                _coroutine = Juicer.StartCoroutine(JuicerCore.Do(_juicerTargetParam.StartingValue, _juicerTargetParam.ValueModifyEvent, _juicerTargetParam.DestinationValue, _runtimeParam, _juicerRuntimeController));
+            }    
             return this;
         }
 
@@ -155,6 +158,7 @@ namespace Pelumi.Juicer
         {
             if (_coroutine != null)
             {
+                Debug.Log("Stop Juicer");
                 Juicer.StopCoroutine(_coroutine);
             }
         }
