@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 using Pelumi.Juicer;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace UISystem
 {
@@ -146,13 +145,15 @@ namespace UISystem
                 case false:
                     specialEffect.Stop();
                     specialAttackButton.gameObject.SetActive(value);
+                    specialAttackIcon.transform.localScale = Vector3.one;
+                    specialAttackButton.interactable = true;
                     break;
             }
-
         }
 
         private void SpecialAttackButtonClicked()
         {
+            specialAttackButton.interactable = false;
             specialIconEffect.Start();
             OnSpecialAttackButtonClicked?.Invoke();
         }
