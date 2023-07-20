@@ -66,9 +66,6 @@ namespace UISystem
         public override void OnOpened()
         {
             openEffect.Start();
-
-            // Test
-            ToggleSpecialAttackButton(true);
         }
 
         public override void OnClosed()
@@ -133,27 +130,37 @@ namespace UISystem
             bossHealthFill.SetValue(value);
         }
 
+        public void FillSpecial(float normalisedValue)
+        {
+            specialAttackButtonFill.fillAmount = normalisedValue;
+            if (normalisedValue >= 1)
+            {
+                ToggleSpecialAttackButton(true);
+            }
+        }
+
         public void ToggleSpecialAttackButton(bool value)
         {
             switch (value)
             {
                 case true:
-                    specialAttackButton.gameObject.SetActive(value);
                     specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r, specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
                     specialEffect.Start();
                     break;
                 case false:
-                    specialEffect.Stop();
-                    specialAttackButton.gameObject.SetActive(value);
+                    Debug.Log("Special Attack Button Disabled");
+                    specialEffect.Pause();
+                    specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r, specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
                     specialAttackIcon.transform.localScale = Vector3.one;
-                    specialAttackButton.interactable = true;
                     break;
             }
         }
 
         private void SpecialAttackButtonClicked()
         {
-            specialAttackButton.interactable = false;
+            if (specialAttackButtonFill.fillAmount < 1) return;
+            
+            specialAttackButtonFill.fillAmount = 0;
             specialIconEffect.Start();
             OnSpecialAttackButtonClicked?.Invoke();
         }

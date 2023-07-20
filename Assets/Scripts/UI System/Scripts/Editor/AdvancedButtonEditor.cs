@@ -8,7 +8,7 @@ using UnityEditor.UI;
 [CanEditMultipleObjects]
 public class AdvancedButtonEditor : ButtonEditor
 {
-    private SerializedProperty  onClickToggle;
+    private SerializedProperty onClickToggle;
 
     protected override void OnEnable()
     {

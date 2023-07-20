@@ -42,7 +42,6 @@ public class AdvanceButton : Button
     protected override void OnEnable()
     {
         base.OnEnable();
-        interactable = true;
     }
   
      public override void OnPointerClick(PointerEventData eventData)
