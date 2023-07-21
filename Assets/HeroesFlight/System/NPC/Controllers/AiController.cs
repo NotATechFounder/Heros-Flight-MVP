@@ -1,8 +1,11 @@
 using System;
 using HeroesFlightProject.System.NPC.Data;
+using HeroesFlightProject.System.NPC.Enum;
 using HeroesFlightProject.System.NPC.Utilities;
 using NodeCanvas.Framework;
+using Pathfinding;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.NPC.Controllers
 {
@@ -11,10 +14,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
         [SerializeField] AiAgentModel m_Model;
         [SerializeField] Blackboard m_BlackBoard;
         [SerializeField] GraphOwner m_GraphOwner;
+        [SerializeField] float wanderDistance = 10f;
+        [SerializeField] bool canFly = false;
 
         public event Action OnInitialized;
         public AiAgentModel AgentMode => m_Model;
         public Transform CurrentTarget { get; private set; }
+
+        Vector2 wanderPosition;
 
         void Awake()
         {
@@ -37,8 +44,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         }
 
-      
-
+        
+       
         public void Enable()
         {
             gameObject.SetActive(true);
@@ -49,5 +56,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             gameObject.SetActive(false);
         }
+
+       
     }
 }

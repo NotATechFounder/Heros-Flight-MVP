@@ -1,5 +1,6 @@
 using System;
 using HeroesFlightProject.System.NPC.Data;
+using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.NPC.Controllers

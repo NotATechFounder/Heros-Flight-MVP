@@ -20,12 +20,12 @@ namespace NodeCanvas.Tasks.Actions {
 		protected override void OnExecute()
 		{
 			var currentPosition = agent.transform.position;
-			var point = Random.insideUnitSphere * MaxDistance.value;
+			var point = Random.insideUnitCircle * MaxDistance.value;
 			if (!ShoulduseYAxis.value)
 			{
 				point.y = currentPosition.y;
 			}
-			point.z = 0;
+			
 			WanderPosition.value = point;
 			EndAction(true);
 		}
