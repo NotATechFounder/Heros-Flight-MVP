@@ -40,6 +40,15 @@ namespace UISystem
         JuicerRuntime specialEffect;
         JuicerRuntime specialIconEffect;
 
+        // TESTING
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                FillSpecial(specialAttackButtonFill.fillAmount += 0.25F);
+            }
+        }
+
         public override void OnCreated()
         {
             openEffect = canvasGroup.JuicyAlpha(1, 0.5f);

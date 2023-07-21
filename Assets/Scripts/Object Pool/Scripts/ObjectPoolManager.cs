@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace Pelumi_ObjectPool
+namespace Pelumi.ObjectPool
 {
     public class ObjectPoolManager : MonoBehaviour
     {

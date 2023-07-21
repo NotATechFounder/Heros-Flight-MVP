@@ -314,13 +314,12 @@ namespace Pelumi.Juicer
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyAlpha(this TMP_Text TextMeshPro, float to, float duration)
+        public static JuicerRuntime JuicyAlpha(this TMP_Text textMeshPro, float to, float duration)
         {
             Init();
             JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            Color color = TextMeshPro.color;
-            juicerTargetParam.SetCurrentValue(() => TextMeshPro.color);
-            juicerTargetParam.Set(color.a, (value) => TextMeshPro.color = new Color(color.r, color.g, color.b, value), to);
+            juicerTargetParam.SetCurrentValue(() => textMeshPro.color.a);
+            juicerTargetParam.Set(textMeshPro.color.a, (value) => textMeshPro.color = new Color(textMeshPro.color.r, textMeshPro.color.g, textMeshPro.color.b, value), to);
             JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
             return juicerRuntime;
         }
@@ -329,9 +328,8 @@ namespace Pelumi.Juicer
         {
             Init();
             JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            Color color = image.color;
             juicerTargetParam.SetCurrentValue(() => image.color.a);
-            juicerTargetParam.Set(color.a, (value) => image.color = new Color(color.r, color.g, color.b, value), to);
+            juicerTargetParam.Set(image.color.a, (value) => image.color = new Color(image.color.r, image.color.g, image.color.b, value), to);
             JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
             return juicerRuntime;
         }
