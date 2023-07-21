@@ -17,6 +17,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
         public event Action OnBeingDamaged;
+        public event Action OnDeath;
+
+        public void DealDamage(int damage)
+        {
+            Debug.Log($"received {damage}");
+        }
+
         public bool IsDead()
         {
             throw new NotImplementedException();

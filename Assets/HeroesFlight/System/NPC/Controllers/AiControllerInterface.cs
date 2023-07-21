@@ -8,7 +8,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
     public interface AiControllerInterface
     {
         event Action OnInitialized;
-        AiAgentModel AgentMode { get; }
+        AiAgentModel AgentModel { get; }
         Transform CurrentTarget { get; }
         void Init(Transform player);
         void Enable();

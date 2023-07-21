@@ -18,7 +18,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         [SerializeField] bool canFly = false;
 
         public event Action OnInitialized;
-        public AiAgentModel AgentMode => m_Model;
+        public AiAgentModel AgentModel => m_Model;
         public Transform CurrentTarget { get; private set; }
 
         Vector2 wanderPosition;

@@ -9,6 +9,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         int CurrentHealth { get; }
         void Init(int maxHealth);
         event Action OnBeingDamaged;
+        event Action OnDeath;
+        void DealDamage(int damage);
         bool IsDead();
         
     }

@@ -13,6 +13,8 @@ namespace HeroesFlightProject.System.NPC.Data
         [SerializeField] float m_Speed;
         [SerializeField] int m_MaxHealth;
         [SerializeField] float m_TimeBetweenAttacks;
+        [SerializeField] int damage=2;
+        public int Damage => damage;
         public EnemyType EnemyType => m_EnemyType;
         public float AgroDistance => agroDistance;
         public float AttackRange => m_AttackRange;

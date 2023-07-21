@@ -4,7 +4,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public interface IAttackControllerInterface
     {
-        event Action<IHealthController> OnDealDamageRequest;
+        event Action<IAttackControllerInterface,IHealthController> OnDealDamageRequest;
+
+        int Damage { get; }
+        float TimeSinceLastAttack { get; }
 
         void AttackTarget();
 

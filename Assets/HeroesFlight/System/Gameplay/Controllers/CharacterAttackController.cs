@@ -12,7 +12,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] float m_TimeBetweenAttacks;
         [SerializeField] Collider2D[] m_FoundedColliders;
         public event Action OnAttackAnimation;
-        public event Action<IHealthController> OnDealDamageRequest;
+        public event Action<IAttackControllerInterface,IHealthController> OnDealDamageRequest;
 
         public event Action OnStopAttack;
 
@@ -25,6 +25,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         IHealthController m_CurrentTarget;
 
         float m_TimeSinceLastAttack = 0;
+
+        public int Damage { get; }
+        public float TimeSinceLastAttack => m_TimeSinceLastAttack;
 
         void Awake()
         {
@@ -117,7 +120,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void HandleDamageDealRequest(string attackId)
         {
-            OnDealDamageRequest?.Invoke(m_CurrentTarget);
+            OnDealDamageRequest?.Invoke(this,m_CurrentTarget);
         }
 
         void OnDrawGizmos()
