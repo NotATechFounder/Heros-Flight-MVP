@@ -19,11 +19,11 @@ public class PopUpManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             string text = NumberConverter.ConvertNumberToString(Random.Range(100, 1000000));
-            PopUpAtTextPosition(mousePosition, Vector3.one, "Test", Random.ColorHSV());
+            PopUpAtTextPosition(mousePosition, Vector3.one / 8, text, Random.ColorHSV());
         }
     }
 

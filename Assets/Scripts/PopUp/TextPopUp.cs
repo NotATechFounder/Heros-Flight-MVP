@@ -12,8 +12,7 @@ public class TextPopUp : MonoBehaviour
     [SerializeField] private float scaleDuration;
     [SerializeField] private float moveDuration;
     [SerializeField] private float fadeDuration;
-    [SerializeField] private float minMoveLenght;
-    [SerializeField] private float maxMoveLenght;
+    [SerializeField] private float moveLenght;
     [SerializeField] private JuicerRuntime scaleEffect;
     [SerializeField] private JuicerRuntime moveEffect;
     [SerializeField] private JuicerRuntime fadeEffect;
@@ -46,12 +45,7 @@ public class TextPopUp : MonoBehaviour
     {
         transform.localScale = Vector3.zero;
         textMeshPro.color = new Color(textMeshPro.color.r, textMeshPro.color.g, textMeshPro.color.b, 1);
-        moveEffect = transform.JuicyMove(transform.position + Vector3.up * Random.Range(minMoveLenght, maxMoveLenght), moveDuration);
+        moveEffect = transform.JuicyMove(transform.position + Vector3.up * moveLenght, moveDuration);
         scaleEffect.Start();
-    }
-
-    public float GetRandomRange(float value)
-    {
-        return Random.Range(-value, value);
     }
 }
