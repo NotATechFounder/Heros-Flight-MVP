@@ -39,13 +39,11 @@ namespace NodeCanvasAddons.AStarPathfinding.Examples
 
             var movementThisFrame = MovementSpeed.value*Time.deltaTime;
 
-            if (Vector3.Distance(agent.transform.position, Waypoint.value) <= movementThisFrame)
-            { agent.transform.position = Waypoint.value; }
-            else
-            {
+            // if (Vector3.Distance(agent.transform.position, Waypoint.value) <= movementThisFrame)
+            // { agent.transform.position = Waypoint.value; }
                 var movementChange = waypointDirection * movementThisFrame;
                 agent.transform.position += movementChange;
-            }
+//            }
         
             EndAction(true);
         }

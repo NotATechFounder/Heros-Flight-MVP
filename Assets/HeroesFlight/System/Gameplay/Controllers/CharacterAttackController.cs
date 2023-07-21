@@ -1,4 +1,5 @@
 using System;
+using HeroesFlight.Common;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Gameplay.Enum;
 using UnityEngine;
@@ -8,34 +9,30 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class CharacterAttackController : MonoBehaviour, IAttackControllerInterface
     {
         [SerializeField] LayerMask m_TargetMask;
-        [SerializeField] float m_AttackRange;
-        [SerializeField] float m_TimeBetweenAttacks;
         [SerializeField] Collider2D[] m_FoundedColliders;
-        public event Action OnAttackAnimation;
-        public event Action<IAttackControllerInterface,IHealthController> OnDealDamageRequest;
-
-        public event Action OnStopAttack;
-
         IHealthController m_Target;
-
+        ICharacterController controller;
         CharacterAnimationControllerInterface m_CharacterAnimationController;
 
         [SerializeField] AttackControllerState m_State;
 
+        CombatModel combatModel;
         IHealthController m_CurrentTarget;
 
         float m_TimeSinceLastAttack = 0;
 
-        public int Damage { get; }
+        public int Damage => controller.Data.CombatModel.Damage;
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
 
         void Awake()
         {
+            controller = GetComponent<ICharacterController>();
             m_CharacterAnimationController = GetComponent<CharacterAnimationController>();
             m_CharacterAnimationController.OnDealDamageRequest += HandleDamageDealRequest;
             m_FoundedColliders = new Collider2D[10];
             m_State = AttackControllerState.LookingForTarget;
-            m_TimeSinceLastAttack = m_TimeBetweenAttacks;
+            combatModel = controller.Data.CombatModel;
+            m_TimeSinceLastAttack =  combatModel.TimeBetweenAttacks;
         }
 
         void Update()
@@ -68,7 +65,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             if (m_FoundedColliders[0] == null)
             {
                 var foundedTargetsCount =
-                    Physics2D.OverlapCircleNonAlloc(transform.position, m_AttackRange, m_FoundedColliders,
+                    Physics2D.OverlapCircleNonAlloc(transform.position,  combatModel.AttackRange,
+                        m_FoundedColliders,
                         m_TargetMask);
                 if (foundedTargetsCount > 0)
                 {
@@ -83,7 +81,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             var targetSize = m_FoundedColliders[0].bounds.extents;
             var distanceToTarget = Vector2.Distance(transform.position, 
                 m_FoundedColliders[0].transform.position);
-            if (distanceToTarget - targetSize.x > m_AttackRange || distanceToTarget - targetSize.y > m_AttackRange)
+            if (distanceToTarget - targetSize.x >  combatModel.AttackRange
+                || distanceToTarget - targetSize.y > combatModel.AttackRange)
             {
                 m_Target = null;
                 m_FoundedColliders[0] = null;
@@ -94,7 +93,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
 
             
-            if (m_TimeSinceLastAttack >= m_TimeBetweenAttacks)
+            if (m_TimeSinceLastAttack >= combatModel.TimeBetweenAttacks)
             {
                 AttackTarget();
             }
@@ -112,7 +111,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 case AttackControllerState.Attacking:
                     break;
                 case AttackControllerState.LookingForTarget:
-                    m_TimeSinceLastAttack = m_TimeBetweenAttacks;
+                    m_TimeSinceLastAttack = combatModel.TimeBetweenAttacks;
                     break;
             }
             m_State = newState;
@@ -120,12 +119,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void HandleDamageDealRequest(string attackId)
         {
-            OnDealDamageRequest?.Invoke(this,m_CurrentTarget);
+           m_Target.DealDamage(Damage);
         }
 
         void OnDrawGizmos()
         {
-            Gizmos.DrawWireSphere(transform.position, m_AttackRange);
+            if (combatModel == null)
+                return;
+            Gizmos.DrawWireSphere(transform.position, combatModel.AttackRange);
         }
     }
 }

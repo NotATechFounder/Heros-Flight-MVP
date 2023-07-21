@@ -19,6 +19,7 @@ namespace NodeCanvasAddons.AStarPathfinding
 		public BBParameter<Path> OutputPath = new BBParameter<Path>();
 
 		Seeker m_Seaker;
+		bool isCalculatingPath = false;
 
 		protected override string info
 		{
@@ -34,11 +35,13 @@ namespace NodeCanvasAddons.AStarPathfinding
 		protected override void OnExecute()
 		{
 			m_Seaker.StartPath(agent.transform.position, DestinationPosition.value, PathFinishedDelegate);
+			isCalculatingPath = true;
 		}
 
 		private void PathFinishedDelegate(Path path)
 		{
 			OutputPath.value = path;
+			isCalculatingPath = false;
 			EndAction(!path.error);
 		}
 	}

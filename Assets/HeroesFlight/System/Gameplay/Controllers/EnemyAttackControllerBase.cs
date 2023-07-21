@@ -11,9 +11,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         float timeBetweenAttacks;
         float timeSinceLastAttack;
         
-        public event Action<IAttackControllerInterface,IHealthController> OnDealDamageRequest;
+      
 
-        public int Damage => aiController.AgentModel.Damage;
+        public int Damage => aiController.AgentModel.CombatModel.Damage;
         public float TimeSinceLastAttack => timeSinceLastAttack;
 
         void Start()
@@ -21,7 +21,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             aiController = GetComponent<AiController>();
             target = aiController.CurrentTarget.GetComponent<IHealthController>();
             timeSinceLastAttack = 0;
-            timeBetweenAttacks = aiController.AgentModel.TimeBetweenAttacks;
+            timeBetweenAttacks = aiController.AgentModel.CombatModel.TimeBetweenAttacks;
 
         }
 
@@ -32,15 +32,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         
         protected  void InitAttack()
         {
-            OnDealDamageRequest?.Invoke(this,target);
-            target.DealDamage(Damage);
+           target.DealDamage(Damage);
         }
         public virtual void AttackTarget()
         {
             if (timeSinceLastAttack >= timeBetweenAttacks)
             {
                 timeSinceLastAttack = 0;
-                Debug.Log("Attacking player");
                 InitAttack();
             }
           

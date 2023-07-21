@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using HeroesFlight.Common;
 using HeroesFlight.System.Character.Enum;
 using Spine;
 using Spine.Unity;
@@ -10,16 +10,16 @@ namespace HeroesFlight.System.Character
 {
     public class CharacterViewController : MonoBehaviour, ICharacterViewController
     {
-        [SpineSkin][SerializeField]  string m_BaseSkinReference = "skin-base";
-        [SpineSkin][SerializeField]  string m_EyeLashesSkinReference = "eyelids/girly";
-        [SpineSkin][SerializeField]  string m_HairSkinReference;
-        [SpineSkin][SerializeField]  string m_EyesSkinReference;
-        [SpineSkin][SerializeField]  string m_LipsSkinReference;
-        [SpineSkin][SerializeField]  string m_ClothesSkinReference = "clothes/hoodie-orange";
-        [SpineSkin][SerializeField]  string m_PantsSkinReference = "legs/pants-jeans";
-        [SpineSkin][SerializeField]  string m_WingsSkinReference = "";
-        [SpineSkin][SerializeField]  string m_HatSkinReference = "accessories/hat-red-yellow";
-        [SpineSkin][SerializeField]  string m_WeaponSkinReference;
+        [SpineSkin][SerializeField] string m_BaseSkinReference = "skin-base";
+        [SpineSkin][SerializeField] string m_EyeLashesSkinReference = "eyelids/girly";
+        [SpineSkin][SerializeField] string m_HairSkinReference;
+        [SpineSkin][SerializeField] string m_EyesSkinReference;
+        [SpineSkin][SerializeField] string m_LipsSkinReference;
+        [SpineSkin][SerializeField] string m_ClothesSkinReference = "clothes/hoodie-orange";
+        [SpineSkin][SerializeField] string m_PantsSkinReference = "legs/pants-jeans";
+        [SpineSkin][SerializeField] string m_WingsSkinReference = "";
+        [SpineSkin][SerializeField] string m_HatSkinReference = "accessories/hat-red-yellow";
+        [SpineSkin][SerializeField] string m_WeaponSkinReference;
 
         SkeletonAnimation m_SkeletonAnimation;
 
@@ -59,7 +59,8 @@ namespace HeroesFlight.System.Character
 
             skeleton.SetSkin(resultCombinedSkin);
             skeleton.SetSlotsToSetupPose();
-           // OptimizeSkin();
+
+            // OptimizeSkin();
         }
 
         void AddEquipmentSkinsTo(Skin resultCombinedSkin)
@@ -96,8 +97,9 @@ namespace HeroesFlight.System.Character
         {
             // Create a repacked skin.
             Skin previousSkin = m_SkeletonAnimation.Skeleton.Skin;
-            
-            Debug.Log(previousSkin==null);
+
+            Debug.Log(previousSkin == null);
+
             // Note: materials and textures returned by GetRepackedSkin() behave like 'new Texture2D()' and need to be destroyed
             if (m_RuntimeMaterial)
                 Destroy(m_RuntimeMaterial);
@@ -122,8 +124,22 @@ namespace HeroesFlight.System.Character
             Resources.UnloadUnusedAssets();
         }
 
-        public void SetupView(Dictionary<ItemVisualType, string> viewParts)
+
+        public void SetupView(AppearanceData data)
         {
+            m_BaseSkinReference = data.BaseSkin;
+            m_EyeLashesSkinReference = data.EyesSkinReference;
+            m_HairSkinReference = data.HairSkinReference;
+            m_EyesSkinReference = data.EyesSkinReference;
+            m_LipsSkinReference = data.LipsSkinReference;
+            m_ClothesSkinReference = data.ClothesSkinReference;
+            m_PantsSkinReference = data.PantsSkinReference;
+            m_WingsSkinReference = data.WingsSkinReference;
+            m_HatSkinReference = data.HatSkinReference;
+            m_WeaponSkinReference = data.WeaponSkinReference;
+
+
+            Init();
         }
 
         public void Equip(string itemSkin, ItemVisualType itemType)

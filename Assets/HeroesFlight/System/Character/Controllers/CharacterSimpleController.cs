@@ -1,18 +1,21 @@
 ﻿using System;
 using HeroesFlight.System.Character.Enum;
+using HeroesFlight.System.Character.Model;
 using UnityEngine;
 
 namespace HeroesFlight.System.Character
 {
     public class CharacterSimpleController :MonoBehaviour,ICharacterController
     {
-        [SerializeField] float m_MovementSpeed = 5f;
+        [SerializeField] CharacterModel model;
         CharacterMovementController m_MovementController;
         CharacterInputReceiver m_InputReceiver;
+        ICharacterViewController viewController;
         Vector3 m_SavedVelocity = default;
         Transform m_Transform;
 
         public bool IsFacingLeft { get; private set; }
+        public CharacterData Data => model.Data;
         public event Action<CharacterState> OnCharacterMoveStateChanged;
         CharacterState m_CurrentState;
         public  Vector3 GetVelocity() => m_SavedVelocity;
@@ -23,7 +26,9 @@ namespace HeroesFlight.System.Character
         {
             m_MovementController = GetComponent<CharacterMovementController>();
             m_InputReceiver = GetComponent<CharacterInputReceiver>();
+            viewController = GetComponent<ICharacterViewController>();
             m_Transform = GetComponent<Transform>();
+            viewController.SetupView(model.Data.AppearenceModel.Data);
             m_CurrentState = CharacterState.Idle;
             IsFacingLeft = true;
         }
@@ -105,7 +110,7 @@ namespace HeroesFlight.System.Character
         Vector3 CalculateCharacterVelocity(Vector3 inputVector)
         {
             var velocity = CalculateMovementDirection(inputVector);
-            return velocity * m_MovementSpeed;
+            return velocity * model.Data.CombatModel.Speed;
         }
 
         Vector3 CalculateMovementDirection(Vector3 inputVector)

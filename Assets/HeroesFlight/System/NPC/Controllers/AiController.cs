@@ -1,11 +1,9 @@
 using System;
 using HeroesFlightProject.System.NPC.Data;
-using HeroesFlightProject.System.NPC.Enum;
 using HeroesFlightProject.System.NPC.Utilities;
 using NodeCanvas.Framework;
-using Pathfinding;
 using UnityEngine;
-using Random = UnityEngine.Random;
+
 
 namespace HeroesFlightProject.System.NPC.Controllers
 {
@@ -35,11 +33,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
            
             m_BlackBoard = GetComponent<Blackboard>();
             m_GraphOwner = GetComponent<GraphOwner>();
-            m_BlackBoard.SetVariableValue(BlackboardVariableNames.MovementSpeed, m_Model.Speed);
-            m_BlackBoard.SetVariableValue(BlackboardVariableNames.AttackRange, m_Model.AttackRange);
-            m_BlackBoard.SetVariableValue(BlackboardVariableNames.TimeBetweenAttacks, m_Model.Speed);
+            m_BlackBoard.SetVariableValue(BlackboardVariableNames.MovementSpeed, m_Model.CombatModel.Speed);
+            m_BlackBoard.SetVariableValue(BlackboardVariableNames.AttackRange, m_Model.CombatModel.AttackRange);
+            m_BlackBoard.SetVariableValue(BlackboardVariableNames.TimeBetweenAttacks, m_Model.CombatModel.Speed);
             m_BlackBoard.SetVariableValue(BlackboardVariableNames.Target, player);
-            m_BlackBoard.SetVariableValue(BlackboardVariableNames.AgroDistance, m_Model.AgroDistance);
+            m_BlackBoard.SetVariableValue(BlackboardVariableNames.AgroDistance, m_Model.CombatModel.AgroDistance);
 
 
         }
