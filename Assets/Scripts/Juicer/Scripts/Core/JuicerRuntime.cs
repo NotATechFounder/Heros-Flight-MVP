@@ -66,6 +66,12 @@ namespace Pelumi.Juicer
             }    
             return this;
         }
+         
+        public JuicerRuntime ChangeDesination<T>(T destination)
+        {
+            _juicerTargetParam.SetDestination(destination);
+            return this;
+        }
 
         public JuicerRuntime SetDelay(float delay)
         {
@@ -507,6 +513,11 @@ namespace Pelumi.Juicer
         {
             this._startingValue = _startingValue;
             this._valueModifyEvent = (object value) => _valueModifyEvent((T)value);
+            this._destinationValue = _destinationValue;
+        }
+
+        public void SetDestination<T>(T _destinationValue)
+        {
             this._destinationValue = _destinationValue;
         }
 
