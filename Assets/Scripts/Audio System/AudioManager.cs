@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Pool;
 using Pelumi.ObjectPool;
+using Unity.VisualScripting;
 
 public class AudioManager : MonoBehaviour
 {
@@ -93,9 +94,9 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator BlendTwoMusicRoutine(AudioClip intro, AudioClip loopMusic, bool loop  = true)
     {
-        ChangeMusic(intro, false);
+        yield return PlayMusicFade(intro, false);
         yield return new WaitForSecondsRealtime(musicPlayer.clip.length - 0.5f);
-        ChangeMusic(loopMusic, loop);
+        yield return PlayMusicFade(loopMusic, loop);
     }
     public static AudioClip GetMusicClip(string audioID)
     {
@@ -121,6 +122,7 @@ public class AudioManager : MonoBehaviour
     public static void PlayMusic(string ID, bool loop = true)
     {
         if (!InstanceExists()) return;
+        Instance.StopAllCoroutines();
         Instance.StartCoroutine(Instance.PlayMusicFade(GetMusicClip(ID), loop));
     }
 
@@ -145,6 +147,7 @@ public class AudioManager : MonoBehaviour
     public static void BlendTwoMusic(string startAudioID, string nextAudioID, bool loop = true)
     {
         if (!InstanceExists()) return;
+        Instance.StopAllCoroutines();
         Instance.StartCoroutine(Instance.BlendTwoMusicRoutine(GetMusicClip(startAudioID), GetMusicClip(nextAudioID), loop));
     }
 
