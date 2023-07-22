@@ -26,6 +26,8 @@ public class TextPopUp : MonoBehaviour
             fadeEffect.Start();
         });
 
+        moveEffect = transform.JuicyMove(transform.position , moveDuration);
+
         fadeEffect = textMeshPro.JuicyAlpha(0, fadeDuration).SetDelay(0.1f);
         fadeEffect.SetOnComplected(() =>
         {
@@ -45,7 +47,7 @@ public class TextPopUp : MonoBehaviour
     {
         transform.localScale = Vector3.zero;
         textMeshPro.color = new Color(textMeshPro.color.r, textMeshPro.color.g, textMeshPro.color.b, 1);
-        moveEffect = transform.JuicyMove(transform.position + Vector3.up * moveLenght, moveDuration);
+        moveEffect.ChangeDesination(transform.position + Vector3.up * moveLenght);
         scaleEffect.Start();
     }
 }

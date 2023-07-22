@@ -15,8 +15,9 @@ public class UIEventHandler : MonoBehaviour
     private GameMenu gameMenu = null;
     private PauseMenu pauseMenu = null;
     private ConfirmationMenu confirmationMenu = null;
-
     private CountDownTimer startTimer;
+    private ReviveMenu reviveMenu = null;
+    private SummaryMenu summaryMenu = null;
 
     private void Awake()
     {
@@ -28,6 +29,19 @@ public class UIEventHandler : MonoBehaviour
         OnGameOpened();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            reviveMenu.Open();
+        }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            summaryMenu.Open();
+        }
+    }
+
     private void Init()
     {
         loadingMenu = uIManager.InitMenu<LoadingMenu>();
@@ -36,7 +50,7 @@ public class UIEventHandler : MonoBehaviour
         mainMenu = uIManager.InitMenu<MainMenu>();
         mainMenu.OnMenuOpened += () =>
         {
-            AudioManager.BlendTwoMusic("ForestStart","ForestLoop");
+            AudioManager.PlayMusic("MainMenu");
         };
 
         mainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
@@ -73,6 +87,23 @@ public class UIEventHandler : MonoBehaviour
             confirmationMenu.Display(backToMenu, ReturnToMainMenu, null);
         };
 
+        reviveMenu = uIManager.InitMenu<ReviveMenu>();
+        reviveMenu.OnWatchAdsButtonClicked += () =>
+        {
+            return true;       
+        };
+
+        reviveMenu.OnGemButtonClicked += () =>
+        {
+            return true;
+        };
+
+        summaryMenu = uIManager.InitMenu<SummaryMenu>();
+        summaryMenu.OnContinueButtonClicked += () =>
+        {
+
+        };
+
         startTimer = new CountDownTimer(this);
     }
 
@@ -102,7 +133,7 @@ public class UIEventHandler : MonoBehaviour
           });
         });
 
-        AudioManager.PlayMusic("Forest");
+        AudioManager.BlendTwoMusic("ForestStart", "ForestLoop");
     }
 
     public void ReturnToMainMenu()
