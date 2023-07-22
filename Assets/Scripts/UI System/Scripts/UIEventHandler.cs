@@ -36,7 +36,7 @@ public class UIEventHandler : MonoBehaviour
         mainMenu = uIManager.InitMenu<MainMenu>();
         mainMenu.OnMenuOpened += () =>
         {
-            AudioManager.PlayMusic("MainMenu");
+            AudioManager.BlendTwoMusic("ForestStart","ForestLoop");
         };
 
         mainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
