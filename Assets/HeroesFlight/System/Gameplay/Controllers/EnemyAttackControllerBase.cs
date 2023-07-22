@@ -4,46 +4,50 @@ using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class EnemyAttackControllerBase : MonoBehaviour,IAttackControllerInterface
+    public class EnemyAttackControllerBase : MonoBehaviour, IAttackControllerInterface
     {
-        AiControllerInterface aiController;
-        IHealthController target;
-        float timeBetweenAttacks;
-        float timeSinceLastAttack;
-        
-      
+        protected AiControllerInterface aiController;
+        protected IHealthController target;
+        protected float attackRange;
+        protected float timeBetweenAttacks;
+        protected float timeSinceLastAttack;
+
 
         public int Damage => aiController.AgentModel.CombatModel.Damage;
         public float TimeSinceLastAttack => timeSinceLastAttack;
 
         void Start()
         {
-            aiController = GetComponent<AiController>();
+            aiController = GetComponent<AiControllerBase>();
             target = aiController.CurrentTarget.GetComponent<IHealthController>();
             timeSinceLastAttack = 0;
             timeBetweenAttacks = aiController.AgentModel.CombatModel.TimeBetweenAttacks;
-
+            attackRange = aiController.AgentModel.CombatModel.AttackRange;
+            aiController.SetAttackState(true);
         }
 
         protected virtual void Update()
         {
             timeSinceLastAttack += Time.deltaTime;
+            if (timeSinceLastAttack >= timeBetweenAttacks)
+            {
+                aiController.SetAttackState(true);
+            }
         }
-        
-        protected  void InitAttack()
+
+        protected virtual void InitAttack()
         {
-           target.DealDamage(Damage);
+            timeSinceLastAttack = 0;
+            aiController.SetAttackState(false);
+            target.DealDamage(Damage);
         }
+
         public virtual void AttackTarget()
         {
             if (timeSinceLastAttack >= timeBetweenAttacks)
             {
-                timeSinceLastAttack = 0;
                 InitAttack();
             }
-          
-
         }
-    
     }
 }

@@ -1,7 +1,7 @@
 using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
 
-public class JumpMover : MonoBehaviour
+public class JumpMover : MonoBehaviour,AiMoverInterface
 {
     [SerializeField] float timeBetweenJumps=1f;
     [SerializeField] float jumpStrenght;
@@ -19,7 +19,7 @@ public class JumpMover : MonoBehaviour
         timeSinceLastJump += Time.deltaTime;
     }
 
-    public void Jump(Vector2 targetDirection)
+    public void Move(Vector2 targetDirection)
     {
         if (timeSinceLastJump < timeBetweenJumps)
             return;
@@ -28,7 +28,6 @@ public class JumpMover : MonoBehaviour
        
         rigidBody.AddForce(jumpDirection * jumpStrenght);
         timeSinceLastJump = 0;
-
 
     }
 }
