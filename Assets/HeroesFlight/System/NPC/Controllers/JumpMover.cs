@@ -24,7 +24,7 @@ public class JumpMover : MonoBehaviour,AiMoverInterface
         if (timeSinceLastJump < timeBetweenJumps)
             return;
       
-        var jumpDirection = targetDirection + Vector2.up;
+        var jumpDirection = targetDirection.normalized + Vector2.up;
        
         rigidBody.AddForce(jumpDirection * jumpStrenght);
         timeSinceLastJump = 0;

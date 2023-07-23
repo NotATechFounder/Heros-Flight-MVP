@@ -7,7 +7,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         [SerializeField] float lifeTime;
         [SerializeField] float speed;
-        [SerializeField] LayerMask collisionLayers;
         public event Action OnEnded;
         Vector2 currentDirection = default;
         int damage;
@@ -49,14 +48,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
-        void OnTriggerEnter2D(Collider2D col)
-        {
-            Debug.Log(col.name);
-            if (col.gameObject.TryGetComponent<IHealthController>(out var healthController))
-            {
-                healthController.DealDamage(damage);
-                DisableProjectile();
-            }
-        }
+      
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace HeroesFlight.System.Character
 {
-    public class CharacterSimpleController :MonoBehaviour,ICharacterController
+    public class CharacterSimpleController :MonoBehaviour,CharacterControllerInterface
     {
         [SerializeField] CharacterModel model;
         CharacterMovementController m_MovementController;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace HeroesFlight.System.Character
 {
-    public interface ICharacterController
+    public interface CharacterControllerInterface
     {
         public CharacterData Data { get; }
         event Action<CharacterState> OnCharacterMoveStateChanged;

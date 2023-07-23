@@ -1,37 +1,46 @@
 using System;
 using HeroesFlight.Common.Enum;
-using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class HealthController : MonoBehaviour,IHealthController
+    public class HealthController : MonoBehaviour, IHealthController
     {
         [SerializeField] CombatTargetType targetType;
-        AiControllerInterface aiController;
         public CombatTargetType TargetType => targetType;
         public int CurrentHealth => currentHealh;
-        int maxHealth;
-        int currentHealh;
-        public void Init()
+        protected int maxHealth;
+         [SerializeField]  protected int currentHealh;
+        public event Action<int> OnBeingDamaged;
+        public event Action OnDeath;
+
+        void Awake()
         {
-            aiController = GetComponent<AiControllerInterface>();
-            maxHealth = aiController.AgentModel.CombatModel.Health;
+            Init();
+        }
+
+        public virtual void Init()
+        {
             currentHealh = maxHealth;
         }
 
-        public event Action OnBeingDamaged;
-        public event Action OnDeath;
-
-        public void DealDamage(int damage)
+        public virtual void DealDamage(int damage)
         {
             Debug.Log($"received {damage}");
+            OnBeingDamaged?.Invoke(damage);
+            currentHealh -= damage;
+            if (IsDead())
+                ProcessDeath();
         }
 
-        public bool IsDead()
+        public virtual bool IsDead()
         {
-            throw new NotImplementedException();
+            return currentHealh <= 0;
+        }
+
+        protected virtual void ProcessDeath()
+        {
+            OnDeath?.Invoke();
         }
     }
-
 }

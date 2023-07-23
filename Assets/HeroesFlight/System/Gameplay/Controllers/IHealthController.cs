@@ -8,7 +8,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         CombatTargetType TargetType { get; }
         int CurrentHealth { get; }
         void Init();
-        event Action OnBeingDamaged;
+        event Action<int> OnBeingDamaged;
         event Action OnDeath;
         void DealDamage(int damage);
         bool IsDead();

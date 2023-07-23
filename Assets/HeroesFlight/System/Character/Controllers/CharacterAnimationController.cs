@@ -16,7 +16,7 @@ namespace HeroesFlight.System.Character
         [SerializeField] AnimationReferenceAsset m_TurnRightAnimation;
         [SerializeField] AnimationReferenceAsset m_AttackAnimation;
         SkeletonAnimation m_SkeletonAnimation;
-        ICharacterController m_CharacterController;
+        CharacterControllerInterface m_CharacterController;
       
         bool m_WasFacingLeft;
         Dictionary<CharacterState, AnimationReferenceAsset> m_AnimationsCache = new();
