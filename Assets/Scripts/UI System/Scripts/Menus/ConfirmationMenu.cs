@@ -81,7 +81,7 @@ namespace UISystem
             onNoButtonPressed = null;
         }
 
-        public void Display (ConfirmationUISO confirmationUISO, Action Yes, Action No)
+        public void Display (ConfirmationUISO confirmationUISO, Action Yes, Action No, float timer = 0)
         {
             titleText.text = confirmationUISO.TitleText;
             questionText.text = confirmationUISO.QuestionText;
