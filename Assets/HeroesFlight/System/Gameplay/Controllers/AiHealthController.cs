@@ -1,4 +1,5 @@
 using HeroesFlightProject.System.NPC.Controllers;
+using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -17,6 +18,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             base.ProcessDeath();
             aiController.Disable();
+        }
+
+        public override void DealDamage(int damage)
+        {
+            Debug.Log("Received damage");
+            aiController.ProcessKnockBack();
+            base.DealDamage(damage);
         }
     }
 }

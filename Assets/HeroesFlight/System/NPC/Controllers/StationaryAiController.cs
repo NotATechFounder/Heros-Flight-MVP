@@ -6,5 +6,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public override void ProcessWanderingState() { }
 
         public override void ProcessFollowingState() { }
+       
     }
 }

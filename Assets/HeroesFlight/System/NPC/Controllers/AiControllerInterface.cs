@@ -10,8 +10,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
         event Action OnDisabled;
         AiAgentModel AgentModel { get; }
         Transform CurrentTarget { get; }
+        
+        Vector2 GetVelocity();
 
         void SetAttackState(bool canAttack);
+        void ProcessKnockBack();
         void Init(Transform player);
         void Enable();
         void Disable();

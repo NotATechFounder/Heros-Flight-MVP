@@ -6,8 +6,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         void OnTriggerEnter2D(Collider2D col)
         {
-            Debug.Log("Attacking player");
-            InitAttack();
+            if (col.gameObject.CompareTag("Player"))
+                InitAttack();
         }
     }
 }

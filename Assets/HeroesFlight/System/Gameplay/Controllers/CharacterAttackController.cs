@@ -10,7 +10,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class CharacterAttackController : MonoBehaviour, IAttackControllerInterface
     {
         [SerializeField] LayerMask m_TargetMask;
-        [SerializeField] Collider2D[] m_FoundedColliders;
+        Collider2D[] m_FoundedColliders;
         CharacterControllerInterface controller;
         CharacterAnimationControllerInterface m_CharacterAnimationController;
 
@@ -19,7 +19,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         CombatModel combatModel;
         IHealthController currentTarget;
 
-        float m_TimeSinceLastAttack = 0;
+        [SerializeField] float m_TimeSinceLastAttack = 0;
 
         public int Damage => controller.Data.CombatModel.Damage;
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
@@ -37,6 +37,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void Update()
         {
+            m_TimeSinceLastAttack += Time.deltaTime;
             ProcessCurrentState();
         }
 
@@ -63,38 +64,36 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void ProcessLookingState()
         {
-            
-                var foundedTargetsCount =
-                    Physics2D.OverlapCircleNonAlloc(transform.position, combatModel.AttackRange,
-                        m_FoundedColliders,
-                        m_TargetMask);
-                if (foundedTargetsCount > 0)
+            var foundedTargetsCount =
+                Physics2D.OverlapCircleNonAlloc(transform.position, combatModel.AttackRange,
+                    m_FoundedColliders,
+                    m_TargetMask);
+            if (foundedTargetsCount > 0)
+            {
+                var foundedValidTargets = new List<IHealthController>();
+                foreach (var collider in m_FoundedColliders)
                 {
-                    var foundedValidTargets = new List<IHealthController>();
-                    foreach (var collider in m_FoundedColliders)
-                    {
-                        if (collider == null)
-                            continue;
+                    if (collider == null)
+                        continue;
 
-                        if (collider.TryGetComponent<IHealthController>(out var healthController))
-                        {
-                            if(!healthController.IsDead())
-                                foundedValidTargets.Add(healthController);
-                        }
-                    }
-
-                    if (foundedValidTargets.Count > 0)
+                    if (collider.TryGetComponent<IHealthController>(out var healthController))
                     {
-                        currentTarget = foundedValidTargets[0];
-                        ChangeState(AttackControllerState.Attacking);
+                        if (!healthController.IsDead())
+                            foundedValidTargets.Add(healthController);
                     }
                 }
-                else
+
+                if (foundedValidTargets.Count > 0)
                 {
-                    currentTarget = null;
-                    ChangeState(AttackControllerState.LookingForTarget);
+                    currentTarget = foundedValidTargets[0];
+                    ChangeState(AttackControllerState.Attacking);
                 }
-            
+            }
+            else
+            {
+                currentTarget = null;
+                ChangeState(AttackControllerState.LookingForTarget);
+            }
         }
 
         void ProcessAttackingState()
@@ -106,7 +105,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 ChangeState(AttackControllerState.LookingForTarget);
                 return;
             }
-            
+
+            if (m_TimeSinceLastAttack < combatModel.TimeBetweenAttacks)
+                return;
+
             var targetSize = m_FoundedColliders[0].bounds.extents;
             var distanceToTarget = Vector2.Distance(transform.position,
                 m_FoundedColliders[0].transform.position);
@@ -121,12 +123,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
 
 
-            if (m_TimeSinceLastAttack >= combatModel.TimeBetweenAttacks)
-            {
-                AttackTarget();
-            }
-
-            m_TimeSinceLastAttack += Time.deltaTime;
+            AttackTarget();
         }
 
         void ChangeState(AttackControllerState newState)

@@ -9,6 +9,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void Init(Transform player)
         {
+            rigidBody = GetComponent<Rigidbody2D>();
             currentTarget = player;
             mover = GetComponent<AiMoverInterface>();
         }
@@ -35,6 +36,17 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public override void Disable()
         {
            gameObject.SetActive(false);
+        }
+
+        public override void ProcessKnockBack()
+        {
+            var forceVector = currentTarget.position.x > transform.position.x ? Vector2.left : Vector2.right;
+            rigidBody.AddForce(forceVector *knockbackForce);
+        }
+
+        public override Vector2 GetVelocity()
+        {
+            return rigidBody.velocity.normalized;
         }
     }
 }
