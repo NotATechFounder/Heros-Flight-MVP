@@ -10,6 +10,7 @@ namespace UISystem
     public class PuzzleMenu : BaseMenu<PuzzleMenu>
     {
         public event Action OnPuzzleSolved;
+        public event Action OnPuzzleFailed;
 
         [SerializeField] private AdvanceButton closeButton;
 
@@ -30,7 +31,7 @@ namespace UISystem
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
             closeEffectBG.SetOnComplected(CloseMenu);
 
-
+            closeButton.onClick.AddListener(PuzzleFailed);
         }
 
         public override void OnOpened()
@@ -76,6 +77,12 @@ namespace UISystem
         private void PuzzleSolved()
         {
             OnPuzzleSolved?.Invoke();
+            Close();
+        }
+
+        private void PuzzleFailed()
+        {
+            OnPuzzleFailed?.Invoke();
             Close();
         }
     }
