@@ -1,47 +1,49 @@
 using Pelumi.Juicer;
-using UISystem;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class SummaryMenu : BaseMenu<SummaryMenu>
+namespace UISystem
 {
-    public event Action OnContinueButtonClicked;
-
-    [SerializeField] private AdvanceButton continueButton;
-
-    JuicerRuntime openEffectBG;
-    JuicerRuntime closeEffectBG;
-
-    public override void OnCreated()
+    public class SummaryMenu : BaseMenu<SummaryMenu>
     {
-        openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
+        public event Action OnContinueButtonClicked;
 
-        closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
-        closeEffectBG.SetOnComplected(CloseMenu);
+        [SerializeField] private AdvanceButton continueButton;
 
-        continueButton.onClick.AddListener(CloseButtonAction);
-    }
+        JuicerRuntime openEffectBG;
+        JuicerRuntime closeEffectBG;
 
-    public override void OnOpened()
-    {
-        openEffectBG.Start();
-    }
+        public override void OnCreated()
+        {
+            openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
 
-    public override void OnClosed()
-    {
-        closeEffectBG.Start();
-    }
+            closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
+            closeEffectBG.SetOnComplected(CloseMenu);
 
-    public override void ResetMenu()
-    {
+            continueButton.onClick.AddListener(CloseButtonAction);
+        }
 
-    }
+        public override void OnOpened()
+        {
+            openEffectBG.Start();
+        }
 
-    private void CloseButtonAction()
-    {
-        OnContinueButtonClicked?.Invoke();
-        Close();
+        public override void OnClosed()
+        {
+            closeEffectBG.Start();
+        }
+
+        public override void ResetMenu()
+        {
+
+        }
+
+        private void CloseButtonAction()
+        {
+            OnContinueButtonClicked?.Invoke();
+            Close();
+        }
     }
 }

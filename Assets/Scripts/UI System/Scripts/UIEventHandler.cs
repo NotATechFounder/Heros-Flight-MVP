@@ -8,6 +8,7 @@ public class UIEventHandler : MonoBehaviour
 {
     [SerializeField] private UIManager uIManager;
     [SerializeField] private ConfirmationUISO backToMenu;
+    [SerializeField] private ConfirmationUISO puzzleConfirmation;
 
     private MainMenu mainMenu = null;
     private SettingsMenu settingsMenu = null;
@@ -18,6 +19,7 @@ public class UIEventHandler : MonoBehaviour
     private CountDownTimer startTimer;
     private ReviveMenu reviveMenu = null;
     private SummaryMenu summaryMenu = null;
+    private PuzzleMenu puzzleMenu = null;
 
     private void Awake()
     {
@@ -39,6 +41,11 @@ public class UIEventHandler : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             summaryMenu.Open();
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            OpenPuzzleConfirmation();
         }
     }
 
@@ -104,6 +111,8 @@ public class UIEventHandler : MonoBehaviour
 
         };
 
+        puzzleMenu = uIManager.InitMenu<PuzzleMenu>();
+
         startTimer = new CountDownTimer(this);
     }
 
@@ -141,5 +150,10 @@ public class UIEventHandler : MonoBehaviour
         gameMenu.Close();
         pauseMenu.Close();
         mainMenu.Open();
+    }
+
+    public void OpenPuzzleConfirmation()
+    {
+        confirmationMenu.Display(puzzleConfirmation, puzzleMenu.Open, null);
     }
 }
