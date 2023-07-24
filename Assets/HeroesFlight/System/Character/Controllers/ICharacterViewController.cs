@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using HeroesFlight.Common;
 using HeroesFlight.System.Character.Enum;
 
 namespace HeroesFlight.System.Character
 {
     public interface ICharacterViewController
     {
-        void SetupView(Dictionary<ItemVisualType,string> viewParts);
+        void SetupView(AppearanceData data);
         void Equip(string itemSkin, ItemVisualType itemType);
     }
 }
