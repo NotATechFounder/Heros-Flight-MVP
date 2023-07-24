@@ -2,7 +2,9 @@ namespace HeroesFlightProject.System.NPC.Enum
 {
     public enum EnemyType
     {
+        Bat,
+        Mushroom,
         Slime,
-        Bat
+        Tree
     }
 }
