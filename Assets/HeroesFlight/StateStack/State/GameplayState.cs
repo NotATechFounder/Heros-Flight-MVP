@@ -1,5 +1,7 @@
 ﻿using System;
 using HeroesFlight.Core.StateStack.Enum;
+using HeroesFlight.System.Gameplay;
+using HeroesFlight.System.NPC;
 using HeroesFlight.System.UI;
 using JetBrains.Annotations;
 using StansAssets.Foundation.Async;
@@ -25,12 +27,38 @@ namespace HeroesFlight.StateStack.State
             {
                 case StackAction.Added:
                     Debug.Log(ApplicationState);
+
                     progressReporter.SetDone();
+                    var uiSystem = GetService<IUISystem>();
+                    var gamePlaySystem = GetService<GamePlaySystemInterface>();
+                    var npcSystem = GetService<NpcSystemInterface>();
                     var gameScene = $"{SceneType.GameScene}";
+                   
+                    void HandleReturnToMainMenu()
+                    {
+                        uiSystem.UiEventHandler.PauseMenu.OnQuitButtonClicked -= HandleReturnToMainMenu;
+                        m_SceneActionsQueue.AddAction(SceneActionType.Unload, gameScene);
+                        m_SceneActionsQueue.Start(null, () =>
+                        {
+                            uiSystem.UiEventHandler.MainMenu.Open();
+                            uiSystem.UiEventHandler.GameMenu.Close();
+                            AppStateStack.State.Set(ApplicationState.MainMenu);
+                        });
+                        
+                    }
+                    uiSystem.UiEventHandler.PauseMenu.OnQuitButtonClicked += HandleReturnToMainMenu;
+                    
+                    
+                    
+                    
                     m_SceneActionsQueue.AddAction(SceneActionType.Load, gameScene);
                     m_SceneActionsQueue.Start(null, () =>
                     {
-
+                        var loadedScene = m_SceneActionsQueue.GetLoadedScene(gameScene);
+                        npcSystem.Init(loadedScene);
+                        gamePlaySystem.Init(loadedScene);
+                        uiSystem.UiEventHandler.MainMenu.Close();
+                        uiSystem.UiEventHandler.GameMenu.Open();
                     });
 
                     break;

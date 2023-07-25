@@ -3,6 +3,7 @@
     public enum ApplicationState
     {
         Initialization,
+        UiInitialization,
         MainMenu,
         Gameplay
     }

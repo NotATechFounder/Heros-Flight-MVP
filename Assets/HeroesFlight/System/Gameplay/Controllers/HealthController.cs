@@ -12,7 +12,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public Transform currentTransform => transform;
         public CombatTargetType TargetType => targetType;
         public int CurrentHealth => currentHealh;
-        public event Action<int> OnBeingDamaged;
+        public event Action<Transform,int> OnBeingDamaged;
         public event Action<IHealthController> OnDeath;
 
         void Awake()
@@ -28,7 +28,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public virtual void DealDamage(int damage)
         {
             Debug.Log($"received {damage}");
-            OnBeingDamaged?.Invoke(damage);
+            OnBeingDamaged?.Invoke(this.transform,damage);
             currentHealh -= damage;
             if (IsDead())
                 ProcessDeath();

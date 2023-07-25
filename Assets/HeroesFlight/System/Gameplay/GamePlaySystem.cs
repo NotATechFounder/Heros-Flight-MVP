@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.NPC;
-using HeroesFlight.System.UI;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using StansAssets.Foundation.Extensions;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace HeroesFlight.System.Gameplay
 {
     public class GamePlaySystem : GamePlaySystemInterface
     {
-        public GamePlaySystem(IUISystem uiSystem,CharacterSystemInterface characterSystem,NpcSystemInterface npcSystem)
+        public GamePlaySystem(CharacterSystemInterface characterSystem,NpcSystemInterface npcSystem)
         {
-            this.uiSystem = uiSystem;
             this.npcSystem = npcSystem;
             this.characterSystem = characterSystem;
             npcSystem.OnEnemySpawned += HandleEnemySpawned;
@@ -28,15 +27,21 @@ namespace HeroesFlight.System.Gameplay
 
         NpcSystemInterface npcSystem;
 
-        IUISystem uiSystem;
+      
 
+        public event Action OnPlayerDeath;
+        public event Action OnPlayerWin;
+        public event Action<Transform, int> OnEnemyDamaged;
+        public event Action<int> OnCharacterHealthChanged;
         int enemiesToKill;
+
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
             enemiesToKill = 50;
             characterHealthController = scene.GetComponent<CharacterHealthController>();
             characterHealthController.OnDeath += HandleCharacterDeath;
+            characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
             characterHealthController.Init();
             StartGameLoop();
             
@@ -67,14 +72,23 @@ namespace HeroesFlight.System.Gameplay
             iHealthController.OnDeath += HandleEnemyDeath;
             enemyHealthControllers.Remove(iHealthController);
             enemiesToKill--;
+            if (enemiesToKill <= 0)
+            {
+                OnPlayerWin?.Invoke();
+            }
+        }
+
+        void HandleCharacterDamaged(Transform arg1, int arg2)
+        {
+          Debug.Log(characterHealthController.CurrentHealth);
         }
 
         void HandleCharacterDeath(IHealthController obj)
         {
-            throw new NotImplementedException();
+            OnPlayerDeath?.Invoke();
         }
 
-        void HandleEnemyDamaged(int obj)
+        void HandleEnemyDamaged(Transform transform, int i)
         {
             //show dmg text
         }

@@ -16,10 +16,7 @@ namespace HeroesFlight.System.NPC
             container.Init();
         }
 
-        public void Reset()
-        {
-            throw new NotImplementedException();
-        }
+        public void Reset() { }
 
         public event Action<AiControllerBase> OnEnemySpawned;
       

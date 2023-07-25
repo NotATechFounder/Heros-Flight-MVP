@@ -1,18 +1,18 @@
-﻿using System;
+using System;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.UI;
 using JetBrains.Annotations;
-using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Patterns;
 using StansAssets.SceneManagement;
 using UnityEngine;
 
+
 namespace HeroesFlight.StateStack.State
 {
     [UsedImplicitly]
-    public class ApplicationInitState : BaseApplicationLoadSceneState, IAppState
+    public class UiInitState : BaseApplicationLoadSceneState, IAppState
     {
-        public ApplicationState ApplicationState => ApplicationState.Initialization;
+        public ApplicationState ApplicationState => ApplicationState.UiInitialization;
 
         public void Init(ServiceLocator serviceLocator)
         {
@@ -30,15 +30,9 @@ namespace HeroesFlight.StateStack.State
                     m_SceneActionsQueue.AddAction(SceneActionType.Load, uiScene);
                     m_SceneActionsQueue.Start(null, () =>
                     {
-                        var loadedScene = m_SceneActionsQueue.GetLoadedScene(uiScene);
-                        CoroutineUtility.WaitForEndOfFrame(() =>
-                        {
-                            GetService<IUISystem>().Init(loadedScene, () =>
-                            {
-                                AppStateStack.State.Set(ApplicationState.MainMenu);
-                            });
-                        });
-                       
+                        IUISystem uiSystem = GetService<IUISystem>();
+                        uiSystem.Init(m_SceneActionsQueue.GetLoadedScene(uiScene));
+                        AppStateStack.State.Set(ApplicationState.MainMenu);
                     });
                     break;
                 case StackAction.Paused:
