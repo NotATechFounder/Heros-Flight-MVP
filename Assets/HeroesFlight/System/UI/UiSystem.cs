@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using HeroesFlight.System.UI.Controllers;
-using HeroesFlight.System.UI.Enum;
+using Codice.Client.BaseCommands;
 using StansAssets.Foundation.Extensions;
+using UISystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,84 +10,117 @@ namespace HeroesFlight.System.UI
 {
     public class UiSystem : IUISystem
     {
-        public UiSystem()
+        public UIEventHandler UiEventHandler { get; private set; }
+        public CountDownTimer GameTimer { get; private set; }
+
+        public const string MainMenuMusicID = "MainMenu";
+        public const string GameMusicID = "ForestStart";
+        public const string GameMusicLoopID = "ForestLoop";
+
+        public void Init(Scene scene = default, Action onComplete = null)
         {
-            m_UiStateChangeHandlers.Add(UiSystemState.MainMenu, () =>
+            UiEventHandler = scene.GetComponent<UIEventHandler>();
+
+            GameTimer = new CountDownTimer(UiEventHandler);
+
+            UiEventHandler.Init(onComplete);
+
+            UiEventHandler.MainMenu.OnMenuOpened += () =>
             {
-                m_HudController.Hide();
-                m_MainMenuController.Show();
-                m_LoaderController.Hide();
-            });
-            m_UiStateChangeHandlers.Add(UiSystemState.Gameplay, () =>
+                AudioManager.PlayMusic(MainMenuMusicID);
+            };
+
+            UiEventHandler.MainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
+            UiEventHandler.MainMenu.OnSettingsButtonPressed += () =>
             {
-                m_MainMenuController.Hide();
-                m_HudController.Show();
-                m_LoaderController.Hide();
-            });
-        }
+                UiEventHandler.SettingsMenu.Open();
+            };
 
-        public event Action OnStartGameSessionRequest;
-        public event Action OnReturnToMainMenuRequest;
-        Dictionary<UiSystemState, Action> m_UiStateChangeHandlers = new();
-        IMainMenuController m_MainMenuController;
-        IHudController m_HudController;
-        IUiLoaderController m_LoaderController;
+            UiEventHandler.SettingsMenu.OnBackButtonPressed += () =>
+            {
+                UiEventHandler.SettingsMenu.Close();
+            };
 
-        UiSystemState m_CurrentState;
+            UiEventHandler.GameMenu.OnMenuOpened += () =>
+            {
+                 AudioManager.BlendTwoMusic(GameMusicID, GameMusicLoopID);
+            };
 
-        public void Init(Scene scene = default, Action OnComplete = null)
-        {
-            m_MainMenuController = scene.GetComponent<IMainMenuController>();
-            m_HudController = scene.GetComponent<IHudController>();
-            m_LoaderController = scene.GetComponent<IUiLoaderController>();
-            m_LoaderController.Init();
-            m_MainMenuController.Init();
-            m_HudController.Init();
+            UiEventHandler.GameMenu.OnPauseButtonClicked += () =>
+            {
+                UiEventHandler.PauseMenu.Open();
+            };
 
-            m_MainMenuController.OnGameSessionStartRequest += HandleGameSessionStartRequest;
-            m_HudController.OnReturnToMainMenuRequest += HandleReturnToMainMenuRequest;
-            m_CurrentState = UiSystemState.Loading;
-            OnComplete.Invoke();
+            UiEventHandler.PauseMenu.OnSettingsButtonClicked += () =>
+            {
+                UiEventHandler.SettingsMenu.Open();
+            };
+
+            UiEventHandler.PauseMenu.OnResumeButtonClicked += () =>
+            {
+                UiEventHandler.PauseMenu.Close();
+            };
+
+            UiEventHandler.PauseMenu.OnQuitButtonClicked += () =>
+            {
+                UiEventHandler.ConfirmationMenu.Display(UiEventHandler.BackToMenuConfirmation, ReturnToMainMenu, null);
+            };
+
+
+            UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
+            {
+                return true;
+            };
+
+            UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
+            {
+                return true;
+            };
+
+            UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
+            {
+
+            };
         }
 
         public void Reset()
         {
-            throw new NotImplementedException();
+
         }
 
-        public void SetLoaderState(bool isEnabled)
+        private void OnPlayButtonPressed()
         {
-            if (isEnabled)
+            UiEventHandler.MainMenu.Close();
+            UiEventHandler.GameMenu.Open();
+
+            GameTimer.Start(3, (time) =>
             {
-                m_LoaderController.Show();
-            }
-            else
+                UiEventHandler.GameMenu.UpdateTimerText(time);
+            },
+            () =>
             {
-                m_LoaderController.Hide();
-            }
+                GameTimer.Start(200, (time) =>
+                {
+                    UiEventHandler.GameMenu.UpdateTimerText(time);
+                },
+              () =>
+              {
+                  Debug.Log("Game Time Lapse");
+              });
+            });
+
         }
 
-        public void SetUiState(UiSystemState newState)
+        public void ReturnToMainMenu()
         {
-            if (newState.Equals(m_CurrentState))
-                return;
-
-            m_CurrentState = newState;
-            if (m_UiStateChangeHandlers.TryGetValue(newState, out var handle))
-            {
-                handle.Invoke();
-            }
+            UiEventHandler.GameMenu.Close();
+            UiEventHandler.PauseMenu.Close();
+            UiEventHandler.MainMenu.Open();
         }
 
-        void HandleReturnToMainMenuRequest()
+        public void OpenPuzzleConfirmation()
         {
-            Debug.Log("Return to main menu request");
-            OnReturnToMainMenuRequest?.Invoke();
-        }
-
-        void HandleGameSessionStartRequest()
-        {
-            OnStartGameSessionRequest?.Invoke();
+            UiEventHandler.ConfirmationMenu.Display(UiEventHandler.PuzzleConfirmation, UiEventHandler.PuzzleMenu.Open, null);
         }
     }
 }
