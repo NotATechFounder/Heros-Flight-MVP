@@ -2,6 +2,6 @@
 {
     public interface GamePlaySystemInterface : ISystemInterface
     {
-        
+        void StartGameLoop();
     }
 }

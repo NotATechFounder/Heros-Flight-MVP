@@ -7,12 +7,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class HealthController : MonoBehaviour, IHealthController
     {
         [SerializeField] CombatTargetType targetType;
+        protected int maxHealth;
+        protected int currentHealh;
+        public Transform currentTransform => transform;
         public CombatTargetType TargetType => targetType;
         public int CurrentHealth => currentHealh;
-        protected int maxHealth;
-         [SerializeField]  protected int currentHealh;
         public event Action<int> OnBeingDamaged;
-        public event Action OnDeath;
+        public event Action<IHealthController> OnDeath;
 
         void Awake()
         {
@@ -40,7 +41,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected virtual void ProcessDeath()
         {
-            OnDeath?.Invoke();
+            OnDeath?.Invoke(this);
         }
     }
 }

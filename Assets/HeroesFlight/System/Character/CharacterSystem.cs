@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace HeroesFlight.System.Character
 {
-    public class CharacterSystem : ICharacterSystem
+    public class CharacterSystem : CharacterSystemInterface
     {
 
         public CharacterSystem(IInputSystem inputSystem)

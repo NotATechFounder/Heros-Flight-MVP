@@ -4,14 +4,14 @@ using HeroesFlight.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
+
 
 namespace HeroesFlight.System.NPC.Container
 {
     public class NpcContainer : MonoBehaviour
     {
         [SerializeField] AiControllerBase[] aiPrefabs;
-        [SerializeField] int spawnAmount = 10;
+        int spawnAmount = 10;
         GameObject player;
         
         Dictionary<EnemySpawmType, List<ISpawnPointInterface>> spanwPointsCache = new();
@@ -25,11 +25,12 @@ namespace HeroesFlight.System.NPC.Container
         {
             GenerateCache();
             player = GameObject.FindWithTag("Player");
-            SpawnEnemies();
+           
         }
 
-        void SpawnEnemies()
+        public void SpawnEnemies(int amount)
         {
+            spawnAmount = amount;
             for (var i = 0; i <= spawnAmount; i++)
             {
                 var rng = Random.Range(0, aiPrefabs.Length);
