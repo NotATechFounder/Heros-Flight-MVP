@@ -1,7 +1,6 @@
 ﻿using System;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.UI;
-using HeroesFlight.System.UI.Enum;
 using JetBrains.Annotations;
 using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Patterns;
@@ -31,26 +30,7 @@ namespace HeroesFlight.StateStack.State
                     m_SceneActionsQueue.AddAction(SceneActionType.Load, gameScene);
                     m_SceneActionsQueue.Start(null, () =>
                     {
-                        var uiSystem = GetService<IUISystem>();
-                        uiSystem.SetUiState(UiSystemState.Gameplay);
 
-                        void ReturnTomMinMenu()
-                        {
-                            Debug.Log("Return to main menu request");
-                            uiSystem.OnReturnToMainMenuRequest -= ReturnTomMinMenu;
-                            uiSystem.SetLoaderState(true);
-                            var sceneToRemove = $"{SceneType.GameScene}";
-                            m_SceneActionsQueue.AddAction(SceneActionType.Unload, sceneToRemove);
-                            m_SceneActionsQueue.Start(null, () =>
-                            {
-                                CoroutineUtility.WaitForSeconds(3f, () =>
-                                {
-                                    AppStateStack.State.Set(ApplicationState.MainMenu);
-                                });
-                            });
-                        }
-
-                        uiSystem.OnReturnToMainMenuRequest += ReturnTomMinMenu;
                     });
 
                     break;

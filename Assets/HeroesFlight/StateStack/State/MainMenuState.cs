@@ -1,7 +1,6 @@
 ﻿using System;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.UI;
-using HeroesFlight.System.UI.Enum;
 using JetBrains.Annotations;
 using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Patterns;
@@ -25,23 +24,7 @@ namespace HeroesFlight.StateStack.State
             switch (evt.Action)
             {
                 case StackAction.Added:
-                    progressReporter.SetDone();
-                    Debug.Log(ApplicationState);
-                    var uiSystem = GetService<IUISystem>();
-                    uiSystem.SetUiState(UiSystemState.MainMenu);
-
-                    void StartGameSession()
-                    {
-                        uiSystem.OnStartGameSessionRequest -= StartGameSession;
-                        uiSystem.SetLoaderState(true);
-                        CoroutineUtility.WaitForSeconds(3f, () =>
-                        {
-                            AppStateStack.State.Set(ApplicationState.Gameplay);
-                        });
-                    }
-
-                    uiSystem.OnStartGameSessionRequest += StartGameSession;
-
+                   
                     break;
                 case StackAction.Paused:
                     break;
