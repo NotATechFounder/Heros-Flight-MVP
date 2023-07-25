@@ -1,10 +1,8 @@
 using Pelumi.Juicer;
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 namespace UISystem
 {
@@ -27,12 +25,12 @@ namespace UISystem
         JuicerRuntime closeEffectBG;
         JuicerRuntime countDownTextEffect;
         private float currentTime;
-        Coroutine countDownRoutine;
+
+        private CountDownTimer startTimer;
 
         public override void OnCreated()
         {
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
-            openEffectBG.SetOnComplected(() => countDownRoutine = StartCoroutine(CountDownRoutine()));
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
             closeEffectBG.SetOnComplected(CloseMenu);
@@ -57,6 +55,8 @@ namespace UISystem
                     CloseButtonAction();
                 }
             });
+
+            startTimer = new CountDownTimer(this);
         }
 
         public override void OnOpened()
@@ -65,6 +65,7 @@ namespace UISystem
             countDownText.text = countDownTime.ToString("0");
             canvasGroup.alpha = 0;
             openEffectBG.Start();
+            openEffectBG.SetOnComplected(StartTimer);
         }
 
         public override void OnClosed()
@@ -77,10 +78,28 @@ namespace UISystem
 
         }
 
+        public void StartTimer()
+        {
+            startTimer.Start(countDownTime, (current) =>
+            {
+                if ((int)current != (int)startTimer.GetLastTime)
+                {
+                    countDownTextEffect.Start();
+                    countDownText.text = Mathf.CeilToInt(current).ToString();
+                }
+
+                countDownImage.fillAmount = startTimer.GetNormalizedTime;
+
+            }, () =>
+            {
+                CountDownCompleteAction();
+            });
+        }
+
         private void CloseButtonAction()
         {
             OnCloseButtonClicked?.Invoke();
-            StopCoroutine(countDownRoutine);
+            startTimer.Stop();
             Close();
         }
 
@@ -88,29 +107,6 @@ namespace UISystem
         {
             OnCountDownCompleted?.Invoke();
             Close();
-        }
-
-        IEnumerator CountDownRoutine ()
-        {
-            currentTime = countDownTime;
-
-            while (currentTime > 0)
-            {
-                float previousTime = currentTime;
-
-                currentTime -= Time.deltaTime;
-
-                if ((int)currentTime != (int)previousTime)
-                {
-                    countDownTextEffect.Start();
-                    countDownText.text = currentTime.ToString("0");
-                }
-
-                countDownImage.fillAmount = currentTime / countDownTime;
-
-                yield return null;
-            }
-            CountDownCompleteAction();
         }
     }
 }
