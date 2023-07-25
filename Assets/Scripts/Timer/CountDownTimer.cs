@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CountDownTimer 
@@ -11,6 +12,7 @@ public class CountDownTimer
     private Action<float> onTimeTick = null;
     private Action onTimeLapse = null;
     private float maxTime = 0;
+    private float lastTime = 0;
 
     public CountDownTimer(MonoBehaviour monoBehaviour)
     {
@@ -35,6 +37,7 @@ public class CountDownTimer
         {
             if(!paused)
             {
+                lastTime = currentTime;
                 currentTime -= Time.deltaTime;
                 onTimeTick?.Invoke(currentTime);
 
@@ -53,7 +56,14 @@ public class CountDownTimer
 
     public void Resume() => paused = false;
 
-    public float GetCurrentTime() => currentTime;
+    public float GetCurrentTime => currentTime;
+
+    public float GetMaxTime => maxTime;
+
+    public float GetNormalizedTime => currentTime / maxTime;
+
+    public float GetLastTime => lastTime;
+
     public void Stop()
     {
         owner.StopCoroutine(timerRoutine);

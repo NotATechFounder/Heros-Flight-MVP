@@ -16,10 +16,11 @@ public class UIEventHandler : MonoBehaviour
     private GameMenu gameMenu = null;
     private PauseMenu pauseMenu = null;
     private ConfirmationMenu confirmationMenu = null;
-    private CountDownTimer startTimer;
     private ReviveMenu reviveMenu = null;
     private SummaryMenu summaryMenu = null;
     private PuzzleMenu puzzleMenu = null;
+
+    private CountDownTimer startTimer;
 
     private void Awake()
     {
