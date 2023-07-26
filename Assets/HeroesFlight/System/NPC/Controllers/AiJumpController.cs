@@ -1,3 +1,4 @@
+using HeroesFlight.System.NPC.Controllers;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.NPC.Controllers
@@ -9,9 +10,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void Init(Transform player)
         {
-            rigidBody = GetComponent<Rigidbody2D>();
-            currentTarget = player;
             mover = GetComponent<AiMoverInterface>();
+            rigidBody = GetComponent<Rigidbody2D>();
+            rigidBody.isKinematic = true;
+            viewController = GetComponent<AiViewController>();
+            viewController.Init();
+            currentTarget = player;
+            OnInit();
+            viewController.StartFadeIn(2f,Enable);
         }
 
 
@@ -30,6 +36,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void Enable()
         {
+            rigidBody.isKinematic = false;
             gameObject.SetActive(true);
         }
 

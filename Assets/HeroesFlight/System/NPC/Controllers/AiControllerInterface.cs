@@ -1,11 +1,13 @@
 using System;
 using HeroesFlightProject.System.NPC.Data;
+using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.NPC.Controllers
 {
     public interface AiControllerInterface
     {
+        EnemyType EnemyType { get; }
         event Action OnInitialized;
         event Action OnDisabled;
         AiAgentModel AgentModel { get; }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using Codice.Client.BaseCommands;
+using HeroesFlight.System.Gameplay;
 using StansAssets.Foundation.Extensions;
-using UISystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,12 +8,30 @@ namespace HeroesFlight.System.UI
 {
     public class UiSystem : IUISystem
     {
+        public UiSystem(GamePlaySystemInterface gamePlaySystem)
+        {
+            gameplaySystem = gamePlaySystem;
+            gameplaySystem.OnPlayerWin += HandlePlayerWin;
+            gameplaySystem.OnEnemyDamaged += HandleEnemyDamaged;
+            gameplaySystem.OnPlayerDeath += HandlePlayerDeath;
+            gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
+            gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
+            gameplaySystem.OnCharacterDamaged += HandleCharacterDamaged;
+        }
+
+        public event Action OnReturnToMainMenuRequest;
+
         public UIEventHandler UiEventHandler { get; private set; }
+
         public CountDownTimer GameTimer { get; private set; }
 
         public const string MainMenuMusicID = "MainMenu";
+
         public const string GameMusicID = "ForestStart";
+
         public const string GameMusicLoopID = "ForestLoop";
+
+        GamePlaySystemInterface gameplaySystem;
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
@@ -23,69 +39,83 @@ namespace HeroesFlight.System.UI
 
             GameTimer = new CountDownTimer(UiEventHandler);
 
-            UiEventHandler.Init(onComplete);
-
-            UiEventHandler.MainMenu.OnMenuOpened += () =>
+            UiEventHandler.Init(() =>
             {
-                AudioManager.PlayMusic(MainMenuMusicID);
-            };
+                UiEventHandler.MainMenu.OnMenuOpened += () =>
+                {
+                    AudioManager.PlayMusic(MainMenuMusicID);
+                };
 
-            UiEventHandler.MainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
-            UiEventHandler.MainMenu.OnSettingsButtonPressed += () =>
-            {
-                UiEventHandler.SettingsMenu.Open();
-            };
+                UiEventHandler.MainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
+                UiEventHandler.MainMenu.OnSettingsButtonPressed += () =>
+                {
+                    UiEventHandler.SettingsMenu.Open();
+                };
 
-            UiEventHandler.SettingsMenu.OnBackButtonPressed += () =>
-            {
-                UiEventHandler.SettingsMenu.Close();
-            };
+                UiEventHandler.SettingsMenu.OnBackButtonPressed += () =>
+                {
+                    UiEventHandler.SettingsMenu.Close();
+                };
 
-            UiEventHandler.GameMenu.OnMenuOpened += () =>
-            {
-                 AudioManager.BlendTwoMusic(GameMusicID, GameMusicLoopID);
-            };
+                UiEventHandler.GameMenu.OnMenuOpened += () =>
+                {
+                    AudioManager.BlendTwoMusic(GameMusicID, GameMusicLoopID);
+                };
 
-            UiEventHandler.GameMenu.OnPauseButtonClicked += () =>
-            {
-                UiEventHandler.PauseMenu.Open();
-            };
+                UiEventHandler.GameMenu.OnPauseButtonClicked += () =>
+                {
+                    UiEventHandler.PauseMenu.Open();
+                };
 
-            UiEventHandler.PauseMenu.OnSettingsButtonClicked += () =>
-            {
-                UiEventHandler.SettingsMenu.Open();
-            };
+                UiEventHandler.PauseMenu.OnSettingsButtonClicked += () =>
+                {
+                    UiEventHandler.SettingsMenu.Open();
+                };
 
-            UiEventHandler.PauseMenu.OnResumeButtonClicked += () =>
-            {
-                UiEventHandler.PauseMenu.Close();
-            };
+                UiEventHandler.PauseMenu.OnResumeButtonClicked += () =>
+                {
+                    UiEventHandler.PauseMenu.Close();
+                };
 
-            UiEventHandler.PauseMenu.OnQuitButtonClicked += () =>
-            {
-                UiEventHandler.ConfirmationMenu.Display(UiEventHandler.BackToMenuConfirmation, ReturnToMainMenu, null);
-            };
+                UiEventHandler.PauseMenu.OnQuitButtonClicked += () =>
+                {
+                    UiEventHandler.ConfirmationMenu.Display(UiEventHandler.BackToMenuConfirmation, ReturnToMainMenu,
+                        ReturnToMainMenu);
+                };
 
 
-            UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
-            {
-                return true;
-            };
+                UiEventHandler.ReviveMenu.OnMenuClosed += () =>
+                {
+                    UiEventHandler.ReviveMenu.Close();
+                    UiEventHandler.SummaryMenu.Open();
+                };
+                
+                UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
+                {
+                    UiEventHandler.ReviveMenu.Close();
+                    UiEventHandler.SummaryMenu.Open();
+                    return true;
+                };
 
-            UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
-            {
-                return true;
-            };
+                UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
+                {
+                    UiEventHandler.ReviveMenu.Close();
+                    UiEventHandler.SummaryMenu.Open();
+                    return true;
+                };
 
-            UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
-            {
+                UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
+                {
+                    OnReturnToMainMenuRequest?.Invoke();
+                    UiEventHandler.SummaryMenu.Close();
+                };
 
-            };
+                onComplete?.Invoke();
+            });
         }
 
         public void Reset()
         {
-
         }
 
         private void OnPlayButtonPressed()
@@ -94,33 +124,65 @@ namespace HeroesFlight.System.UI
             UiEventHandler.GameMenu.Open();
 
             GameTimer.Start(3, (time) =>
-            {
-                UiEventHandler.GameMenu.UpdateTimerText(time);
-            },
-            () =>
-            {
-                GameTimer.Start(200, (time) =>
                 {
                     UiEventHandler.GameMenu.UpdateTimerText(time);
                 },
-              () =>
-              {
-                  Debug.Log("Game Time Lapse");
-              });
-            });
-
+                () =>
+                {
+                    GameTimer.Start(200, (time) =>
+                        {
+                            UiEventHandler.GameMenu.UpdateTimerText(time);
+                        },
+                        () =>
+                        {
+                            Debug.Log("Game Time Lapse");
+                        });
+                });
         }
 
         public void ReturnToMainMenu()
         {
+            OnReturnToMainMenuRequest?.Invoke();
             UiEventHandler.GameMenu.Close();
             UiEventHandler.PauseMenu.Close();
-            UiEventHandler.MainMenu.Open();
+            UiEventHandler.ConfirmationMenu.Close();
         }
 
         public void OpenPuzzleConfirmation()
         {
-            UiEventHandler.ConfirmationMenu.Display(UiEventHandler.PuzzleConfirmation, UiEventHandler.PuzzleMenu.Open, null);
+            UiEventHandler.ConfirmationMenu.Display(UiEventHandler.PuzzleConfirmation, UiEventHandler.PuzzleMenu.Open,
+                null);
+        }
+
+        void HandleCharacterHealthChanged(int obj)
+        {
+        }
+
+        void HandlePlayerDeath()
+        {
+            UiEventHandler.SummaryMenu.Open();
+        }
+
+        void HandleEnemyDamaged(Transform transform, int damage)
+        {
+           UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one , damage.ToString(),
+                Color.red);
+        }
+
+        void HandlePlayerWin()
+        {
+            UiEventHandler.SummaryMenu.Open();
+        }
+
+        void UpdateEnemiesCounter(int enemiesLeft)
+        {
+            UiEventHandler.GameMenu.UpdateEnemyCountText(enemiesLeft);
+        }
+
+        void HandleCharacterDamaged(Transform transform, int damage)
+        {
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one , damage.ToString(),
+                Color.red);
         }
     }
 }
