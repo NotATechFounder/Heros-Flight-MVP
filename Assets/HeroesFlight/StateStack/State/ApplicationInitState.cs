@@ -2,6 +2,7 @@
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.UI;
 using JetBrains.Annotations;
+using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Patterns;
 using StansAssets.SceneManagement;
 using UnityEngine;
@@ -30,10 +31,14 @@ namespace HeroesFlight.StateStack.State
                     m_SceneActionsQueue.Start(null, () =>
                     {
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(uiScene);
-                        GetService<IUISystem>().Init(loadedScene, () =>
+                        CoroutineUtility.WaitForEndOfFrame(() =>
                         {
-                            AppStateStack.State.Set(ApplicationState.MainMenu);
+                            GetService<IUISystem>().Init(loadedScene, () =>
+                            {
+                                AppStateStack.State.Set(ApplicationState.MainMenu);
+                            });
                         });
+                       
                     });
                     break;
                 case StackAction.Paused:

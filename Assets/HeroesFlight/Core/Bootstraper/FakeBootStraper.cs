@@ -15,7 +15,8 @@ namespace HeroesFlight.Core.Bootstrapper
     {
         private void Start()
         {
-            IUISystem uiSystem = new UiSystem();
+            GamePlaySystemInterface gameplay = new GamePlaySystem(null,null);
+            IUISystem uiSystem = new UiSystem(gameplay);
             uiSystem.Init(SceneManager.GetActiveScene());
         }
     }

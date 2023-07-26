@@ -2,10 +2,11 @@
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Input;
+using HeroesFlight.System.NPC;
 using HeroesFlight.System.UI;
 using StansAssets.Foundation.Patterns;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
+
 
 namespace HeroesFlight.Core.Bootstrapper
 {
@@ -26,14 +27,16 @@ namespace HeroesFlight.Core.Bootstrapper
         {
             m_ServiceLocator = new ServiceLocator();
             IInputSystem inputSystem = new InputSystem();
-            ICharacterSystem characterSystem = new CharacterSystem(inputSystem);
-            IUISystem uiSystem = new UiSystem();
-            GamePlaySystemInterface gamePlaySystemInterface = new GamePlaySystem(uiSystem,characterSystem);
+            CharacterSystemInterface characterSystem = new CharacterSystem(inputSystem);
+            NpcSystemInterface npcSystem = new NpcSystem();
+            GamePlaySystemInterface gamePlaySystem = new GamePlaySystem(characterSystem,npcSystem);
+            IUISystem uiSystem = new UiSystem(gamePlaySystem);
 
             m_ServiceLocator.Register(uiSystem);
-            m_ServiceLocator.Register(gamePlaySystemInterface);
+            m_ServiceLocator.Register(gamePlaySystem);
             m_ServiceLocator.Register(inputSystem);
             m_ServiceLocator.Register(characterSystem);
+            m_ServiceLocator.Register(npcSystem);
             return m_ServiceLocator;
         }
     }

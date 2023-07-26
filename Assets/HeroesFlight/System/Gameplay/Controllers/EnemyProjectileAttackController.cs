@@ -9,6 +9,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected override void Update()
         {
+            if (target.IsDead())
+                return;
+            
             timeSinceLastAttack += Time.deltaTime;
             var distanceToPlayer = Vector2.Distance(transform.position, aiController.CurrentTarget.position);
             if(distanceToPlayer <=attackRange && timeSinceLastAttack >= timeBetweenAttacks)

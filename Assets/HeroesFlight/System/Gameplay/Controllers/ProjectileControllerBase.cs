@@ -39,7 +39,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void OnCollisionEnter2D(Collision2D col)
         {
-            Debug.Log(col.gameObject.name);
             if (col.gameObject.TryGetComponent<IHealthController>(out var healthController))
             {
                 healthController.DealDamage(damage);
