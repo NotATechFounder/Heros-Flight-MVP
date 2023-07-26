@@ -17,7 +17,6 @@ namespace HeroesFlight.Core.Bootstrapper
         {
             IUISystem uiSystem = new UiSystem();
             uiSystem.Init(SceneManager.GetActiveScene());
-            uiSystem.UiEventHandler.MainMenu.Open();
         }
     }
 }

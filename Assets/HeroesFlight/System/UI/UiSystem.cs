@@ -66,7 +66,6 @@ namespace HeroesFlight.System.UI
                 UiEventHandler.ConfirmationMenu.Display(UiEventHandler.BackToMenuConfirmation, ReturnToMainMenu, null);
             };
 
-
             UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
             {
                 return true;
@@ -81,6 +80,8 @@ namespace HeroesFlight.System.UI
             {
 
             };
+
+            UiEventHandler.MainMenu.Open();
         }
 
         public void Reset()
@@ -108,7 +109,6 @@ namespace HeroesFlight.System.UI
                   Debug.Log("Game Time Lapse");
               });
             });
-
         }
 
         public void ReturnToMainMenu()
