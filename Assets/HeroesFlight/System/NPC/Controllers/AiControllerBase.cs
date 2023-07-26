@@ -1,8 +1,8 @@
 using System;
+using HeroesFlight.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Data;
 using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
-
 namespace HeroesFlightProject.System.NPC.Controllers
 {
     public abstract class AiControllerBase : MonoBehaviour, AiControllerInterface
@@ -10,7 +10,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         [SerializeField] protected AiAgentModel m_Model;
         [SerializeField] protected float wanderDistance = 10f;
         [SerializeField] protected float knockbackForce = 10f;
-
+        protected AiViewController viewController;
 
         public event Action OnInitialized;
         public event Action OnDisabled;
@@ -28,10 +28,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public virtual void Init(Transform player)
         {
             rigidBody = GetComponent<Rigidbody2D>();
+            viewController = GetComponent<AiViewController>();
             currentTarget = player;
-            OnInitialized?.Invoke();
-            Enable();
-
+            viewController.Init();
+            OnInit();
+            viewController.StartFadeIn(3f,Enable);
         }
 
         void Update()
@@ -89,6 +90,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 <= m_Model.CombatModel.AttackRange;
         }
 
+        protected void OnInit()
+        {
+            OnInitialized?.Invoke();
+        }
       
     }
 }

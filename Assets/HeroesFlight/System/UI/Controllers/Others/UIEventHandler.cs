@@ -20,6 +20,7 @@ public class UIEventHandler : MonoBehaviour
     public ReviveMenu ReviveMenu { get; private set; }
     public SummaryMenu SummaryMenu { get; private set; }
     public PuzzleMenu PuzzleMenu { get; private set; }
+    public PopUpManager PopupManager { get; private set; }
     public ConfirmationUISO BackToMenuConfirmation => backToMenu;
     public ConfirmationUISO PuzzleConfirmation => puzzleConfirmation;
 
@@ -35,6 +36,7 @@ public class UIEventHandler : MonoBehaviour
         ReviveMenu = uIManager.InitMenu<ReviveMenu>();
         SummaryMenu = uIManager.InitMenu<SummaryMenu>();
         PuzzleMenu = uIManager.InitMenu<PuzzleMenu>();
+        PopupManager = PopUpManager.Instance;
         OnComplecte?.Invoke();
     }
 }

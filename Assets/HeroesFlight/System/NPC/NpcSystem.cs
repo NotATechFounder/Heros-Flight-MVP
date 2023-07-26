@@ -22,7 +22,7 @@ namespace HeroesFlight.System.NPC
       
         public void SpawnRandomEnemies(int amount)
         {
-            container.SpawnEnemies(amount);
+            container.SpawnEnemies(amount,OnEnemySpawned);
         }
     }
 }

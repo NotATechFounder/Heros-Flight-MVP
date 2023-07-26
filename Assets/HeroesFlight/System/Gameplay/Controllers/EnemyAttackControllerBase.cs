@@ -28,11 +28,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected virtual void Update()
         {
+            if (target.IsDead())
+            {
+                aiController.SetAttackState(false);
+                return;
+            }
+            
             timeSinceLastAttack += Time.deltaTime;
             if (timeSinceLastAttack >= timeBetweenAttacks)
             {
                 aiController.SetAttackState(true);
             }
+            
         }
 
         protected virtual void InitAttack()

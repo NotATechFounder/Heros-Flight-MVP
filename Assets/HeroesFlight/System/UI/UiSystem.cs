@@ -3,6 +3,7 @@ using HeroesFlight.System.Gameplay;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 namespace HeroesFlight.System.UI
 {
@@ -38,74 +39,72 @@ namespace HeroesFlight.System.UI
 
             UiEventHandler.Init(() =>
             {
-                 UiEventHandler.MainMenu.OnMenuOpened += () =>
-                            {
-                                AudioManager.PlayMusic(MainMenuMusicID);
-                            };
-                
-                            UiEventHandler.MainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
-                            UiEventHandler.MainMenu.OnSettingsButtonPressed += () =>
-                            {
-                                UiEventHandler.SettingsMenu.Open();
-                            };
-                
-                            UiEventHandler.SettingsMenu.OnBackButtonPressed += () =>
-                            {
-                                UiEventHandler.SettingsMenu.Close();
-                            };
-                
-                            UiEventHandler.GameMenu.OnMenuOpened += () =>
-                            {
-                                 AudioManager.BlendTwoMusic(GameMusicID, GameMusicLoopID);
-                            };
-                
-                            UiEventHandler.GameMenu.OnPauseButtonClicked += () =>
-                            {
-                                UiEventHandler.PauseMenu.Open();
-                            };
-                
-                            UiEventHandler.PauseMenu.OnSettingsButtonClicked += () =>
-                            {
-                                UiEventHandler.SettingsMenu.Open();
-                            };
-                
-                            UiEventHandler.PauseMenu.OnResumeButtonClicked += () =>
-                            {
-                                UiEventHandler.PauseMenu.Close();
-                            };
-                
-                            UiEventHandler.PauseMenu.OnQuitButtonClicked += () =>
-                            {
-                                UiEventHandler.ConfirmationMenu.Display(UiEventHandler.BackToMenuConfirmation, ReturnToMainMenu, null);
-                            };
-                
-                
-                            UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
-                            {
-                                OnReturnToMainMenuRequest?.Invoke();
-                                return true;
-                            };
-                
-                            UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
-                            {
-                                OnReturnToMainMenuRequest?.Invoke();
-                                return true;
-                            };
-                
-                            UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
-                            {
-                                OnReturnToMainMenuRequest?.Invoke();
-                            };
-                            
-                            onComplete?.Invoke();
-            });
+                UiEventHandler.MainMenu.OnMenuOpened += () =>
+                {
+                    AudioManager.PlayMusic(MainMenuMusicID);
+                };
 
-           
+                UiEventHandler.MainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
+                UiEventHandler.MainMenu.OnSettingsButtonPressed += () =>
+                {
+                    UiEventHandler.SettingsMenu.Open();
+                };
+
+                UiEventHandler.SettingsMenu.OnBackButtonPressed += () =>
+                {
+                    UiEventHandler.SettingsMenu.Close();
+                };
+
+                UiEventHandler.GameMenu.OnMenuOpened += () =>
+                {
+                    AudioManager.BlendTwoMusic(GameMusicID, GameMusicLoopID);
+                };
+
+                UiEventHandler.GameMenu.OnPauseButtonClicked += () =>
+                {
+                    UiEventHandler.PauseMenu.Open();
+                };
+
+                UiEventHandler.PauseMenu.OnSettingsButtonClicked += () =>
+                {
+                    UiEventHandler.SettingsMenu.Open();
+                };
+
+                UiEventHandler.PauseMenu.OnResumeButtonClicked += () =>
+                {
+                    UiEventHandler.PauseMenu.Close();
+                };
+
+                UiEventHandler.PauseMenu.OnQuitButtonClicked += () =>
+                {
+                    UiEventHandler.ConfirmationMenu.Display(UiEventHandler.BackToMenuConfirmation, ReturnToMainMenu,
+                        ReturnToMainMenu);
+                };
+
+
+                UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
+                {
+                    OnReturnToMainMenuRequest?.Invoke();
+                    return true;
+                };
+
+                UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
+                {
+                    OnReturnToMainMenuRequest?.Invoke();
+                    return true;
+                };
+
+                UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
+                {
+                    OnReturnToMainMenuRequest?.Invoke();
+                };
+
+                onComplete?.Invoke();
+            });
         }
 
         public void Reset()
         {
-
         }
 
         private void OnPlayButtonPressed()
@@ -114,21 +113,20 @@ namespace HeroesFlight.System.UI
             UiEventHandler.GameMenu.Open();
 
             GameTimer.Start(3, (time) =>
-            {
-                UiEventHandler.GameMenu.UpdateTimerText(time);
-            },
-            () =>
-            {
-                GameTimer.Start(200, (time) =>
                 {
                     UiEventHandler.GameMenu.UpdateTimerText(time);
                 },
-              () =>
-              {
-                  Debug.Log("Game Time Lapse");
-              });
-            });
-
+                () =>
+                {
+                    GameTimer.Start(200, (time) =>
+                        {
+                            UiEventHandler.GameMenu.UpdateTimerText(time);
+                        },
+                        () =>
+                        {
+                            Debug.Log("Game Time Lapse");
+                        });
+                });
         }
 
         public void ReturnToMainMenu()
@@ -136,27 +134,27 @@ namespace HeroesFlight.System.UI
             OnReturnToMainMenuRequest?.Invoke();
             UiEventHandler.GameMenu.Close();
             UiEventHandler.PauseMenu.Close();
-           // UiEventHandler.MainMenu.Open();
         }
 
         public void OpenPuzzleConfirmation()
         {
-            UiEventHandler.ConfirmationMenu.Display(UiEventHandler.PuzzleConfirmation, UiEventHandler.PuzzleMenu.Open, null);
+            UiEventHandler.ConfirmationMenu.Display(UiEventHandler.PuzzleConfirmation, UiEventHandler.PuzzleMenu.Open,
+                null);
         }
 
         void HandleCharacterHealthChanged(int obj)
         {
-           
         }
 
         void HandlePlayerDeath()
         {
-           UiEventHandler.ReviveMenu.Open();
+            UiEventHandler.SummaryMenu.Open();
         }
 
-        void HandleEnemyDamaged(Transform arg1, int arg2)
+        void HandleEnemyDamaged(Transform transform, int damage)
         {
-            throw new NotImplementedException();
+           UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one , damage.ToString(),
+                Color.red);
         }
 
         void HandlePlayerWin()

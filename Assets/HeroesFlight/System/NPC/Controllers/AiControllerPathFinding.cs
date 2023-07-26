@@ -18,6 +18,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             setter = GetComponent<AIDestinationSetter>();
             ai = GetComponent<IAstarAI>();
+            ai.canMove = false;
             ai.maxSpeed = m_Model.CombatModel.Speed;
             base.Init(player);
         }
@@ -93,9 +94,5 @@ namespace HeroesFlightProject.System.NPC.Controllers
             return Random.insideUnitCircle * wanderDistance;
         }
 
-        void OnCollisionEnter2D(Collision2D col)
-        {
-            Debug.Log(col.gameObject.name);
-        }
     }
 }

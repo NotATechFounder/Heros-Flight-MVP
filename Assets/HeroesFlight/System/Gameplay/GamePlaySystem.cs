@@ -38,13 +38,11 @@ namespace HeroesFlight.System.Gameplay
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
-            enemiesToKill = 50;
+            enemiesToKill = 20;
             characterHealthController = scene.GetComponent<CharacterHealthController>();
             characterHealthController.OnDeath += HandleCharacterDeath;
             characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
             characterHealthController.Init();
-            StartGameLoop();
-            
         }
 
         public void Reset()
@@ -59,7 +57,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleEnemySpawned(AiControllerBase obj)
         {
-            var healthController = obj.GetComponent<IHealthController>();
+            var healthController = obj.GetComponent<AiHealthController>();
             healthController.OnBeingDamaged += HandleEnemyDamaged;
             healthController.OnDeath += HandleEnemyDeath;
             healthController.Init();
@@ -68,8 +66,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleEnemyDeath(IHealthController iHealthController)
         {
-            iHealthController.OnBeingDamaged += HandleEnemyDamaged;
-            iHealthController.OnDeath += HandleEnemyDeath;
+            iHealthController.OnDeath -= HandleEnemyDeath;
             enemyHealthControllers.Remove(iHealthController);
             enemiesToKill--;
             if (enemiesToKill <= 0)
@@ -78,10 +75,7 @@ namespace HeroesFlight.System.Gameplay
             }
         }
 
-        void HandleCharacterDamaged(Transform arg1, int arg2)
-        {
-          Debug.Log(characterHealthController.CurrentHealth);
-        }
+        void HandleCharacterDamaged(Transform arg1, int arg2) { }
 
         void HandleCharacterDeath(IHealthController obj)
         {
@@ -90,7 +84,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleEnemyDamaged(Transform transform, int i)
         {
-            //show dmg text
+           OnEnemyDamaged?.Invoke(transform,i);
         }
     }
 }

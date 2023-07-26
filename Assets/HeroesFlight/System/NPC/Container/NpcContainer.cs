@@ -1,9 +1,12 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using HeroesFlight.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 namespace HeroesFlight.System.NPC.Container
@@ -28,20 +31,24 @@ namespace HeroesFlight.System.NPC.Container
            
         }
 
-        public void SpawnEnemies(int amount)
+        public void SpawnEnemies(int amount, Action<AiControllerBase> OnOnEnemySpawned)
         {
-            spawnAmount = amount;
-            for (var i = 0; i <= spawnAmount; i++)
-            {
-                var rng = Random.Range(0, aiPrefabs.Length);
+            StartCoroutine(SpawnEnemiesRoutine(amount, OnOnEnemySpawned));
 
-                var targetPrefab = aiPrefabs[rng];
-                var targetPoints = spanwPointsCache[targetPrefab.AgentModel.EnemySpawmType];
-                var rngPoint=  Random.Range(0, targetPoints.Count);
-                var resultEnemy = Instantiate(targetPrefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
-                    , Quaternion.identity);
-                resultEnemy.Init(player.transform);
-            }
+            // spawnAmount = amount;
+            // for (var i = 0; i <= spawnAmount; i++)
+            // {
+            //     var rng = Random.Range(0, aiPrefabs.Length);
+            //
+            //     var targetPrefab = aiPrefabs[rng];
+            //     var targetPoints = spanwPointsCache[targetPrefab.AgentModel.EnemySpawmType];
+            //     var rngPoint=  Random.Range(0, targetPoints.Count);
+            //     var resultEnemy = Instantiate(targetPrefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
+            //         , Quaternion.identity);
+            //     resultEnemy.transform.parent = transform;
+            //     resultEnemy.Init(player.transform);
+            //     OnOnEnemySpawned?.Invoke(targetPrefab);
+            // }
         }
 
         void GenerateCache()
@@ -57,6 +64,25 @@ namespace HeroesFlight.System.NPC.Container
                 {
                     spanwPointsCache.Add(point.TargetEnemySpawmType,new List<ISpawnPointInterface>(){point});
                 }
+            }
+        }
+
+        IEnumerator SpawnEnemiesRoutine(int amount, Action<AiControllerBase> OnOnEnemySpawned)
+        {
+            spawnAmount = amount;
+            for (var i = 0; i <= spawnAmount; i++)
+            {
+                var rng = Random.Range(0, aiPrefabs.Length);
+
+                var targetPrefab = aiPrefabs[rng];
+                var targetPoints = spanwPointsCache[targetPrefab.AgentModel.EnemySpawmType];
+                var rngPoint=  Random.Range(0, targetPoints.Count);
+                var resultEnemy = Instantiate(targetPrefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
+                    , Quaternion.identity);
+                resultEnemy.transform.parent = transform;
+                resultEnemy.Init(player.transform);
+                OnOnEnemySpawned?.Invoke(resultEnemy);
+                yield return new WaitForSeconds(1f);
             }
         }
     }
