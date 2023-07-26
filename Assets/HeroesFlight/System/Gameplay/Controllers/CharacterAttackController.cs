@@ -44,7 +44,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public void AttackTarget()
         {
             m_CharacterAnimationController.PlayAttackSequence();
-            currentTarget.DealDamage(Damage);
             m_TimeSinceLastAttack = 0;
         }
 

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using HeroesFlight.System.Character.Enum;
+using Spine;
 using Spine.Unity;
 using UnityEngine;
+using Event = Spine.Event;
 
 namespace HeroesFlight.System.Character
 {
@@ -28,7 +30,7 @@ namespace HeroesFlight.System.Character
             m_CharacterController = GetComponent<CharacterSimpleController>();
             m_SkeletonAnimation = GetComponent<SkeletonAnimation>();
             m_CharacterController.OnCharacterMoveStateChanged += AnimateCharacterMovement;
-          
+            m_SkeletonAnimation.AnimationState.Event += HandleTrackEvent;
             CreateAnimationCache();
             m_WasFacingLeft = true;
         }
@@ -106,6 +108,15 @@ namespace HeroesFlight.System.Character
         public void StopAttackSequence()
         {
             StopAttackAnimation();
+        }
+
+        void HandleTrackEvent(TrackEntry trackentry, Event e)
+        {
+           Debug.Log(e.Data.Name);
+           if (e.Data.Name.Equals("Dealing damg"))
+           {
+               OnDealDamageRequest?.Invoke(e.Data.Name);
+           }
         }
     }
 }
