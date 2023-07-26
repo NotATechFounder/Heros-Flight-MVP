@@ -1,15 +1,19 @@
-using System;
 using UnityEngine;
 
 namespace HeroesFlight.System.Character
 {
     public class AttackRangeVisualsController : MonoBehaviour
     {
-        [SerializeField] float m_AttackRange;
+        
         [SerializeField] Transform m_attackVisuals;
-        void Awake()
+       
+        public void Init(float attackRange)
         {
-            m_attackVisuals.localScale = new Vector3(m_AttackRange*2, m_AttackRange*2, 0);
+            m_attackVisuals.localScale = new Vector3(attackRange*3, attackRange*3, 0);
+        }
+        public void SetPosition(Vector2 position)
+        {
+            m_attackVisuals.position = position;
         }
     }
 }

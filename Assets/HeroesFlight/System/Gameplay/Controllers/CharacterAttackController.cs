@@ -13,7 +13,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         Collider2D[] m_FoundedColliders;
         CharacterControllerInterface controller;
         CharacterAnimationControllerInterface m_CharacterAnimationController;
-
+        AttackRangeVisualsController visualController;
         [SerializeField] AttackControllerState m_State;
 
         CombatModel combatModel;
@@ -23,21 +23,30 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public int Damage => controller.Data.CombatModel.Damage;
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
+        Vector2 attackPoint;
 
         void Awake()
         {
             controller = GetComponent<CharacterControllerInterface>();
+            visualController = GetComponent<AttackRangeVisualsController>();
             m_CharacterAnimationController = GetComponent<CharacterAnimationController>();
             m_CharacterAnimationController.OnDealDamageRequest += HandleDamageDealRequest;
             m_FoundedColliders = new Collider2D[10];
             m_State = AttackControllerState.LookingForTarget;
             combatModel = controller.Data.CombatModel;
             m_TimeSinceLastAttack = combatModel.TimeBetweenAttacks;
+            attackPoint = transform.position + Vector3.up  + Vector3.left * 3;
+            visualController.Init(combatModel.AttackRange);
+            visualController.SetPosition(attackPoint);
         }
 
         void Update()
         {
             m_TimeSinceLastAttack += Time.deltaTime;
+            attackPoint = controller.IsFacingLeft
+                ? transform.position + Vector3.up  + Vector3.left * 3
+                : transform.position + Vector3.up  + Vector3.right * 3;
+            visualController.SetPosition(attackPoint);
             ProcessCurrentState();
         }
 
@@ -64,7 +73,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void ProcessLookingState()
         {
             var foundedTargetsCount =
-                Physics2D.OverlapCircleNonAlloc(transform.position, combatModel.AttackRange,
+                Physics2D.OverlapCircleNonAlloc(attackPoint, combatModel.AttackRange,
                     m_FoundedColliders,
                     m_TargetMask);
             if (foundedTargetsCount > 0)
@@ -104,15 +113,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 ChangeState(AttackControllerState.LookingForTarget);
                 return;
             }
-
-            if (m_TimeSinceLastAttack < combatModel.TimeBetweenAttacks)
-                return;
-
+            
             var targetSize = m_FoundedColliders[0].bounds.extents;
-            var distanceToTarget = Vector2.Distance(transform.position,
+            var distanceToTarget = Vector2.Distance(attackPoint,
                 m_FoundedColliders[0].transform.position);
-            if (distanceToTarget - targetSize.x > combatModel.AttackRange
-                || distanceToTarget - targetSize.y > combatModel.AttackRange)
+            Debug.Log(distanceToTarget);
+            if (distanceToTarget  > combatModel.AttackRange
+                || distanceToTarget  > combatModel.AttackRange)
             {
                 m_FoundedColliders[0] = null;
                 currentTarget = null;
@@ -120,6 +127,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 ChangeState(AttackControllerState.LookingForTarget);
                 return;
             }
+            
+            
+            if (m_TimeSinceLastAttack < combatModel.TimeBetweenAttacks)
+                return;
+
+          
 
 
             AttackTarget();
@@ -151,7 +164,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (combatModel == null)
                 return;
-            Gizmos.DrawWireSphere(transform.position, combatModel.AttackRange);
+            var checkPosition = controller.IsFacingLeft
+                ? transform.position + Vector3.up  + Vector3.left * 3
+                : transform.position + Vector3.up  + Vector3.right * 3;
+            Gizmos.DrawWireSphere(checkPosition, combatModel.AttackRange);
         }
     }
 }

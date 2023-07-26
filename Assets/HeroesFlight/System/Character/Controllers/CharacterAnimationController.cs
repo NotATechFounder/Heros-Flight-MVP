@@ -83,9 +83,9 @@ namespace HeroesFlight.System.Character
 
         void StopAttackAnimation()
         {
-            var track= m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, .5f);
-            track.AttachmentThreshold = 1f;
-            track.MixDuration = .5f;
+            m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, 0f);
+          //  track.AttachmentThreshold = 1f;
+           
         }
 
         bool TurnCharacterVisuals(bool facingLeft)

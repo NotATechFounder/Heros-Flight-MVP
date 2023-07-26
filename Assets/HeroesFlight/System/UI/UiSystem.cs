@@ -166,7 +166,7 @@ namespace HeroesFlight.System.UI
         void HandleEnemyDamaged(Transform transform, int damage)
         {
            UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one , damage.ToString(),
-                Color.red);
+                Color.yellow);
         }
 
         void HandlePlayerWin()
