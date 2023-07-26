@@ -7,7 +7,6 @@ namespace HeroesFlight.System.NPC.Controllers
     public class AiViewController : MonoBehaviour
     {
         MeshRenderer mesh;
-    
         Color mainMaterialColor;
         MaterialPropertyBlock propertyBlock;
 

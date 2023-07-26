@@ -27,10 +27,11 @@ namespace HeroesFlight.System.Gameplay
 
         NpcSystemInterface npcSystem;
 
-      
 
+        public event Action<int> OnRemainingEnemiesLeft;
         public event Action OnPlayerDeath;
         public event Action OnPlayerWin;
+        public event Action<Transform, int> OnCharacterDamaged;
         public event Action<Transform, int> OnEnemyDamaged;
         public event Action<int> OnCharacterHealthChanged;
         int enemiesToKill;
@@ -38,7 +39,8 @@ namespace HeroesFlight.System.Gameplay
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
-            enemiesToKill = 20;
+            enemiesToKill = 1;
+            OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
             characterHealthController = scene.GetComponent<CharacterHealthController>();
             characterHealthController.OnDeath += HandleCharacterDeath;
             characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
@@ -69,16 +71,25 @@ namespace HeroesFlight.System.Gameplay
             iHealthController.OnDeath -= HandleEnemyDeath;
             enemyHealthControllers.Remove(iHealthController);
             enemiesToKill--;
+            OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
             if (enemiesToKill <= 0)
             {
                 OnPlayerWin?.Invoke();
             }
         }
 
-        void HandleCharacterDamaged(Transform arg1, int arg2) { }
+        void HandleCharacterDamaged(Transform characterTransform, int damageReceived)
+        {
+            if (enemiesToKill <= 0)
+                return;
+            OnCharacterDamaged?.Invoke(characterTransform,damageReceived);
+        }
 
         void HandleCharacterDeath(IHealthController obj)
         {
+            if (enemiesToKill <= 0)
+                return;
+            
             OnPlayerDeath?.Invoke();
         }
 

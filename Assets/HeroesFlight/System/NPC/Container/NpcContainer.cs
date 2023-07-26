@@ -70,7 +70,7 @@ namespace HeroesFlight.System.NPC.Container
         IEnumerator SpawnEnemiesRoutine(int amount, Action<AiControllerBase> OnOnEnemySpawned)
         {
             spawnAmount = amount;
-            for (var i = 0; i <= spawnAmount; i++)
+            for (var i = 0; i < spawnAmount; i++)
             {
                 var rng = Random.Range(0, aiPrefabs.Length);
 

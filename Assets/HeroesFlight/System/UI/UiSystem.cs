@@ -3,7 +3,6 @@ using HeroesFlight.System.Gameplay;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Random = UnityEngine.Random;
 
 namespace HeroesFlight.System.UI
 {
@@ -16,9 +15,12 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnEnemyDamaged += HandleEnemyDamaged;
             gameplaySystem.OnPlayerDeath += HandlePlayerDeath;
             gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
+            gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
+            gameplaySystem.OnCharacterDamaged += HandleCharacterDamaged;
         }
 
         public event Action OnReturnToMainMenuRequest;
+
         public UIEventHandler UiEventHandler { get; private set; }
 
         public CountDownTimer GameTimer { get; private set; }
@@ -82,21 +84,30 @@ namespace HeroesFlight.System.UI
                 };
 
 
+                UiEventHandler.ReviveMenu.OnMenuClosed += () =>
+                {
+                    UiEventHandler.ReviveMenu.Close();
+                    UiEventHandler.SummaryMenu.Open();
+                };
+                
                 UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
                 {
-                    OnReturnToMainMenuRequest?.Invoke();
+                    UiEventHandler.ReviveMenu.Close();
+                    UiEventHandler.SummaryMenu.Open();
                     return true;
                 };
 
                 UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
                 {
-                    OnReturnToMainMenuRequest?.Invoke();
+                    UiEventHandler.ReviveMenu.Close();
+                    UiEventHandler.SummaryMenu.Open();
                     return true;
                 };
 
                 UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
                 {
                     OnReturnToMainMenuRequest?.Invoke();
+                    UiEventHandler.SummaryMenu.Close();
                 };
 
                 onComplete?.Invoke();
@@ -134,6 +145,7 @@ namespace HeroesFlight.System.UI
             OnReturnToMainMenuRequest?.Invoke();
             UiEventHandler.GameMenu.Close();
             UiEventHandler.PauseMenu.Close();
+            UiEventHandler.ConfirmationMenu.Close();
         }
 
         public void OpenPuzzleConfirmation()
@@ -160,6 +172,17 @@ namespace HeroesFlight.System.UI
         void HandlePlayerWin()
         {
             UiEventHandler.SummaryMenu.Open();
+        }
+
+        void UpdateEnemiesCounter(int enemiesLeft)
+        {
+            UiEventHandler.GameMenu.UpdateEnemyCountText(enemiesLeft);
+        }
+
+        void HandleCharacterDamaged(Transform transform, int damage)
+        {
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one , damage.ToString(),
+                Color.red);
         }
     }
 }

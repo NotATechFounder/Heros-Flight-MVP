@@ -65,7 +65,6 @@ namespace HeroesFlight.StateStack.State
                         npcSystem.Init(loadedScene);
                         gamePlaySystem.Init(loadedScene);
                         uiSystem.UiEventHandler.GameMenu.Open();
-                        Debug.Log("closing laoding menu");
                         uiSystem.UiEventHandler.LoadingMenu.Close();
                         gamePlaySystem.StartGameLoop();
                     });

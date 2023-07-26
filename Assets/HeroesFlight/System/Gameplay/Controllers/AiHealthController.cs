@@ -26,7 +26,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 return;
 
             TriggerDamageMessage(damage);
-            Debug.Log($"took damage {name}");
             currentHealh -= damage;
             aiController.ProcessKnockBack();
             if (IsDead())

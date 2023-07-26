@@ -31,7 +31,6 @@ namespace UISystem
 
         public void UpdateLoadingBar(float progress)
         {
-            Debug.Log($"Updating progress {progress}");
             progressImage.fillAmount = progress;
             progresstext.text = $"{progress * 100}%";
 
