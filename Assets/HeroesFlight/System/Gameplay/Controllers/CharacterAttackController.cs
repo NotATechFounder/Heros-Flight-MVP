@@ -114,10 +114,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 return;
             }
             
-            var targetSize = m_FoundedColliders[0].bounds.extents;
             var distanceToTarget = Vector2.Distance(attackPoint,
                 m_FoundedColliders[0].transform.position);
-            Debug.Log(distanceToTarget);
             if (distanceToTarget  > combatModel.AttackRange
                 || distanceToTarget  > combatModel.AttackRange)
             {

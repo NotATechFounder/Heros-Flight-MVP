@@ -39,7 +39,7 @@ namespace HeroesFlight.System.Gameplay
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
-            enemiesToKill = 0;
+            enemiesToKill = 50;
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
             characterHealthController = scene.GetComponent<CharacterHealthController>();
             characterHealthController.OnDeath += HandleCharacterDeath;

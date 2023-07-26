@@ -1,19 +1,24 @@
 using UnityEngine;
 
+
 namespace HeroesFlight.System.Character
 {
     public class AttackRangeVisualsController : MonoBehaviour
     {
-        
-        [SerializeField] Transform m_attackVisuals;
-       
+        [SerializeField] Canvas visualsCanvas;
+        RectTransform rectTransform;
+        Transform canvasTransform;
+
         public void Init(float attackRange)
         {
-            m_attackVisuals.localScale = new Vector3(attackRange*3, attackRange*3, 0);
+            rectTransform = visualsCanvas.GetComponent<RectTransform>();
+            rectTransform.sizeDelta = new Vector2(attackRange*2, attackRange*2);
+            canvasTransform = visualsCanvas.transform;
         }
+
         public void SetPosition(Vector2 position)
         {
-            m_attackVisuals.position = position;
+            canvasTransform.position = position;
         }
     }
 }
