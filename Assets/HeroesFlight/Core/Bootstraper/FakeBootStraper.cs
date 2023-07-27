@@ -13,11 +13,14 @@ namespace HeroesFlight.Core.Bootstrapper
 
     public class FakeBootStraper : MonoBehaviour
     {
-        private void Start()
+        private void Awake()
         {
-            GamePlaySystemInterface gameplay = new GamePlaySystem(null,null);
-            IUISystem uiSystem = new UiSystem(gameplay);
-            uiSystem.Init(SceneManager.GetActiveScene());
+            //GamePlaySystemInterface gameplay = new GamePlaySystem(null,null);
+            //IUISystem uiSystem = new UiSystem(gameplay);
+            //uiSystem.Init(SceneManager.GetActiveScene());
+
+            UIEventHandler uiEventHandler = FindAnyObjectByType<UIEventHandler>();
+            uiEventHandler.Init();
         }
     }
 }

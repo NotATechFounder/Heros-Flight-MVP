@@ -30,12 +30,11 @@ namespace Pelumi.Juicer
             return JuicerController.RunCoroutine(enumerator);
         }
 
-        public static void StopCoroutine(CoroutineHandle coroutine)
+        public static void StopCoroutine(CoroutineHandle coroutineHandle)
         {
             if (JuicerController == null) return;
             Init();
-            JuicerController.StopCoroutine(coroutine);
-            Debug.Log("JuicerController Stop Juicer");
+            JuicerController.StopCoroutine(coroutineHandle.Coroutine);
         }
 
         public static CoroutineHandle RunCoroutine(this MonoBehaviour owner, IEnumerator coroutine)

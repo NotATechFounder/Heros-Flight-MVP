@@ -166,6 +166,7 @@ namespace Pelumi.Juicer
             {
                 Debug.Log("Stop Juicer");
                 Juicer.StopCoroutine(_coroutine);
+                _coroutine = null;
             }
         }
     }
