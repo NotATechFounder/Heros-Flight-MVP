@@ -328,13 +328,15 @@ namespace Pelumi.Juicer
     {
         public event Action<CoroutineHandle> OnCompleted;
         public bool IsDone { get; private set; }
+
+        public Coroutine Coroutine;
         public object Current {get;}
         public bool MoveNext() => !IsDone;
         public void Reset() { }
 
         public CoroutineHandle(MonoBehaviour owner, IEnumerator coroutine)
         {
-            owner.StartCoroutine(Wrap(coroutine));
+            Coroutine = owner.StartCoroutine(Wrap(coroutine));
         }
 
         private IEnumerator Wrap(IEnumerator coroutine)
