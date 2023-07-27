@@ -1,12 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeroesFlight.System.Character.Enum;
+using Spine;
 using Spine.Unity;
 using UnityEngine;
+using Event = Spine.Event;
 
 namespace HeroesFlight.System.Character
 {
-    public class CharacterAnimationController : MonoBehaviour,CharacterAnimationControllerInterface
+    public class CharacterAnimationController : MonoBehaviour, CharacterAnimationControllerInterface
     {
         [SerializeField] AnimationReferenceAsset m_IdleAnimation;
         [SerializeField] AnimationReferenceAsset m_FlyingUpAnimation;
@@ -17,7 +20,7 @@ namespace HeroesFlight.System.Character
         [SerializeField] AnimationReferenceAsset m_AttackAnimation;
         SkeletonAnimation m_SkeletonAnimation;
         CharacterControllerInterface m_CharacterController;
-      
+
         bool m_WasFacingLeft;
         Dictionary<CharacterState, AnimationReferenceAsset> m_AnimationsCache = new();
 
@@ -28,9 +31,10 @@ namespace HeroesFlight.System.Character
             m_CharacterController = GetComponent<CharacterSimpleController>();
             m_SkeletonAnimation = GetComponent<SkeletonAnimation>();
             m_CharacterController.OnCharacterMoveStateChanged += AnimateCharacterMovement;
-          
+            m_SkeletonAnimation.AnimationState.Event += HandleTrackEvent;
             CreateAnimationCache();
             m_WasFacingLeft = true;
+            m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, 0f);
         }
 
         void CreateAnimationCache()
@@ -54,41 +58,43 @@ namespace HeroesFlight.System.Character
                     turnTrack.AttachmentThreshold = 1f;
                     turnTrack.MixDuration = 0f;
 
-                    var track= m_SkeletonAnimation.AnimationState.AddAnimation(0, stateAnimation, true,0);
+                    var track = m_SkeletonAnimation.AnimationState.AddAnimation(0, stateAnimation, true, 0);
                     track.AttachmentThreshold = 1f;
                     track.MixDuration = .5f;
                 }
                 else
                 {
-                    var track= m_SkeletonAnimation.AnimationState.SetAnimation(0, stateAnimation, true);
+                    var track = m_SkeletonAnimation.AnimationState.SetAnimation(0, stateAnimation, true);
                     track.AttachmentThreshold = 1f;
                     track.MixDuration = .5f;
-                  
                 }
             }
-
-
-           
         }
 
         void PlayAttackAnimation()
         {
-            var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(1, m_AttackAnimation, false);
-            m_SkeletonAnimation.AnimationState.AddEmptyAnimation(1, .5f, 0);
-            turnTrack.AttachmentThreshold = 1f;
-            turnTrack.MixDuration = .5f;
+           
+            var track = m_SkeletonAnimation.AnimationState.GetCurrent(1);
+            if (track == null || track.Animation.Name.Equals("<empty>"))
+            {
+                
+                var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(1, m_AttackAnimation, false);
+                m_SkeletonAnimation.AnimationState.AddEmptyAnimation(1, .5f, 0);
+            }
+          
         }
 
         void StopAttackAnimation()
         {
-            var track= m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, .5f);
-            track.AttachmentThreshold = 1f;
-            track.MixDuration = .5f;
+            var track = m_SkeletonAnimation.AnimationState.GetCurrent(1);
+          
+            if(track!=null && !track.Animation.Name.Equals("<empty>"))
+                        m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, 0f);
+          
         }
 
         bool TurnCharacterVisuals(bool facingLeft)
         {
-           
             if (m_WasFacingLeft != facingLeft)
             {
                 m_WasFacingLeft = facingLeft;
@@ -106,6 +112,19 @@ namespace HeroesFlight.System.Character
         public void StopAttackSequence()
         {
             StopAttackAnimation();
+        }
+
+        void HandleTrackEvent(TrackEntry trackentry, Event e)
+        {
+            switch (e.Data.Name)
+            {
+                case "Dealing damg":
+                    OnDealDamageRequest?.Invoke(e.Data.Name);
+                    break;
+                case "start_sound":
+                    AudioManager.PlaySoundEffect("Attack Sound");
+                    break;
+            }
         }
     }
 }

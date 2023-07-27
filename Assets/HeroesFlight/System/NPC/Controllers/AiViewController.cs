@@ -35,7 +35,7 @@ namespace HeroesFlight.System.NPC.Controllers
                 mainMaterialColor.a += step;
                 propertyBlock.SetColor("_Color", mainMaterialColor);
                 mesh.SetPropertyBlock(propertyBlock);
-                yield return new WaitForEndOfFrame();
+                yield return null;
             }
             onComplete.Invoke();
         }

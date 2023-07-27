@@ -2,9 +2,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class MeleeEnemyAttackController : EnemyAttackControllerBase
     {
-        public override void AttackTarget()
+        public override void AttackTargets()
         {
-            base.AttackTarget();
+            base.AttackTargets();
         }
     }
 }

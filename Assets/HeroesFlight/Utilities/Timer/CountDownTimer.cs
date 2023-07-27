@@ -3,8 +3,11 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CountDownTimer 
+public class CountDownTimer
 {
+
+    public event Action<float> OnProgress;
+    public event Action OnFinish; 
     private MonoBehaviour owner;
     private bool paused = false;
     private float currentTime = 0;
@@ -14,13 +17,29 @@ public class CountDownTimer
     private float maxTime = 0;
     private float lastTime = 0;
 
+    public CountDownTimer() { }
     public CountDownTimer(MonoBehaviour monoBehaviour)
     {
         owner = monoBehaviour;
     }
-
+    
+    
     public void Start(float _time, Action<float> _onTimeTick, Action _onTimeLapse)
     {
+        if (timerRoutine != null)
+            return;
+
+        maxTime = _time;
+        currentTime = maxTime;
+        onTimeTick = _onTimeTick;
+        onTimeLapse = _onTimeLapse;
+        timerRoutine = owner.StartCoroutine(TimerRoutine());
+    }
+
+    public void Start(float _time, Action<float> _onTimeTick, Action _onTimeLapse, MonoBehaviour monoBehaviour)
+    {
+        owner = monoBehaviour;
+        
         if (timerRoutine != null)
             return;
 
@@ -40,11 +59,13 @@ public class CountDownTimer
                 lastTime = currentTime;
                 currentTime -= Time.deltaTime;
                 onTimeTick?.Invoke(currentTime);
+                OnProgress?.Invoke(currentTime);
 
                 if (currentTime <= 0)
                 {
                     Stop();
                     onTimeLapse?.Invoke();
+                    OnFinish?.Invoke();
                 }
 
                 yield return null;
@@ -66,6 +87,9 @@ public class CountDownTimer
 
     public void Stop()
     {
+        if (timerRoutine == null)
+            return;
+        
         owner.StopCoroutine(timerRoutine);
         timerRoutine = null;
     }

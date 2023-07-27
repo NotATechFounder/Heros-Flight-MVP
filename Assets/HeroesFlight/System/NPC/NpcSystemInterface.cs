@@ -6,6 +6,6 @@ namespace HeroesFlight.System.NPC
     public interface NpcSystemInterface : ISystemInterface
     {
         event Action<AiControllerBase> OnEnemySpawned;
-        void SpawnRandomEnemies(int amount);
+        void SpawnRandomEnemies(int enemiesToKill, int waves);
     }
 }

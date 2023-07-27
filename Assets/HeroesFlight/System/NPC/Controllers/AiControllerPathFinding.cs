@@ -59,15 +59,17 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             if (isInknockback)
                 return;
-
+            isInknockback = true;
             ai.canMove = false;
             var forceVector = currentTarget.position.x >= transform.position.x ? Vector2.left : Vector2.right;
-            CoroutineUtility.WaitForEndOfFrame(() =>
+            CoroutineUtility.WaitForSeconds(.1f,() =>
             {
-                isInknockback = true;
                 rigidBody.AddForce(forceVector * knockbackForce);
                 CoroutineUtility.WaitForSeconds(.5f, () =>
                 {
+                    if (rigidBody == null)
+                        return;
+                    
                     if (isFLying)
                         rigidBody.velocity = Vector2.zero;
                     ai.canMove = true;

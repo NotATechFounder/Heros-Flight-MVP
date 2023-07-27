@@ -41,6 +41,7 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.OnReturnToMainMenuRequest -= HandleReturnToMainMenu;
                         uiSystem.UiEventHandler.LoadingMenu.Open();
                         m_SceneActionsQueue.AddAction(SceneActionType.Unload, gameScene);
+                        gamePlaySystem.Reset();
                         m_SceneActionsQueue.Start( uiSystem.UiEventHandler.LoadingMenu.UpdateLoadingBar, () =>
                         {
                             uiSystem.UiEventHandler.MainMenu.Open();
@@ -65,8 +66,12 @@ namespace HeroesFlight.StateStack.State
                         npcSystem.Init(loadedScene);
                         gamePlaySystem.Init(loadedScene);
                         uiSystem.UiEventHandler.GameMenu.Open();
-                        uiSystem.UiEventHandler.LoadingMenu.Close();
-                        gamePlaySystem.StartGameLoop();
+                        CoroutineUtility.WaitForSeconds(1f,() =>
+                        {
+                            uiSystem.UiEventHandler.LoadingMenu.Close();
+                            gamePlaySystem.StartGameLoop();     
+                        });
+                       
                     });
 
                     break;

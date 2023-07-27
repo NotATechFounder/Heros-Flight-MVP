@@ -4,6 +4,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         int Damage { get; }
         float TimeSinceLastAttack { get; }
-        void AttackTarget();
+        void AttackTargets();
+        void Init();
+        void DisableActions();
     }
 }

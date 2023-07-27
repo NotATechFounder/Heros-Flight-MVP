@@ -1,158 +1,173 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using HeroesFlight.Common;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Gameplay.Enum;
 using UnityEngine;
 
+
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class CharacterAttackController : MonoBehaviour, IAttackControllerInterface
     {
         [SerializeField] LayerMask m_TargetMask;
-        Collider2D[] m_FoundedColliders;
-        CharacterControllerInterface controller;
-        CharacterAnimationControllerInterface m_CharacterAnimationController;
-
-        [SerializeField] AttackControllerState m_State;
-
-        CombatModel combatModel;
-        IHealthController currentTarget;
-
-        [SerializeField] float m_TimeSinceLastAttack = 0;
+        [SerializeField] int enemiesToHitPerAttack = 4;
 
         public int Damage => controller.Data.CombatModel.Damage;
+
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
+
+
+        CharacterControllerInterface controller;
+
+        CharacterAnimationControllerInterface m_CharacterAnimationController;
+
+        AttackRangeVisualsController visualController;
+
+        AttackControllerState m_State;
+
+        CombatModel combatModel;
+
+       [SerializeField] float m_TimeSinceLastAttack = 0;
+
+        Vector2 attackPoint;
+
+        Func<List<IHealthController>> enemiesRetriveCallback;
+        List<IHealthController> foundedEnemies = new();
+        List<IHealthController> enemiesToAttack = new();
+        bool isDisabled;
+        WaitForSeconds tick;
 
         void Awake()
         {
             controller = GetComponent<CharacterControllerInterface>();
+            visualController = GetComponent<AttackRangeVisualsController>();
             m_CharacterAnimationController = GetComponent<CharacterAnimationController>();
             m_CharacterAnimationController.OnDealDamageRequest += HandleDamageDealRequest;
-            m_FoundedColliders = new Collider2D[10];
             m_State = AttackControllerState.LookingForTarget;
             combatModel = controller.Data.CombatModel;
             m_TimeSinceLastAttack = combatModel.TimeBetweenAttacks;
+            attackPoint = transform.position + Vector3.up + Vector3.left * 3;
+            visualController.Init(combatModel.AttackRange);
+            visualController.SetPosition(attackPoint);
+            isDisabled = false;
+            tick = new WaitForSeconds(.25f);
+        }
+
+        public void SetCallback(Func<List<IHealthController>> enemiesCallback)
+        {
+            enemiesRetriveCallback = enemiesCallback;
         }
 
         void Update()
         {
-            m_TimeSinceLastAttack += Time.deltaTime;
-            ProcessCurrentState();
-        }
-
-        public void AttackTarget()
-        {
-            m_CharacterAnimationController.PlayAttackSequence();
-            currentTarget.DealDamage(Damage);
-            m_TimeSinceLastAttack = 0;
-        }
-
-        void ProcessCurrentState()
-        {
-            switch (m_State)
+            if (isDisabled)
             {
-                case AttackControllerState.Attacking:
-                    ProcessAttackingState();
-                    break;
-                case AttackControllerState.LookingForTarget:
-                    ProcessLookingState();
-                    break;
+                ResetAttack();
+                return;
+            }
+
+            m_TimeSinceLastAttack += Time.deltaTime;
+            attackPoint = controller.IsFacingLeft
+                ? transform.position + Vector3.up + Vector3.left * 3
+                : transform.position + Vector3.up + Vector3.right * 3;
+            visualController.SetPosition(attackPoint);
+           
+            ProcessAttackLogic();
+        }
+
+
+        IEnumerator AttackLogicRoutine()
+        {
+            while (true)
+            {
+                ProcessAttackLogic();
+                yield return tick;
             }
         }
 
 
-        void ProcessLookingState()
+        void ProcessAttackLogic()
         {
-            var foundedTargetsCount =
-                Physics2D.OverlapCircleNonAlloc(transform.position, combatModel.AttackRange,
-                    m_FoundedColliders,
-                    m_TargetMask);
-            if (foundedTargetsCount > 0)
+            FilterEnemies(enemiesRetriveCallback?.Invoke(), ref foundedEnemies);
+            if (foundedEnemies.Count > 0)
             {
-                var foundedValidTargets = new List<IHealthController>();
-                foreach (var collider in m_FoundedColliders)
-                {
-                    if (collider == null)
-                        continue;
-
-                    if (collider.TryGetComponent<IHealthController>(out var healthController))
-                    {
-                        if (!healthController.IsDead())
-                            foundedValidTargets.Add(healthController);
-                    }
-                }
-
-                if (foundedValidTargets.Count > 0)
-                {
-                    currentTarget = foundedValidTargets[0];
-                    ChangeState(AttackControllerState.Attacking);
-                }
+              AttackTargets();
             }
             else
             {
-                currentTarget = null;
-                ChangeState(AttackControllerState.LookingForTarget);
+                ResetAttack();
             }
         }
 
-        void ProcessAttackingState()
+        void FilterEnemies(List<IHealthController> enemies, ref List<IHealthController> enemiesToUpdate)
         {
-            if (currentTarget.IsDead())
+            enemiesToUpdate.Clear();
+            foreach (var controller in enemies)
             {
-                m_CharacterAnimationController.StopAttackSequence();
-                currentTarget = null;
-                ChangeState(AttackControllerState.LookingForTarget);
-                return;
+                if (Vector2.Distance(controller.currentTransform.position, attackPoint) <= combatModel.AttackRange)
+                {
+                    enemiesToUpdate.Add(controller);
+                }
             }
+        }
 
+
+        public void AttackTargets()
+        {
             if (m_TimeSinceLastAttack < combatModel.TimeBetweenAttacks)
-                return;
-
-            var targetSize = m_FoundedColliders[0].bounds.extents;
-            var distanceToTarget = Vector2.Distance(transform.position,
-                m_FoundedColliders[0].transform.position);
-            if (distanceToTarget - targetSize.x > combatModel.AttackRange
-                || distanceToTarget - targetSize.y > combatModel.AttackRange)
             {
-                m_FoundedColliders[0] = null;
-                currentTarget = null;
-                m_CharacterAnimationController.StopAttackSequence();
-                ChangeState(AttackControllerState.LookingForTarget);
-                return;
+               return;
             }
-
-
-            AttackTarget();
+                
+            
+            m_CharacterAnimationController.PlayAttackSequence();
+            m_TimeSinceLastAttack = 0;
         }
 
-        void ChangeState(AttackControllerState newState)
+        public void Init()
         {
-            if (m_State == newState)
-                return;
-
-            switch (newState)
-            {
-                case AttackControllerState.Attacking:
-                    break;
-                case AttackControllerState.LookingForTarget:
-                    m_TimeSinceLastAttack = combatModel.TimeBetweenAttacks;
-                    break;
-            }
-
-            m_State = newState;
         }
+
+
+        void ResetAttack()
+        {
+            m_CharacterAnimationController.StopAttackSequence();
+            m_TimeSinceLastAttack = combatModel.TimeBetweenAttacks;
+        }
+
 
         void HandleDamageDealRequest(string attackId)
         {
-            currentTarget.DealDamage(Damage);
+            FilterEnemies(enemiesRetriveCallback?.Invoke(), ref enemiesToAttack);
+            if (enemiesToAttack.Count > 0)
+            {
+                var enemiesAttacked = 0;
+                foreach (var enemy in enemiesToAttack)
+                {
+                    if (enemiesAttacked >= enemiesToHitPerAttack)
+                        break;
+
+                    enemiesAttacked++;
+                    enemy.DealDamage(Damage);
+                }
+            }
+        }
+
+        public void DisableActions()
+        {
+            isDisabled = true;
         }
 
         void OnDrawGizmos()
         {
             if (combatModel == null)
                 return;
-            Gizmos.DrawWireSphere(transform.position, combatModel.AttackRange);
+            var checkPosition = controller.IsFacingLeft
+                ? transform.position + Vector3.up + Vector3.left * 3
+                : transform.position + Vector3.up + Vector3.right * 3;
+            Gizmos.DrawWireSphere(checkPosition, combatModel.AttackRange);
         }
     }
 }

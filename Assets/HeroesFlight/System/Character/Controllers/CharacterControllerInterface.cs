@@ -11,5 +11,6 @@ namespace HeroesFlight.System.Character
         event Action<CharacterState> OnCharacterMoveStateChanged;
         bool IsFacingLeft { get; }
         Vector3 GetVelocity();
+        void SetActionState(bool isDisabled);
     }
 }

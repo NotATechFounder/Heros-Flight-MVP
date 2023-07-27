@@ -22,14 +22,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public override void DealDamage(int damage)
         {
-            if(IsDead())
-                return;
-
-            TriggerDamageMessage(damage);
-            currentHealh -= damage;
             aiController.ProcessKnockBack();
-            if (IsDead())
-                ProcessDeath();
+            base.DealDamage(damage);
           
         }
     }

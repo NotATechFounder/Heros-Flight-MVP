@@ -20,9 +20,9 @@ namespace HeroesFlight.System.NPC
 
         public event Action<AiControllerBase> OnEnemySpawned;
       
-        public void SpawnRandomEnemies(int amount)
+        public void SpawnRandomEnemies(int enemiesToKill, int waves)
         {
-            container.SpawnEnemies(amount,OnEnemySpawned);
+            container.SpawnEnemies(enemiesToKill,waves,OnEnemySpawned);
         }
     }
 }
