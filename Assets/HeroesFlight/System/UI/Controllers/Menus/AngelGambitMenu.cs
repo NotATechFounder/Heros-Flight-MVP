@@ -14,6 +14,8 @@ namespace UISystem
         [SerializeField] private AngelCardUI buffCard;
         [SerializeField] private AngelCardUI debuffCard;
         [SerializeField] private AngelCardUI blankCard;
+        [SerializeField] private AngelCardProperties selectedCardProperties;
+        [SerializeField] private List<AngelCardSO> angelCardSOList;
 
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
@@ -25,6 +27,8 @@ namespace UISystem
         {
             OnCreated();
             Open();
+
+            GenerateRandomCards();
         }
 
         private void Update()
@@ -74,6 +78,13 @@ namespace UISystem
             buffCard.transform.localScale = Vector3.one;
             debuffCard.transform.localScale = Vector3.one;
         }
+
+        public void GenerateRandomCards()
+        {
+            int buffCardIndex = UnityEngine.Random.Range(0, angelCardSOList.Count);
+            AngelCardSO angelCardSO = angelCardSOList[buffCardIndex];
+            buffCard.Init(angelCardSO);
+        }    
     }
 }
 
