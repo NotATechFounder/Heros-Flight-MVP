@@ -17,10 +17,13 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
             gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
             gameplaySystem.OnCharacterDamaged += HandleCharacterDamaged;
+            gameplaySystem.GameTimer.OnProgress+=UpdateGameTimeUI;
+            gameplaySystem.OnCharacterComboChanged += UpdateComboUI;
         }
 
         void HandleGameplayStateChange(GameplayState newState)
         {
+            Debug.Log($"game play state changed to {newState}");
             switch (newState)
             {
                 case GameplayState.Ongoing:
@@ -31,8 +34,15 @@ namespace HeroesFlight.System.UI
                 case GameplayState.Lost:
                     HandlePlayerDeath();
                     break;
+                case GameplayState.Ended :
+                    break;
                
             }
+        }
+
+        void UpdateGameTimeUI(float timeLeft)
+        {
+            UiEventHandler.GameMenu.UpdateTimerText(timeLeft);
         }
 
         public event Action OnReturnToMainMenuRequest;
@@ -77,7 +87,8 @@ namespace HeroesFlight.System.UI
                 {
                     AudioManager.BlendTwoMusic(GameMusicID, GameMusicLoopID);
                 };
-
+                
+                
                 UiEventHandler.GameMenu.OnPauseButtonClicked += () =>
                 {
                     UiEventHandler.PauseMenu.Open();
@@ -102,24 +113,30 @@ namespace HeroesFlight.System.UI
 
                 UiEventHandler.ReviveMenu.OnMenuClosed += () =>
                 {
-                    UiEventHandler.ReviveMenu.Close();
                     UiEventHandler.SummaryMenu.Open();
                 };
                 
                 UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
                 {
                     UiEventHandler.ReviveMenu.Close();
-                    UiEventHandler.SummaryMenu.Open();
                     return true;
+                };
+                UiEventHandler.ReviveMenu.OnCloseButtonClicked += () =>
+                {
+                    UiEventHandler.ReviveMenu.Close();
                 };
 
                 UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
                 {
                     UiEventHandler.ReviveMenu.Close();
-                    UiEventHandler.SummaryMenu.Open();
+                  
                     return true;
                 };
 
+                UiEventHandler.SummaryMenu.OnMenuOpened += () =>
+                {
+                  
+                };
                 UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
                 {
                     OnReturnToMainMenuRequest?.Invoke();
@@ -138,22 +155,6 @@ namespace HeroesFlight.System.UI
         {
             UiEventHandler.MainMenu.Close();
             UiEventHandler.GameMenu.Open();
-
-            GameTimer.Start(3, (time) =>
-                {
-                    UiEventHandler.GameMenu.UpdateTimerText(time);
-                },
-                () =>
-                {
-                    GameTimer.Start(200, (time) =>
-                        {
-                            UiEventHandler.GameMenu.UpdateTimerText(time);
-                        },
-                        () =>
-                        {
-                            Debug.Log("Game Time Lapse");
-                        });
-                });
         }
 
         public void ReturnToMainMenu()
@@ -176,7 +177,7 @@ namespace HeroesFlight.System.UI
 
         void HandlePlayerDeath()
         {
-            UiEventHandler.SummaryMenu.Open();
+            UiEventHandler.ReviveMenu.Open();
         }
 
         void HandleEnemyDamaged(Transform transform, int damage)
@@ -199,6 +200,11 @@ namespace HeroesFlight.System.UI
         {
             UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one , damage.ToString(),
                 Color.red);
+        }
+
+        void UpdateComboUI(int count)
+        {
+            UiEventHandler.GameMenu.UpdateComboCounterText(count);
         }
     }
 }

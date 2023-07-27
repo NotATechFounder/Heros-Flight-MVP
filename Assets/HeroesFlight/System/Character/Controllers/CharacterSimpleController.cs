@@ -19,8 +19,7 @@ namespace HeroesFlight.System.Character
         public event Action<CharacterState> OnCharacterMoveStateChanged;
         CharacterState m_CurrentState;
         public  Vector3 GetVelocity() => m_SavedVelocity;
-
-
+        bool isDisabled;
 
         void Awake()
         {
@@ -31,16 +30,23 @@ namespace HeroesFlight.System.Character
             viewController.SetupView(model.Data.AppearenceModel.Data);
             m_CurrentState = CharacterState.Idle;
             IsFacingLeft = true;
+            isDisabled = false;
         }
 
         void FixedUpdate()
         {
+            
             ControllerUpdate();
+        }
+
+        public void SetActionState(bool isEnabled)
+        {
+            isDisabled = isEnabled;
         }
 
         void ControllerUpdate()
         {
-            var input = m_InputReceiver.GetInput();
+            var input = isDisabled? Vector2.zero:m_InputReceiver.GetInput();
             var velocity = CalculateCharacterVelocity(input);
             m_SavedVelocity = velocity;
             m_MovementController.SetVelocity(velocity);

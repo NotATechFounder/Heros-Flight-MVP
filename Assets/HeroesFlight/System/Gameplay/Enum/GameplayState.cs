@@ -4,6 +4,7 @@ namespace HeroesFlight.System.Gameplay.Enum
     {
         Ongoing,
         Won,
-        Lost
+        Lost,
+        Ended
     }
 }

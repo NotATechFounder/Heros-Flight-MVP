@@ -43,8 +43,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected virtual void ProcessDeath()
         {
-            Debug.Log(name + " is dead");
-            OnDeath?.Invoke(this);
+           OnDeath?.Invoke(this);
         }
 
         protected void TriggerDamageMessage(int damage)

@@ -49,12 +49,16 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             target.DealDamage(Damage);
         }
 
-        public virtual void AttackTarget()
+        public virtual void AttackTargets()
         {
             if (timeSinceLastAttack >= timeBetweenAttacks)
             {
                 InitAttack();
             }
         }
+
+        public void Init() { }
+
+        public virtual void DisableActions() { }
     }
 }

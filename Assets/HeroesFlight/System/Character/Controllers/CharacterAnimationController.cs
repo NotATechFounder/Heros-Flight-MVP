@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeroesFlight.System.Character.Enum;
 using Spine;
 using Spine.Unity;
@@ -33,6 +34,7 @@ namespace HeroesFlight.System.Character
             m_SkeletonAnimation.AnimationState.Event += HandleTrackEvent;
             CreateAnimationCache();
             m_WasFacingLeft = true;
+            m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, 0f);
         }
 
         void CreateAnimationCache()
@@ -71,17 +73,24 @@ namespace HeroesFlight.System.Character
 
         void PlayAttackAnimation()
         {
-            var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(1, m_AttackAnimation, false);
-            m_SkeletonAnimation.AnimationState.AddEmptyAnimation(1, .5f, 0);
-            turnTrack.AttachmentThreshold = 1f;
-            turnTrack.MixDuration = .5f;
+           
+            var track = m_SkeletonAnimation.AnimationState.GetCurrent(1);
+            if (track == null || track.Animation.Name.Equals("<empty>"))
+            {
+                
+                var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(1, m_AttackAnimation, false);
+                m_SkeletonAnimation.AnimationState.AddEmptyAnimation(1, .5f, 0);
+            }
+          
         }
 
         void StopAttackAnimation()
         {
-            m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, 0f);
-
-            //  track.AttachmentThreshold = 1f;
+            var track = m_SkeletonAnimation.AnimationState.GetCurrent(1);
+          
+            if(track!=null && !track.Animation.Name.Equals("<empty>"))
+                        m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, 0f);
+          
         }
 
         bool TurnCharacterVisuals(bool facingLeft)
@@ -107,9 +116,14 @@ namespace HeroesFlight.System.Character
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
-            if (e.Data.Name.Equals("Dealing damg"))
+            switch (e.Data.Name)
             {
-                OnDealDamageRequest?.Invoke(e.Data.Name);
+                case "Dealing damg":
+                    OnDealDamageRequest?.Invoke(e.Data.Name);
+                    break;
+                case "start_sound":
+                    AudioManager.PlaySoundEffect("Attack Sound");
+                    break;
             }
         }
     }
