@@ -1,5 +1,6 @@
 ﻿using System;
 using HeroesFlight.System.Gameplay;
+using HeroesFlight.System.Gameplay.Enum;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,12 +12,27 @@ namespace HeroesFlight.System.UI
         public UiSystem(GamePlaySystemInterface gamePlaySystem)
         {
             gameplaySystem = gamePlaySystem;
-            gameplaySystem.OnPlayerWin += HandlePlayerWin;
+            gameplaySystem.OnGameStateChange += HandleGameplayStateChange;
             gameplaySystem.OnEnemyDamaged += HandleEnemyDamaged;
-            gameplaySystem.OnPlayerDeath += HandlePlayerDeath;
             gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
             gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
             gameplaySystem.OnCharacterDamaged += HandleCharacterDamaged;
+        }
+
+        void HandleGameplayStateChange(GameplayState newState)
+        {
+            switch (newState)
+            {
+                case GameplayState.Ongoing:
+                    break;
+                case GameplayState.Won:
+                    HandlePlayerWin();
+                    break;
+                case GameplayState.Lost:
+                    HandlePlayerDeath();
+                    break;
+               
+            }
         }
 
         public event Action OnReturnToMainMenuRequest;

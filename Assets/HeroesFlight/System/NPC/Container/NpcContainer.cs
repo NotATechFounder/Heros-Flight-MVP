@@ -14,41 +14,26 @@ namespace HeroesFlight.System.NPC.Container
     public class NpcContainer : MonoBehaviour
     {
         [SerializeField] AiControllerBase[] aiPrefabs;
-        int spawnAmount = 10;
+        int spawnAmount ;
+        int waves;
         GameObject player;
         
         Dictionary<EnemySpawmType, List<ISpawnPointInterface>> spanwPointsCache = new();
 
-        void Awake()
-        {
-            Init();
-        }
-
+        WaitForSeconds timeBetweenEnemySpawn;
+        WaitForSeconds timeBeweenWaves;
         public void Init()
         {
             GenerateCache();
             player = GameObject.FindWithTag("Player");
-           
+            timeBetweenEnemySpawn = new WaitForSeconds(1f);
+            timeBeweenWaves = new WaitForSeconds(10f);
+
         }
 
-        public void SpawnEnemies(int amount, Action<AiControllerBase> OnOnEnemySpawned)
+        public void SpawnEnemies(int enemiesToKill, int waves, Action<AiControllerBase> OnOnEnemySpawned)
         {
-            StartCoroutine(SpawnEnemiesRoutine(amount, OnOnEnemySpawned));
-
-            // spawnAmount = amount;
-            // for (var i = 0; i <= spawnAmount; i++)
-            // {
-            //     var rng = Random.Range(0, aiPrefabs.Length);
-            //
-            //     var targetPrefab = aiPrefabs[rng];
-            //     var targetPoints = spanwPointsCache[targetPrefab.AgentModel.EnemySpawmType];
-            //     var rngPoint=  Random.Range(0, targetPoints.Count);
-            //     var resultEnemy = Instantiate(targetPrefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
-            //         , Quaternion.identity);
-            //     resultEnemy.transform.parent = transform;
-            //     resultEnemy.Init(player.transform);
-            //     OnOnEnemySpawned?.Invoke(targetPrefab);
-            // }
+            StartCoroutine(SpawnEnemiesRoutine(enemiesToKill,waves, OnOnEnemySpawned));
         }
 
         void GenerateCache()
@@ -67,10 +52,25 @@ namespace HeroesFlight.System.NPC.Container
             }
         }
 
-        IEnumerator SpawnEnemiesRoutine(int amount, Action<AiControllerBase> OnOnEnemySpawned)
+        IEnumerator SpawnEnemiesRoutine(int enemiesToKill, int wavesNumber, Action<AiControllerBase> OnOnEnemySpawned)
         {
-            spawnAmount = amount;
-            for (var i = 0; i < spawnAmount; i++)
+            spawnAmount = enemiesToKill;
+            waves = wavesNumber;
+
+            var amountToSpawnPerWave = enemiesToKill / wavesNumber;
+            while (spawnAmount>0)
+            {
+                yield return StartCoroutine(SpawnWave(amountToSpawnPerWave, OnOnEnemySpawned));
+                spawnAmount -= amountToSpawnPerWave;
+                yield return timeBeweenWaves;
+            }
+
+           
+        }
+
+        IEnumerator SpawnWave(int enemiesToSpawn, Action<AiControllerBase> OnOnEnemySpawned)
+        {
+            for (var i = 0; i < enemiesToSpawn; i++)
             {
                 var rng = Random.Range(0, aiPrefabs.Length);
 
@@ -82,8 +82,10 @@ namespace HeroesFlight.System.NPC.Container
                 resultEnemy.transform.parent = transform;
                 resultEnemy.Init(player.transform);
                 OnOnEnemySpawned?.Invoke(resultEnemy);
-                yield return new WaitForSeconds(1f);
+                yield return timeBetweenEnemySpawn;
             }
+
+            yield return true;
         }
     }
 }

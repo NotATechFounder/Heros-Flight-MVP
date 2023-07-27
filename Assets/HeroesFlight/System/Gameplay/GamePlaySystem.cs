@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.NPC;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
@@ -26,20 +27,22 @@ namespace HeroesFlight.System.Gameplay
         CharacterSystemInterface characterSystem;
 
         NpcSystemInterface npcSystem;
+        GameplayState currentState;
 
 
         public event Action<int> OnRemainingEnemiesLeft;
-        public event Action OnPlayerDeath;
-        public event Action OnPlayerWin;
         public event Action<Transform, int> OnCharacterDamaged;
         public event Action<Transform, int> OnEnemyDamaged;
         public event Action<int> OnCharacterHealthChanged;
+        public event Action<GameplayState> OnGameStateChange;
         int enemiesToKill;
+        int wavesAmount;
 
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
-            enemiesToKill = 50;
+            wavesAmount = 3;
+            enemiesToKill = 6;
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
             characterHealthController = scene.GetComponent<CharacterHealthController>();
             characterHealthController.OnDeath += HandleCharacterDeath;
@@ -54,7 +57,8 @@ namespace HeroesFlight.System.Gameplay
 
         public void StartGameLoop()
         {
-            npcSystem.SpawnRandomEnemies(enemiesToKill);
+            currentState = GameplayState.Ongoing;
+            npcSystem.SpawnRandomEnemies(enemiesToKill,wavesAmount);
         }
 
         void HandleEnemySpawned(AiControllerBase obj)
@@ -68,29 +72,37 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleEnemyDeath(IHealthController iHealthController)
         {
+            if (currentState != GameplayState.Ongoing)
+                return;
+            
             iHealthController.OnDeath -= HandleEnemyDeath;
             enemyHealthControllers.Remove(iHealthController);
             enemiesToKill--;
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
             if (enemiesToKill <= 0)
             {
-                OnPlayerWin?.Invoke();
+                currentState = GameplayState.Won;
+                OnGameStateChange?.Invoke(currentState);
             }
+
+            
         }
 
         void HandleCharacterDamaged(Transform characterTransform, int damageReceived)
         {
-            if (enemiesToKill <= 0)
+            if (currentState != GameplayState.Ongoing)
                 return;
+            
             OnCharacterDamaged?.Invoke(characterTransform,damageReceived);
         }
 
         void HandleCharacterDeath(IHealthController obj)
         {
-            if (enemiesToKill <= 0)
+            if (currentState != GameplayState.Ongoing)
                 return;
             
-            OnPlayerDeath?.Invoke();
+            currentState = GameplayState.Lost;
+            OnGameStateChange?.Invoke(currentState);
         }
 
         void HandleEnemyDamaged(Transform transform, int i)

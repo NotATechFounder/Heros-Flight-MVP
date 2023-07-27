@@ -8,7 +8,7 @@ using Event = Spine.Event;
 
 namespace HeroesFlight.System.Character
 {
-    public class CharacterAnimationController : MonoBehaviour,CharacterAnimationControllerInterface
+    public class CharacterAnimationController : MonoBehaviour, CharacterAnimationControllerInterface
     {
         [SerializeField] AnimationReferenceAsset m_IdleAnimation;
         [SerializeField] AnimationReferenceAsset m_FlyingUpAnimation;
@@ -19,7 +19,7 @@ namespace HeroesFlight.System.Character
         [SerializeField] AnimationReferenceAsset m_AttackAnimation;
         SkeletonAnimation m_SkeletonAnimation;
         CharacterControllerInterface m_CharacterController;
-      
+
         bool m_WasFacingLeft;
         Dictionary<CharacterState, AnimationReferenceAsset> m_AnimationsCache = new();
 
@@ -56,21 +56,17 @@ namespace HeroesFlight.System.Character
                     turnTrack.AttachmentThreshold = 1f;
                     turnTrack.MixDuration = 0f;
 
-                    var track= m_SkeletonAnimation.AnimationState.AddAnimation(0, stateAnimation, true,0);
+                    var track = m_SkeletonAnimation.AnimationState.AddAnimation(0, stateAnimation, true, 0);
                     track.AttachmentThreshold = 1f;
                     track.MixDuration = .5f;
                 }
                 else
                 {
-                    var track= m_SkeletonAnimation.AnimationState.SetAnimation(0, stateAnimation, true);
+                    var track = m_SkeletonAnimation.AnimationState.SetAnimation(0, stateAnimation, true);
                     track.AttachmentThreshold = 1f;
                     track.MixDuration = .5f;
-                  
                 }
             }
-
-
-           
         }
 
         void PlayAttackAnimation()
@@ -84,13 +80,12 @@ namespace HeroesFlight.System.Character
         void StopAttackAnimation()
         {
             m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, 0f);
-          //  track.AttachmentThreshold = 1f;
-           
+
+            //  track.AttachmentThreshold = 1f;
         }
 
         bool TurnCharacterVisuals(bool facingLeft)
         {
-           
             if (m_WasFacingLeft != facingLeft)
             {
                 m_WasFacingLeft = facingLeft;
@@ -112,11 +107,10 @@ namespace HeroesFlight.System.Character
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
-           Debug.Log(e.Data.Name);
-           if (e.Data.Name.Equals("Dealing damg"))
-           {
-               OnDealDamageRequest?.Invoke(e.Data.Name);
-           }
+            if (e.Data.Name.Equals("Dealing damg"))
+            {
+                OnDealDamageRequest?.Invoke(e.Data.Name);
+            }
         }
     }
 }
