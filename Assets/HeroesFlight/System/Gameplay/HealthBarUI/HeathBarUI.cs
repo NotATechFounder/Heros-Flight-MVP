@@ -25,14 +25,6 @@ public class HeathBarUI : MonoBehaviour
         healthBar.gameObject.SetActive(healthBarType == HealthBarType.AlwaysVisible);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            ChangeValue(innerFill.fillAmount - 0.2f);
-        }
-    }
-
     public void ChangeType(HealthBarType healthBarType)
     {
         this.healthBarType = healthBarType;

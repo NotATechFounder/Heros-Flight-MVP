@@ -11,6 +11,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             aiController = GetComponent<AiControllerInterface>();
             maxHealth = aiController.AgentModel.CombatModel.Health;
+            heathBarUI?.ChangeType(HeathBarUI.HealthBarType.ToggleVisibilityOnHit);
             base.Init();
         }
 

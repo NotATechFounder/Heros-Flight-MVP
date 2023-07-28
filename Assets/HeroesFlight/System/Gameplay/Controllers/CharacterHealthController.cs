@@ -1,4 +1,5 @@
 using HeroesFlight.System.Character;
+using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -6,6 +7,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         CharacterControllerInterface controller;
         CharacterAttackController attackController;
+
         public override void Init()
         {
             controller = GetComponent<CharacterControllerInterface>();
