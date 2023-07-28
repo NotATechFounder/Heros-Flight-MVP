@@ -13,7 +13,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         [SerializeField] LayerMask m_TargetMask;
         [SerializeField] int enemiesToHitPerAttack = 4;
-
+ 
         public int Damage => controller.Data.CombatModel.Damage;
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
@@ -69,9 +69,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
 
             m_TimeSinceLastAttack += Time.deltaTime;
+
             attackPoint = controller.IsFacingLeft
-                ? transform.position + Vector3.up + Vector3.left * 3
-                : transform.position + Vector3.up + Vector3.right * 3;
+                ? transform.position + Vector3.up + Vector3.left * 1
+                : transform.position + Vector3.up + Vector3.right * 1;
+
             visualController.SetPosition(attackPoint);
            
             ProcessAttackLogic();
@@ -164,10 +166,16 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (combatModel == null)
                 return;
+            //var checkPosition = controller.IsFacingLeft
+            //    ? transform.position + Vector3.up + Vector3.left * 3
+            //    : transform.position + Vector3.up + Vector3.right * 3;
+            //Gizmos.DrawWireSphere(checkPosition, combatModel.AttackRange);
+
             var checkPosition = controller.IsFacingLeft
-                ? transform.position + Vector3.up + Vector3.left * 3
-                : transform.position + Vector3.up + Vector3.right * 3;
+                ? transform.position + Vector3.up + Vector3.left * 1
+                : transform.position + Vector3.up + Vector3.right * 1;
             Gizmos.DrawWireSphere(checkPosition, combatModel.AttackRange);
+
         }
     }
 }

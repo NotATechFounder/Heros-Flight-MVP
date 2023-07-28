@@ -17,7 +17,7 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
             gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
             gameplaySystem.OnCharacterDamaged += HandleCharacterDamaged;
-            gameplaySystem.GameTimer.OnProgress+=UpdateGameTimeUI;
+            gameplaySystem.GameTimer.onTimeTick += UpdateGameTimeUI;
             gameplaySystem.OnCharacterComboChanged += UpdateComboUI;
         }
 
