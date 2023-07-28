@@ -22,7 +22,6 @@ public enum AngelCardType
 {
     Buff,
     Debuff,
-    Blank,
 }
 
 public enum AngelCardTier

@@ -10,7 +10,6 @@ public class AngelCardUI : MonoBehaviour
     [SerializeField] private AngelCardProperties angelCardProperties;
     [SerializeField] private AdvanceButton advanceButton;
 
-    private AngelCardType cardType;
     private AngelCardTier cardTier;
     private AngelCardSO angelCardSO;
 
@@ -25,7 +24,6 @@ public class AngelCardUI : MonoBehaviour
         angelCardProperties.cardNameDisplay.text = angelCard.CardName;
         angelCardProperties.cardDescriptionDisplay.text = angelCard.ShortCardDescription;
         angelCardProperties.cardImageDisplay.sprite = angelCard.CardImage;
-        cardType = angelCard.CardType;
         cardTier = angelCard.CardTier;
     }
 

@@ -20,6 +20,7 @@ public class AngelCardSO : ScriptableObject
     public string CardDescription => fullCardDescription;
     public string ShortCardDescription => shortCardDescription;
     public Sprite CardImage => cardImage;
+
     public AngelCardType CardType => cardType;
     public AngelCardTier CardTier => cardTier;
     public CardEffect AffterEffectBonus => affterEffectBonus;
