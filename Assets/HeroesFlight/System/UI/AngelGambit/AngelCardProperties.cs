@@ -4,13 +4,18 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
+[System.Serializable]
 public class AngelCardProperties
 {
     public TextMeshProUGUI cardNameDisplay;
     public TextMeshProUGUI cardDescriptionDisplay;
     public Image cardImageDisplay;
-    public AngelCardType cardType;
-    public AngelCardTier cardTier;
+}
+
+public class TierEffect
+{
+    public AngelCardTier tier;
+    public float effect;
 }
 
 public enum AngelCardType
@@ -25,4 +30,7 @@ public enum AngelCardTier
     One,
     Two,
     Three,
+    Four,
+    Five,
+    Six,
 }
