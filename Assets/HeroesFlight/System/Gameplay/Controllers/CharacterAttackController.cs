@@ -11,9 +11,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class CharacterAttackController : MonoBehaviour, IAttackControllerInterface
     {
-        [SerializeField] LayerMask m_TargetMask;
         [SerializeField] int enemiesToHitPerAttack = 4;
- 
+        [SerializeField] float attackPointOffset = 1f;
+
         public int Damage => controller.Data.CombatModel.Damage;
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
@@ -29,7 +29,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         CombatModel combatModel;
 
-       [SerializeField] float m_TimeSinceLastAttack = 0;
+        [SerializeField] float m_TimeSinceLastAttack = 0;
 
         Vector2 attackPoint;
 
@@ -48,7 +48,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             m_State = AttackControllerState.LookingForTarget;
             combatModel = controller.Data.CombatModel;
             m_TimeSinceLastAttack = combatModel.TimeBetweenAttacks;
-            attackPoint = transform.position + Vector3.up + Vector3.left * 3;
+            attackPoint = transform.position + Vector3.up + Vector3.left * attackPointOffset;
             visualController.Init(combatModel.AttackRange);
             visualController.SetPosition(attackPoint);
             isDisabled = false;
@@ -71,11 +71,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             m_TimeSinceLastAttack += Time.deltaTime;
 
             attackPoint = controller.IsFacingLeft
-                ? transform.position + Vector3.up + Vector3.left * 1
-                : transform.position + Vector3.up + Vector3.right * 1;
+                ? transform.position + Vector3.up + Vector3.left * attackPointOffset
+                : transform.position + Vector3.up + Vector3.right * attackPointOffset;
 
             visualController.SetPosition(attackPoint);
-           
+
             ProcessAttackLogic();
         }
 
@@ -95,7 +95,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             FilterEnemies(enemiesRetriveCallback?.Invoke(), ref foundedEnemies);
             if (foundedEnemies.Count > 0)
             {
-              AttackTargets();
+                AttackTargets();
             }
             else
             {
@@ -120,10 +120,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (m_TimeSinceLastAttack < combatModel.TimeBetweenAttacks)
             {
-               return;
+                return;
             }
-                
-            
+
+
             m_CharacterAnimationController.PlayAttackSequence();
             m_TimeSinceLastAttack = 0;
         }
@@ -166,16 +166,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (combatModel == null)
                 return;
-            //var checkPosition = controller.IsFacingLeft
-            //    ? transform.position + Vector3.up + Vector3.left * 3
-            //    : transform.position + Vector3.up + Vector3.right * 3;
-            //Gizmos.DrawWireSphere(checkPosition, combatModel.AttackRange);
-
             var checkPosition = controller.IsFacingLeft
-                ? transform.position + Vector3.up + Vector3.left * 1
-                : transform.position + Vector3.up + Vector3.right * 1;
+                ? transform.position + Vector3.up + Vector3.left * attackPointOffset
+                : transform.position + Vector3.up + Vector3.right * attackPointOffset;
             Gizmos.DrawWireSphere(checkPosition, combatModel.AttackRange);
-
         }
     }
 }
