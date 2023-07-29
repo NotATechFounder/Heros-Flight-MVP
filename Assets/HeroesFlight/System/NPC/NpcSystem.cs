@@ -24,5 +24,10 @@ namespace HeroesFlight.System.NPC
         {
             container.SpawnEnemies(enemiesToKill,waves,OnEnemySpawned);
         }
+
+        public AiControllerBase SpawnMiniBoss(Action onComplete)
+        {
+             return container.SpawnMiniBoss();
+        }
     }
 }

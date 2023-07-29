@@ -7,5 +7,6 @@ namespace HeroesFlight.System.NPC
     {
         event Action<AiControllerBase> OnEnemySpawned;
         void SpawnRandomEnemies(int enemiesToKill, int waves);
+        AiControllerBase SpawnMiniBoss(Action onComplete);
     }
 }

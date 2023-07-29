@@ -29,7 +29,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         CombatModel combatModel;
 
-        [SerializeField] float m_TimeSinceLastAttack = 0;
+        float m_TimeSinceLastAttack = 0;
 
         Vector2 attackPoint;
 
