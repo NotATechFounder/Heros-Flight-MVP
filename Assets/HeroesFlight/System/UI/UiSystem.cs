@@ -17,7 +17,6 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
             gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
             gameplaySystem.OnCharacterDamaged += HandleCharacterDamaged;
-            gameplaySystem.GameTimer.onTimeTick += UpdateGameTimeUI;
             gameplaySystem.OnCharacterComboChanged += UpdateComboUI;
         }
 
@@ -27,11 +26,14 @@ namespace HeroesFlight.System.UI
             switch (newState)
             {
                 case GameplayState.Ongoing:
+                    gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
                     break;
                 case GameplayState.Won:
+                    gameplaySystem.GameTimer.OnTimeTick -= UpdateGameTimeUI;
                     HandlePlayerWin();
                     break;
                 case GameplayState.Lost:
+                    gameplaySystem.GameTimer.OnTimeTick -= UpdateGameTimeUI;
                     HandlePlayerDeath();
                     break;
                 case GameplayState.Ended :

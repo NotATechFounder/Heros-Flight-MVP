@@ -61,7 +61,7 @@ namespace HeroesFlight.System.Gameplay
             characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
             characterHealthController.Init();
             OnCharacterComboChanged?.Invoke(characterComboNumber);
-            currentState = GameplayState.Ongoing;
+            OnGameStateChange?.Invoke(currentState);
             combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());
         }
 
@@ -77,11 +77,11 @@ namespace HeroesFlight.System.Gameplay
 
         public void StartGameLoop()
         {
+            currentState = GameplayState.Ongoing;
+            OnGameStateChange?.Invoke(currentState);
             GameTimer.Start(3, null,
                 () =>
                 {
-                    currentState = GameplayState.Ongoing;
-                    OnGameStateChange?.Invoke(currentState);
                     characterController.SetActionState(false);
                     npcSystem.SpawnRandomEnemies(enemiesToKill, wavesAmount);
                     GameTimer.Start(180, null,
@@ -90,8 +90,7 @@ namespace HeroesFlight.System.Gameplay
                             if (currentState != GameplayState.Ongoing)
                                 return;
 
-                            currentState = GameplayState.Lost;
-                            OnGameStateChange?.Invoke(currentState);
+                            ChangeState(GameplayState.Lost);
                         }, characterAttackController);
                 }, characterAttackController);
         }
@@ -116,8 +115,7 @@ namespace HeroesFlight.System.Gameplay
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
             if (enemiesToKill <= 0)
             {
-                currentState = GameplayState.Won;
-                OnGameStateChange?.Invoke(currentState);
+                ChangeState(GameplayState.Won);
             }
         }
 
@@ -134,8 +132,7 @@ namespace HeroesFlight.System.Gameplay
             if (currentState != GameplayState.Ongoing)
                 return;
 
-            currentState = GameplayState.Lost;
-            OnGameStateChange?.Invoke(currentState);
+            ChangeState(GameplayState.Lost);
         }
 
         void HandleEnemyDamaged(Transform transform, int i)
@@ -164,6 +161,14 @@ namespace HeroesFlight.System.Gameplay
 
                 yield return null;
             }
+        }
+
+        void ChangeState(GameplayState newState)
+        {
+            if (currentState == newState)
+                return;
+            currentState =newState;
+            OnGameStateChange?.Invoke(currentState);
         }
     }
 }

@@ -37,6 +37,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected virtual void Update()
         {
+            if (health.IsDead())
+                return;
+            
             if (target.IsDead())
             {
                 aiController.SetAttackState(false);
@@ -65,12 +68,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
-        public void Init()
-        {
-        }
+        public void Init() { }
 
-        public virtual void DisableActions()
-        {
-        }
+        public virtual void DisableActions() { }
     }
 }

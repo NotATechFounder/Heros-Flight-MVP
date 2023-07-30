@@ -29,7 +29,6 @@ namespace HeroesFlight.System.NPC.Controllers
         {
             var currentDuration = duration;
             var step = 0.01f;
-            Debug.Log(step);
             while ( mainMaterialColor.a<1)
             {
                 currentDuration -= Time.deltaTime;

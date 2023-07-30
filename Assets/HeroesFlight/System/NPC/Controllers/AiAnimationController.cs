@@ -1,5 +1,4 @@
 using System;
-using Spine;
 using Spine.Unity;
 using StansAssets.Foundation.Async;
 using UnityEngine;
@@ -19,7 +18,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             skeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
             aiController = GetComponent<AiControllerInterface>();
-            skeletonAnimation.AnimationState.End += HandleEventEnded;
         }
 
 
@@ -34,7 +32,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             skeletonAnimation.Skeleton.ScaleX = velocity.x >= 0 ? 1f : -1f;
         }
 
-        public event Action OnDynamicAnimationEnded;
+    
 
         public void StartAttackAnimation(Action onCompleteAction)
         {
@@ -65,12 +63,16 @@ namespace HeroesFlightProject.System.NPC.Controllers
             });
         }
 
-        void HandleEventEnded(TrackEntry trackentry)
+        public void PlayAnimation(AnimationReferenceAsset animationReference,Action onCompleteAction=null)
         {
-            if (trackentry.TrackIndex == movementTrackIndex)
+            skeletonAnimation.AnimationState.SetAnimation(3, animationReference, false);
+            skeletonAnimation.AnimationState.AddEmptyAnimation(3, 0, 0);
+            CoroutineUtility.WaitForSeconds(animationReference.Animation.Duration, () =>
             {
-                OnDynamicAnimationEnded?.Invoke();
-            }
+                onCompleteAction?.Invoke();
+            });
         }
+
+       
     }
 }
