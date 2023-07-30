@@ -8,6 +8,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
     public class AiControllerPathFinding : AiControllerBase
     {
         [SerializeField] bool isFLying;
+        [SerializeField] bool useKnockback=true;
         Path currentPath;
         IAstarAI ai;
         AIDestinationSetter setter;
@@ -63,6 +64,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void ProcessKnockBack()
         {
+            if (!useKnockback)
+                return;
+            
             if (isInknockback)
                 return;
             isInknockback = true;

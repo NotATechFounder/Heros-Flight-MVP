@@ -138,8 +138,11 @@ namespace UISystem
         {
             bossHealthFill.SetValue(value);
         }
-        
-       
+
+        public void ToggleBossHpBar(bool isEnabled)
+        {
+            bossHealthFill.ToggleVisbility(isEnabled);
+        }
         public void FillSpecial(float normalisedValue)
         {
             specialAttackButtonFill.fillAmount = normalisedValue;

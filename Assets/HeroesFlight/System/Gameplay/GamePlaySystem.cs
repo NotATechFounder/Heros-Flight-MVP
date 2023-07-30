@@ -25,8 +25,8 @@ namespace HeroesFlight.System.Gameplay
 
         public CountDownTimer GameTimer { get; private set; }
         List<IHealthController> GetExistingEnemies() => enemyHealthControllers;
-
         List<IHealthController> enemyHealthControllers = new();
+        IHealthController miniBoss;
         IHealthController characterHealthController;
         CharacterAttackController characterAttackController;
         CharacterSystemInterface characterSystem;
@@ -83,6 +83,7 @@ namespace HeroesFlight.System.Gameplay
                 () =>
                 {
                     characterController.SetActionState(false);
+                    CreateMiniboss();
                     npcSystem.SpawnRandomEnemies(enemiesToKill, wavesAmount);
                     GameTimer.Start(180, null,
                         () =>
@@ -93,6 +94,16 @@ namespace HeroesFlight.System.Gameplay
                             ChangeState(GameplayState.Lost);
                         }, characterAttackController);
                 }, characterAttackController);
+        }
+
+        void CreateMiniboss()
+        {
+            var miniboss = npcSystem.SpawnMiniBoss();
+            miniBoss = miniboss.GetComponent<IHealthController>();
+            miniBoss.OnBeingDamaged += HandleEnemyDamaged;
+            miniBoss.OnDeath += HandleEnemyDeath;
+            miniBoss.Init();
+            enemyHealthControllers.Add(miniBoss);
         }
 
         void HandleEnemySpawned(AiControllerBase obj)
