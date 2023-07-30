@@ -12,6 +12,7 @@ namespace UISystem
     public class AngelGambitMenu : BaseMenu<AngelGambitMenu>
     {
         public event Action<AngelCardSO> OnCardSelected;
+        public Func<AngelCard> CardExit;
 
         [Header("Card Buttons")]
         [SerializeField] private AdvanceButton buffCardButton;
@@ -27,13 +28,17 @@ namespace UISystem
         [Header("Card Reveal")]
         [SerializeField] private GameObject cardRevealPanel;
         [SerializeField] private Transform cardToReveal;
+        [SerializeField] private Image cardBg;
         [SerializeField] private TextMeshProUGUI cardNameDisplay;
+        [SerializeField] private TextMeshProUGUI cardTierDisplay;
         [SerializeField] private TextMeshProUGUI cardDescriptionDisplay;
         [SerializeField] private Image cardImageDisplay;
         [SerializeField] private GameObject[] cardRevealProperties;
 
         [Header("Card List")]
         [SerializeField] private AngelCardSO[] angelCardSOList;
+
+        AngelCardSO selectedCard = null;
 
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
@@ -90,8 +95,7 @@ namespace UISystem
 
             continueButton.onClick.AddListener(()=>
             {
-                cardRevealPanel.SetActive(false);
-                ToggleCardRevealProperties(false);
+                ActivateCard();
             });
 
             ToggleCardRevealProperties (false);
@@ -127,25 +131,45 @@ namespace UISystem
                 randomCard = UnityEngine.Random.Range(0, angelCardSOList.Length);
             }
 
-            DisplayCard(angelCardSOList[randomCard]);
+            selectedCard = angelCardSOList[randomCard];
+            DisplayCard();
         }   
         
-        public void DisplayCard(AngelCardSO angelCardSO)
+        public void DisplayCard()
         {
             cardRevealPanel.SetActive(true);
 
-            cardNameDisplay.text = angelCardSO.CardType == AngelCardType.Buff ? "BUFF" : "DEBUFF";
-            cardDescriptionDisplay.text = angelCardSO.CardDescription;
-            cardImageDisplay.sprite = angelCardSO.CardImage;
+            AngelCard existingCard = CardExit?.Invoke();
+
+            // To be removed
+            existingCard = StatEffectManager.Instance.Exists(selectedCard);
+
+            if (existingCard != null)
+            {
+                cardTierDisplay.text = "Tier : " + (existingCard.tier + 1).ToString();
+                cardDescriptionDisplay.text = selectedCard.GetDescription(existingCard.tier + 1);
+            }
+            else
+            {
+                cardTierDisplay.text = "Tier : " + AngelCardTier.One.ToString();
+                cardDescriptionDisplay.text = selectedCard.GetDescription(AngelCardTier.One);
+            }
+
+            cardNameDisplay.text = selectedCard.CardName;
+            cardImageDisplay.sprite = selectedCard.CardImage;
+            cardBg.color = selectedCard.CardType == AngelCardType.Buff ? buffCardColor : debuffCardColor;
 
             spinCardEffect.Start();
         }
 
-        public void ActivateCard (AngelCardSO angelCardSO)
+        public void ActivateCard ()
         {
             cardRevealPanel.SetActive(false);
-            OnCardSelected?.Invoke(angelCardSO);
-            Close();
+            OnCardSelected?.Invoke(selectedCard);
+            ToggleCardRevealProperties(false);
+            // To be removed
+            StatEffectManager.Instance.AddAngelCardSO(selectedCard);
+           // Close();
         }
 
         public void ToggleCardRevealProperties(bool toggle)
