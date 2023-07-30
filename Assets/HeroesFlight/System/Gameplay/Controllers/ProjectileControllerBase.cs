@@ -7,6 +7,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         [SerializeField] float lifeTime;
         [SerializeField] float speed;
+        Transform view;
         public event Action OnEnded;
         Vector2 currentDirection = default;
         int damage;
@@ -30,10 +31,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             Destroy(this.gameObject);
         }
 
-        public void SetupProjectile(int targetDamage, Vector2 targetDirection)
+        public void SetupProjectile(int targetDamage, Transform currentTarget, Vector2 targetDirection)
         {
             currentDirection = targetDirection;
             damage = targetDamage;
+            view = transform.GetChild(0);
+            var angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
+            var targetRotation = Quaternion.AngleAxis(angle, view.forward);
+            view.rotation = targetRotation;
             gameObject.SetActive(true);
         }
 

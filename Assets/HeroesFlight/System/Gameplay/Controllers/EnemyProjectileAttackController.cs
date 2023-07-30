@@ -5,7 +5,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class EnemyProjectileAttackController : EnemyAttackControllerBase
     {
         [SerializeField] ProjectileControllerBase projectilePrefab;
-
+        
 
         protected override void Update()
         {
@@ -25,8 +25,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             timeSinceLastAttack = 0;
             aiController.SetAttackState(false);
-            var projectile = Instantiate(projectilePrefab,transform.position,Quaternion.identity);
-            projectile.SetupProjectile(Damage,aiController.CurrentTarget.position-transform.position);
+            animator.StartAttackAnimation(() =>
+            {
+                var projectile = Instantiate(projectilePrefab,transform.position,Quaternion.identity);
+                projectile.SetupProjectile(Damage,aiController.CurrentTarget,aiController.CurrentTarget.position-transform.position);
+            });
+            
             
         }
     }

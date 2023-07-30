@@ -36,12 +36,16 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public event Action OnDynamicAnimationEnded;
 
-        public void StartAttackAnimation()
+        public void StartAttackAnimation(Action onCompleteAction)
         {
             var turnTrack = skeletonAnimation.AnimationState.SetAnimation(dynamicTrackIndex, attackAnimation, false);
             skeletonAnimation.AnimationState.AddEmptyAnimation(dynamicTrackIndex, .5f, 0);
             turnTrack.AttachmentThreshold = 1f;
             turnTrack.MixDuration = .5f;
+            CoroutineUtility.WaitForSeconds(deathAnimation.Animation.Duration, () =>
+            {
+                onCompleteAction?.Invoke();
+            });
         }
 
         public void StopAttackAnimation()
@@ -51,28 +55,18 @@ namespace HeroesFlightProject.System.NPC.Controllers
             track.MixDuration = .5f;
         }
 
-        public void PlayDeathAnimation( Action onCompleteAction)
+        public void PlayDeathAnimation(Action onCompleteAction)
         {
-            // void OnCompleteHandler()
-            // {
-            //     onCompleteAction?.Invoke();
-            //     OnDynamicAnimationEnded -= onCompleteAction;
-            // }
-            //
-            // OnDynamicAnimationEnded += OnCompleteHandler;
-            var turnTrack = skeletonAnimation.AnimationState.SetAnimation(movementTrackIndex, deathAnimation, false);
-             skeletonAnimation.AnimationState.AddEmptyAnimation(dynamicTrackIndex, 0, 0);
-             CoroutineUtility.WaitForSeconds(deathAnimation.Animation.Duration, () =>
-             {
-                 onCompleteAction?.Invoke();
-             });
-            // turnTrack.AttachmentThreshold = 1f;
-            // turnTrack.MixDuration = .5f;
+            skeletonAnimation.AnimationState.SetAnimation(movementTrackIndex, deathAnimation, false);
+            skeletonAnimation.AnimationState.AddEmptyAnimation(dynamicTrackIndex, 0, 0);
+            CoroutineUtility.WaitForSeconds(deathAnimation.Animation.Duration, () =>
+            {
+                onCompleteAction?.Invoke();
+            });
         }
 
         void HandleEventEnded(TrackEntry trackentry)
         {
-            Debug.Log(trackentry.Animation.Name);
             if (trackentry.TrackIndex == movementTrackIndex)
             {
                 OnDynamicAnimationEnded?.Invoke();

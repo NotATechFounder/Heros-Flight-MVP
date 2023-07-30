@@ -7,6 +7,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         event Action OnEnded;
 
-        void SetupProjectile(int targetDamage,Vector2 targetDirection);
+        void SetupProjectile(int targetDamage,Transform currentTarget,Vector2 targetDirection);
     }
 }

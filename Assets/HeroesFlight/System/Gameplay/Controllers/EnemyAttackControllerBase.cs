@@ -11,7 +11,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected float attackRange;
         protected float timeBetweenAttacks;
         protected float timeSinceLastAttack;
-
+        protected AiAnimatorInterface animator;
 
         public int Damage => aiController.AgentModel.CombatModel.Damage;
         public float TimeSinceLastAttack => timeSinceLastAttack;
@@ -19,6 +19,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void Start()
         {
             aiController = GetComponent<AiControllerBase>();
+            animator = GetComponent<AiAnimatorInterface>();
             target = aiController.CurrentTarget.GetComponent<IHealthController>();
             timeSinceLastAttack = 0;
             timeBetweenAttacks = aiController.AgentModel.CombatModel.TimeBetweenAttacks;
@@ -33,13 +34,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 aiController.SetAttackState(false);
                 return;
             }
-            
+
             timeSinceLastAttack += Time.deltaTime;
             if (timeSinceLastAttack >= timeBetweenAttacks)
             {
                 aiController.SetAttackState(true);
             }
-            
         }
 
         protected virtual void InitAttack()
@@ -57,8 +57,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
-        public void Init() { }
+        public void Init()
+        {
+        }
 
-        public virtual void DisableActions() { }
+        public virtual void DisableActions()
+        {
+        }
     }
 }
