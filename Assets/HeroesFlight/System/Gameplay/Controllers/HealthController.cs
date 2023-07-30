@@ -51,7 +51,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected void TriggerDamageMessage(int damage)
         {
-            OnBeingDamaged.Invoke(transform,damage);
+            OnBeingDamaged?.Invoke(transform,damage);
         }
     }
 }

@@ -1,5 +1,4 @@
 using HeroesFlightProject.System.NPC.Controllers;
-using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -25,7 +24,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             aiController.ProcessKnockBack();
             base.DealDamage(damage);
-          
         }
     }
 }

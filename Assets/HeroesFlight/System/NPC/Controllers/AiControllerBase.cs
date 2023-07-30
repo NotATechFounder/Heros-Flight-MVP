@@ -11,7 +11,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
         [SerializeField] protected float wanderDistance = 10f;
         [SerializeField] protected float knockbackForce = 10f;
         protected AiViewController viewController;
-
+        protected AiAnimatorInterface animator;
+        protected Collider2D attackCollider;
         public event Action OnInitialized;
         public event Action OnDisabled;
         public EnemyType EnemyType => m_Model.EnemyType;
@@ -20,6 +21,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         protected Rigidbody2D rigidBody;
         protected Transform currentTarget;
+        protected bool isDisabled;
         bool canAttack;
         Vector2 wanderPosition;
        
@@ -28,15 +30,20 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public virtual void Init(Transform player)
         {
             rigidBody = GetComponent<Rigidbody2D>();
+            attackCollider = GetComponent<Collider2D>();
+            animator = GetComponent<AiAnimatorInterface>();
             viewController = GetComponent<AiViewController>();
             currentTarget = player;
             viewController.Init();
             OnInit();
-            viewController.StartFadeIn(3f,Enable);
+            viewController.StartFadeIn(2f,Enable);
         }
 
         void Update()
         {
+            if (isDisabled)
+                return;
+            
             if (OutOfAgroRange() || !canAttack)
             {
                ProcessWanderingState();
@@ -64,13 +71,22 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public virtual void Enable()
         {
+            rigidBody.bodyType = RigidbodyType2D.Dynamic;
             gameObject.SetActive(true);
+            attackCollider.enabled = true;
+            isDisabled = false;
         }
 
         public virtual void Disable()
         {
-            gameObject.SetActive(false);
-            OnDisabled?.Invoke();
+            isDisabled = true;
+            attackCollider.enabled = false;
+            rigidBody.bodyType = RigidbodyType2D.Static;
+            animator.PlayDeathAnimation(() =>
+            {
+                gameObject.SetActive(false);
+                OnDisabled?.Invoke();
+            });
         }
 
 

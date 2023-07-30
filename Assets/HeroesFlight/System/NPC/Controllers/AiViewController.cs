@@ -29,9 +29,11 @@ namespace HeroesFlight.System.NPC.Controllers
         {
             var currentDuration = duration;
             var step = 1 / duration;
+            Debug.Log(step);
             while (currentDuration>0)
             {
                 currentDuration -= Time.deltaTime;
+                Debug.Log(  mainMaterialColor.a);
                 mainMaterialColor.a += step;
                 propertyBlock.SetColor("_Color", mainMaterialColor);
                 mesh.SetPropertyBlock(propertyBlock);
