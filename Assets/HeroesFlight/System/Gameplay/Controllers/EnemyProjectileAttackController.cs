@@ -9,6 +9,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected override void Update()
         {
+            if (health.IsDead())
+                return;
+            
             if (target.IsDead())
                 return;
             

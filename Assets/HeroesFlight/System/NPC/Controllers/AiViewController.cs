@@ -28,12 +28,11 @@ namespace HeroesFlight.System.NPC.Controllers
         IEnumerator FadeInRoutine(float duration, Action onComplete)
         {
             var currentDuration = duration;
-            var step = 1 / duration;
+            var step = 0.01f;
             Debug.Log(step);
-            while (currentDuration>0)
+            while ( mainMaterialColor.a<1)
             {
                 currentDuration -= Time.deltaTime;
-                Debug.Log(  mainMaterialColor.a);
                 mainMaterialColor.a += step;
                 propertyBlock.SetColor("_Color", mainMaterialColor);
                 mesh.SetPropertyBlock(propertyBlock);
