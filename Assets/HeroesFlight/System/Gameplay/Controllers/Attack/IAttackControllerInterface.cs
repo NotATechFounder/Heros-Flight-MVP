@@ -2,7 +2,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public interface IAttackControllerInterface
     {
-        int Damage { get; }
+        float Damage { get; }
         float TimeSinceLastAttack { get; }
         void AttackTargets();
         void Init();

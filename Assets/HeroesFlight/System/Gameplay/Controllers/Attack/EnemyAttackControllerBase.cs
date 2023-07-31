@@ -14,7 +14,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected AiAnimatorInterface animator;
         protected IHealthController health;
 
-        public int Damage => aiController.AgentModel.CombatModel.Damage;
+        public float Damage => aiController.AgentModel.CombatModel.Damage;
         public float TimeSinceLastAttack => timeSinceLastAttack;
 
         void Start()

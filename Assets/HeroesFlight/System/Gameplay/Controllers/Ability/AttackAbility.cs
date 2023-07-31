@@ -7,7 +7,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class AttackAbility : AbilityBase
     {
-        [SerializeField] CombatModel model;
+        [SerializeField] AiAgentCombatModel model;
         public override void UseAbility(IHealthController target = null, Action onComplete = null)
         {
             base.UseAbility(target, onComplete);

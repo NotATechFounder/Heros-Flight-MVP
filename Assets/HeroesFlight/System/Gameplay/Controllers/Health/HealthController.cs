@@ -7,15 +7,15 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class HealthController : MonoBehaviour, IHealthController
     {
         [SerializeField] CombatTargetType targetType;
-        protected int maxHealth;
-        [SerializeField] protected int currentHealh;
+        protected float maxHealth;
+        [SerializeField] protected float currentHealh;
         [SerializeField] protected HeathBarUI heathBarUI;
         public Transform currentTransform => transform;
         public CombatTargetType TargetType => targetType;
-        public int MaxHealth => maxHealth;
-        public int CurrentHealth => currentHealh;
+        public float MaxHealth => maxHealth;
+        public float CurrentHealth => currentHealh;
         public float CurrentHealthProportion => (float)currentHealh / maxHealth;
-        public event Action<Transform,int> OnBeingDamaged;
+        public event Action<Transform, float> OnBeingDamaged;
         public event Action<IHealthController> OnDeath;
 
         void Awake()
@@ -28,13 +28,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             currentHealh = maxHealth;
         }
 
-        public virtual void DealDamage(int damage)
+        public virtual void DealDamage(float damage)
         {
             if(IsDead())
                 return;
 
             currentHealh -= damage;
-            heathBarUI?.ChangeValue((float)currentHealh / maxHealth);
+            heathBarUI?.ChangeValue(currentHealh / maxHealth);
             OnBeingDamaged?.Invoke(transform, damage);
 
             if (IsDead())

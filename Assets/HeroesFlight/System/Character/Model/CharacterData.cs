@@ -8,9 +8,9 @@ namespace HeroesFlight.System.Character.Model
     public class CharacterData
     {
         [SerializeField] AppearanceModel appearenceModel;
-        [SerializeField] CombatModel combatModel;
+        [SerializeField] PlayerCombatModel combatModel;
 
-        public CombatModel CombatModel => combatModel;
+        public PlayerCombatModel CombatModel => combatModel;
         public AppearanceModel AppearenceModel => appearenceModel;
     }
 }

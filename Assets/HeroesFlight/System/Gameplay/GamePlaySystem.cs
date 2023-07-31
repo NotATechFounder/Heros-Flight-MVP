@@ -43,8 +43,8 @@ namespace HeroesFlight.System.Gameplay
         public event Action<float> OnMinibossHealthChange;
        
         public event Action<int> OnRemainingEnemiesLeft;
-        public event Action<Transform, int> OnCharacterDamaged;
-        public event Action<Transform, int> OnEnemyDamaged;
+        public event Action<Transform, float> OnCharacterDamaged;
+        public event Action<Transform, float> OnEnemyDamaged;
         public event Action<int> OnCharacterHealthChanged;
         public event Action<int> OnCharacterComboChanged;
         public event Action<GameplayState> OnGameStateChange;
@@ -117,7 +117,7 @@ namespace HeroesFlight.System.Gameplay
             cameraController.SetCameraShakeState(false);
         }
 
-        void HandleMinibosshealthChange(Transform transform, int i)
+        void HandleMinibosshealthChange(Transform transform, float i)
         {
            OnMinibossHealthChange?.Invoke(miniBoss.CurrentHealthProportion);
         }
@@ -146,7 +146,7 @@ namespace HeroesFlight.System.Gameplay
             }
         }
 
-        void HandleCharacterDamaged(Transform characterTransform, int damageReceived)
+        void HandleCharacterDamaged(Transform characterTransform, float damageReceived)
         {
             if (currentState != GameplayState.Ongoing)
                 return;
@@ -162,7 +162,7 @@ namespace HeroesFlight.System.Gameplay
             ChangeState(GameplayState.Lost);
         }
 
-        void HandleEnemyDamaged(Transform transform, int i)
+        void HandleEnemyDamaged(Transform transform, float i)
         {
             UpdateCharacterCombo();
             OnEnemyDamaged?.Invoke(transform, i);

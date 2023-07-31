@@ -11,8 +11,8 @@ namespace HeroesFlight.System.Gameplay
         event Action<bool> OnMinibossSpawned;
         event Action<float> OnMinibossHealthChange; 
         event Action<int> OnRemainingEnemiesLeft;
-        event Action<Transform, int> OnCharacterDamaged;
-        event Action<Transform, int> OnEnemyDamaged;
+        event Action<Transform, float> OnCharacterDamaged;
+        event Action<Transform, float> OnEnemyDamaged;
         event Action<int> OnCharacterHealthChanged;
         event Action<int> OnCharacterComboChanged; 
         event Action<GameplayState> OnGameStateChange;

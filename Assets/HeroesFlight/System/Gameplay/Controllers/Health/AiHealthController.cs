@@ -20,7 +20,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             aiController.Disable();
         }
 
-        public override void DealDamage(int damage)
+        public override void DealDamage(float damage)
         {
             aiController.ProcessKnockBack();
             base.DealDamage(damage);

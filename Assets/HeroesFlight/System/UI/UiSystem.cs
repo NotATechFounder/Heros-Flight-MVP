@@ -202,7 +202,7 @@ namespace HeroesFlight.System.UI
             UiEventHandler.ReviveMenu.Open();
         }
 
-        void HandleEnemyDamaged(Transform transform, int damage)
+        void HandleEnemyDamaged(Transform transform, float damage)
         {
             UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one, damage.ToString(),
                 Color.yellow);
@@ -218,7 +218,7 @@ namespace HeroesFlight.System.UI
             UiEventHandler.GameMenu.UpdateEnemyCountText(enemiesLeft);
         }
 
-        void HandleCharacterDamaged(Transform transform, int damage)
+        void HandleCharacterDamaged(Transform transform, float damage)
         {
             UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one, damage.ToString(),
                 Color.red);
