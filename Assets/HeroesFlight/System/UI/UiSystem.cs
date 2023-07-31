@@ -1,8 +1,7 @@
 ﻿using System;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Gameplay.Enum;
-using HeroesFlightProject.System.Gameplay.Controllers;
-using HeroesFlightProject.System.NPC.Controllers;
+using HeroesFlight.System.Gameplay.Model;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -202,9 +201,12 @@ namespace HeroesFlight.System.UI
             UiEventHandler.ReviveMenu.Open();
         }
 
-        void HandleEnemyDamaged(Transform transform, int damage)
+        void HandleEnemyDamaged(DamageModel damageModel)
         {
-            UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one, damage.ToString(),
+            var damageString = damageModel.DamageType == DamageType.NoneCritical
+                ? $"{damageModel.Amount}"
+                : $"!!{damageModel.Amount}!!";
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.one, damageString,
                 Color.yellow);
         }
 
@@ -218,9 +220,12 @@ namespace HeroesFlight.System.UI
             UiEventHandler.GameMenu.UpdateEnemyCountText(enemiesLeft);
         }
 
-        void HandleCharacterDamaged(Transform transform, int damage)
+        void HandleCharacterDamaged(DamageModel damageModel)
         {
-            UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one, damage.ToString(),
+            var damageString = damageModel.DamageType == DamageType.NoneCritical
+                ? $"{damageModel.Amount}"
+                : $"!!{damageModel.Amount}!!";
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.one, damageString,
                 Color.red);
         }
 

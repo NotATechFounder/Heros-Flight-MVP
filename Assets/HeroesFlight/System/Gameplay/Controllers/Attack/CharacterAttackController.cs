@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using HeroesFlight.Common;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -152,7 +154,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                         break;
 
                     enemiesAttacked++;
-                    enemy.DealDamage(Damage);
+
+                    var rng = Random.Range(0, 101);
+                    var isCritical = rng <= 30;
+                    int damageToDeal = isCritical ? Damage * 2 : Damage;
+                    var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
+                    enemy.DealDamage(new DamageModel(damageToDeal,type));
                 }
             }
         }

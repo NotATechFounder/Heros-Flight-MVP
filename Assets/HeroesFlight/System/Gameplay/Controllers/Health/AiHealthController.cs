@@ -1,3 +1,4 @@
+using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.NPC.Controllers;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -20,7 +21,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             aiController.Disable();
         }
 
-        public override void DealDamage(int damage)
+        public override void DealDamage(DamageModel damage)
         {
             aiController.ProcessKnockBack();
             base.DealDamage(damage);
