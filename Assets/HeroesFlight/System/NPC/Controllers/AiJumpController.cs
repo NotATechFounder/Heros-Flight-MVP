@@ -12,6 +12,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             mover = GetComponent<AiMoverInterface>();
             rigidBody = GetComponent<Rigidbody2D>();
+            attackCollider = GetComponent<Collider2D>();
+            animator = GetComponent<AiAnimatorInterface>();
             rigidBody.isKinematic = true;
             viewController = GetComponent<AiViewController>();
             viewController.Init();
@@ -36,13 +38,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void Enable()
         {
-            rigidBody.isKinematic = false;
+            rigidBody.bodyType = RigidbodyType2D.Dynamic;
             gameObject.SetActive(true);
         }
 
         public override void Disable()
         {
-           gameObject.SetActive(false);
+            rigidBody.bodyType = RigidbodyType2D.Static;
+            base.Disable();
         }
 
         public override void ProcessKnockBack()

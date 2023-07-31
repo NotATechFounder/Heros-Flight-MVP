@@ -7,16 +7,19 @@ namespace HeroesFlightProject.System.NPC.Controllers
 {
     public class AiControllerPathFinding : AiControllerBase
     {
-        [SerializeField] bool isFLying;
+       
+        [SerializeField] bool useKnockback=true;
         Path currentPath;
         IAstarAI ai;
         AIDestinationSetter setter;
         bool isInknockback;
+      
 
 
         public override void Init(Transform player)
         {
             setter = GetComponent<AIDestinationSetter>();
+            attackCollider = GetComponent<Collider2D>();
             ai = GetComponent<IAstarAI>();
             ai.canMove = false;
             ai.maxSpeed = m_Model.CombatModel.Speed;
@@ -25,13 +28,15 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void Enable()
         {
-            ai.canMove = true;
             base.Enable();
+            ai.canMove = true;
         }
 
         public override void Disable()
         {
             ai.canMove = false;
+            setter.target = null;
+            rigidBody.velocity = Vector2.zero;
             base.Disable();
         }
 
@@ -47,7 +52,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void ProcessWanderingState()
         {
+            if(isDisabled)
+                return;
             setter.target = null;
+            ai.canMove = !InAttackRange();
             if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath))
             {
                 ai.destination = GetRandomPosition2D();
@@ -57,21 +65,23 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void ProcessKnockBack()
         {
+            if (!useKnockback)
+                return;
+            
             if (isInknockback)
                 return;
             isInknockback = true;
             ai.canMove = false;
             var forceVector = currentTarget.position.x >= transform.position.x ? Vector2.left : Vector2.right;
-            CoroutineUtility.WaitForSeconds(.1f,() =>
+            CoroutineUtility.WaitForSeconds(.1f, () =>
             {
                 rigidBody.AddForce(forceVector * knockbackForce);
                 CoroutineUtility.WaitForSeconds(.5f, () =>
                 {
                     if (rigidBody == null)
                         return;
-                    
-                    if (isFLying)
-                        rigidBody.velocity = Vector2.zero;
+
+                    rigidBody.velocity = Vector2.zero;
                     ai.canMove = true;
                     isInknockback = false;
                 });
@@ -95,6 +105,5 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             return Random.insideUnitCircle * wanderDistance;
         }
-
     }
 }

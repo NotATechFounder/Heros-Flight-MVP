@@ -1,6 +1,8 @@
 ﻿using System;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlightProject.System.Gameplay.Controllers;
+using HeroesFlightProject.System.NPC.Controllers;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,32 +19,9 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
             gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
             gameplaySystem.OnCharacterDamaged += HandleCharacterDamaged;
-            gameplaySystem.GameTimer.onTimeTick += UpdateGameTimeUI;
             gameplaySystem.OnCharacterComboChanged += UpdateComboUI;
-        }
-
-        void HandleGameplayStateChange(GameplayState newState)
-        {
-            Debug.Log($"game play state changed to {newState}");
-            switch (newState)
-            {
-                case GameplayState.Ongoing:
-                    break;
-                case GameplayState.Won:
-                    HandlePlayerWin();
-                    break;
-                case GameplayState.Lost:
-                    HandlePlayerDeath();
-                    break;
-                case GameplayState.Ended :
-                    break;
-               
-            }
-        }
-
-        void UpdateGameTimeUI(float timeLeft)
-        {
-            UiEventHandler.GameMenu.UpdateTimerText(timeLeft);
+            gameplaySystem.OnMinibossSpawned += HandleMiniboss;
+            gameplaySystem.OnMinibossHealthChange += HandleMinibossHealthChange;
         }
 
         public event Action OnReturnToMainMenuRequest;
@@ -87,8 +66,8 @@ namespace HeroesFlight.System.UI
                 {
                     AudioManager.BlendTwoMusic(GameMusicID, GameMusicLoopID);
                 };
-                
-                
+
+
                 UiEventHandler.GameMenu.OnPauseButtonClicked += () =>
                 {
                     UiEventHandler.PauseMenu.Open();
@@ -115,7 +94,7 @@ namespace HeroesFlight.System.UI
                 {
                     UiEventHandler.SummaryMenu.Open();
                 };
-                
+
                 UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
                 {
                     UiEventHandler.ReviveMenu.Close();
@@ -129,13 +108,12 @@ namespace HeroesFlight.System.UI
                 UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
                 {
                     UiEventHandler.ReviveMenu.Close();
-                  
+
                     return true;
                 };
 
                 UiEventHandler.SummaryMenu.OnMenuOpened += () =>
                 {
-                  
                 };
                 UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
                 {
@@ -149,6 +127,50 @@ namespace HeroesFlight.System.UI
 
         public void Reset()
         {
+        }
+
+        void HandleMinibossHealthChange(float value)
+        {
+            UiEventHandler.GameMenu.UpdateBossHealthFill(value);
+        }
+
+        void HandleGameplayStateChange(GameplayState newState)
+        {
+            switch (newState)
+            {
+                case GameplayState.Ongoing:
+                    gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
+                    break;
+                case GameplayState.Won:
+                    gameplaySystem.GameTimer.OnTimeTick -= UpdateGameTimeUI;
+                    HandlePlayerWin();
+                    break;
+                case GameplayState.Lost:
+                    gameplaySystem.GameTimer.OnTimeTick -= UpdateGameTimeUI;
+                    HandlePlayerDeath();
+                    break;
+                case GameplayState.Ended:
+                    break;
+            }
+        }
+
+        void HandleMiniboss(bool isEnabled)
+        {
+            if (isEnabled)
+            {
+                UiEventHandler.GameMenu.UpdateBossHealthFill(1);
+                UiEventHandler.GameMenu.ToggleBossHpBar(true);
+            }
+            else
+            {
+                UiEventHandler.GameMenu.ToggleBossHpBar(false);
+            }
+        }
+
+
+        void UpdateGameTimeUI(float timeLeft)
+        {
+            UiEventHandler.GameMenu.UpdateTimerText(timeLeft);
         }
 
         private void OnPlayButtonPressed()
@@ -182,7 +204,7 @@ namespace HeroesFlight.System.UI
 
         void HandleEnemyDamaged(Transform transform, int damage)
         {
-           UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one , damage.ToString(),
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one, damage.ToString(),
                 Color.yellow);
         }
 
@@ -198,7 +220,7 @@ namespace HeroesFlight.System.UI
 
         void HandleCharacterDamaged(Transform transform, int damage)
         {
-            UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one , damage.ToString(),
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one, damage.ToString(),
                 Color.red);
         }
 

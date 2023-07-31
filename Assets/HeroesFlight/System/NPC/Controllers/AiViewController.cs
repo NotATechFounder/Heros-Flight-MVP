@@ -28,8 +28,8 @@ namespace HeroesFlight.System.NPC.Controllers
         IEnumerator FadeInRoutine(float duration, Action onComplete)
         {
             var currentDuration = duration;
-            var step = 1 / duration;
-            while (currentDuration>0)
+            var step = 0.01f;
+            while ( mainMaterialColor.a<1)
             {
                 currentDuration -= Time.deltaTime;
                 mainMaterialColor.a += step;

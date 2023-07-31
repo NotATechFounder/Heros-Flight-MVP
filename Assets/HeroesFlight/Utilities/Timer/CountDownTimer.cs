@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class CountDownTimer
 {
-    public event Action<float> onTimeTick = null;
-    public event Action onTimeLapse = null;
+    public event Action<float> OnTimeTick;
+     event Action<float> onTimeTick = null;
+     event Action onTimeLapse = null;
 
     private MonoBehaviour owner;
     private bool paused = false;
@@ -30,6 +31,8 @@ public class CountDownTimer
 
         maxTime = _time;
         currentTime = maxTime;
+        onTimeTick =null;
+        onTimeLapse =null;
         onTimeTick += _onTimeTick;
         onTimeLapse += _onTimeLapse;
         timerRoutine = owner.StartCoroutine(TimerRoutine());
@@ -44,6 +47,8 @@ public class CountDownTimer
 
         maxTime = _time;
         currentTime = maxTime;
+        onTimeTick =null;
+        onTimeLapse =null;
         onTimeTick += _onTimeTick;
         onTimeLapse += _onTimeLapse;
         timerRoutine = owner.StartCoroutine(TimerRoutine());
@@ -58,6 +63,7 @@ public class CountDownTimer
                 lastTime = currentTime;
                 currentTime -= Time.deltaTime;
                 onTimeTick?.Invoke(currentTime);
+                OnTimeTick?.Invoke(currentTime);
 
                 if (currentTime <= 0)
                 {

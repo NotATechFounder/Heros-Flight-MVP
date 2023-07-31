@@ -2,5 +2,6 @@
 {
     public interface CharacterSystemInterface : ISystemInterface
     {
+        void ShakeCharacterCamera(float duration);
     }
 }

@@ -14,10 +14,12 @@ namespace HeroesFlight.System.NPC.Container
     public class NpcContainer : MonoBehaviour
     {
         [SerializeField] AiControllerBase[] aiPrefabs;
+        [SerializeField] AiControllerBase[] miniBosses;
         int spawnAmount ;
         int waves;
         GameObject player;
         
+       
         Dictionary<EnemySpawmType, List<ISpawnPointInterface>> spanwPointsCache = new();
 
         WaitForSeconds timeBetweenEnemySpawn;
@@ -86,6 +88,20 @@ namespace HeroesFlight.System.NPC.Container
             }
 
             yield return true;
+        }
+
+        public AiControllerBase SpawnMiniBoss()
+        {
+            var rng = Random.Range(0, miniBosses.Length);
+            var targetPrefab = miniBosses[rng];
+            var targetPoints = spanwPointsCache[targetPrefab.AgentModel.EnemySpawmType];
+            var rngPoint=  Random.Range(0, targetPoints.Count);
+            var resultEnemy = Instantiate(targetPrefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
+                , Quaternion.identity);
+            resultEnemy.transform.parent = transform;
+            resultEnemy.Init(player.transform);
+            return resultEnemy;
+
         }
     }
 }
