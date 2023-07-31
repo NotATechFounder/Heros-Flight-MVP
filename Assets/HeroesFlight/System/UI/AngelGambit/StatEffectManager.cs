@@ -41,11 +41,11 @@ public class StatEffectManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             AngelCard angelCard = activeAngelCards[0];
-
             foreach (StatEffect effect in angelCard.angelCardSO.Effects)
             {
                 RemoveEffect(angelCard.tier, effect);
             }
+            activeAngelCards.Remove(angelCard);
         }
     }
 
@@ -99,10 +99,10 @@ public class StatEffectManager : MonoBehaviour
         switch (effect.targetType)
         {
             case TargetType.All:
-                HandlePlayerStats (angelCardTier, effect);
+                HandlePlayerStatsActivation(angelCardTier, effect);
                 break;
             case TargetType.Player:
-                HandlePlayerStats (angelCardTier, effect);
+                HandlePlayerStatsActivation(angelCardTier, effect);
                 break;
             case TargetType.Monster:
 
@@ -110,7 +110,7 @@ public class StatEffectManager : MonoBehaviour
         }
     }
 
-    private void HandlePlayerStats(AngelCardTier angelCardTier, StatEffect effect)
+    private void HandlePlayerStatsActivation(AngelCardTier angelCardTier, StatEffect effect)
     {
         switch (effect.effect)
         {
@@ -137,6 +137,22 @@ public class StatEffectManager : MonoBehaviour
 
     private void RemoveEffect(AngelCardTier angelCardTier, StatEffect effect)
     {
+        switch (effect.targetType)
+        {
+            case TargetType.All:
+                HandlePlayerStatsRemoval(angelCardTier, effect);
+                break;
+            case TargetType.Player:
+                HandlePlayerStatsRemoval(angelCardTier, effect);
+                break;
+            case TargetType.Monster:
+
+                break;
+        }
+    }
+
+    private void HandlePlayerStatsRemoval(AngelCardTier angelCardTier, StatEffect effect)
+    {
         switch (effect.effect)
         {
             case BuffDebuff.AttackUp:
@@ -152,9 +168,11 @@ public class StatEffectManager : MonoBehaviour
                 currentHealth += CalculatePercentage(baseHealth, effect.GetValue(angelCardTier));
                 break;
             case BuffDebuff.AttackSpeedUp:
+                Debug.Log(effect.GetValue(angelCardTier));
                 currentAttackSpeed -= CalculatePercentage(baseAttackSpeed, effect.GetValue(angelCardTier));
                 break;
             case BuffDebuff.AttackSpeedDown:
+                Debug.Log(effect.GetValue(angelCardTier));
                 currentAttackSpeed += CalculatePercentage(baseAttackSpeed, effect.GetValue(angelCardTier));
                 break;
         }
