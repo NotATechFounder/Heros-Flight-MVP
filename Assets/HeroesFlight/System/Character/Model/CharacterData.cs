@@ -7,6 +7,7 @@ namespace HeroesFlight.System.Character.Model
     [Serializable]
     public class CharacterData
     {
+        [SerializeField] string characterName;
         [SerializeField] AppearanceModel appearenceModel;
         [SerializeField] PlayerCombatModel combatModel;
 
