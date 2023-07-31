@@ -5,30 +5,52 @@ using System.Collections.Generic;
 using TMPro;
 using UISystem;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UISystem
 {
     public class AngelGambitMenu : BaseMenu<AngelGambitMenu>
     {
-        [Header("Cards")]
-        [SerializeField] private AngelCardUI buffCard;
-        [SerializeField] private AngelCardUI debuffCard;
-        [SerializeField] private AngelCardUI blankCard;
-        [SerializeField] private AngelCardProperties selectedCardProperties;
-        [SerializeField] private List<AngelCardSO> angelCardSOList;
+        public event Action<AngelCardSO> OnCardSelected;
+        public Func<AngelCard> CardExit;
+
+        [Header("Card Buttons")]
+        [SerializeField] private AdvanceButton buffCardButton;
+        [SerializeField] private AdvanceButton debuffCardButton;
+        [SerializeField] private AdvanceButton blankCardButton;
+        [SerializeField] private AdvanceButton continueButton;
+
+        [Header("Card Colors")]
+        [SerializeField] private Color buffCardColor;
+        [SerializeField] private Color debuffCardColor;
+        [SerializeField] private Color blankCardColor;
+
+        [Header("Card Reveal")]
+        [SerializeField] private GameObject cardRevealPanel;
+        [SerializeField] private Transform cardToReveal;
+        [SerializeField] private Image cardBg;
+        [SerializeField] private TextMeshProUGUI cardNameDisplay;
+        [SerializeField] private TextMeshProUGUI cardTierDisplay;
+        [SerializeField] private TextMeshProUGUI cardDescriptionDisplay;
+        [SerializeField] private Image cardImageDisplay;
+        [SerializeField] private GameObject[] cardRevealProperties;
+
+        [Header("Card List")]
+        [SerializeField] private AngelCardSO[] angelCardSOList;
+
+        AngelCardSO selectedCard = null;
 
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
 
         JuicerRuntime buffCardEffect;
         JuicerRuntime debuffCardEffect;
+        JuicerRuntime spinCardEffect;
 
         private void Start()
         {
             OnCreated();
             Open();
-
-            GenerateRandomCards();
         }
 
         private void Update()
@@ -42,6 +64,11 @@ namespace UISystem
             {
                 OnOpened();
             }
+
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                spinCardEffect.Start();
+            }
         }
 
         public override void OnCreated()
@@ -54,8 +81,24 @@ namespace UISystem
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
             //closeEffectBG.SetOnComplected(CloseMenu);
 
-            buffCardEffect = buffCard.transform.JuicyScale(Vector3.one * 1.2f, .5f).SetEase(Ease.EaseOutSine).SetLoop(-1);
-            debuffCardEffect = debuffCard.transform.JuicyScale(Vector3.one * 1.2f, .5f).SetEase(Ease.EaseOutSine).SetLoop(-1);
+            buffCardEffect = buffCardButton.transform.JuicyScale(Vector3.one * 1.2f, .5f).SetEase(Ease.EaseOutSine).SetLoop(-1);
+            debuffCardEffect = debuffCardButton.transform.JuicyScale(Vector3.one * 1.2f, .5f).SetEase(Ease.EaseOutSine).SetLoop(-1);
+
+            spinCardEffect = cardToReveal.transform.JuicyRotate(Vector3.up * 360, .25f).SetEase(Ease.Linear).SetLoop(5, LoopType.Incremental);
+            spinCardEffect.SetOnComplected(() => ToggleCardRevealProperties(true));
+
+            buffCardButton.onClick.AddListener(() => GenerateRandomCards(AngelCardType.Buff));
+
+            debuffCardButton.onClick.AddListener(() => GenerateRandomCards(AngelCardType.Debuff));
+
+            blankCardButton.onClick.AddListener(Close);
+
+            continueButton.onClick.AddListener(()=>
+            {
+                ActivateCard();
+            });
+
+            ToggleCardRevealProperties (false);
         }
 
         public override void OnOpened()
@@ -75,16 +118,67 @@ namespace UISystem
 
         public override void ResetMenu()
         {
-            buffCard.transform.localScale = Vector3.one;
-            debuffCard.transform.localScale = Vector3.one;
+            buffCardButton.transform.localScale = Vector3.one;
+            debuffCardButton.transform.localScale = Vector3.one;
         }
 
-        public void GenerateRandomCards()
+        public void GenerateRandomCards(AngelCardType angelCardType)
         {
-            int buffCardIndex = UnityEngine.Random.Range(0, angelCardSOList.Count);
-            AngelCardSO angelCardSO = angelCardSOList[buffCardIndex];
-            buffCard.Init(angelCardSO);
-        }    
+            int randomCard = UnityEngine.Random.Range(0, angelCardSOList.Length);
+
+            while (angelCardSOList[randomCard].CardType != angelCardType)
+            {
+                randomCard = UnityEngine.Random.Range(0, angelCardSOList.Length);
+            }
+
+            selectedCard = angelCardSOList[randomCard];
+            DisplayCard();
+        }   
+        
+        public void DisplayCard()
+        {
+            cardRevealPanel.SetActive(true);
+
+            AngelCard existingCard = CardExit?.Invoke();
+
+            // To be removed
+            existingCard = StatEffectManager.Instance.Exists(selectedCard);
+
+            if (existingCard != null)
+            {
+                cardTierDisplay.text = "Tier : " + (existingCard.tier + 1).ToString();
+                cardDescriptionDisplay.text = selectedCard.GetDescription(existingCard.tier + 1);
+            }
+            else
+            {
+                cardTierDisplay.text = "Tier : " + AngelCardTier.One.ToString();
+                cardDescriptionDisplay.text = selectedCard.GetDescription(AngelCardTier.One);
+            }
+
+            cardNameDisplay.text = selectedCard.CardName;
+            cardImageDisplay.sprite = selectedCard.CardImage;
+            cardBg.color = selectedCard.CardType == AngelCardType.Buff ? buffCardColor : debuffCardColor;
+
+            spinCardEffect.Start();
+        }
+
+        public void ActivateCard ()
+        {
+            cardRevealPanel.SetActive(false);
+            OnCardSelected?.Invoke(selectedCard);
+            ToggleCardRevealProperties(false);
+            // To be removed
+            StatEffectManager.Instance.AddAngelCardSO(selectedCard);
+           // Close();
+        }
+
+        public void ToggleCardRevealProperties(bool toggle)
+        {
+            foreach (GameObject cardRevealProperty in cardRevealProperties)
+            {
+                cardRevealProperty.SetActive(toggle);
+            }
+        }
     }
 }
 

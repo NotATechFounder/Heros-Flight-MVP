@@ -7,29 +7,84 @@ public class AngelCardSO : ScriptableObject
 {
     [SerializeField] string cardName;
     [TextArea(3, 10)]
-    [SerializeField] string fullCardDescription;
-    [TextArea(1, 3)]
-    [SerializeField] string shortCardDescription;
+    [SerializeField] string[] cardDescriptions;
     [SerializeField] Sprite cardImage;
     [SerializeField] AngelCardType cardType;
-    [SerializeField] AngelCardTier cardTier;
-    [SerializeField] CardEffect affterEffectBonus;
-    [SerializeField] CardEffect[] effects;
+    [SerializeField] StatEffect affterBonusEffect;
+    [SerializeField] StatEffect[] effects;
 
     public string CardName => cardName;
-    public string CardDescription => fullCardDescription;
-    public string ShortCardDescription => shortCardDescription;
+    public string[] CardDescriptions => cardDescriptions;
     public Sprite CardImage => cardImage;
+
     public AngelCardType CardType => cardType;
-    public AngelCardTier CardTier => cardTier;
-    public CardEffect AffterEffectBonus => affterEffectBonus;
+    public StatEffect AffterBonusEffect => affterBonusEffect;
+
+    public StatEffect[] Effects => effects;
+
+    public string GetDescription(AngelCardTier tier)
+    {
+       return cardDescriptions[(int)tier];
+    }  
 }
 
+[System.Serializable]
+public class AngelCard
+{
+    public AngelCardTier tier;
+    public AngelCardSO angelCardSO;
+
+    public AngelCard(AngelCardSO angelCardSO)
+    {
+        this.angelCardSO = angelCardSO;
+        tier = AngelCardTier.One;
+    }
+}
 
 [System.Serializable]
-public class CardEffect
+public class StatEffect
 {
     public BuffDebuff effect;
     public TargetType targetType;
+    public float[] tierValues;
+
+    [HideInInspector] public bool showStatEffect;
+    [HideInInspector] public bool showTierValues;
+
+    public float GetValue(AngelCardTier tier)
+    {
+        return tierValues[(int)tier];
+    }
+
+    public float GetValueDifference(AngelCardTier tier)
+    {
+        if (tier == AngelCardTier.One)
+        {
+            return tierValues[(int)tier];
+        }
+        return tierValues[(int)tier] - tierValues[(int)tier - 1];
+    }
+}
+
+[System.Serializable]
+public class TierEffect
+{
+    public AngelCardTier tier;
     public float value;
+}
+
+public enum AngelCardType
+{
+    Buff,
+    Debuff,
+}
+
+public enum AngelCardTier
+{
+    One,
+    Two,
+    Three,
+    Four,
+    Five,
+    Six,
 }
