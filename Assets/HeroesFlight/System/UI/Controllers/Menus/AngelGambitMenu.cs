@@ -124,14 +124,32 @@ namespace UISystem
 
         public void GenerateRandomCards(AngelCardType angelCardType)
         {
-            int randomCard = UnityEngine.Random.Range(0, angelCardSOList.Length);
+            float totalChance = 0;
 
-            while (angelCardSOList[randomCard].CardType != angelCardType)
+            foreach (AngelCardSO angelCardSO in angelCardSOList)
             {
-                randomCard = UnityEngine.Random.Range(0, angelCardSOList.Length);
+                if (angelCardSO.CardType == angelCardType)
+                {
+                    totalChance += angelCardSO.Chance;
+                }
             }
 
-            selectedCard = angelCardSOList[randomCard];
+            float randomChance = UnityEngine.Random.Range(0, totalChance);
+
+            foreach (AngelCardSO angelCardSO in angelCardSOList)
+            {
+                if (angelCardSO.CardType == angelCardType)
+                {
+                    randomChance -= angelCardSO.Chance;
+
+                    if (randomChance <= 0)
+                    {
+                        selectedCard = angelCardSO;
+                        break;
+                    }
+                }
+            }
+
             DisplayCard();
         }   
         

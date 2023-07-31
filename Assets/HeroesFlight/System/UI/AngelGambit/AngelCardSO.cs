@@ -12,6 +12,8 @@ public class AngelCardSO : ScriptableObject
     [SerializeField] AngelCardType cardType;
     [SerializeField] StatEffect affterBonusEffect;
     [SerializeField] StatEffect[] effects;
+    [Range(0, 1)]
+    [SerializeField] float chance;
 
     public string CardName => cardName;
     public string[] CardDescriptions => cardDescriptions;
@@ -21,6 +23,8 @@ public class AngelCardSO : ScriptableObject
     public StatEffect AffterBonusEffect => affterBonusEffect;
 
     public StatEffect[] Effects => effects;
+
+    public float Chance => chance;
 
     public string GetDescription(AngelCardTier tier)
     {

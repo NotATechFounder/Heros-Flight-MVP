@@ -14,6 +14,8 @@ public class AngelCardSOEditor : Editor
     private SerializedProperty cardType;
     private SerializedProperty affterEffectBonus;
     private SerializedProperty effectsProperty;
+    private SerializedProperty chanceProperty;
+
     private bool showDescriptions = false;
     private bool showAfterEffect = false;
     private bool showEffects = false;
@@ -29,6 +31,7 @@ public class AngelCardSOEditor : Editor
         cardType = serializedObject.FindProperty("cardType");
         affterEffectBonus = serializedObject.FindProperty("affterBonusEffect");
         effectsProperty = serializedObject.FindProperty("effects");
+        chanceProperty = serializedObject.FindProperty("chance");
     }
 
     public override void OnInspectorGUI()
@@ -42,6 +45,8 @@ public class AngelCardSOEditor : Editor
 
         DisplayAfterEffect();
         DisplayEffects();
+
+        EditorGUILayout.PropertyField(chanceProperty);
 
         serializedObject.ApplyModifiedProperties();
     }
