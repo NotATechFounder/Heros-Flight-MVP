@@ -22,7 +22,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected Rigidbody2D rigidBody;
         protected Transform currentTarget;
         protected bool isDisabled;
-        bool canAttack;
+      [SerializeField]  bool canAttack;
         Vector2 wanderPosition;
        
 
@@ -46,7 +46,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             
             if (OutOfAgroRange() || !canAttack)
             {
-               ProcessWanderingState();
+                ProcessWanderingState();
             }
             else
             {

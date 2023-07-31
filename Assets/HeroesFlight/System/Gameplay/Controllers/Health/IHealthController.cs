@@ -8,7 +8,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         Transform currentTransform { get; }
         CombatTargetType TargetType { get; }
+        int MaxHealth { get; }
         int CurrentHealth { get; }
+        float CurrentHealthProportion { get; }
         void Init();
         event Action<Transform,int> OnBeingDamaged;
         event Action<IHealthController> OnDeath;

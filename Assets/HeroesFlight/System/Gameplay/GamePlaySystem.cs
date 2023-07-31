@@ -10,6 +10,7 @@ using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using CameraControllerInterface = HeroesFlightProject.System.Gameplay.Controllers.CameraControllerInterface;
 
 namespace HeroesFlight.System.Gameplay
 {
@@ -31,12 +32,16 @@ namespace HeroesFlight.System.Gameplay
         CharacterAttackController characterAttackController;
         CharacterSystemInterface characterSystem;
         CharacterControllerInterface characterController;
+        CameraControllerInterface cameraController;
         NpcSystemInterface npcSystem;
         GameplayState currentState;
         float timeSinceLastStrike;
         float timeTiResetCombo = 3f;
         int characterComboNumber;
 
+        public event Action<bool> OnMinibossSpawned;
+        public event Action<float> OnMinibossHealthChange;
+       
         public event Action<int> OnRemainingEnemiesLeft;
         public event Action<Transform, int> OnCharacterDamaged;
         public event Action<Transform, int> OnEnemyDamaged;
@@ -55,6 +60,7 @@ namespace HeroesFlight.System.Gameplay
             characterHealthController = scene.GetComponent<CharacterHealthController>();
             characterAttackController = scene.GetComponent<CharacterAttackController>();
             characterController = scene.GetComponent<CharacterSimpleController>();
+            cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
             characterController.SetActionState(true);
             characterAttackController.SetCallback(GetExistingEnemies);
             characterHealthController.OnDeath += HandleCharacterDeath;
@@ -72,6 +78,7 @@ namespace HeroesFlight.System.Gameplay
             GameTimer.Stop();
             currentState = GameplayState.Ended;
             OnGameStateChange?.Invoke(currentState);
+            OnMinibossSpawned?.Invoke(false);
             CoroutineUtility.Stop(combotTimerRoutine);
         }
 
@@ -79,6 +86,7 @@ namespace HeroesFlight.System.Gameplay
         {
             currentState = GameplayState.Ongoing;
             OnGameStateChange?.Invoke(currentState);
+            cameraController.SetCameraShakeState(true);
             GameTimer.Start(3, null,
                 () =>
                 {
@@ -101,9 +109,17 @@ namespace HeroesFlight.System.Gameplay
             var miniboss = npcSystem.SpawnMiniBoss();
             miniBoss = miniboss.GetComponent<IHealthController>();
             miniBoss.OnBeingDamaged += HandleEnemyDamaged;
+            miniBoss.OnBeingDamaged += HandleMinibosshealthChange;
             miniBoss.OnDeath += HandleEnemyDeath;
             miniBoss.Init();
             enemyHealthControllers.Add(miniBoss);
+            OnMinibossSpawned?.Invoke(true);
+            cameraController.SetCameraShakeState(false);
+        }
+
+        void HandleMinibosshealthChange(Transform transform, int i)
+        {
+           OnMinibossHealthChange?.Invoke(miniBoss.CurrentHealthProportion);
         }
 
         void HandleEnemySpawned(AiControllerBase obj)

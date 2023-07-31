@@ -12,7 +12,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected HeathBarUI heathBarUI;
         public Transform currentTransform => transform;
         public CombatTargetType TargetType => targetType;
+        public int MaxHealth => maxHealth;
         public int CurrentHealth => currentHealh;
+        public float CurrentHealthProportion => (float)currentHealh / maxHealth;
         public event Action<Transform,int> OnBeingDamaged;
         public event Action<IHealthController> OnDeath;
 
@@ -31,9 +33,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             if(IsDead())
                 return;
 
-            OnBeingDamaged?.Invoke(transform, damage);
             currentHealh -= damage;
             heathBarUI?.ChangeValue((float)currentHealh / maxHealth);
+            OnBeingDamaged?.Invoke(transform, damage);
 
             if (IsDead())
                 ProcessDeath();

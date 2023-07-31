@@ -7,7 +7,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 {
     public class AiControllerPathFinding : AiControllerBase
     {
-        [SerializeField] bool isFLying;
+       
         [SerializeField] bool useKnockback=true;
         Path currentPath;
         IAstarAI ai;
@@ -55,6 +55,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             if(isDisabled)
                 return;
             setter.target = null;
+            ai.canMove = !InAttackRange();
             if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath))
             {
                 ai.destination = GetRandomPosition2D();
@@ -80,8 +81,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
                     if (rigidBody == null)
                         return;
 
-                    if (isFLying)
-                        rigidBody.velocity = Vector2.zero;
+                    rigidBody.velocity = Vector2.zero;
                     ai.canMove = true;
                     isInknockback = false;
                 });

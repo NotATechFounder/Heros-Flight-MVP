@@ -89,7 +89,7 @@ namespace HeroesFlight.System.Character
             var track = m_SkeletonAnimation.AnimationState.GetCurrent(1);
           
             if(track!=null && !track.Animation.Name.Equals("<empty>"))
-                        m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, 0f);
+                        m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, .5f);
           
         }
 

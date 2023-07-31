@@ -6,8 +6,7 @@ using UnityEngine.UI;
 
 public class GroupImageFill : MonoBehaviour
 {
-    [Range(0.0f, 1.0f)]
-    [SerializeField] private float _value = 0f;
+    [Range(0.0f, 1.0f)][SerializeField] private float _value = 0f;
     [SerializeField] private Image[] fills;
 
     private void OnValidate()

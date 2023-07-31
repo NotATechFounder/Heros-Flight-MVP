@@ -57,6 +57,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             skeletonAnimation.AnimationState.SetAnimation(movementTrackIndex, deathAnimation, false);
             skeletonAnimation.AnimationState.AddEmptyAnimation(dynamicTrackIndex, 0, 0);
+            skeletonAnimation.AnimationState.AddEmptyAnimation(3, 0, 0);
             CoroutineUtility.WaitForSeconds(deathAnimation.Animation.Duration, () =>
             {
                 onCompleteAction?.Invoke();
