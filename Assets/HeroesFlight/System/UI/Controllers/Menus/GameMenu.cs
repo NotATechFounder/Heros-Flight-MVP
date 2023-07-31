@@ -27,6 +27,8 @@ namespace UISystem
         [Header("Boss")]
         [SerializeField] private GroupImageFill bossHealthFill;
 
+        [SerializeField] Canvas bossCanvas;
+
         [Header("Warning")]
         [SerializeField] private RectTransform warningPanel;
 
@@ -34,7 +36,7 @@ namespace UISystem
         [SerializeField] private AdvanceButton specialAttackButton;
         [SerializeField] private Image specialAttackButtonFill;
         [SerializeField] private Image specialAttackIcon;
-
+        
         JuicerRuntime openEffect;
         JuicerRuntime closeEffect;
         JuicerRuntime specialEffect;
@@ -138,8 +140,11 @@ namespace UISystem
         {
             bossHealthFill.SetValue(value);
         }
-        
-       
+
+        public void ToggleBossHpBar(bool isEnabled)
+        {
+            bossCanvas.enabled=isEnabled;
+        }
         public void FillSpecial(float normalisedValue)
         {
             specialAttackButtonFill.fillAmount = normalisedValue;

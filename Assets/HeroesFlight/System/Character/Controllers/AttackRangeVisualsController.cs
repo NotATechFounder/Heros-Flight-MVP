@@ -12,7 +12,7 @@ namespace HeroesFlight.System.Character
         public void Init(float attackRange)
         {
             rectTransform = visualsCanvas.GetComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(attackRange*2, attackRange*2);
+            rectTransform.sizeDelta = new Vector2(attackRange*1.3f, attackRange*1.3f);
             canvasTransform = visualsCanvas.transform;
         }
 

@@ -19,6 +19,10 @@ namespace HeroesFlight.System.Character
         }
 
         public void Reset(){ }
+        public void ShakeCharacterCamera(float duration)
+        {
+            throw new NotImplementedException();
+        }
 
         void HandleCharacterInput(InputModel obj)
         {

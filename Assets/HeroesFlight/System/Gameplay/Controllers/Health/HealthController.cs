@@ -1,0 +1,59 @@
+using System;
+using HeroesFlight.Common.Enum;
+using UnityEngine;
+
+namespace HeroesFlightProject.System.Gameplay.Controllers
+{
+    public class HealthController : MonoBehaviour, IHealthController
+    {
+        [SerializeField] CombatTargetType targetType;
+        protected int maxHealth;
+        [SerializeField] protected int currentHealh;
+        [SerializeField] protected HeathBarUI heathBarUI;
+        public Transform currentTransform => transform;
+        public CombatTargetType TargetType => targetType;
+        public int MaxHealth => maxHealth;
+        public int CurrentHealth => currentHealh;
+        public float CurrentHealthProportion => (float)currentHealh / maxHealth;
+        public event Action<Transform,int> OnBeingDamaged;
+        public event Action<IHealthController> OnDeath;
+
+        void Awake()
+        {
+            Init();
+        }
+
+        public virtual void Init()
+        {
+            currentHealh = maxHealth;
+        }
+
+        public virtual void DealDamage(int damage)
+        {
+            if(IsDead())
+                return;
+
+            currentHealh -= damage;
+            heathBarUI?.ChangeValue((float)currentHealh / maxHealth);
+            OnBeingDamaged?.Invoke(transform, damage);
+
+            if (IsDead())
+                ProcessDeath();
+        }
+
+        public virtual bool IsDead()
+        {
+            return currentHealh <= 0;
+        }
+
+        protected virtual void ProcessDeath()
+        {
+           OnDeath?.Invoke(this);
+        }
+
+        protected void TriggerDamageMessage(int damage)
+        {
+            OnBeingDamaged?.Invoke(transform,damage);
+        }
+    }
+}
