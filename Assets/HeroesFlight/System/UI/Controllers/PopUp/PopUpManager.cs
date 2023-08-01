@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pelumi.Juicer;
 using Pelumi.ObjectPool;
+using TMPro;
 
 public class PopUpManager : MonoBehaviour
 {
@@ -49,5 +50,23 @@ public class PopUpManager : MonoBehaviour
                 Random.Range(-randomIntensity.z, randomIntensity.z)
             );
         textPopUp.Init(text, color, finalPos);
+    }
+
+    public void PopUpTextAtTransfrom(Transform damageModelTarget, Vector3 randomIntensity, string damageText, TMP_SpriteAsset spriteAsset,float size, bool parent = false)
+    {
+        TextPopUp textPopUp = ObjectPoolManager.SpawnObject(popUpPrefab);
+        if (parent) textPopUp.transform.SetParent(damageModelTarget);
+        SetPopUpInfo(textPopUp, damageModelTarget.position, randomIntensity, damageText, spriteAsset,size);
+    }
+
+    void SetPopUpInfo(TextPopUp textPopUp, Vector3 spawnPosition, Vector3 randomIntensity, string damageText, TMP_SpriteAsset spriteAsset,float size)
+    {
+        Vector2 finalPos = spawnPosition += new Vector3
+        (
+            Random.Range(-randomIntensity.x, randomIntensity.x),
+            Random.Range(-randomIntensity.y, randomIntensity.y),
+            Random.Range(-randomIntensity.z, randomIntensity.z)
+        );
+        textPopUp.Init(damageText, spriteAsset, finalPos,size);
     }
 }
