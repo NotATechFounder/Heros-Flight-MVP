@@ -27,16 +27,6 @@ public class PlayerCombatModel : CombatModel
     public ValueRange CriticalHitDamage => criticalHitDamage;
     public float Defense => defense;
     public float AttackSpeed => attackSpeed;
-
-    //public float GetRandomMagicDamage()
-    //{
-    //    return magicDamage.GetRandomValue();
-    //}
-
-    //public float GetRandomPhysicalDamage()
-    //{
-    //    return physicalDamage.GetRandomValue();
-    //}
 }
 
 [System.Serializable]

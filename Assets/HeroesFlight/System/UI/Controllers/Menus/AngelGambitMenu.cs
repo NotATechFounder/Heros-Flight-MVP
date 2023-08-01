@@ -38,6 +38,9 @@ namespace UISystem
         [SerializeField] private Image cardImageDisplay;
         [SerializeField] private GameObject[] cardRevealProperties;
 
+        [Header("Card Complected")]
+        [SerializeField] private RectTransform debug;
+
         [Header("Card List")]
         [SerializeField] private AngelCardSO[] angelCardSOList;
 
@@ -50,6 +53,8 @@ namespace UISystem
         JuicerRuntime debuffCardEffect;
         JuicerRuntime spinCardEffect;
 
+        private Vector2 debugOrigin;
+
         private void Start()
         {
             OnCreated();
@@ -58,15 +63,15 @@ namespace UISystem
 
         private void Update()
         {
-            //if (Input.GetKeyDown(KeyCode.Space))
-            //{
-            //    OnClosed();
-            //}
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                OnClosed();
+            }
 
-            //if (Input.GetKeyDown(KeyCode.O))
-            //{
-            //    OnOpened();
-            //}
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                OnOpened();
+            }
         }
 
         public override void OnCreated()
@@ -75,6 +80,8 @@ namespace UISystem
 
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
             openEffectBG.SetOnStart(() => canvasGroup.alpha = 0);
+            openEffectBG.SetOnComplected( AcivateLastCardPermanet );
+
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
             //closeEffectBG.SetOnComplected(CloseMenu);
@@ -97,6 +104,8 @@ namespace UISystem
             });
 
             ToggleCardRevealProperties (false);
+
+            debugOrigin = debug.transform.position;
         }
 
         public override void OnOpened()
@@ -155,15 +164,21 @@ namespace UISystem
         {
             cardRevealPanel.SetActive(true);
 
-            AcivateLastCardPermanet();
 
             AngelCard existingCard = CardExit?.Invoke();
+
 
             // To be removed
             existingCard = StatEffectManager.Instance.Exists(selectedCard);
 
             if (existingCard != null)
             {
+                if (existingCard.tier == AngelCardTier.Six)
+                {
+                    Debug.Log("All tiers are completed");
+                    return;
+                }
+
                 cardTierDisplay.text = "Tier : " + (existingCard.tier + 1).ToString();
                 cardDescriptionDisplay.text = selectedCard.GetDescription(existingCard.tier + 1);
             }
@@ -185,11 +200,17 @@ namespace UISystem
             AngelCard angelCard = StatEffectManager.Instance.GetActiveAngelCard();
             if (angelCard == null ||angelCard.angelCardSO == null) return;
 
+            StatEffectManager.Instance.TryActivateAfterBonusEffect();
+
             foreach (PermanetCardUI permanetCardUI in permanetCards)
             {
                 if (permanetCardUI.IsCardSet && permanetCardUI.AngelCard.angelCardSO == angelCard.angelCardSO)
                 {
-                    permanetCardUI.SetCard(angelCard);
+                    MoveDebug(permanetCardUI.transform, () =>
+                    {
+                        permanetCardUI.SetCard(angelCard);
+                    });
+
                     return;
                 }
             }
@@ -198,7 +219,11 @@ namespace UISystem
             {
                 if (!permanetCardUI.IsCardSet)
                 {
-                    permanetCardUI.SetCard(StatEffectManager.Instance.GetActiveAngelCard());
+                    MoveDebug(permanetCardUI.transform,()=>
+                    {
+                        permanetCardUI.SetCard(StatEffectManager.Instance.GetActiveAngelCard());
+                    });
+
                     break;
                 }
             }
@@ -210,7 +235,7 @@ namespace UISystem
             OnCardSelected?.Invoke(selectedCard);
             ToggleCardRevealProperties(false);
             // To be removed
-            StatEffectManager.Instance.ProccessCard(selectedCard);
+            StatEffectManager.Instance.AddAngelCardSO(selectedCard);
            // Close();
         }
 
@@ -220,6 +245,15 @@ namespace UISystem
             {
                 cardRevealProperty.SetActive(toggle);
             }
+        }
+
+        public void MoveDebug(Transform transform, Action OnReached)
+        {
+            debug.transform.position = debugOrigin;
+            debug.transform.JuicyMove(transform.position, 1f)
+                .SetEase(Ease.EaseInOutSine)
+                .SetOnComplected(()=>OnReached?.Invoke())
+                .Start();
         }
     }
 }

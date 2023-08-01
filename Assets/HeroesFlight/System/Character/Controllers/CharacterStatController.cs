@@ -6,6 +6,9 @@ public class CharacterStatController : MonoBehaviour
 {
     [SerializeField] PlayerCombatModel playerCombatModel;
 
+
+    public bool debug = false;
+
     [field: SerializeField] public float CurrentHealth { get; private set; }
     [field: SerializeField] public float CurrentMoveSpeed { get; private set; }
     [field: SerializeField] public float CurrentVitality { get; private set; }
@@ -22,10 +25,13 @@ public class CharacterStatController : MonoBehaviour
     private float runtimePhysicalDamage;
     private float runtimeCriticalHitDamage;
 
-    //private void Start()
-    //{
-    //    Initialize(playerCombatModel);
-    //}
+    private void Start()
+    {
+        if (debug)
+        {
+            Initialize(playerCombatModel);
+        }
+    }
 
     public void Initialize(PlayerCombatModel playerCombatModel)
     {
