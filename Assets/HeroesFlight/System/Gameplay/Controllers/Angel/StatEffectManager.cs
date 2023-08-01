@@ -7,34 +7,28 @@ public class StatEffectManager : MonoBehaviour
 {
     public static StatEffectManager Instance { get; private set; }
 
-    [SerializeField] private List<AngelCard> activeAngelCards = new List<AngelCard>();
+    [SerializeField] private List<AngelCard> collectedAngelCards = new List<AngelCard>();
     [SerializeField] private List<AngelCard> permanetStatEffect = new List<AngelCard>();
     [SerializeField] private CharacterStatController characterStatController;
+    [SerializeField] private AngelCard currentAngelCard;
 
     private void Awake()
     {
         Instance = this;
     }
 
-    private void Update()
+    public void ProccessCard(AngelCardSO angelCardSO)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (currentAngelCard != null && currentAngelCard.angelCardSO != null)
         {
-            AngelCard angelCard = activeAngelCards[0];
-            foreach (StatEffect effect in angelCard.angelCardSO.Effects)
+            foreach (StatEffect effect in currentAngelCard.angelCardSO.Effects)
             {
-                RemoveEffect(angelCard.tier, effect);
+                RemoveEffect(currentAngelCard.tier, effect);
             }
-            AddAfterBonusEffect(angelCard.tier, angelCard);
-            activeAngelCards.Remove(angelCard);
+            AddAfterBonusEffect(currentAngelCard.tier, currentAngelCard);
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            AngelCard angelCard = permanetStatEffect[0];
-            RemoveEffect(angelCard.tier, angelCard.angelCardSO.AffterBonusEffect);
-            permanetStatEffect.Remove(angelCard);
-        }
+        AddAngelCardSO(angelCardSO);
     }
 
     private void AddAfterBonusEffect(AngelCardTier angelCardTier, AngelCard newAngelCard)
@@ -55,21 +49,23 @@ public class StatEffectManager : MonoBehaviour
 
     public void AddAngelCardSO(AngelCardSO angelCardSO)
     {
-        if (activeAngelCards.Count == 0 || !CardExists(angelCardSO))
+        if (collectedAngelCards.Count == 0 || !CardExists(angelCardSO))
         {
             AngelCard angelCard = new AngelCard(angelCardSO);
-            activeAngelCards.Add(angelCard);
+            collectedAngelCards.Add(angelCard);
 
             foreach (StatEffect effect in angelCardSO.Effects)
             {
                 AddEffect(angelCard.tier, effect);
             }
+
+            currentAngelCard = angelCard;
         }
     }
 
     private bool CardExists(AngelCardSO angelCardSO)
     {
-        foreach (AngelCard angelCard in activeAngelCards)
+        foreach (AngelCard angelCard in collectedAngelCards)
         {
             if (angelCard.angelCardSO == angelCardSO)
             {
@@ -78,6 +74,7 @@ public class StatEffectManager : MonoBehaviour
                 {
                     AddEffect(angelCard.tier, effect);
                 }
+                currentAngelCard = angelCard;
                 return true;
             }
         }
@@ -87,7 +84,7 @@ public class StatEffectManager : MonoBehaviour
 
     public AngelCard Exists(AngelCardSO angelCardSO)
     {
-        foreach (AngelCard angelCard in activeAngelCards)
+        foreach (AngelCard angelCard in collectedAngelCards)
         {
             if (angelCard.angelCardSO == angelCardSO)
             {
@@ -241,5 +238,10 @@ public class StatEffectManager : MonoBehaviour
     {
         float percentageValue = ((float)percentageAmount / 100) * value;
         return percentageValue;
+    }
+
+    public AngelCard GetActiveAngelCard()
+    {
+        return currentAngelCard;
     }
 }

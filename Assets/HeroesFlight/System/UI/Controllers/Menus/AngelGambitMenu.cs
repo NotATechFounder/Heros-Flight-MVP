@@ -14,6 +14,9 @@ namespace UISystem
         public event Action<AngelCardSO> OnCardSelected;
         public Func<AngelCard> CardExit;
 
+        [Header("Permanet Cards")]
+        [SerializeField] private PermanetCardUI[] permanetCards;
+
         [Header("Card Buttons")]
         [SerializeField] private AdvanceButton buffCardButton;
         [SerializeField] private AdvanceButton debuffCardButton;
@@ -95,7 +98,7 @@ namespace UISystem
 
             continueButton.onClick.AddListener(()=>
             {
-                ActivateCard();
+                ActivateNewCard();
             });
 
             ToggleCardRevealProperties (false);
@@ -157,6 +160,8 @@ namespace UISystem
         {
             cardRevealPanel.SetActive(true);
 
+            AcivateLastCardPermanet();
+
             AngelCard existingCard = CardExit?.Invoke();
 
             // To be removed
@@ -180,13 +185,37 @@ namespace UISystem
             spinCardEffect.Start();
         }
 
-        public void ActivateCard ()
+        public void AcivateLastCardPermanet()
+        {
+            AngelCard angelCard = StatEffectManager.Instance.GetActiveAngelCard();
+            if (angelCard == null ||angelCard.angelCardSO == null) return;
+
+            foreach (PermanetCardUI permanetCardUI in permanetCards)
+            {
+                if (permanetCardUI.IsCardSet && permanetCardUI.AngelCard.angelCardSO == angelCard.angelCardSO)
+                {
+                    permanetCardUI.SetCard(angelCard);
+                    return;
+                }
+            }
+
+            foreach (PermanetCardUI permanetCardUI in permanetCards)
+            {
+                if (!permanetCardUI.IsCardSet)
+                {
+                    permanetCardUI.SetCard(StatEffectManager.Instance.GetActiveAngelCard());
+                    break;
+                }
+            }
+        }
+
+        public void ActivateNewCard ()
         {
             cardRevealPanel.SetActive(false);
             OnCardSelected?.Invoke(selectedCard);
             ToggleCardRevealProperties(false);
             // To be removed
-            StatEffectManager.Instance.AddAngelCardSO(selectedCard);
+            StatEffectManager.Instance.ProccessCard(selectedCard);
            // Close();
         }
 
