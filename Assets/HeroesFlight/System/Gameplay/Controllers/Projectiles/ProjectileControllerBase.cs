@@ -12,7 +12,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         Transform view;
         public event Action OnEnded;
         Vector2 currentDirection = default;
-        int damage;
+        float damage;
         float currentLifetime;
 
 
@@ -33,7 +33,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             Destroy(this.gameObject);
         }
 
-        public void SetupProjectile(int targetDamage, Transform currentTarget, Vector2 targetDirection)
+        public void SetupProjectile(float targetDamage, Transform currentTarget, Vector2 targetDirection)
         {
             currentDirection = targetDirection;
             damage = targetDamage;

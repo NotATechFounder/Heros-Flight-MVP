@@ -116,7 +116,7 @@ namespace HeroesFlight.System.Character
         Vector3 CalculateCharacterVelocity(Vector3 inputVector)
         {
             var velocity = CalculateMovementDirection(inputVector);
-            return velocity * model.Data.CombatModel.Speed;
+            return velocity * model.Data.CombatModel.MoveSpeed;
         }
 
         Vector3 CalculateMovementDirection(Vector3 inputVector)

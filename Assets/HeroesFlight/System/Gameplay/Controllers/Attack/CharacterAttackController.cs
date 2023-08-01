@@ -16,7 +16,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] int enemiesToHitPerAttack = 4;
         [SerializeField] float attackPointOffset = 1f;
 
-        public int Damage => controller.Data.CombatModel.Damage;
+        public float Damage => controller.Data.CombatModel.PhysicalDamage;
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
 
@@ -29,7 +29,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         AttackControllerState m_State;
 
-        CombatModel combatModel;
+        PlayerCombatModel combatModel;
 
         float m_TimeSinceLastAttack = 0;
 
