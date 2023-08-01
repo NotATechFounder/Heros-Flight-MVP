@@ -1,5 +1,6 @@
 ﻿using System;
 using HeroesFlight.Core.StateStack.Enum;
+using HeroesFlight.System.Character;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.NPC;
 using HeroesFlight.System.UI;
@@ -34,12 +35,15 @@ namespace HeroesFlight.StateStack.State
                     var gamePlaySystem = GetService<GamePlaySystemInterface>();
                     var npcSystem = GetService<NpcSystemInterface>();
                     var gameScene = $"{SceneType.GameScene}";
-                    
+                    var characterSystem=GetService<CharacterSystemInterface>();
                     void HandleReturnToMainMenu()
                     {
                         uiSystem.UiEventHandler.PauseMenu.OnQuitButtonClicked -= HandleReturnToMainMenu;
                         uiSystem.OnReturnToMainMenuRequest -= HandleReturnToMainMenu;
+                        uiSystem.OnRestartLvlRequest -= HandleLvlRestart;
+                        uiSystem.OnReviveCharacterRequest -= HandleCharacterRevive;
                         uiSystem.UiEventHandler.LoadingMenu.Open();
+                        uiSystem.UiEventHandler.GameMenu.Close();
                         m_SceneActionsQueue.AddAction(SceneActionType.Unload, gameScene);
                         gamePlaySystem.Reset();
                         m_SceneActionsQueue.Start( uiSystem.UiEventHandler.LoadingMenu.UpdateLoadingBar, () =>
@@ -52,7 +56,25 @@ namespace HeroesFlight.StateStack.State
                         
                     }
 
+                    void HandleLvlRestart()
+                    {
+                        characterSystem.Reset();
+                        npcSystem.Reset();
+                        gamePlaySystem.Reset();
+                        uiSystem.UiEventHandler.ReviveMenu.Close();
+                        gamePlaySystem.StartGameLoop();   
+                        
+                    }
+
+                    void HandleCharacterRevive()
+                    {
+                        gamePlaySystem.ReviveCharacter();
+                        uiSystem.UiEventHandler.ReviveMenu.Close();
+                    }
+
                     uiSystem.OnReturnToMainMenuRequest += HandleReturnToMainMenu;
+                    uiSystem.OnRestartLvlRequest += HandleLvlRestart;
+                    uiSystem.OnReviveCharacterRequest += HandleCharacterRevive;
                     uiSystem.UiEventHandler.PauseMenu.OnQuitButtonClicked += HandleReturnToMainMenu;
                     
                     
@@ -63,6 +85,7 @@ namespace HeroesFlight.StateStack.State
                     {
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(gameScene);
                         SceneManager.SetActiveScene(loadedScene);
+                        characterSystem.Init(loadedScene);
                         npcSystem.Init(loadedScene);
                         gamePlaySystem.Init(loadedScene);
                         uiSystem.UiEventHandler.GameMenu.Open();

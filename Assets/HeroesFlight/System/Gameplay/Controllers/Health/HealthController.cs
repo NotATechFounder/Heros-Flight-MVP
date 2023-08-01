@@ -19,11 +19,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public event Action<DamageModel> OnBeingDamaged;
         public event Action<IHealthController> OnDeath;
 
-        void Awake()
-        {
-            Init();
-        }
-
+       
         public virtual void Init()
         {
             currentHealh = maxHealth;
@@ -46,6 +42,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public virtual bool IsDead()
         {
             return currentHealh <= 0;
+        }
+
+        public virtual void Reset()
+        {
+            Init();
+            heathBarUI?.ChangeValue((float)currentHealh / maxHealth);
+            
         }
 
         protected virtual void ProcessDeath()

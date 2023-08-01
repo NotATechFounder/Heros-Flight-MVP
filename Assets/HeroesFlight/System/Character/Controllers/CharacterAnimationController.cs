@@ -4,6 +4,7 @@ using System.Linq;
 using HeroesFlight.System.Character.Enum;
 using Spine;
 using Spine.Unity;
+using StansAssets.Foundation.Async;
 using UnityEngine;
 using Event = Spine.Event;
 
@@ -18,6 +19,7 @@ namespace HeroesFlight.System.Character
         [SerializeField] AnimationReferenceAsset m_TurnLeftAnimation;
         [SerializeField] AnimationReferenceAsset m_TurnRightAnimation;
         [SerializeField] AnimationReferenceAsset m_AttackAnimation;
+        [SerializeField] AnimationReferenceAsset deathAnimation;
         SkeletonAnimation m_SkeletonAnimation;
         CharacterControllerInterface m_CharacterController;
 
@@ -102,6 +104,25 @@ namespace HeroesFlight.System.Character
             }
 
             return false;
+        }
+
+        public void PlayDeathAnimation(Action onComplete=null)
+        {
+            m_SkeletonAnimation.AnimationState.ClearTrack(1);
+            var track = m_SkeletonAnimation.AnimationState.SetAnimation(0, deathAnimation, false);
+            track.AttachmentThreshold = 1f;
+            track.MixDuration = .5f;
+            CoroutineUtility.WaitForSeconds(deathAnimation.Animation.Duration, () =>
+            {
+                onComplete?.Invoke();
+            });
+        }
+
+        public void PlayIdleAnimation()
+        {
+            var track = m_SkeletonAnimation.AnimationState.AddAnimation(0, m_IdleAnimation, true, 0);
+            track.AttachmentThreshold = 1f;
+            track.MixDuration = .5f;
         }
 
         public void PlayAttackSequence()

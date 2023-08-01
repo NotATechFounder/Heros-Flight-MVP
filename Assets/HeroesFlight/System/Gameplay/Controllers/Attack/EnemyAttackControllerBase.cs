@@ -72,6 +72,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public void Init() { }
 
-        public virtual void DisableActions() { }
+        public virtual void ToggleControllerState(bool isEnabled) { }
     }
 }

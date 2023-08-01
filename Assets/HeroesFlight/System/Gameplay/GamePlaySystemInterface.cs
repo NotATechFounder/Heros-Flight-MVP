@@ -16,5 +16,6 @@ namespace HeroesFlight.System.Gameplay
         event Action<GameplayState> OnGameStateChange;
         public CountDownTimer GameTimer { get; }
         void StartGameLoop();
+        void ReviveCharacter();
     }
 }

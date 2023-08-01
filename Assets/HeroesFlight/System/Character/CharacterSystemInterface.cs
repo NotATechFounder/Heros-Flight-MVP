@@ -2,6 +2,8 @@
 {
     public interface CharacterSystemInterface : ISystemInterface
     {
-        void ShakeCharacterCamera(float duration);
+        CharacterControllerInterface CreateCharacter();
+        void SetCharacterControllerState(bool isEnabled);
+      
     }
 }

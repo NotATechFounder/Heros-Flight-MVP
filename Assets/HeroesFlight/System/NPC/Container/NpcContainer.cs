@@ -18,8 +18,8 @@ namespace HeroesFlight.System.NPC.Container
         int spawnAmount ;
         int waves;
         GameObject player;
-        
-       
+
+        List<AiControllerBase> spawnedEnemies = new();
         Dictionary<EnemySpawmType, List<ISpawnPointInterface>> spanwPointsCache = new();
 
         WaitForSeconds timeBetweenEnemySpawn;
@@ -27,7 +27,6 @@ namespace HeroesFlight.System.NPC.Container
         public void Init()
         {
             GenerateCache();
-            player = GameObject.FindWithTag("Player");
             timeBetweenEnemySpawn = new WaitForSeconds(1f);
             timeBeweenWaves = new WaitForSeconds(10f);
 
@@ -83,6 +82,7 @@ namespace HeroesFlight.System.NPC.Container
                     , Quaternion.identity);
                 resultEnemy.transform.parent = transform;
                 resultEnemy.Init(player.transform);
+                spawnedEnemies.Add(resultEnemy);
                 OnOnEnemySpawned?.Invoke(resultEnemy);
                 yield return timeBetweenEnemySpawn;
             }
@@ -99,9 +99,24 @@ namespace HeroesFlight.System.NPC.Container
             var resultEnemy = Instantiate(targetPrefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
                 , Quaternion.identity);
             resultEnemy.transform.parent = transform;
+            spawnedEnemies.Add(resultEnemy);
             resultEnemy.Init(player.transform);
             return resultEnemy;
 
+        }
+
+        public void InjectPlayer(Transform playerTransform)
+        {
+            player = playerTransform.gameObject;
+        }
+
+        public void Reset()
+        {
+            foreach (var enemy in spawnedEnemies)
+            {
+               Destroy(enemy.gameObject);
+            }
+            spawnedEnemies.Clear();
         }
     }
 }

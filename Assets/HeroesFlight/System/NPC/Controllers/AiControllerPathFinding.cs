@@ -81,9 +81,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
                     if (rigidBody == null)
                         return;
 
-                    rigidBody.velocity = Vector2.zero;
                     ai.canMove = true;
                     isInknockback = false;
+                    rigidBody.velocity = Vector2.zero;
                 });
             });
         }

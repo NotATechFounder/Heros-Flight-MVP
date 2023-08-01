@@ -22,7 +22,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected Rigidbody2D rigidBody;
         protected Transform currentTarget;
         protected bool isDisabled;
-      [SerializeField]  bool canAttack;
+        bool canAttack;
         Vector2 wanderPosition;
        
 

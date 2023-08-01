@@ -1,9 +1,10 @@
 using Cinemachine;
 using UnityEngine;
+using NotImplementedException = System.NotImplementedException;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class CameraShaker : MonoBehaviour,CameraControllerInterface
+    public class CameraController : MonoBehaviour,CameraControllerInterface
     {
         [SerializeField] float shakeIntensity=1f;
         CinemachineVirtualCamera camera;
@@ -28,6 +29,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 StopCameraShake();
             }
+        }
+
+        public void SetTarget(Transform target)
+        {
+            camera.Follow = target;
+            camera.LookAt = target;
         }
 
         void StopCameraShake()

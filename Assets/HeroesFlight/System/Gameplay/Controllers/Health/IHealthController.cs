@@ -17,6 +17,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         event Action<IHealthController> OnDeath;
         void DealDamage(DamageModel damage);
         bool IsDead();
-        
+        void Reset();
+
     }
 }

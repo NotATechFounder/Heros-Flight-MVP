@@ -44,7 +44,8 @@ namespace UISystem
             { 
                 if (OnWatchAdsButtonClicked?.Invoke() == true)
                 {
-                    CloseButtonAction();
+                    startTimer.Stop();
+                    Close();
                 }
             });
 
@@ -52,7 +53,8 @@ namespace UISystem
             {
                 if (OnGemButtonClicked?.Invoke() == true)
                 {
-                    CloseButtonAction();
+                    startTimer.Stop();
+                    Close();
                 }
             });
 
