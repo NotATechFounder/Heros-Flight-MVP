@@ -8,6 +8,7 @@ namespace HeroesFlight.System.Character
     public interface CharacterControllerInterface
     {
         public CharacterData Data { get; }
+        public CharacterStatController CharacterStatController { get; }
         event Action<CharacterState> OnCharacterMoveStateChanged;
         bool IsFacingLeft { get; }
         Vector3 GetVelocity();

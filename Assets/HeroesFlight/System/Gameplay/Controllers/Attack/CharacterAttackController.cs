@@ -16,7 +16,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] int enemiesToHitPerAttack = 4;
         [SerializeField] float attackPointOffset = 1f;
 
-        public float Damage => controller.Data.CombatModel.PhysicalDamage;
+        public float Damage => controller.CharacterStatController.CurrentPhysicalDamage;
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
 
@@ -155,9 +155,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
                     enemiesAttacked++;
 
-                    var rng = Random.Range(0, 101);
-                    var isCritical = rng <= 30;
-                    float damageToDeal = isCritical ? Damage * 2 : Damage;
+                    float criticalChance = controller.CharacterStatController.CurrentCriticalHitChance;
+                    bool isCritical = Random.Range(0, 100) <= criticalChance;
+
+                    float damageToDeal = isCritical ? Damage * controller.CharacterStatController.CurrentCriticalHitDamage : Damage;
                     var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
                     enemy.DealDamage(new DamageModel(damageToDeal,type));
                 }

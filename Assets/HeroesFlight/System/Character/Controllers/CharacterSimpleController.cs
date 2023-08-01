@@ -10,12 +10,16 @@ namespace HeroesFlight.System.Character
         [SerializeField] CharacterModel model;
         CharacterMovementController m_MovementController;
         CharacterInputReceiver m_InputReceiver;
+        CharacterStatController m_CharacterStatController;
         ICharacterViewController viewController;
         Vector3 m_SavedVelocity = default;
         Transform m_Transform;
 
         public bool IsFacingLeft { get; private set; }
         public CharacterData Data => model.Data;
+
+        public CharacterStatController CharacterStatController => m_CharacterStatController;
+
         public event Action<CharacterState> OnCharacterMoveStateChanged;
         CharacterState m_CurrentState;
         public  Vector3 GetVelocity() => m_SavedVelocity;
@@ -25,8 +29,10 @@ namespace HeroesFlight.System.Character
         {
             m_MovementController = GetComponent<CharacterMovementController>();
             m_InputReceiver = GetComponent<CharacterInputReceiver>();
+            m_CharacterStatController = GetComponent<CharacterStatController>();
             viewController = GetComponent<ICharacterViewController>();
             m_Transform = GetComponent<Transform>();
+            m_CharacterStatController.Initialize(model.Data.CombatModel);
             viewController.SetupView(model.Data.AppearenceModel.Data);
             m_CurrentState = CharacterState.Idle;
             IsFacingLeft = true;

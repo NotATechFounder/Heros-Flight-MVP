@@ -11,20 +11,20 @@ public class PlayerCombatModel : CombatModel
     [SerializeField] float agility;
     [SerializeField] float resilience;
 
-    [SerializeField] float magicDamage;
-    [SerializeField] float physicalDamage;
+    [SerializeField] ValueRange magicDamage;
+    [SerializeField] ValueRange physicalDamage;
     [SerializeField] float criticalHitChance = 10f;
-    [SerializeField] float criticalHitDamage;
+    [SerializeField] ValueRange criticalHitDamage;
     [SerializeField] float defense;
     [SerializeField] float attackSpeed;
 
     public float Vitality => vitality;
     public float Agility => agility;
     public float Resilience => resilience;
-    public float MagicDamage => magicDamage;
-    public float PhysicalDamage => physicalDamage;
+    public ValueRange MagicDamage => magicDamage;
+    public ValueRange PhysicalDamage => physicalDamage;
     public float CriticalHitChance => criticalHitChance;
-    public float CriticalHitDamage => criticalHitDamage;
+    public ValueRange CriticalHitDamage => criticalHitDamage;
     public float Defense => defense;
     public float AttackSpeed => attackSpeed;
 
@@ -39,6 +39,7 @@ public class PlayerCombatModel : CombatModel
     //}
 }
 
+[System.Serializable]
 public struct ValueRange
 {
     public float min;

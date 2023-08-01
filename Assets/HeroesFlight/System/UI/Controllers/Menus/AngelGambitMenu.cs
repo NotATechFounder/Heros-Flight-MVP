@@ -58,20 +58,15 @@ namespace UISystem
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                OnClosed();
-            }
+            //if (Input.GetKeyDown(KeyCode.Space))
+            //{
+            //    OnClosed();
+            //}
 
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                OnOpened();
-            }
-
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                spinCardEffect.Start();
-            }
+            //if (Input.GetKeyDown(KeyCode.O))
+            //{
+            //    OnOpened();
+            //}
         }
 
         public override void OnCreated()

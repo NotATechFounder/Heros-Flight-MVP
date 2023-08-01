@@ -11,29 +11,31 @@ public class CharacterStatController : MonoBehaviour
     [field: SerializeField] public float CurrentVitality { get; private set; }
     [field: SerializeField] public float CurrentAgility { get; private set; }
     [field: SerializeField] public float CurrentResilience { get; private set; }
-    [field: SerializeField] public float CurrentMagicDamage { get; private set; }
-    [field: SerializeField] public float CurrentPhysicalDamage { get; private set; }
+    public float CurrentMagicDamage => playerCombatModel.MagicDamage.GetRandomValue() + runtimeMagicDamage;
+    public float CurrentPhysicalDamage  => playerCombatModel.PhysicalDamage.GetRandomValue() + runtimePhysicalDamage;
     [field: SerializeField] public float CurrentCriticalHitChance { get; private set; }
-    [field: SerializeField] public float CurrentCriticalHitDamage { get; private set; }
+    public float CurrentCriticalHitDamage => playerCombatModel.CriticalHitDamage.GetRandomValue() + runtimeCriticalHitDamage;
     [field: SerializeField] public float CurrentDefense { get; private set; }
     [field: SerializeField] public float CurrentAttackSpeed { get; private set; }
 
-    private void Start()
-    {
-        Initialize();
-    }
+    private float runtimeMagicDamage;
+    private float runtimePhysicalDamage;
+    private float runtimeCriticalHitDamage;
 
-    public void Initialize()
+    //private void Start()
+    //{
+    //    Initialize(playerCombatModel);
+    //}
+
+    public void Initialize(PlayerCombatModel playerCombatModel)
     {
+        this.playerCombatModel = playerCombatModel;
         CurrentHealth = playerCombatModel.Health;
         CurrentMoveSpeed = playerCombatModel.MoveSpeed;
         CurrentVitality = playerCombatModel.Vitality;
         CurrentAgility = playerCombatModel.Agility;
         CurrentResilience = playerCombatModel.Resilience;
-        CurrentMagicDamage = playerCombatModel.MagicDamage;
-        CurrentPhysicalDamage = playerCombatModel.PhysicalDamage;
         CurrentCriticalHitChance = playerCombatModel.CriticalHitChance;
-        CurrentCriticalHitDamage = playerCombatModel.CriticalHitDamage;
         CurrentDefense = playerCombatModel.Defense;
         CurrentAttackSpeed = playerCombatModel.AttackSpeed;
     }
@@ -65,12 +67,12 @@ public class CharacterStatController : MonoBehaviour
 
     public void ModifyMagicDamage(float percentageAmount, bool increase)
     {
-        CurrentMagicDamage = ModifyValue(playerCombatModel.MagicDamage, CurrentMagicDamage, percentageAmount, increase);
+        runtimeMagicDamage = ModifyValue(playerCombatModel.MagicDamage.max, runtimeMagicDamage, percentageAmount, increase);
     }
 
     public void ModifyPhysicalDamage(float percentageAmount, bool increase)
     {
-        CurrentPhysicalDamage = ModifyValue(playerCombatModel.PhysicalDamage, CurrentPhysicalDamage, percentageAmount, increase);
+        runtimePhysicalDamage = ModifyValue(playerCombatModel.PhysicalDamage.max, runtimePhysicalDamage, percentageAmount, increase);
     }
 
     public void ModifyCriticalHitChance(float percentageAmount, bool increase)
@@ -80,7 +82,7 @@ public class CharacterStatController : MonoBehaviour
 
     public void ModifyCriticalHitDamage(float percentageAmount, bool increase)
     {
-        CurrentCriticalHitDamage = ModifyValue(playerCombatModel.CriticalHitDamage, CurrentCriticalHitDamage, percentageAmount, increase);
+        runtimeCriticalHitDamage = ModifyValue(playerCombatModel.CriticalHitDamage.max, runtimeCriticalHitDamage, percentageAmount, increase);
     }
 
     public void ModifyDefense(float percentageAmount, bool increase)
