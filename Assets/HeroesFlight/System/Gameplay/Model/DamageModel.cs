@@ -5,13 +5,13 @@ namespace HeroesFlight.System.Gameplay.Model
 {
     public class DamageModel
     {
-        public DamageModel(int damage,DamageType type)
+        public DamageModel(float damage,DamageType type)
         {
             Amount = damage;
             DamageType = type;
         }
       
-        public int Amount { get; }
+        public float Amount { get; }
         public DamageType DamageType { get; }
         public Transform Target { get; private set; }
 

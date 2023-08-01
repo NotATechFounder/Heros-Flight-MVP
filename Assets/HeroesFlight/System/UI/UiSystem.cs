@@ -205,7 +205,7 @@ namespace HeroesFlight.System.UI
 
         void HandleEnemyDamaged(DamageModel damageModel)
         {
-            var damageText = NumberConverter.ConvertNumberToString(damageModel.Amount);
+            var damageText = NumberConverter.ConvertNumberToString((int)damageModel.Amount);
             var spriteAsset = container.GetDamageTextSprite(damageModel.DamageType);
             var size = damageModel.DamageType == DamageType.NoneCritical ? 60 : 100;
             Debug.Log(size);

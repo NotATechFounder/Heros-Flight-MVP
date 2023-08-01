@@ -157,7 +157,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
                     var rng = Random.Range(0, 101);
                     var isCritical = rng <= 30;
-                    int damageToDeal = isCritical ? Damage * 2 : Damage;
+                    float damageToDeal = isCritical ? Damage * 2 : Damage;
                     var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
                     enemy.DealDamage(new DamageModel(damageToDeal,type));
                 }
