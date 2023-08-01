@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using System.Linq;
 
-public class NumberConverter
+public class NumberConverter  : MonoBehaviour
 {
     //This function converts an int to the string that you can put in TextMeshPro to show the number as the current theme
     public static string ConvertNumberToString(int num)

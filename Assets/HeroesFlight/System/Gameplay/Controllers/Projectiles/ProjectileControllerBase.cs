@@ -1,4 +1,6 @@
 using System;
+using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -46,7 +48,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (col.gameObject.TryGetComponent<IHealthController>(out var healthController))
             {
-                healthController.DealDamage(damage);
+                healthController.DealDamage(new DamageModel(damage,DamageType.NoneCritical));
                 OnEnded?.Invoke();
                 gameObject.SetActive(false);
             }
