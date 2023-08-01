@@ -1,5 +1,6 @@
 using System;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -15,7 +16,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public float MaxHealth => maxHealth;
         public float CurrentHealth => currentHealh;
         public float CurrentHealthProportion => (float)currentHealh / maxHealth;
-        public event Action<Transform, float> OnBeingDamaged;
+        public event Action<DamageModel> OnBeingDamaged;
         public event Action<IHealthController> OnDeath;
 
         void Awake()
@@ -28,14 +29,15 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             currentHealh = maxHealth;
         }
 
-        public virtual void DealDamage(float damage)
+        public virtual void DealDamage(DamageModel damage)
         {
             if(IsDead())
                 return;
-
-            currentHealh -= damage;
-            heathBarUI?.ChangeValue(currentHealh / maxHealth);
-            OnBeingDamaged?.Invoke(transform, damage);
+            
+            currentHealh -= damage.Amount;
+            heathBarUI?.ChangeValue((float)currentHealh / maxHealth);
+            damage.SetTarget(transform);
+            OnBeingDamaged?.Invoke(damage);
 
             if (IsDead())
                 ProcessDeath();
@@ -51,9 +53,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
            OnDeath?.Invoke(this);
         }
 
-        protected void TriggerDamageMessage(int damage)
+        protected void TriggerDamageMessage(DamageModel damage)
         {
-            OnBeingDamaged?.Invoke(transform,damage);
+            damage.SetTarget(transform);
+            OnBeingDamaged?.Invoke(damage);
         }
     }
 }

@@ -1,4 +1,6 @@
 using System;
+using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
 
@@ -57,7 +59,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             timeSinceLastAttack = 0;
             aiController.SetAttackState(false);
-            target.DealDamage(Damage);
+            target.DealDamage(new DamageModel(Damage,DamageType.NoneCritical));
         }
 
         public virtual void AttackTargets()

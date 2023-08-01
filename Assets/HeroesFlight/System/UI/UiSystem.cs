@@ -1,8 +1,8 @@
 ﻿using System;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Gameplay.Enum;
-using HeroesFlightProject.System.Gameplay.Controllers;
-using HeroesFlightProject.System.NPC.Controllers;
+using HeroesFlight.System.Gameplay.Model;
+using HeroesFlight.System.UI.Container;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -36,12 +36,13 @@ namespace HeroesFlight.System.UI
 
         public const string GameMusicLoopID = "ForestLoop";
 
+        UiContainer container;
         GamePlaySystemInterface gameplaySystem;
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
             UiEventHandler = scene.GetComponent<UIEventHandler>();
-
+            container = scene.GetComponent<UiContainer>();
             GameTimer = new CountDownTimer(UiEventHandler);
 
             UiEventHandler.Init(() =>
@@ -202,10 +203,14 @@ namespace HeroesFlight.System.UI
             UiEventHandler.ReviveMenu.Open();
         }
 
-        void HandleEnemyDamaged(Transform transform, float damage)
+        void HandleEnemyDamaged(DamageModel damageModel)
         {
-            UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one, damage.ToString(),
-                Color.yellow);
+            var damageText = NumberConverter.ConvertNumberToString(damageModel.Amount);
+            var spriteAsset = container.GetDamageTextSprite(damageModel.DamageType);
+            var size = damageModel.DamageType == DamageType.NoneCritical ? 60 : 100;
+            Debug.Log(size);
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.one, damageText,
+                spriteAsset,size);
         }
 
         void HandlePlayerWin()
@@ -218,9 +223,12 @@ namespace HeroesFlight.System.UI
             UiEventHandler.GameMenu.UpdateEnemyCountText(enemiesLeft);
         }
 
-        void HandleCharacterDamaged(Transform transform, float damage)
+        void HandleCharacterDamaged(DamageModel damageModel)
         {
-            UiEventHandler.PopupManager.PopUpTextAtTransfrom(transform, Vector3.one, damage.ToString(),
+            var damageString = damageModel.DamageType == DamageType.NoneCritical
+                ? $"{damageModel.Amount}"
+                : $"!!{damageModel.Amount}!!";
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.one, damageString,
                 Color.red);
         }
 

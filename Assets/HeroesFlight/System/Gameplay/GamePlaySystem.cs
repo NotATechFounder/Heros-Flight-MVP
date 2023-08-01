@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
@@ -43,8 +44,8 @@ namespace HeroesFlight.System.Gameplay
         public event Action<float> OnMinibossHealthChange;
        
         public event Action<int> OnRemainingEnemiesLeft;
-        public event Action<Transform, float> OnCharacterDamaged;
-        public event Action<Transform, float> OnEnemyDamaged;
+        public event Action<DamageModel> OnCharacterDamaged;
+        public event Action<DamageModel> OnEnemyDamaged;
         public event Action<int> OnCharacterHealthChanged;
         public event Action<int> OnCharacterComboChanged;
         public event Action<GameplayState> OnGameStateChange;
@@ -117,7 +118,7 @@ namespace HeroesFlight.System.Gameplay
             cameraController.SetCameraShakeState(false);
         }
 
-        void HandleMinibosshealthChange(Transform transform, float i)
+        void HandleMinibosshealthChange(DamageModel damageModel)
         {
            OnMinibossHealthChange?.Invoke(miniBoss.CurrentHealthProportion);
         }
@@ -146,12 +147,12 @@ namespace HeroesFlight.System.Gameplay
             }
         }
 
-        void HandleCharacterDamaged(Transform characterTransform, float damageReceived)
+        void HandleCharacterDamaged(DamageModel damageModel)
         {
             if (currentState != GameplayState.Ongoing)
                 return;
 
-            OnCharacterDamaged?.Invoke(characterTransform, damageReceived);
+            OnCharacterDamaged?.Invoke(damageModel);
         }
 
         void HandleCharacterDeath(IHealthController obj)
@@ -162,10 +163,10 @@ namespace HeroesFlight.System.Gameplay
             ChangeState(GameplayState.Lost);
         }
 
-        void HandleEnemyDamaged(Transform transform, float i)
+        void HandleEnemyDamaged(DamageModel damageModel)
         {
             UpdateCharacterCombo();
-            OnEnemyDamaged?.Invoke(transform, i);
+            OnEnemyDamaged?.Invoke(damageModel);
         }
 
         void UpdateCharacterCombo()

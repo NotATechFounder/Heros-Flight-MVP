@@ -1,5 +1,6 @@
 using System;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -12,9 +13,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         float CurrentHealth { get; }
         float CurrentHealthProportion { get; }
         void Init();
-        event Action<Transform, float> OnBeingDamaged;
+        event Action<DamageModel> OnBeingDamaged;
         event Action<IHealthController> OnDeath;
-        void DealDamage(float damage);
+        void DealDamage(DamageModel damage);
         bool IsDead();
         
     }
