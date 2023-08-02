@@ -39,7 +39,9 @@ namespace UISystem
         [SerializeField] private GameObject[] cardRevealProperties;
 
         [Header("Card Complected")]
-        [SerializeField] private RectTransform debug;
+        [SerializeField] private GameObject cardCompletelPanel;
+        [SerializeField] private CardEffectUI cardEffectUI;
+        [SerializeField] private AdvanceButton claimPermanetCardButton;
 
         [Header("Card List")]
         [SerializeField] private AngelCardSO[] angelCardSOList;
@@ -52,8 +54,6 @@ namespace UISystem
         JuicerRuntime buffCardEffect;
         JuicerRuntime debuffCardEffect;
         JuicerRuntime spinCardEffect;
-
-        private Vector2 debugOrigin;
 
         private void Start()
         {
@@ -80,7 +80,7 @@ namespace UISystem
 
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
             openEffectBG.SetOnStart(() => canvasGroup.alpha = 0);
-            openEffectBG.SetOnComplected( AcivateLastCardPermanet );
+            openEffectBG.SetOnComplected(ShowLastCardPermanet);
 
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
@@ -103,9 +103,12 @@ namespace UISystem
                 ActivateNewCard();
             });
 
-            ToggleCardRevealProperties (false);
+            claimPermanetCardButton.onClick.AddListener(() =>
+            {
+                AcivateLastCardPermanet();
+            });
 
-            debugOrigin = debug.transform.position;
+            ToggleCardRevealProperties (false);
         }
 
         public override void OnOpened()
@@ -164,9 +167,7 @@ namespace UISystem
         {
             cardRevealPanel.SetActive(true);
 
-
             AngelCard existingCard = CardExit?.Invoke();
-
 
             // To be removed
             existingCard = StatEffectManager.Instance.Exists(selectedCard);
@@ -195,20 +196,27 @@ namespace UISystem
             spinCardEffect.Start();
         }
 
+        public void ShowLastCardPermanet()
+        {
+            AngelCard angelCard = StatEffectManager.Instance.GetActiveAngelCard();
+            cardCompletelPanel.SetActive(angelCard != null && angelCard.angelCardSO != null);
+        }
+
         public void AcivateLastCardPermanet()
         {
             AngelCard angelCard = StatEffectManager.Instance.GetActiveAngelCard();
             if (angelCard == null ||angelCard.angelCardSO == null) return;
 
-            StatEffectManager.Instance.TryActivateAfterBonusEffect();
+            StatEffectManager.Instance.ComplectedLevel();
 
             foreach (PermanetCardUI permanetCardUI in permanetCards)
             {
                 if (permanetCardUI.IsCardSet && permanetCardUI.AngelCard.angelCardSO == angelCard.angelCardSO)
                 {
-                    MoveDebug(permanetCardUI.transform, () =>
+                    cardEffectUI.MoveTo(permanetCardUI.transform, () =>
                     {
                         permanetCardUI.SetCard(angelCard);
+                        cardCompletelPanel.SetActive(false);
                     });
 
                     return;
@@ -219,9 +227,10 @@ namespace UISystem
             {
                 if (!permanetCardUI.IsCardSet)
                 {
-                    MoveDebug(permanetCardUI.transform,()=>
+                    cardEffectUI.MoveTo(permanetCardUI.transform,()=>
                     {
                         permanetCardUI.SetCard(StatEffectManager.Instance.GetActiveAngelCard());
+                        cardCompletelPanel.SetActive(false);
                     });
 
                     break;
@@ -245,15 +254,6 @@ namespace UISystem
             {
                 cardRevealProperty.SetActive(toggle);
             }
-        }
-
-        public void MoveDebug(Transform transform, Action OnReached)
-        {
-            debug.transform.position = debugOrigin;
-            debug.transform.JuicyMove(transform.position, 1f)
-                .SetEase(Ease.EaseInOutSine)
-                .SetOnComplected(()=>OnReached?.Invoke())
-                .Start();
         }
     }
 }

@@ -17,7 +17,7 @@ public class StatEffectManager : MonoBehaviour
         Instance = this;
     }
 
-    public void TryActivateAfterBonusEffect()
+    public void ComplectedLevel()
     {
         if (currentAngelCard != null && currentAngelCard.angelCardSO != null)
         {
