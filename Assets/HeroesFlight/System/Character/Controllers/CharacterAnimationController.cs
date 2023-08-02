@@ -120,7 +120,7 @@ namespace HeroesFlight.System.Character
 
         public void PlayIdleAnimation()
         {
-            var track = m_SkeletonAnimation.AnimationState.AddAnimation(0, m_IdleAnimation, true, 0);
+            var track = m_SkeletonAnimation.AnimationState.SetAnimation(0, m_IdleAnimation, true);
             track.AttachmentThreshold = 1f;
             track.MixDuration = .5f;
         }

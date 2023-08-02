@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using HeroesFlight.System.NPC.Controllers;
+using HeroesFlight.System.NPC.Model;
 using HeroesFlightProject.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
@@ -13,15 +14,14 @@ namespace HeroesFlight.System.NPC.Container
 {
     public class NpcContainer : MonoBehaviour
     {
-        [SerializeField] AiControllerBase[] aiPrefabs;
-        [SerializeField] AiControllerBase[] miniBosses;
         int spawnAmount ;
-        int waves;
         GameObject player;
 
         List<AiControllerBase> spawnedEnemies = new();
         Dictionary<EnemySpawmType, List<ISpawnPointInterface>> spanwPointsCache = new();
 
+        Coroutine spawningWaveRoutine;
+        Coroutine spawningRoutine;
         WaitForSeconds timeBetweenEnemySpawn;
         WaitForSeconds timeBeweenWaves;
         public void Init()
@@ -32,9 +32,9 @@ namespace HeroesFlight.System.NPC.Container
 
         }
 
-        public void SpawnEnemies(int enemiesToKill, int waves, Action<AiControllerBase> OnOnEnemySpawned)
+        public void SpawnEnemies(SpawnModel model, Action<AiControllerBase> OnOnEnemySpawned)
         {
-            StartCoroutine(SpawnEnemiesRoutine(enemiesToKill,waves, OnOnEnemySpawned));
+            spawningRoutine= StartCoroutine(SpawnEnemiesRoutine(model, OnOnEnemySpawned));
         }
 
         void GenerateCache()
@@ -53,29 +53,27 @@ namespace HeroesFlight.System.NPC.Container
             }
         }
 
-        IEnumerator SpawnEnemiesRoutine(int enemiesToKill, int wavesNumber, Action<AiControllerBase> OnOnEnemySpawned)
+        IEnumerator SpawnEnemiesRoutine(SpawnModel model, Action<AiControllerBase> OnOnEnemySpawned)
         {
-            spawnAmount = enemiesToKill;
-            waves = wavesNumber;
-
-            var amountToSpawnPerWave = enemiesToKill / wavesNumber;
+            spawnAmount = model.MobsAmount;
+            var amountToSpawnPerWave =model.MobsAmount / model.WavesAmount ;
             while (spawnAmount>0)
             {
-                yield return StartCoroutine(SpawnWave(amountToSpawnPerWave, OnOnEnemySpawned));
+                yield return spawningWaveRoutine =StartCoroutine(SpawnWave(model,amountToSpawnPerWave, OnOnEnemySpawned));
                 spawnAmount -= amountToSpawnPerWave;
                 yield return timeBeweenWaves;
             }
 
-           
+          
         }
 
-        IEnumerator SpawnWave(int enemiesToSpawn, Action<AiControllerBase> OnOnEnemySpawned)
+        IEnumerator SpawnWave(SpawnModel spawnModel, int enemiesToSpawn, Action<AiControllerBase> OnOnEnemySpawned)
         {
             for (var i = 0; i < enemiesToSpawn; i++)
             {
-                var rng = Random.Range(0, aiPrefabs.Length);
+                var rng = Random.Range(0, spawnModel.TrashMobs.Count);
 
-                var targetPrefab = aiPrefabs[rng];
+                var targetPrefab = spawnModel.TrashMobs[rng];
                 var targetPoints = spanwPointsCache[targetPrefab.AgentModel.EnemySpawmType];
                 var rngPoint=  Random.Range(0, targetPoints.Count);
                 var resultEnemy = Instantiate(targetPrefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
@@ -90,10 +88,10 @@ namespace HeroesFlight.System.NPC.Container
             yield return true;
         }
 
-        public AiControllerBase SpawnMiniBoss()
+        public AiControllerBase SpawnMiniBoss(SpawnModel currentLvlModel)
         {
-            var rng = Random.Range(0, miniBosses.Length);
-            var targetPrefab = miniBosses[rng];
+            var rng = Random.Range(0, currentLvlModel.MiniBosses.Count);
+            var targetPrefab = currentLvlModel.MiniBosses[rng];
             var targetPoints = spanwPointsCache[targetPrefab.AgentModel.EnemySpawmType];
             var rngPoint=  Random.Range(0, targetPoints.Count);
             var resultEnemy = Instantiate(targetPrefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
@@ -117,6 +115,15 @@ namespace HeroesFlight.System.NPC.Container
                Destroy(enemy.gameObject);
             }
             spawnedEnemies.Clear();
+            spawnAmount = 0;
+            if (spawningWaveRoutine != null)
+            {
+                StopCoroutine(spawningWaveRoutine);
+            }
+            if (spawningRoutine != null)
+            {
+                StopCoroutine(spawningRoutine);
+            }
         }
     }
 }

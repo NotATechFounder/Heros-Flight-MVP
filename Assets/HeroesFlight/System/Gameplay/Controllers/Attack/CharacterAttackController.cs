@@ -82,15 +82,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-        IEnumerator AttackLogicRoutine()
-        {
-            while (true)
-            {
-                ProcessAttackLogic();
-                yield return tick;
-            }
-        }
-
+      
 
         void ProcessAttackLogic()
         {

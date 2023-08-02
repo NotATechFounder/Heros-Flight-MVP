@@ -26,5 +26,10 @@ namespace HeroesFlight.System.Character.Container
             Destroy(currentCharacter.CharacterTransform.gameObject);
             currentCharacter = null;
         }
+
+        public void ResetCharacter()
+        {
+            currentCharacter.CharacterTransform.GetComponent<Rigidbody2D>().MovePosition(spawnPoint);
+        }
     }
 }

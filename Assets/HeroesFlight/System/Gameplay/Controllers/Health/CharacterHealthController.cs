@@ -15,6 +15,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             attackController = GetComponent<CharacterAttackController>();
             animator = GetComponent<CharacterAnimationController>();
             maxHealth = controller.Data.CombatModel.Health;
+            animator.PlayIdleAnimation();
             base.Init();
         }
 
@@ -33,5 +34,15 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             animator.PlayDeathAnimation();
             base.Reset();
         }
+
+        public override void Revive()
+        {
+            controller.SetActionState(true);
+            attackController.ToggleControllerState(true);
+            animator.PlayDeathAnimation();
+            base.Revive();
+        }
+
+       
     }
 }

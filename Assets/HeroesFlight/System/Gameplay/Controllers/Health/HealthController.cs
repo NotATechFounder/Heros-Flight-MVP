@@ -23,6 +23,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public virtual void Init()
         {
             currentHealh = maxHealth;
+            heathBarUI?.ChangeValue((float)currentHealh / maxHealth);
         }
 
         public virtual void DealDamage(DamageModel damage)
@@ -47,8 +48,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public virtual void Reset()
         {
             Init();
-            heathBarUI?.ChangeValue((float)currentHealh / maxHealth);
-            
+            OnBeingDamaged = null;
+            OnDeath = null;
+        }
+
+        public virtual void Revive()
+        {
+            Init();
         }
 
         protected virtual void ProcessDeath()

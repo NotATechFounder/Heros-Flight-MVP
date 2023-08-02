@@ -1,6 +1,5 @@
 using Cinemachine;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -15,6 +14,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             camera = GetComponent<CinemachineVirtualCamera>();
             noise = camera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            noise.m_AmplitudeGain = 0;
         }
 
        

@@ -15,8 +15,11 @@ namespace HeroesFlight.System.Character
             inputSystem.OnInput += HandleCharacterInput;
         }
 
+        public CharacterControllerInterface CurrentCharacter => characterController;
+         
         CharacterControllerInterface characterController;
         CharacterContainer container;
+
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -25,11 +28,14 @@ namespace HeroesFlight.System.Character
 
         public void Reset()
         {
+            characterController = null;
             container.Reset();
         }
+
         public CharacterControllerInterface CreateCharacter()
         {
-            return container.CreateCharacter();
+            characterController = container.CreateCharacter();
+            return characterController;
         }
 
         public void SetCharacterControllerState(bool isEnabled)
@@ -37,10 +43,12 @@ namespace HeroesFlight.System.Character
             container.SetCharacterControllerState(isEnabled);
         }
 
-        public void ShakeCharacterCamera(float duration)
+        public void ResetCharacter()
         {
-            throw new NotImplementedException();
+            container.ResetCharacter();
         }
+
+       
 
         void HandleCharacterInput(InputModel obj)
         {

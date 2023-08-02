@@ -18,6 +18,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void DealDamage(DamageModel damage);
         bool IsDead();
         void Reset();
+        void Revive();
 
     }
 }

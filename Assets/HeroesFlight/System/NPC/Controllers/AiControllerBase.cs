@@ -3,6 +3,7 @@ using HeroesFlight.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Data;
 using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
+
 namespace HeroesFlightProject.System.NPC.Controllers
 {
     public abstract class AiControllerBase : MonoBehaviour, AiControllerInterface
@@ -24,9 +25,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected bool isDisabled;
         bool canAttack;
         Vector2 wanderPosition;
-       
 
-      
+
         public virtual void Init(Transform player)
         {
             rigidBody = GetComponent<Rigidbody2D>();
@@ -36,14 +36,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
             currentTarget = player;
             viewController.Init();
             OnInit();
-            viewController.StartFadeIn(2f,Enable);
+            viewController.StartFadeIn(2f, Enable);
         }
 
         void Update()
         {
             if (isDisabled)
                 return;
-            
+
             if (OutOfAgroRange() || !canAttack)
             {
                 ProcessWanderingState();
@@ -54,12 +54,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
             }
         }
 
-        
 
         public virtual Vector2 GetVelocity()
         {
             return Vector2.zero;
-            
         }
 
         public void SetAttackState(bool attackState)
@@ -67,7 +65,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
             canAttack = attackState;
         }
 
-        public virtual void ProcessKnockBack() { }
+        public virtual void ProcessKnockBack()
+        {
+        }
 
         public virtual void Enable()
         {
@@ -84,15 +84,23 @@ namespace HeroesFlightProject.System.NPC.Controllers
             rigidBody.bodyType = RigidbodyType2D.Static;
             animator.PlayDeathAnimation(() =>
             {
-                gameObject.SetActive(false);
+                if (gameObject != null)
+                {
+                    gameObject.SetActive(false);
+                }
+
                 OnDisabled?.Invoke();
             });
         }
 
 
-        public virtual void ProcessWanderingState() {}
+        public virtual void ProcessWanderingState()
+        {
+        }
 
-        public virtual void ProcessFollowingState() {}
+        public virtual void ProcessFollowingState()
+        {
+        }
 
         protected bool OutOfAgroRange()
         {
@@ -102,7 +110,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         protected bool InAttackRange()
         {
-            return Vector2.Distance(CurrentTarget.position, transform.position) 
+            return Vector2.Distance(CurrentTarget.position, transform.position)
                 <= m_Model.CombatModel.AttackRange;
         }
 
@@ -110,6 +118,5 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             OnInitialized?.Invoke();
         }
-      
     }
 }
