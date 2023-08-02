@@ -17,7 +17,7 @@ public class StatEffectManager : MonoBehaviour
         Instance = this;
     }
 
-    public void ProccessCard(AngelCardSO angelCardSO)
+    public void ComplectedLevel()
     {
         if (currentAngelCard != null && currentAngelCard.angelCardSO != null)
         {
@@ -27,8 +27,6 @@ public class StatEffectManager : MonoBehaviour
             }
             AddAfterBonusEffect(currentAngelCard.tier, currentAngelCard);
         }
-
-        AddAngelCardSO(angelCardSO);
     }
 
     private void AddAfterBonusEffect(AngelCardTier angelCardTier, AngelCard newAngelCard)
@@ -134,9 +132,11 @@ public class StatEffectManager : MonoBehaviour
         {
             case BuffDebuff.AttackUp:
                 characterStatController.ModifyPhysicalDamage(effect.GetValueDifference(angelCardTier), positive);
+                characterStatController.ModifyMagicDamage(effect.GetValueDifference(angelCardTier), positive);
                 break;
             case BuffDebuff.AttackDown:
                 characterStatController.ModifyPhysicalDamage(effect.GetValueDifference(angelCardTier), !positive);
+                characterStatController.ModifyMagicDamage(effect.GetValueDifference(angelCardTier), !positive);
                 break;
             case BuffDebuff.DefenseUp:
                 characterStatController.ModifyDefense(effect.GetValueDifference(angelCardTier), positive);
@@ -159,9 +159,11 @@ public class StatEffectManager : MonoBehaviour
         {
             case BuffDebuff.AttackUp:
                 characterStatController.ModifyPhysicalDamage(effect.GetValue(angelCardTier), positive);
+                characterStatController.ModifyMagicDamage(effect.GetValue(angelCardTier), positive);
                 break;
             case BuffDebuff.AttackDown:
                 characterStatController.ModifyPhysicalDamage(effect.GetValue(angelCardTier), !positive);
+                characterStatController.ModifyMagicDamage(effect.GetValue(angelCardTier), !positive);
                 break;
             case BuffDebuff.DefenseUp:
                 characterStatController.ModifyDefense(effect.GetValue(angelCardTier), positive);

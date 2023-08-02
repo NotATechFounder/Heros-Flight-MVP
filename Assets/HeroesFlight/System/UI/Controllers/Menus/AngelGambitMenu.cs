@@ -38,6 +38,11 @@ namespace UISystem
         [SerializeField] private Image cardImageDisplay;
         [SerializeField] private GameObject[] cardRevealProperties;
 
+        [Header("Card Complected")]
+        [SerializeField] private GameObject cardCompletelPanel;
+        [SerializeField] private CardEffectUI cardEffectUI;
+        [SerializeField] private AdvanceButton claimPermanetCardButton;
+
         [Header("Card List")]
         [SerializeField] private AngelCardSO[] angelCardSOList;
 
@@ -67,11 +72,6 @@ namespace UISystem
             {
                 OnOpened();
             }
-
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                spinCardEffect.Start();
-            }
         }
 
         public override void OnCreated()
@@ -80,6 +80,8 @@ namespace UISystem
 
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
             openEffectBG.SetOnStart(() => canvasGroup.alpha = 0);
+            openEffectBG.SetOnComplected(ShowLastCardPermanet);
+
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
             //closeEffectBG.SetOnComplected(CloseMenu);
@@ -99,6 +101,11 @@ namespace UISystem
             continueButton.onClick.AddListener(()=>
             {
                 ActivateNewCard();
+            });
+
+            claimPermanetCardButton.onClick.AddListener(() =>
+            {
+                AcivateLastCardPermanet();
             });
 
             ToggleCardRevealProperties (false);
@@ -160,8 +167,6 @@ namespace UISystem
         {
             cardRevealPanel.SetActive(true);
 
-            AcivateLastCardPermanet();
-
             AngelCard existingCard = CardExit?.Invoke();
 
             // To be removed
@@ -169,6 +174,12 @@ namespace UISystem
 
             if (existingCard != null)
             {
+                if (existingCard.tier == AngelCardTier.Six)
+                {
+                    Debug.Log("All tiers are completed");
+                    return;
+                }
+
                 cardTierDisplay.text = "Tier : " + (existingCard.tier + 1).ToString();
                 cardDescriptionDisplay.text = selectedCard.GetDescription(existingCard.tier + 1);
             }
@@ -185,16 +196,29 @@ namespace UISystem
             spinCardEffect.Start();
         }
 
+        public void ShowLastCardPermanet()
+        {
+            AngelCard angelCard = StatEffectManager.Instance.GetActiveAngelCard();
+            cardCompletelPanel.SetActive(angelCard != null && angelCard.angelCardSO != null);
+        }
+
         public void AcivateLastCardPermanet()
         {
             AngelCard angelCard = StatEffectManager.Instance.GetActiveAngelCard();
             if (angelCard == null ||angelCard.angelCardSO == null) return;
 
+            StatEffectManager.Instance.ComplectedLevel();
+
             foreach (PermanetCardUI permanetCardUI in permanetCards)
             {
                 if (permanetCardUI.IsCardSet && permanetCardUI.AngelCard.angelCardSO == angelCard.angelCardSO)
                 {
-                    permanetCardUI.SetCard(angelCard);
+                    cardEffectUI.MoveTo(permanetCardUI.transform, () =>
+                    {
+                        permanetCardUI.SetCard(angelCard);
+                        cardCompletelPanel.SetActive(false);
+                    });
+
                     return;
                 }
             }
@@ -203,7 +227,12 @@ namespace UISystem
             {
                 if (!permanetCardUI.IsCardSet)
                 {
-                    permanetCardUI.SetCard(StatEffectManager.Instance.GetActiveAngelCard());
+                    cardEffectUI.MoveTo(permanetCardUI.transform,()=>
+                    {
+                        permanetCardUI.SetCard(StatEffectManager.Instance.GetActiveAngelCard());
+                        cardCompletelPanel.SetActive(false);
+                    });
+
                     break;
                 }
             }
@@ -215,7 +244,7 @@ namespace UISystem
             OnCardSelected?.Invoke(selectedCard);
             ToggleCardRevealProperties(false);
             // To be removed
-            StatEffectManager.Instance.ProccessCard(selectedCard);
+            StatEffectManager.Instance.AddAngelCardSO(selectedCard);
            // Close();
         }
 

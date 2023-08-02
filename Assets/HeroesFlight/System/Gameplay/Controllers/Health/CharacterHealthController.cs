@@ -12,7 +12,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             controller = GetComponent<CharacterControllerInterface>();
             attackController = GetComponent<CharacterAttackController>();
-            maxHealth = controller.Data.CombatModel.Health;
+            maxHealth = controller.CharacterSO.GetPlayerStatData.Health;
             base.Init();
         }
 

@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "AiAgentCombatModel", menuName = "Model/Combat/AiAgentCombat", order = 0)]
-public class AiAgentCombatModel : CombatModel
+public class AiAgentCombatModel : ScriptableObject
 {
-    [SerializeField] float agroDistance;
-    [SerializeField] int damage = 2;
+    [SerializeField] private MonsterStatData monsterStatData;
 
-    public int Damage => damage;
-    public float AgroDistance => agroDistance;
+    public MonsterStatData GetMonsterStatData => monsterStatData;
 }

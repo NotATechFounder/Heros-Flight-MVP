@@ -22,7 +22,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             attackCollider = GetComponent<Collider2D>();
             ai = GetComponent<IAstarAI>();
             ai.canMove = false;
-            ai.maxSpeed = m_Model.CombatModel.MoveSpeed;
+            ai.maxSpeed = m_Model.CombatModel.GetMonsterStatData.MoveSpeed;
             base.Init(player);
         }
 
