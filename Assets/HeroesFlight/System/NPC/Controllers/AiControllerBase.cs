@@ -97,13 +97,13 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected bool OutOfAgroRange()
         {
             return Vector2.Distance(CurrentTarget.position, transform.position)
-                > m_Model.CombatModel.AgroDistance;
+                > m_Model.CombatModel.GetMonsterStatData.AgroDistance;
         }
 
         protected bool InAttackRange()
         {
             return Vector2.Distance(CurrentTarget.position, transform.position) 
-                <= m_Model.CombatModel.AttackRange;
+                <= m_Model.CombatModel.GetMonsterStatData.AttackRange;
         }
 
         protected void OnInit()

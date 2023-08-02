@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CharacterStatController : MonoBehaviour
 {
-    [SerializeField] PlayerCombatModel playerCombatModel;
+    [SerializeField] PlayerStatData playerCombatModel;
 
 
     public bool debug = false;
@@ -33,7 +33,7 @@ public class CharacterStatController : MonoBehaviour
         }
     }
 
-    public void Initialize(PlayerCombatModel playerCombatModel)
+    public void Initialize(PlayerStatData playerCombatModel)
     {
         this.playerCombatModel = playerCombatModel;
         CurrentHealth = playerCombatModel.Health;

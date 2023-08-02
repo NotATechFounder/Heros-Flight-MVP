@@ -29,7 +29,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         AttackControllerState m_State;
 
-        PlayerCombatModel combatModel;
+        PlayerStatData playerStatData = null;
 
         float m_TimeSinceLastAttack = 0;
 
@@ -48,10 +48,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             m_CharacterAnimationController = GetComponent<CharacterAnimationController>();
             m_CharacterAnimationController.OnDealDamageRequest += HandleDamageDealRequest;
             m_State = AttackControllerState.LookingForTarget;
-            combatModel = controller.Data.CombatModel;
-            m_TimeSinceLastAttack = combatModel.TimeBetweenAttacks;
+            playerStatData = controller.CharacterSO.GetPlayerStatData;
+            m_TimeSinceLastAttack = playerStatData.TimeBetweenAttacks;
             attackPoint = transform.position + Vector3.up + Vector3.left * attackPointOffset;
-            visualController.Init(combatModel.AttackRange);
+            visualController.Init(playerStatData.AttackRange);
             visualController.SetPosition(attackPoint);
             isDisabled = false;
             tick = new WaitForSeconds(.25f);
@@ -110,7 +110,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             enemiesToUpdate.Clear();
             foreach (var controller in enemies)
             {
-                if (Vector2.Distance(controller.currentTransform.position, attackPoint) <= combatModel.AttackRange)
+                if (Vector2.Distance(controller.currentTransform.position, attackPoint) <= playerStatData.AttackRange)
                 {
                     enemiesToUpdate.Add(controller);
                 }
@@ -120,7 +120,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public void AttackTargets()
         {
-            if (m_TimeSinceLastAttack < combatModel.TimeBetweenAttacks)
+            if (m_TimeSinceLastAttack < playerStatData.TimeBetweenAttacks)
             {
                 return;
             }
@@ -138,7 +138,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void ResetAttack()
         {
             m_CharacterAnimationController.StopAttackSequence();
-            m_TimeSinceLastAttack = combatModel.TimeBetweenAttacks;
+            m_TimeSinceLastAttack = playerStatData.TimeBetweenAttacks;
         }
 
 
@@ -172,12 +172,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void OnDrawGizmos()
         {
-            if (combatModel == null)
+            if (playerStatData == null)
                 return;
             var checkPosition = controller.IsFacingLeft
                 ? transform.position + Vector3.up + Vector3.left * attackPointOffset
                 : transform.position + Vector3.up + Vector3.right * attackPointOffset;
-            Gizmos.DrawWireSphere(checkPosition, combatModel.AttackRange);
+            Gizmos.DrawWireSphere(checkPosition, playerStatData.AttackRange);
         }
     }
 }

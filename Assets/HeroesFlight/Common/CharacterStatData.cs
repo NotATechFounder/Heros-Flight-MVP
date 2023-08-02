@@ -1,12 +1,38 @@
-using HeroesFlight.Common;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-[CreateAssetMenu(fileName = "PlayerCombatModel", menuName = "Model/Combat/PlayerCombat", order = 0)]
-public class PlayerCombatModel : CombatModel
+
+[Serializable]
+public class CharacterStatData
 {
-    [Header("Player Combat Model")]
+    [SerializeField] protected int health;
+    [SerializeField] protected float timeBetweenAttacks;
+    [SerializeField] protected float moveSpeed;
+    [SerializeField] protected float attackRange;
+
+    public int Health => health;
+    public float TimeBetweenAttacks => timeBetweenAttacks;
+    public float MoveSpeed => moveSpeed;
+    public float AttackRange => attackRange;
+}
+
+[Serializable]
+public class MonsterStatData : CharacterStatData
+{
+    [Header("Monster Combat")]
+    [SerializeField] float agroDistance;
+    [SerializeField] int damage = 2;
+
+    public int Damage => damage;
+    public float AgroDistance => agroDistance;
+}
+
+[Serializable]
+public class PlayerStatData: CharacterStatData
+{
+    [Header("Player Combat")]
     [SerializeField] float vitality;
     [SerializeField] float agility;
     [SerializeField] float resilience;
@@ -29,6 +55,7 @@ public class PlayerCombatModel : CombatModel
     public float AttackSpeed => attackSpeed;
 }
 
+
 [System.Serializable]
 public struct ValueRange
 {
@@ -43,6 +70,6 @@ public struct ValueRange
 
     public float GetRandomValue()
     {
-        return Random.Range(min, max);
+        return UnityEngine.Random.Range(min, max);
     }
 }

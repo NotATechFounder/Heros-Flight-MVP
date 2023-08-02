@@ -1,13 +1,12 @@
 ﻿using System;
 using HeroesFlight.System.Character.Enum;
-using HeroesFlight.System.Character.Model;
 using UnityEngine;
 
 namespace HeroesFlight.System.Character
 {
     public class CharacterSimpleController :MonoBehaviour,CharacterControllerInterface
     {
-        [SerializeField] CharacterModel model;
+        [SerializeField] CharacterSO characterSO;
         CharacterMovementController m_MovementController;
         CharacterInputReceiver m_InputReceiver;
         CharacterStatController m_CharacterStatController;
@@ -16,7 +15,7 @@ namespace HeroesFlight.System.Character
         Transform m_Transform;
 
         public bool IsFacingLeft { get; private set; }
-        public CharacterData Data => model.Data;
+        public CharacterSO CharacterSO => characterSO;
 
         public CharacterStatController CharacterStatController => m_CharacterStatController;
 
@@ -32,8 +31,8 @@ namespace HeroesFlight.System.Character
             m_CharacterStatController = GetComponent<CharacterStatController>();
             viewController = GetComponent<ICharacterViewController>();
             m_Transform = GetComponent<Transform>();
-            m_CharacterStatController.Initialize(model.Data.CombatModel);
-            viewController.SetupView(model.Data.AppearenceModel.Data);
+            m_CharacterStatController.Initialize(CharacterSO.GetPlayerStatData);
+            viewController.SetupView(CharacterSO.GetAppearanceData);
             m_CurrentState = CharacterState.Idle;
             IsFacingLeft = true;
             isDisabled = false;
@@ -122,7 +121,7 @@ namespace HeroesFlight.System.Character
         Vector3 CalculateCharacterVelocity(Vector3 inputVector)
         {
             var velocity = CalculateMovementDirection(inputVector);
-            return velocity * model.Data.CombatModel.MoveSpeed;
+            return velocity * CharacterSO.GetPlayerStatData.MoveSpeed;
         }
 
         Vector3 CalculateMovementDirection(Vector3 inputVector)

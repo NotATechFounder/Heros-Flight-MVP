@@ -10,7 +10,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public override void Init()
         {
             aiController = GetComponent<AiControllerInterface>();
-            maxHealth = aiController.AgentModel.CombatModel.Health;
+            maxHealth = aiController.AgentModel.CombatModel.GetMonsterStatData.Health;
             heathBarUI?.ChangeType(HeathBarUI.HealthBarType.ToggleVisibilityOnHit);
             base.Init();
         }
