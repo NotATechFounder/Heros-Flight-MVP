@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Text;
+using Pelumi.Juicer;
+using static Codice.CM.WorkspaceServer.WorkspaceTreeDataStore;
 
 public class PermanetCardUI : MonoBehaviour
 {
@@ -20,6 +22,14 @@ public class PermanetCardUI : MonoBehaviour
     public bool IsCardSet => isCardSet;
     public AngelCard AngelCard => angelCard;
 
+    JuicerRuntime openEffectBG;
+
+    private void Awake()
+    {
+        openEffectBG = content.transform.JuicyScale(Vector3.one, 0.15f).
+            SetEase(Ease.EaseInOutSine);
+    }
+
     public void SetCard(AngelCard angelCard)
     {
         this.angelCard = angelCard;
@@ -34,15 +44,19 @@ public class PermanetCardUI : MonoBehaviour
         effectText.Append("%");
         effectText.Append("  ");
         effectText.Append(angelCard.angelCardSO.AffterBonusEffect.effect.ToString());
-        effectText.Append("  ");
-        effectText.Append(angelCard.angelCardSO.AffterBonusEffect.targetType.ToString());
+        //effectText.Append("  ");
+        //effectText.Append(angelCard.angelCardSO.AffterBonusEffect.targetType.ToString());
 
         cardEffectText.text = effectText.ToString();
         //cardImage.sprite = angelCard.angelCardSO.CardImage;
 
         isCardSet = true;
 
+        content.transform.localScale = Vector3.zero;
+
         content.SetActive(true);
+
+        openEffectBG.Start();
     }
 
     public void Clear()

@@ -49,6 +49,10 @@ public class CharacterStatController : MonoBehaviour
     public void ModifyHealth(float percentageAmount, bool increase)
     {
         CurrentHealth = ModifyValue(playerCombatModel.Health, CurrentHealth, percentageAmount, increase);
+        if (CurrentHealth > playerCombatModel.Health)
+        {
+            CurrentHealth = playerCombatModel.Health;
+        }
     }
 
     public void ModifyMoveSpeed(float percentageAmount, bool increase)
@@ -99,6 +103,11 @@ public class CharacterStatController : MonoBehaviour
     public void ModifyAttackSpeed(float percentageAmount, bool increase)
     {
         CurrentAttackSpeed = ModifyValue(playerCombatModel.AttackSpeed, CurrentAttackSpeed, percentageAmount, increase);
+    }
+
+    public float GetHealthPercentage()
+    {
+        return (CurrentHealth / playerCombatModel.Health) * 100; 
     }
 
     private float ModifyValue(float baseValue, float currentValue, float percentageAmount, bool increase)
