@@ -39,6 +39,8 @@ namespace UISystem
         [SerializeField] private AngelCardSO[] angelCardSOList;
 
         AngelCardSO selectedCard = null;
+        private float totalChance;
+        private List<AngelCardSO> validAngelCardSOList;
 
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
@@ -99,32 +101,54 @@ namespace UISystem
             debuffCardButton.transform.localScale = Vector3.one;
         }
 
-        public void GenerateRandomCards(AngelCardType angelCardType)
+        public void GetValidCardSO(AngelCardType angelCardType)
         {
-            float totalChance = 0;
+            validAngelCardSOList = new List<AngelCardSO>();
 
             foreach (AngelCardSO angelCardSO in angelCardSOList)
             {
                 if (angelCardSO.CardType == angelCardType)
                 {
+                    AngelCard existingCard = CardExit?.Invoke(angelCardSO);
+
+                    if (existingCard != null)
+                    {
+                        if (existingCard.tier == AngelCardTier.Six)
+                        {
+                            Debug.Log("All tiers are completed");
+                            continue;
+                        }
+                    }
                     totalChance += angelCardSO.Chance;
+                    validAngelCardSOList.Add(angelCardSO);
                 }
             }
+        }
+
+        public void GenerateRandomCards(AngelCardType angelCardType)
+        {
+            totalChance = 0;
+            selectedCard = null;
+
+            GetValidCardSO(angelCardType);
 
             float randomChance = UnityEngine.Random.Range(0, totalChance);
 
-            foreach (AngelCardSO angelCardSO in angelCardSOList)
+            foreach (AngelCardSO angelCardSO in validAngelCardSOList)
             {
-                if (angelCardSO.CardType == angelCardType)
-                {
-                    randomChance -= angelCardSO.Chance;
+                randomChance -= angelCardSO.Chance;
 
-                    if (randomChance <= 0)
-                    {
-                        selectedCard = angelCardSO;
-                        break;
-                    }
+                if (randomChance <= 0)
+                {
+                    selectedCard = angelCardSO;
+                    break;
                 }
+            }
+
+            if(selectedCard == null)
+            {
+                Debug.Log("No card was selected");
+                return;
             }
 
             DisplayCard();
@@ -138,12 +162,6 @@ namespace UISystem
 
             if (existingCard != null)
             {
-                if (existingCard.tier == AngelCardTier.Six)
-                {
-                    Debug.Log("All tiers are completed");
-                    return;
-                }
-
                 cardTierDisplay.text = "Tier : " + (existingCard.tier + 1).ToString();
                 cardDescriptionDisplay.text = selectedCard.GetDescription(existingCard.tier + 1);
             }

@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using System.Text;
 using Pelumi.Juicer;
-using static Codice.CM.WorkspaceServer.WorkspaceTreeDataStore;
 
 public class PermanetCardUI : MonoBehaviour
 {
@@ -23,22 +22,30 @@ public class PermanetCardUI : MonoBehaviour
     public AngelCard AngelCard => angelCard;
 
     JuicerRuntime openEffectBG;
+    JuicerRuntime tierEffect;
+    JuicerRuntime statEffect;
 
     private void Awake()
     {
         openEffectBG = content.transform.JuicyScale(Vector3.one, 0.15f).
             SetEase(Ease.EaseInOutSine);
+
+        tierEffect = tierText.transform.JuicyScale(Vector3.one, 0.25f)
+            .SetEase(Ease.Linear)
+            .SetOnComplected(() => tierText.text = "Tier " + ((int)angelCard.tier + 1));
+
+        statEffect = cardEffectText.JuicyText("", 0.5f)
+            .SetTextAnimationMode(TextAnimationMode.ClearOldText)
+            .SetOnStart(() => cardEffectText.color = Color.green)
+            .SetOnComplected(() => cardEffectText.color = Color.white)
+            .SetDelay(0.25f);
     }
 
-    public void SetCard(AngelCard angelCard)
+    public void SetCard(AngelCard angelCard, bool update)
     {
         this.angelCard = angelCard;
 
         effectText = new StringBuilder();
-
-        tierText.text = "Tier " + ((int)angelCard.tier + 1);
-
-        cardNameText.text = angelCard.angelCardSO.CardName;
 
         effectText.Append(angelCard.angelCardSO.AffterBonusEffect.GetValue(angelCard.tier));
         effectText.Append("%");
@@ -46,17 +53,29 @@ public class PermanetCardUI : MonoBehaviour
         effectText.Append(angelCard.angelCardSO.AffterBonusEffect.effect.ToString());
         //effectText.Append("  ");
         //effectText.Append(angelCard.angelCardSO.AffterBonusEffect.targetType.ToString());
-
-        cardEffectText.text = effectText.ToString();
         //cardImage.sprite = angelCard.angelCardSO.CardImage;
 
-        isCardSet = true;
+        if(!update)
+        {
+            isCardSet = true;
 
-        content.transform.localScale = Vector3.zero;
+            tierText.text = "Tier " + ((int)angelCard.tier + 1);
 
-        content.SetActive(true);
+            cardNameText.text = angelCard.angelCardSO.CardName;
 
-        openEffectBG.Start();
+            cardEffectText.text = effectText.ToString();
+
+            content.transform.localScale = Vector3.zero;
+
+            content.SetActive(true);
+
+            openEffectBG.Start(() => content.transform.localScale = Vector3.zero);
+        }
+        else
+        {
+            tierEffect.Start(() => tierText.transform.localScale = Vector2.zero);
+            statEffect.Start(() => statEffect.ChangeDesination(effectText.ToString()));
+        }
     }
 
     public void Clear()

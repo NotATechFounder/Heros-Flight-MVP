@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class BoosterSpawner : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private List<BoosterSO> boosterSOList;
 
-    // Update is called once per frame
-    void Update()
+    public void SpawnBoostLoot(BoosterEffectType boosterEffectType)
     {
-        
+        foreach (var boosterSO in boosterSOList)
+        {
+            if (boosterSO.BoosterEffectType == boosterEffectType)
+            {
+                Instantiate(boosterSO, transform.position, Quaternion.identity);
+            }
+        }
     }
 }

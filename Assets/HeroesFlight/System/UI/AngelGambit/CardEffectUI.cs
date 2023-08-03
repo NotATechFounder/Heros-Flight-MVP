@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class CardEffectUI : MonoBehaviour
 {
+    [SerializeField] private float delay;
     [SerializeField] private Transform rootParent;
     [SerializeField] private Transform defaultParent;
     [SerializeField] private bool changeParent;
@@ -25,6 +26,7 @@ public class CardEffectUI : MonoBehaviour
         gameObject.SetActive(true);
         if (changeParent) transform.parent = rootParent;
         rectTransform.JuicyMove(target.position, 1f)
+            .SetDelay(delay)
             .SetEase(Ease.EaseInOutSine)
             .SetOnComplected(() =>
             {
