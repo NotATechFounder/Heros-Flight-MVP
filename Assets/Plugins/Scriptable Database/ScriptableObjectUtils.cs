@@ -3,36 +3,40 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public static class ScriptableObjectUtils
+namespace ScriptableObjectDatabase
 {
-    public static List<T> GetAllScriptableObjectBaseInFile<T>(string path) where T : ScriptableObject
+    public static class ScriptableObjectUtils
     {
-        List<T> scriptableObjectBases = new List<T>();
-
-        string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name, new[] { path });
-
-        foreach (string guid in guids)
+        public static List<T> GetAllScriptableObjectBaseInFile<T>(string path) where T : ScriptableObject
         {
-            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-            T scriptableObjectBase = AssetDatabase.LoadAssetAtPath<T>(assetPath);
-            scriptableObjectBases.Add(scriptableObjectBase);
-        }
-        return scriptableObjectBases;
-    }
+            List<T> scriptableObjectBases = new List<T>();
 
-    public static List<T> FindAllScriptableObjectsInProject<T>() where T : ScriptableObject
-    {
-        List<T> results = new List<T>();
-        string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
-        for (int i = 0; i < guids.Length; i++)
-        {
-            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-            T asset = AssetDatabase.LoadAssetAtPath<T>(path);
-            if (asset != null)
+            string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name, new[] { path });
+
+            foreach (string guid in guids)
             {
-                results.Add(asset);
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                T scriptableObjectBase = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                scriptableObjectBases.Add(scriptableObjectBase);
             }
+            return scriptableObjectBases;
         }
-        return results;
+
+        public static List<T> FindAllScriptableObjectsInProject<T>() where T : ScriptableObject
+        {
+            List<T> results = new List<T>();
+            string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
+            for (int i = 0; i < guids.Length; i++)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+                T asset = AssetDatabase.LoadAssetAtPath<T>(path);
+                if (asset != null)
+                {
+                    results.Add(asset);
+                }
+            }
+            return results;
+        }
     }
+
 }

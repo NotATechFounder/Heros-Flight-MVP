@@ -4,84 +4,111 @@ using UnityEngine;
 using System.Linq;
 using UnityEditor;
 
-public class ScriptableObjectDatabase<T> : ScriptableObject where T : ScriptableObject
+namespace ScriptableObjectDatabase
 {
-    [SerializeField] private bool _manualInsert;
-
-    public T[] Items;
-
-    public List<ScriptableObjectDatabaseItem<T>> scriptableObjectDatabaseItems = new List<ScriptableObjectDatabaseItem<T>>();
-
-    public void AddItemAndID()
+    public interface IScriptableObjectDatabase
     {
-        scriptableObjectDatabaseItems.Clear();
+        public void Pupolate();
+    }
 
-        for (int i = 0; i < Items.Length; i++)
+    public class ScriptableObjectDatabase<T> : ScriptableObject, IScriptableObjectDatabase where T : ScriptableObject
+    {
+        [SerializeField] private bool _manualInsert;
+
+        public T[] Items;
+
+       [ReadOnly] public List<ScriptableObjectDatabaseItem<T>> scriptableObjectDatabaseItems = new List<ScriptableObjectDatabaseItem<T>>();
+
+        public void AddItemAndID()
         {
-            if (Items[i] == null) continue;
+            scriptableObjectDatabaseItems.Clear();
 
-            if (Items[i] is IHasID hasID)
+            for (int i = 0; i < Items.Length; i++)
             {
-                if (scriptableObjectDatabaseItems.Any(x => x.ID == hasID.GetID()))
+                if (Items[i] == null) continue;
+
+                if (Items[i] is IHasID hasID)
                 {
-                    Debug.LogError($"Duplicate ID found: {hasID.GetID()}");
-                    continue;
+                    if (scriptableObjectDatabaseItems.Any(x => x.ID == hasID.GetID()))
+                    {
+                        Debug.LogError($"Duplicate ID found: {hasID.GetID()}");
+                        continue;
+                    }
+
+                    scriptableObjectDatabaseItems.Add(new ScriptableObjectDatabaseItem<T>(hasID.GetID(), Items[i]));
+                }
+                else
+                {
+                    Debug.LogError($"ItemSO: {Items[i].name} does not implement IHasID");
                 }
 
-                scriptableObjectDatabaseItems.Add(new ScriptableObjectDatabaseItem<T>(hasID.GetID(), Items[i]));
+            }
+        }
+
+        public T GetItemSOByID(string id)
+        {
+            if (scriptableObjectDatabaseItems.Any(x => x.ID == id))
+            {
+                return scriptableObjectDatabaseItems.Find(x => x.ID == id).scriptableObject;
             }
             else
             {
-                Debug.LogError($"ItemSO: {Items[i].name} does not implement IHasID");
+                Debug.LogError($"ItemSO with ID: {id} not found");
+                return null;
             }
-
         }
-    }
 
-    public T GetItemSOByID(int id)
-    {
-        if (scriptableObjectDatabaseItems.Any(x => x.ID == id))
+        void OnValidate()
         {
-            return scriptableObjectDatabaseItems.Find(x => x.ID == id).scriptableObject;
+            if (_manualInsert) AddItemAndID();
         }
-        else
+
+        [ContextMenu("Populate")]
+        public void Pupolate()
         {
-            Debug.LogError($"ItemSO with ID: {id} not found");
-            return null;
-        }
-    }
-
-    void OnValidate()
-    {
-        if (_manualInsert) AddItemAndID();
-    }
-
-    [ContextMenu("Populate")]
-    public void Pupolate()
-    {
-        string path = AssetDatabase.GetAssetPath(this);
-        path = path.Replace(this.name + ".asset", "");
-        List<T> scriptableObjectBases = ScriptableObjectUtils.GetAllScriptableObjectBaseInFile<T>(path);
-        Items = scriptableObjectBases.ToArray();
-        AddItemAndID();
+            string path = AssetDatabase.GetAssetPath(this);
+            path = path.Replace(this.name + ".asset", "");
+            List<T> scriptableObjectBases = ScriptableObjectUtils.GetAllScriptableObjectBaseInFile<T>(path);
+            Items = scriptableObjectBases.ToArray();
+            AddItemAndID();
 
 #if UNITY_EDITOR
-        EditorUtility.SetDirty(this);
-        AssetDatabase.SaveAssets();
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
+#endif
+        }
+    }
+
+
+    [System.Serializable]
+    public class ScriptableObjectDatabaseItem<T> where T : ScriptableObject
+    {
+        public string ID;
+        public T scriptableObject;
+
+        public ScriptableObjectDatabaseItem(string _id, T _scriptableObject)
+        {
+            ID = _id;
+            scriptableObject = _scriptableObject;
+        }
+    }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(ScriptableObjectDatabase<>), true)]
+
+    public class ScriptableObjectDatabaseEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            IScriptableObjectDatabase scriptableObjectDatabase = (IScriptableObjectDatabase)target;
+
+            if (GUILayout.Button("Populate"))
+            {
+                scriptableObjectDatabase.Pupolate();
+            }
+
+            base.OnInspectorGUI();
+        }
+    }
 #endif
     }
-}
-
-
-[System.Serializable]
-public class ScriptableObjectDatabaseItem<T> where T : ScriptableObject
-{
-    public int ID;
-    public T scriptableObject;
-
-    public ScriptableObjectDatabaseItem (int _id, T _scriptableObject)
-    {
-        ID = _id;
-        scriptableObject = _scriptableObject;
-    }
-}
