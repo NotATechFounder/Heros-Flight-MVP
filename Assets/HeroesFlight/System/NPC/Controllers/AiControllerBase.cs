@@ -25,10 +25,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected bool isDisabled;
         bool canAttack;
         Vector2 wanderPosition;
+        protected MonsterStatModifier statModifier;
 
-
-        public virtual void Init(Transform player)
+        public virtual void Init(Transform player, MonsterStatModifier monsterStatModifier)
         {
+            statModifier = monsterStatModifier;
             rigidBody = GetComponent<Rigidbody2D>();
             attackCollider = GetComponent<Collider2D>();
             animator = GetComponent<AiAnimatorInterface>();
@@ -117,6 +118,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected void OnInit()
         {
             OnInitialized?.Invoke();
+        }
+
+        public MonsterStatModifier GetMonsterStatModifier()
+        {
+            return statModifier;
         }
     }
 }

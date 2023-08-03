@@ -2,11 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct MonsterStatModifier
+{
+    public float AttackModifier { get; set; }
+    public float DefenceModifier { get; set; }
+    public float AttackSpeedUpModifier { get; set;}
+
+    public float CalculateAttack(float baseAttack)
+    {
+        return ModifyValue(baseAttack, baseAttack, Mathf.Abs(AttackModifier), AttackModifier > 0);
+    }
+
+    public float CalculateDefence(float baseDefence)
+    {
+        return ModifyValue(baseDefence, baseDefence, Mathf.Abs(DefenceModifier), DefenceModifier > 0);
+    }
+
+    public float CalculateAttackSpeed(float baseAttackSpeed)
+    {
+        return ModifyValue(baseAttackSpeed, baseAttackSpeed, Mathf.Abs(AttackSpeedUpModifier), AttackSpeedUpModifier > 0);
+    }
+
+    private float ModifyValue(float baseValue, float currentValue, float percentageAmount, bool increase)
+    {
+        float percentageValue = ((float)percentageAmount / 100) * baseValue;
+        return increase ? currentValue + percentageValue : currentValue - percentageValue;
+    }
+}
+
 public class MonsterStatController : MonoBehaviour
 {
     [SerializeField] private float attackModifier;
     [SerializeField] private float defenceModifier;
     [SerializeField] private float attackSpeedUpModifier;
+
+    public MonsterStatModifier GetMonsterStatModifier => new MonsterStatModifier
+    {
+        AttackModifier = attackModifier,
+        DefenceModifier = defenceModifier,
+        AttackSpeedUpModifier = attackSpeedUpModifier
+    };
 
     public void ModifyAttackModifier(float modifier, bool increase)
     {

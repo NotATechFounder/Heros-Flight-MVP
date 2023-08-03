@@ -15,8 +15,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected float timeSinceLastAttack;
         protected AiAnimatorInterface animator;
         protected IHealthController health;
+        protected float currentDamage;
 
-        public float Damage => aiController.AgentModel.CombatModel.GetMonsterStatData.Damage;
+        public float Damage => currentDamage;
         public float TimeSinceLastAttack => timeSinceLastAttack;
 
         void Start()
@@ -27,9 +28,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             health.OnDeath += HandleDeath;
             target = aiController.CurrentTarget.GetComponent<IHealthController>();
             timeSinceLastAttack = 0;
-            timeBetweenAttacks = aiController.AgentModel.CombatModel.GetMonsterStatData.AttackSpeed;
+            timeBetweenAttacks = aiController.GetMonsterStatModifier().CalculateAttackSpeed(aiController.AgentModel.CombatModel.GetMonsterStatData.AttackSpeed);
             attackRange = aiController.AgentModel.CombatModel.GetMonsterStatData.AttackRange;
             aiController.SetAttackState(true);
+            currentDamage = aiController.GetMonsterStatModifier().CalculateAttack(aiController.AgentModel.CombatModel.GetMonsterStatData.Damage);
         }
 
         void HandleDeath(IHealthController obj)

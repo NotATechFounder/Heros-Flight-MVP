@@ -16,14 +16,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
       
 
 
-        public override void Init(Transform player)
+        public override void Init(Transform player, MonsterStatModifier monsterStatModifier)
         {
             setter = GetComponent<AIDestinationSetter>();
             attackCollider = GetComponent<Collider2D>();
             ai = GetComponent<IAstarAI>();
             ai.canMove = false;
             ai.maxSpeed = m_Model.CombatModel.GetMonsterStatData.MoveSpeed;
-            base.Init(player);
+            base.Init(player, monsterStatModifier);
         }
 
         public override void Enable()
