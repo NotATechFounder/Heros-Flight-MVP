@@ -27,7 +27,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             health.OnDeath += HandleDeath;
             target = aiController.CurrentTarget.GetComponent<IHealthController>();
             timeSinceLastAttack = 0;
-            timeBetweenAttacks = aiController.AgentModel.CombatModel.GetMonsterStatData.TimeBetweenAttacks;
+            timeBetweenAttacks = aiController.AgentModel.CombatModel.GetMonsterStatData.AttackSpeed;
             attackRange = aiController.AgentModel.CombatModel.GetMonsterStatData.AttackRange;
             aiController.SetAttackState(true);
         }

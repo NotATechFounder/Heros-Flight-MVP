@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CanEditMultipleObjects]
-[CustomEditor(typeof(AngelCardSO))]
+//[CanEditMultipleObjects]
+//[CustomEditor(typeof(AngelCardSO))]
 public class AngelCardSOEditor : Editor
 {
     private SerializedProperty cardName;
+    private SerializedProperty descriptionTemplateProperty;
     private SerializedProperty cardDescriptions;
     private SerializedProperty cardImage;
     private SerializedProperty cardType;
@@ -26,6 +27,7 @@ public class AngelCardSOEditor : Editor
     {
         targetObject = (AngelCardSO)target;
         cardName = serializedObject.FindProperty("cardName");
+        descriptionTemplateProperty = serializedObject.FindProperty("descriptionTemplate");
         cardDescriptions = serializedObject.FindProperty("cardDescriptions");
         cardImage = serializedObject.FindProperty("cardImage");
         cardType = serializedObject.FindProperty("cardType");
@@ -53,6 +55,8 @@ public class AngelCardSOEditor : Editor
 
     public void DisplayTierDescriptions()
     {
+        EditorGUILayout.PropertyField(descriptionTemplateProperty);
+
         showDescriptions = EditorGUILayout.Foldout(showDescriptions, "Tier Descriptions", true);
 
         if (showDescriptions && GUILayout.Button("Add Description"))
@@ -141,6 +145,7 @@ public class AngelCardSOEditor : Editor
                 EditorGUILayout.BeginVertical(customBoxStyle);
 
                 EditorGUILayout.BeginVertical();
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("effects").GetArrayElementAtIndex(Array.IndexOf(targetObject.Effects, targetObject.Effects[i])).FindPropertyRelative("statKey"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("effects").GetArrayElementAtIndex(Array.IndexOf(targetObject.Effects, targetObject.Effects[i])).FindPropertyRelative("effect"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("effects").GetArrayElementAtIndex(Array.IndexOf(targetObject.Effects, targetObject.Effects[i])).FindPropertyRelative("targetType"));
                 EditorGUILayout.EndVertical();

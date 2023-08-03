@@ -8,12 +8,12 @@ using System;
 public class CharacterStatData
 {
     [SerializeField] protected int health;
-    [SerializeField] protected float timeBetweenAttacks;
+    [SerializeField] float attackSpeed;
     [SerializeField] protected float moveSpeed;
     [SerializeField] protected float attackRange;
 
     public int Health => health;
-    public float TimeBetweenAttacks => timeBetweenAttacks;
+    public float AttackSpeed => attackSpeed;
     public float MoveSpeed => moveSpeed;
     public float AttackRange => attackRange;
 }
@@ -42,7 +42,7 @@ public class PlayerStatData: CharacterStatData
     [SerializeField] float criticalHitChance = 10f;
     [SerializeField] ValueRange criticalHitDamage;
     [SerializeField] float defense;
-    [SerializeField] float attackSpeed;
+
 
     public float Vitality => vitality;
     public float Agility => agility;
@@ -52,7 +52,7 @@ public class PlayerStatData: CharacterStatData
     public float CriticalHitChance => criticalHitChance;
     public ValueRange CriticalHitDamage => criticalHitDamage;
     public float Defense => defense;
-    public float AttackSpeed => attackSpeed;
+
 }
 
 

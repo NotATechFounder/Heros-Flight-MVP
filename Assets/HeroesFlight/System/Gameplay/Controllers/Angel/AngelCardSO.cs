@@ -6,8 +6,9 @@ using UnityEngine;
 public class AngelCardSO : ScriptableObject
 {
     [SerializeField] string cardName;
-    [TextArea(3, 10)]
-    [SerializeField] string[] cardDescriptions;
+
+    [TextArea(4, 10)]
+    [SerializeField] string descriptionTemplate;
     [SerializeField] Sprite cardImage;
     [SerializeField] AngelCardType cardType;
     [SerializeField] StatEffect affterBonusEffect;
@@ -16,7 +17,8 @@ public class AngelCardSO : ScriptableObject
     [SerializeField] float chance;
 
     public string CardName => cardName;
-    public string[] CardDescriptions => cardDescriptions;
+
+    public string DescriptionTemplate => descriptionTemplate;
     public Sprite CardImage => cardImage;
 
     public AngelCardType CardType => cardType;
@@ -28,8 +30,13 @@ public class AngelCardSO : ScriptableObject
 
     public string GetDescription(AngelCardTier tier)
     {
-       return cardDescriptions[(int)tier];
-    }  
+        string description = descriptionTemplate;
+        foreach (StatEffect effect in effects)
+        {
+            description = description.Replace(effect.statKey, effect.GetValue(tier).ToString());
+        }
+        return description;
+    }
 }
 
 [System.Serializable]
@@ -53,6 +60,7 @@ public class AngelCard
 [System.Serializable]
 public class StatEffect
 {
+    public string statKey;
     public BuffDebuff effect;
     public TargetType targetType;
     public float[] tierValues;
