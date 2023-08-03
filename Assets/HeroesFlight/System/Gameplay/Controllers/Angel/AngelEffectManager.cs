@@ -3,19 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatEffectManager : MonoBehaviour
+public class AngelEffectManager : MonoBehaviour
 {
-    public static StatEffectManager Instance { get; private set; }
+    public Action<AngelCard> OnPermanetCard;
 
     [SerializeField] private List<AngelCard> collectedAngelCards = new List<AngelCard>();
     [SerializeField] private List<AngelCard> permanetStatEffect = new List<AngelCard>();
     [SerializeField] private CharacterStatController characterStatController;
     [SerializeField] private AngelCard currentAngelCard;
 
-    private void Awake()
-    {
-        Instance = this;
-    }
+    public bool EffectActive => currentAngelCard != null && currentAngelCard.angelCardSO != null;
 
     public void ComplectedLevel()
     {
@@ -43,6 +40,8 @@ public class StatEffectManager : MonoBehaviour
 
         permanetStatEffect.Add(newAngelCard);
         ModifyPlayerStatRaw(angelCardTier, newAngelCard.angelCardSO.AffterBonusEffect, true);
+        OnPermanetCard?.Invoke(newAngelCard);
+        currentAngelCard = null;
     }
 
     public void AddAngelCardSO(AngelCardSO angelCardSO)
@@ -99,13 +98,13 @@ public class StatEffectManager : MonoBehaviour
         {
             case TargetType.All:
                 ModifyPlayerStatDifference(angelCardTier, effect, true);
-                HandleMonsterStatsActivation (angelCardTier, effect);
+                ModifyMonsterStatDifference(angelCardTier, effect, true);
                 break;
             case TargetType.Player:
                 ModifyPlayerStatDifference(angelCardTier, effect,true);
                 break;
             case TargetType.Monster:
-                HandleMonsterStatsActivation(angelCardTier, effect);
+                ModifyPlayerStatDifference(angelCardTier, effect, true);
                 break;
         }
     }
@@ -116,12 +115,13 @@ public class StatEffectManager : MonoBehaviour
         {
             case TargetType.All:
                 ModifyPlayerStatRaw(angelCardTier, effect,false);
+                ModifyMonsterStatRaw(angelCardTier, effect,false);
                 break;
             case TargetType.Player:
                 ModifyPlayerStatRaw(angelCardTier, effect, false);
                 break;
             case TargetType.Monster:
-
+                ModifyPlayerStatRaw(angelCardTier, effect, false);
                 break;
         }
     }
@@ -180,7 +180,7 @@ public class StatEffectManager : MonoBehaviour
         }
     }
 
-    private void HandleMonsterStatsActivation(AngelCardTier angelCardTier, StatEffect effect)
+    private void ModifyMonsterStatDifference(AngelCardTier angelCardTier, StatEffect effect, bool positive)
     {
         switch (effect.effect)
         {
@@ -205,7 +205,7 @@ public class StatEffectManager : MonoBehaviour
         }
     }
 
-    private void HandleMonsterStatsRemoval(AngelCardTier angelCardTier, StatEffect effect)
+    private void ModifyMonsterStatRaw(AngelCardTier angelCardTier, StatEffect effect, bool positive)
     {
         switch (effect.effect)
         {

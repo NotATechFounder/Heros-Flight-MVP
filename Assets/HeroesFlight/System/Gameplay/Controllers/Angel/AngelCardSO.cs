@@ -43,6 +43,11 @@ public class AngelCard
         this.angelCardSO = angelCardSO;
         tier = AngelCardTier.One;
     }
+
+    public float GetValueDifference()
+    {
+        return angelCardSO.AffterBonusEffect.GetValueDifference(tier);
+    }
 }
 
 [System.Serializable]

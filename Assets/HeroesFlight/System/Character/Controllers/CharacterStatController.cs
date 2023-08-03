@@ -6,7 +6,6 @@ public class CharacterStatController : MonoBehaviour
 {
     [SerializeField] PlayerStatData playerCombatModel;
 
-
     public bool debug = false;
 
     [field: SerializeField] public float CurrentHealth { get; private set; }
@@ -21,9 +20,9 @@ public class CharacterStatController : MonoBehaviour
     [field: SerializeField] public float CurrentDefense { get; private set; }
     [field: SerializeField] public float CurrentAttackSpeed { get; private set; }
 
-    private float runtimeMagicDamage;
-    private float runtimePhysicalDamage;
-    private float runtimeCriticalHitDamage;
+    [SerializeField] private float runtimeMagicDamage;
+    [SerializeField] private float runtimePhysicalDamage;
+    [SerializeField] private float runtimeCriticalHitDamage;
 
     private void Start()
     {
@@ -49,6 +48,10 @@ public class CharacterStatController : MonoBehaviour
     public void ModifyHealth(float percentageAmount, bool increase)
     {
         CurrentHealth = ModifyValue(playerCombatModel.Health, CurrentHealth, percentageAmount, increase);
+        if (CurrentHealth > playerCombatModel.Health)
+        {
+            CurrentHealth = playerCombatModel.Health;
+        }
     }
 
     public void ModifyMoveSpeed(float percentageAmount, bool increase)
@@ -99,6 +102,11 @@ public class CharacterStatController : MonoBehaviour
     public void ModifyAttackSpeed(float percentageAmount, bool increase)
     {
         CurrentAttackSpeed = ModifyValue(playerCombatModel.AttackSpeed, CurrentAttackSpeed, percentageAmount, increase);
+    }
+
+    public float GetHealthPercentage()
+    {
+        return (CurrentHealth / playerCombatModel.Health) * 100; 
     }
 
     private float ModifyValue(float baseValue, float currentValue, float percentageAmount, bool increase)
