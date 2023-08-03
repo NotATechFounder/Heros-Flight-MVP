@@ -16,19 +16,19 @@ public class BoosterManager : MonoBehaviour
         characterStatController = statController;
     }
 
-    public void ActivateBooster(BoosterSO boosterSO)
+    public bool ActivateBooster(BoosterSO boosterSO)
     {
         Boost boost = CreateBoost(boosterSO);
 
         if (IsInstantBoost(boosterSO))
         {
             boost.OnStart?.Invoke();
-            return;
+            return true;
         }
 
-        if(IsBoosterIsActive(boosterSO))
+        if(IsBoosterIsActive(boosterSO, out bool used))
         {
-            return;
+            return used;
         }
 
         BoosterContainer boosterContainer = boosterContainerList.Find(x => !x.IsRunning);
@@ -40,14 +40,16 @@ public class BoosterManager : MonoBehaviour
         }
 
         boosterContainer.SetActiveBoost(this, boost);
+
+        return true;
     }
 
-    public bool IsInstantBoost(BoosterSO boosterSO)
+    private bool IsInstantBoost(BoosterSO boosterSO)
     {
         return boosterSO.BoosterDuration == 0;
     }
 
-    public bool IsBoosterIsActive(BoosterSO boosterSO)
+    private bool IsBoosterIsActive(BoosterSO boosterSO, out bool used)
     {
         foreach (var boosterContainer in boosterContainerList)
         {
@@ -56,20 +58,24 @@ public class BoosterManager : MonoBehaviour
                 switch (boosterContainer.ActiveBoost.boosterSO.BoosterStackType)
                 {
                     case BoosterStackType.None:
+                        used = false;
                         return true;
                     case BoosterStackType.Duration:
                         boosterContainer.ResetBoostDuration();
+                        used = true;
                         return true;
                     case BoosterStackType.Effect:
                         boosterContainer.IncreaseStackCount();
+                        used = true;
                         return true;
                 }
             }
         }
+        used = false;
         return false;
     }
 
-    public Boost CreateBoost(BoosterSO boosterSO)
+    private Boost CreateBoost(BoosterSO boosterSO)
     {
         switch (boosterSO.BoosterEffectType)
         {
@@ -87,7 +93,7 @@ public class BoosterManager : MonoBehaviour
         }
     }
 
-    public Boost DefenseBoost(BoosterSO boosterSO)
+    private Boost DefenseBoost(BoosterSO boosterSO)
     {
         return new Boost(boosterSO, ()=>
         {
@@ -98,7 +104,7 @@ public class BoosterManager : MonoBehaviour
         });
     }
 
-    public Boost AttackSpeedBoost(BoosterSO boosterSO)
+    private Boost AttackSpeedBoost(BoosterSO boosterSO)
     {
         return new Boost(boosterSO, () =>
         {
@@ -109,7 +115,7 @@ public class BoosterManager : MonoBehaviour
         });
     }
 
-    public Boost MoveSpeedBoost(BoosterSO boosterSO)
+    private Boost MoveSpeedBoost(BoosterSO boosterSO)
     {
         return new Boost(boosterSO, () =>
         {
@@ -120,7 +126,7 @@ public class BoosterManager : MonoBehaviour
         });
     }
 
-    public Boost HealthBoost (BoosterSO boosterSO)
+    private Boost HealthBoost (BoosterSO boosterSO)
     {
         return new Boost(boosterSO, () =>
         {
@@ -136,7 +142,7 @@ public class BoosterManager : MonoBehaviour
         }, null);
     }
 
-    public Boost AttackBoost(BoosterSO boosterSO)
+    private Boost AttackBoost(BoosterSO boosterSO)
     {
         return new Boost(boosterSO, () =>
         {

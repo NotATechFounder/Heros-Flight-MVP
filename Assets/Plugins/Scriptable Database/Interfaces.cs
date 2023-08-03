@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IHasID
+namespace ScriptableObjectDatabase
 {
-    int GetID();
+    public interface IHasID
+    {
+        string GetID();
+    }
 }

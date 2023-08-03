@@ -1,3 +1,4 @@
+using ScriptableObjectDatabase;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 [CreateAssetMenu(fileName = "New Booster", menuName = "Booster", order = 1)]
-public class BoosterSO : ScriptableObject
+public class BoosterSO : ScriptableObject, IHasID
 {
     [SerializeField] private string boosterName;
     [SerializeField] private Sprite boosterSprite;
@@ -24,6 +25,11 @@ public class BoosterSO : ScriptableObject
     public float BoosterValue => boosterValue;
 
     public float BoosterDuration => boosterDuration;
+
+    public string GetID()
+    {
+        return BoosterName;
+    }
 }
 
 public enum BoosterEffectType
