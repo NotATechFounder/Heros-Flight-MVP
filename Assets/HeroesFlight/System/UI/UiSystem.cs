@@ -137,19 +137,19 @@ namespace HeroesFlight.System.UI
             UiEventHandler.GameMenu.UpdateBossHealthFill(value);
         }
 
-        void HandleGameplayStateChange(GameplayState newState)
+        void HandleGameplayStateChange(GameState newState)
         {
             switch (newState)
             {
-                case GameplayState.Ongoing:
+                case GameState.Ongoing:
                     break;
-                case GameplayState.Won:
+                case GameState.Won:
                     HandlePlayerWin();
                     break;
-                case GameplayState.Lost:
+                case GameState.Lost:
                     HandlePlayerDeath();
                     break;
-                case GameplayState.Ended:
+                case GameState.Ended:
                     break;
             }
         }

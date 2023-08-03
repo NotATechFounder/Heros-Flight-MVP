@@ -35,7 +35,7 @@ public class TestAngelGambit : MonoBehaviour
             }
             else
             {
-                angelEffectManager.ComplectedLevel();
+                angelEffectManager.CompletedLevel();
             }
         }
     }

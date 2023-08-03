@@ -13,6 +13,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             controller = GetComponent<CharacterControllerInterface>();
             attackController = GetComponent<CharacterAttackController>();
+            animator = GetComponent<CharacterAnimationControllerInterface>();
             animator.PlayIdleAnimation();
             animator = GetComponent<CharacterAnimationController>();
             maxHealth = controller.CharacterSO.GetPlayerStatData.Health;

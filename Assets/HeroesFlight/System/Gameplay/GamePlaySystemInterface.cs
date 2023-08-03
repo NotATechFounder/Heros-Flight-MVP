@@ -14,7 +14,7 @@ namespace HeroesFlight.System.Gameplay
         event Action<DamageModel> OnEnemyDamaged;
         event Action<int> OnCharacterHealthChanged;
         event Action<int> OnCharacterComboChanged; 
-        event Action<GameplayState> OnGameStateChange;
+        event Action<GameState> OnGameStateChange;
         public event Action OnNextLvlLoadRequest;
         public CountDownTimer GameTimer { get; }
         public AngelEffectManager EffectManager { get; }
@@ -24,5 +24,6 @@ namespace HeroesFlight.System.Gameplay
         void ReviveCharacter();
         SpawnModel PreloadLvl();
         void ResetLogic();
+        void EnablePortal();
     }
 }
