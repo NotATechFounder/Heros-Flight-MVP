@@ -28,6 +28,9 @@ namespace HeroesFlight.System.Gameplay
 
         public event Action OnNextLvlLoadRequest;
         public CountDownTimer GameTimer { get; private set; }
+        public AngelEffectManager EffectManager { get;private set; }
+
+        public int CurrentLvlIndex => container.CurrentLvlIndex;
 
         public event Action<bool> OnMinibossSpawned;
         public event Action<float> OnMinibossHealthChange;
@@ -58,10 +61,12 @@ namespace HeroesFlight.System.Gameplay
         public void Init(Scene scene = default, Action OnComplete = null)
         {
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
+            EffectManager = scene.GetComponentInChildren<AngelEffectManager>();
             container = scene.GetComponentInChildren<GameplayContainer>();
             container.Init();
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
             container.SetStartingIndex(0);
+            OnComplete?.Invoke();
         }
 
         public void Reset()
@@ -135,6 +140,7 @@ namespace HeroesFlight.System.Gameplay
             characterSystem.SetCharacterControllerState(false);
             cameraController.SetTarget(characterController.CharacterTransform);
             npcSystem.InjectPlayer(characterController.CharacterTransform);
+            EffectManager.Initialize(  characterController.CharacterTransform.GetComponent<CharacterStatController>());
         }
 
         void CreateMiniboss(SpawnModel currentLvlModel)

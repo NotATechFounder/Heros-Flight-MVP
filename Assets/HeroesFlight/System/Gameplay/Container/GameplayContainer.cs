@@ -2,6 +2,7 @@ using System;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Model;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace HeroesFlight.System.Gameplay.Container
 {
@@ -11,8 +12,9 @@ namespace HeroesFlight.System.Gameplay.Container
         [SerializeField] LevelPortal portalPrefab;
         public event Action OnPlayerEnteredPortal;
         LevelPortal portal;
-        int index = 0;
-        public bool FinishedLoop => index >= currentModel.Models.Count;
+        public int CurrentLvlIndex { get; private set; }
+
+        public bool FinishedLoop => CurrentLvlIndex >= currentModel.Models.Count;
 
         public void Init()
         {
@@ -22,8 +24,9 @@ namespace HeroesFlight.System.Gameplay.Container
 
         public void SetStartingIndex(int startingIndex)
         {
-            index = startingIndex;
+            CurrentLvlIndex = startingIndex;
         }
+
         void HandlePlayerTriggerPortal()
         {
             OnPlayerEnteredPortal?.Invoke();
@@ -32,12 +35,12 @@ namespace HeroesFlight.System.Gameplay.Container
 
         public SpawnModel GetCurrentLvlModel()
         {
-            if (index >= currentModel.Models.Count)
+            if (CurrentLvlIndex >= currentModel.Models.Count)
                 return null;
-            
-            Debug.LogError($"Returning model with index {index}");
-            var model = currentModel.Models[index];
-            index++;
+
+            Debug.LogError($"Returning model with index {CurrentLvlIndex}");
+            var model = currentModel.Models[CurrentLvlIndex];
+            CurrentLvlIndex++;
             return model;
         }
 

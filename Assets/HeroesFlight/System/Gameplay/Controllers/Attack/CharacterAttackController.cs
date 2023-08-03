@@ -165,7 +165,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void OnDrawGizmos()
         {
-            if (playerStatData == null)
+            if (playerStatData == null || controller==null)
                 return;
             var checkPosition = controller.IsFacingLeft
                 ? transform.position + Vector3.up + Vector3.left * attackPointOffset

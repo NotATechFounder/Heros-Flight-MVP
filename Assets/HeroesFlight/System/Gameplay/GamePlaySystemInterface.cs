@@ -17,6 +17,8 @@ namespace HeroesFlight.System.Gameplay
         event Action<GameplayState> OnGameStateChange;
         public event Action OnNextLvlLoadRequest;
         public CountDownTimer GameTimer { get; }
+        public AngelEffectManager EffectManager { get; }
+        public int CurrentLvlIndex { get; }
         void StartGameLoop(SpawnModel currentModel);
         void ContinueGameLoop(SpawnModel currentModel);
         void ReviveCharacter();

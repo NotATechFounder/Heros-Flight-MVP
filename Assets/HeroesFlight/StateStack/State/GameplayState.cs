@@ -40,8 +40,24 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.OnRestartLvlRequest += HandleLvlRestart;
                     uiSystem.OnReviveCharacterRequest += HandleCharacterRevive;
                     uiSystem.UiEventHandler.PauseMenu.OnQuitButtonClicked += HandleReturnToMainMenu;
+                    uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += HandleAngelsGambitClosed;
                     gamePlaySystem.OnNextLvlLoadRequest += HandleContinueGameLoop;
-
+                    
+                    void HandleAngelsGambitClosed()
+                    {
+                        if (gamePlaySystem.CurrentLvlIndex % 2 != 0)
+                        {
+                            HandleContinueGameLoop();
+                        }
+                        else
+                        {
+                            var data = gamePlaySystem.PreloadLvl();
+                            
+                            gamePlaySystem.StartGameLoop(data);   
+                        }
+                    }
+                    
+                    
                     void HandleReturnToMainMenu()
                     {
                         uiSystem.UiEventHandler.PauseMenu.OnQuitButtonClicked -= HandleReturnToMainMenu;
@@ -52,6 +68,10 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.UiEventHandler.GameMenu.Close();
                         m_SceneActionsQueue.AddAction(SceneActionType.Unload, gameScene);
                         gamePlaySystem.Reset();
+                        gamePlaySystem.EffectManager.OnPermanetCard -= uiSystem.UiEventHandler.AngelPermanetCardMenu
+                            .AcivateCardPermanetEffect;
+                        uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= gamePlaySystem.EffectManager.Exists;
+                        uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected-=gamePlaySystem.EffectManager.AddAngelCardSO;
                         m_SceneActionsQueue.Start( uiSystem.UiEventHandler.LoadingMenu.UpdateLoadingBar, () =>
                         {
                             uiSystem.UiEventHandler.MainMenu.Open();
@@ -101,7 +121,13 @@ namespace HeroesFlight.StateStack.State
                         SceneManager.SetActiveScene(loadedScene);
                         characterSystem.Init(loadedScene);
                         npcSystem.Init(loadedScene);
-                        gamePlaySystem.Init(loadedScene);
+                        gamePlaySystem.Init(loadedScene, () =>
+                        {
+                            gamePlaySystem.EffectManager.OnPermanetCard += uiSystem.UiEventHandler.AngelPermanetCardMenu
+                                .AcivateCardPermanetEffect;
+                            uiSystem.UiEventHandler.AngelGambitMenu.CardExit += gamePlaySystem.EffectManager.Exists;
+                            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected+=gamePlaySystem.EffectManager.AddAngelCardSO;
+                        });
                         uiSystem.UiEventHandler.GameMenu.Open();
                         CoroutineUtility.WaitForSeconds(1f,() =>
                         {
@@ -125,5 +151,7 @@ namespace HeroesFlight.StateStack.State
                     throw new ArgumentOutOfRangeException(nameof(evt.Action), evt.Action, null);
             }
         }
+
+       
     }
 }

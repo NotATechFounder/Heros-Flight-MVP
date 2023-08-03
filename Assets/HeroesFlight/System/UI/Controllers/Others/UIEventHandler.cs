@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UISystem;
 using UnityEngine;
 
@@ -21,6 +19,8 @@ public class UIEventHandler : MonoBehaviour
     public SummaryMenu SummaryMenu { get; private set; }
     public PuzzleMenu PuzzleMenu { get; private set; }
     public PopUpManager PopupManager { get; private set; }
+    public AngelGambitMenu AngelGambitMenu { get; private set; }
+    public AngelPermanetCardMenu AngelPermanetCardMenu { get; private set; }
     public ConfirmationUISO BackToMenuConfirmation => backToMenu;
     public ConfirmationUISO PuzzleConfirmation => puzzleConfirmation;
 
@@ -36,6 +36,8 @@ public class UIEventHandler : MonoBehaviour
         ReviveMenu = uIManager.InitMenu<ReviveMenu>();
         SummaryMenu = uIManager.InitMenu<SummaryMenu>();
         PuzzleMenu = uIManager.InitMenu<PuzzleMenu>();
+        AngelGambitMenu = uIManager.InitMenu<AngelGambitMenu>();
+        AngelPermanetCardMenu = uIManager.InitMenu<AngelPermanetCardMenu>();
         PopupManager = PopUpManager.Instance;
         OnComplecte?.Invoke();
     }
