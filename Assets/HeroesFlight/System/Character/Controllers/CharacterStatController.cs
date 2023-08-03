@@ -35,14 +35,7 @@ public class CharacterStatController : MonoBehaviour
     public void Initialize(PlayerStatData playerCombatModel)
     {
         this.playerCombatModel = playerCombatModel;
-        CurrentHealth = playerCombatModel.Health;
-        CurrentMoveSpeed = playerCombatModel.MoveSpeed;
-        CurrentVitality = playerCombatModel.Vitality;
-        CurrentAgility = playerCombatModel.Agility;
-        CurrentResilience = playerCombatModel.Resilience;
-        CurrentCriticalHitChance = playerCombatModel.CriticalHitChance;
-        CurrentDefense = playerCombatModel.Defense;
-        CurrentAttackSpeed = playerCombatModel.AttackSpeed;
+        ResetStats();
     }
 
     public void ModifyHealth(float percentageAmount, bool increase)
@@ -107,6 +100,18 @@ public class CharacterStatController : MonoBehaviour
     public float GetHealthPercentage()
     {
         return (CurrentHealth / playerCombatModel.Health) * 100; 
+    }
+
+    public void ResetStats()
+    {
+        CurrentHealth = playerCombatModel.Health;
+        CurrentMoveSpeed = playerCombatModel.MoveSpeed;
+        CurrentVitality = playerCombatModel.Vitality;
+        CurrentAgility = playerCombatModel.Agility;
+        CurrentResilience = playerCombatModel.Resilience;
+        CurrentCriticalHitChance = playerCombatModel.CriticalHitChance;
+        CurrentDefense = playerCombatModel.Defense;
+        CurrentAttackSpeed = playerCombatModel.AttackSpeed;
     }
 
     private float ModifyValue(float baseValue, float currentValue, float percentageAmount, bool increase)

@@ -11,8 +11,11 @@ public class TestAngelGambit : MonoBehaviour
 
     private void Start()
     {
-        angelGambitMenu.CardExit = angelEffectManager.Exists;
+
         angelEffectManager.OnPermanetCard = angelPermanetCardMenu.AcivateCardPermanetEffect;
+
+        angelGambitMenu.CardExit = angelEffectManager.Exists;
+
         angelGambitMenu.OnCardSelected = angelEffectManager.AddAngelCardSO;
 
 

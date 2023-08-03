@@ -14,6 +14,12 @@ public class AngelEffectManager : MonoBehaviour
 
     public bool EffectActive => currentAngelCard != null && currentAngelCard.angelCardSO != null;
 
+
+    public void Initialize(CharacterStatController characterStatController)
+    {
+        this.characterStatController = characterStatController;
+    }
+
     public void ComplectedLevel()
     {
         if (currentAngelCard != null && currentAngelCard.angelCardSO != null)
