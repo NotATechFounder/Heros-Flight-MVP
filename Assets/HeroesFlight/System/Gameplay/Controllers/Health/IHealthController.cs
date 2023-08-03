@@ -9,8 +9,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         Transform currentTransform { get; }
         CombatTargetType TargetType { get; }
-        int MaxHealth { get; }
-        int CurrentHealth { get; }
+        float MaxHealth { get; }
+        float CurrentHealth { get; }
         float CurrentHealthProportion { get; }
         void Init();
         event Action<DamageModel> OnBeingDamaged;

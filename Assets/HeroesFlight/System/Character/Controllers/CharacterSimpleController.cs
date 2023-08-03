@@ -1,22 +1,23 @@
-﻿using System;
+using System;
 using HeroesFlight.System.Character.Enum;
-using HeroesFlight.System.Character.Model;
 using UnityEngine;
 
 namespace HeroesFlight.System.Character
 {
     public class CharacterSimpleController :MonoBehaviour,CharacterControllerInterface
     {
-        [SerializeField] CharacterModel model;
+        [SerializeField] CharacterSO characterSO;
         CharacterMovementController m_MovementController;
         CharacterInputReceiver m_InputReceiver;
+        CharacterStatController m_CharacterStatController;
         ICharacterViewController viewController;
         Vector3 m_SavedVelocity = default;
         Transform m_Transform;
 
         public bool IsFacingLeft { get; private set; }
-        public CharacterData Data => model.Data;
         public Transform CharacterTransform => transform;
+        public CharacterSO CharacterSO => characterSO;
+        public CharacterStatController CharacterStatController => m_CharacterStatController;
         public event Action<CharacterState> OnCharacterMoveStateChanged;
         CharacterState m_CurrentState;
 
@@ -28,9 +29,11 @@ namespace HeroesFlight.System.Character
         {
             m_MovementController = GetComponent<CharacterMovementController>();
             m_InputReceiver = GetComponent<CharacterInputReceiver>();
+            m_CharacterStatController = GetComponent<CharacterStatController>();
             viewController = GetComponent<ICharacterViewController>();
             m_Transform = GetComponent<Transform>();
-            viewController.SetupView(model.Data.AppearenceModel.Data);
+            m_CharacterStatController.Initialize(CharacterSO.GetPlayerStatData);
+            viewController.SetupView(CharacterSO.GetAppearanceData);
             m_CurrentState = CharacterState.Idle;
             IsFacingLeft = true;
             isEnabled = false;
@@ -122,7 +125,7 @@ namespace HeroesFlight.System.Character
         Vector3 CalculateCharacterVelocity(Vector3 inputVector)
         {
             var velocity = CalculateMovementDirection(inputVector);
-            return velocity * model.Data.CombatModel.Speed;
+            return velocity * CharacterSO.GetPlayerStatData.MoveSpeed;
         }
 
         Vector3 CalculateMovementDirection(Vector3 inputVector)
