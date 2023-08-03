@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using HeroesFlight.System.NPC.Controllers;
+using HeroesFlight.System.NPC.Data;
 using HeroesFlight.System.NPC.Model;
 using HeroesFlightProject.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
@@ -71,12 +72,10 @@ namespace HeroesFlight.System.NPC.Container
         {
             for (var i = 0; i < enemiesToSpawn; i++)
             {
-                var rng = Random.Range(0, spawnModel.TrashMobs.Count);
-
-                var targetPrefab = spawnModel.TrashMobs[rng];
-                var targetPoints = spanwPointsCache[targetPrefab.AgentModel.EnemySpawmType];
+                var targetEntry = PickRandomTrashMob(spawnModel.TrashMobs);
+                var targetPoints = spanwPointsCache[targetEntry.Prefab.AgentModel.EnemySpawmType];
                 var rngPoint=  Random.Range(0, targetPoints.Count);
-                var resultEnemy = Instantiate(targetPrefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
+                var resultEnemy = Instantiate(targetEntry.Prefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
                     , Quaternion.identity);
                 resultEnemy.transform.parent = transform;
                 resultEnemy.Init(player.transform);
@@ -88,13 +87,21 @@ namespace HeroesFlight.System.NPC.Container
             yield return true;
         }
 
+        SpawnModelEntry PickRandomTrashMob(List<SpawnModelEntry> spawnModel)
+        {
+            var rng = Random.Range(0, spawnModel.Count);
+            
+            var targetEntry = spawnModel[rng];
+            return targetEntry;
+        }
+
         public AiControllerBase SpawnMiniBoss(SpawnModel currentLvlModel)
         {
             var rng = Random.Range(0, currentLvlModel.MiniBosses.Count);
-            var targetPrefab = currentLvlModel.MiniBosses[rng];
-            var targetPoints = spanwPointsCache[targetPrefab.AgentModel.EnemySpawmType];
+            var targetEntry = currentLvlModel.MiniBosses[rng];
+            var targetPoints = spanwPointsCache[targetEntry.Prefab.AgentModel.EnemySpawmType];
             var rngPoint=  Random.Range(0, targetPoints.Count);
-            var resultEnemy = Instantiate(targetPrefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
+            var resultEnemy = Instantiate(targetEntry.Prefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
                 , Quaternion.identity);
             resultEnemy.transform.parent = transform;
             spawnedEnemies.Add(resultEnemy);

@@ -7,7 +7,7 @@ namespace HeroesFlight.System.Gameplay.Container
 {
     public class GameplayContainer : MonoBehaviour
     {
-        [SerializeField] GameLoopModel currentModel;
+        [SerializeField] GameAreaModel currentModel;
         [SerializeField] LevelPortal portalPrefab;
         public event Action OnPlayerEnteredPortal;
         LevelPortal portal;

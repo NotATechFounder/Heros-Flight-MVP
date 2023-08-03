@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace HeroesFlight.System.Gameplay.Model
 {
-    [CreateAssetMenu(fileName = "GameLoopModel", menuName = "Model/GameLoop", order = 0)]
-    public class GameLoopModel : ScriptableObject
+    [CreateAssetMenu(fileName = "GameAreaModel", menuName = "Model/GameAreaModel", order = 0)]
+    public class GameAreaModel : ScriptableObject
     {
         [SerializeField] Vector2 portalPosition;
         [SerializeField] List<SpawnModel> avaibleLvls=new ();

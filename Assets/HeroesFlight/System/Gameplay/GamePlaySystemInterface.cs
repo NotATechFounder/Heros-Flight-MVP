@@ -1,6 +1,7 @@
 ﻿using System;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
+using HeroesFlight.System.NPC.Model;
 
 namespace HeroesFlight.System.Gameplay
 {
@@ -14,8 +15,12 @@ namespace HeroesFlight.System.Gameplay
         event Action<int> OnCharacterHealthChanged;
         event Action<int> OnCharacterComboChanged; 
         event Action<GameplayState> OnGameStateChange;
+        public event Action OnNextLvlLoadRequest;
         public CountDownTimer GameTimer { get; }
-        void StartGameLoop();
+        void StartGameLoop(SpawnModel currentModel);
+        void ContinueGameLoop(SpawnModel currentModel);
         void ReviveCharacter();
+        SpawnModel PreloadLvl();
+        void ResetLogic();
     }
 }

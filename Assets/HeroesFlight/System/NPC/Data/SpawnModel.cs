@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using HeroesFlightProject.System.NPC.Controllers;
+using HeroesFlight.System.NPC.Data;
 using UnityEngine;
 
 namespace HeroesFlight.System.NPC.Model
@@ -10,14 +10,14 @@ namespace HeroesFlight.System.NPC.Model
     {
         [SerializeField] int wavesAmount;
         [SerializeField] int mobsToSpawn;
-        [SerializeField] List<AiControllerBase> trashMobs;
-        [SerializeField] List<AiControllerBase> miniBosses;
-        [SerializeField] List<AiControllerBase> bosses;
+        [SerializeField] List<SpawnModelEntry> trashMobs;
+        [SerializeField] List<SpawnModelEntry> miniBosses;
+        [SerializeField] List<SpawnModelEntry> bosses;
 
         public int MobsAmount => mobsToSpawn;
         public int WavesAmount => wavesAmount;
-        public List<AiControllerBase> TrashMobs => trashMobs;
-        public List<AiControllerBase> MiniBosses => miniBosses;
-        public List<AiControllerBase> Bosses => bosses;
+        public List<SpawnModelEntry> TrashMobs => trashMobs;
+        public List<SpawnModelEntry> MiniBosses => miniBosses;
+        public List<SpawnModelEntry> Bosses => bosses;
     }
 }
