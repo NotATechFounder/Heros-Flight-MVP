@@ -1,21 +1,26 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BoosterContainer : MonoBehaviour
+[System.Serializable]
+public class BoosterContainer
 {
     [SerializeField] private Boost activeBoost;
-    private float currentDuration;
+    [SerializeField] private float currentDuration;
+    [SerializeField] private int stackCount = 1;
+    [SerializeField] private bool isRunning;
+    private MonoBehaviour monoBehaviour;
+    private Coroutine countDownRoutine;
 
     public Boost ActiveBoost => activeBoost;
+    public float CurrentDuration => currentDuration;
+    public int StackCount => stackCount;
+    public bool IsRunning => isRunning;
 
-    public void SetActiveBoost(Boost booster)
+    public void SetActiveBoost(MonoBehaviour mono, Boost booster)
     {
-        if(activeBoost != null && activeBoost.boosterSO.BoosterEffectType == booster.boosterSO.BoosterEffectType)
-        {
-            currentDuration = activeBoost.boosterSO.BoosterDuration;
-            return;
-        }
+        isRunning = true;
+        stackCount = 1;
+        monoBehaviour = mono;
         activeBoost = booster;
         ApplyBoost();
     }
@@ -23,13 +28,8 @@ public class BoosterContainer : MonoBehaviour
     public void ApplyBoost()
     {
         activeBoost.OnStart?.Invoke();
-        CountDown();
-    }
-
-    public void CountDown()
-    {
         currentDuration = activeBoost.boosterSO.BoosterDuration;
-        StartCoroutine(CountDownRoutine());
+        countDownRoutine = monoBehaviour.StartCoroutine(CountDownRoutine());
     }
 
     IEnumerator CountDownRoutine()
@@ -44,7 +44,39 @@ public class BoosterContainer : MonoBehaviour
 
     public void RemoveBoost()
     {
-        activeBoost.OnEnd?.Invoke();
+        for (int i = 0; i < stackCount; i++)
+        {
+            activeBoost.OnEnd?.Invoke();
+        }
+
         activeBoost = null;
+        countDownRoutine = null;
+        isRunning = false;
+    }
+
+    public void ClearBoost(bool triggerEnd)
+    {
+        if (triggerEnd)
+        {
+            for (int i = 0; i < stackCount; i++)
+            {
+                activeBoost.OnEnd?.Invoke();
+            }
+        }
+        monoBehaviour.StopCoroutine(countDownRoutine);
+        activeBoost = null;
+        countDownRoutine = null;
+        isRunning = false;
+    }
+
+    public void ResetBoostDuration()
+    {
+        currentDuration = activeBoost.boosterSO.BoosterDuration;
+    }
+
+    public void IncreaseStackCount()
+    {
+        stackCount++;
+        activeBoost.OnStart?.Invoke();
     }
 }

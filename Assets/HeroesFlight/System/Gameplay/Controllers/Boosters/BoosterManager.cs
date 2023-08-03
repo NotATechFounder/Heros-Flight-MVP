@@ -5,20 +5,68 @@ using UnityEngine;
 public class BoosterManager : MonoBehaviour
 {
     [SerializeField] private CharacterStatController characterStatController;
-
     [SerializeField] private List<BoosterContainer> boosterContainerList;
+
+    [SerializeField] private bool pauseAttackBooster;
+
+    public bool PauseAttackBooster => pauseAttackBooster;
+
+    public void Initialise(CharacterStatController statController)
+    {
+        characterStatController = statController;
+    }
 
     public void ActivateBooster(BoosterSO boosterSO)
     {
         Boost boost = CreateBoost(boosterSO);
+
+        if (IsInstantBoost(boosterSO))
+        {
+            boost.OnStart?.Invoke();
+            return;
+        }
+
+        if(IsBoosterIsActive(boosterSO))
+        {
+            return;
+        }
+
+        BoosterContainer boosterContainer = boosterContainerList.Find(x => !x.IsRunning);
+
+        if (boosterContainer == null)
+        {
+            boosterContainer = new BoosterContainer();
+            boosterContainerList.Add(boosterContainer);
+        }
+
+        boosterContainer.SetActiveBoost(this, boost);
+    }
+
+    public bool IsInstantBoost(BoosterSO boosterSO)
+    {
+        return boosterSO.BoosterDuration == 0;
+    }
+
+    public bool IsBoosterIsActive(BoosterSO boosterSO)
+    {
         foreach (var boosterContainer in boosterContainerList)
         {
-            if (boosterContainer.ActiveBoost == null)
+            if (boosterContainer.IsRunning && boosterContainer.ActiveBoost.boosterSO == boosterSO)
             {
-                boosterContainer.SetActiveBoost(boost);
-                return;
+                switch (boosterContainer.ActiveBoost.boosterSO.BoosterStackType)
+                {
+                    case BoosterStackType.None:
+                        return true;
+                    case BoosterStackType.Duration:
+                        boosterContainer.ResetBoostDuration();
+                        return true;
+                    case BoosterStackType.Effect:
+                        boosterContainer.IncreaseStackCount();
+                        return true;
+                }
             }
         }
+        return false;
     }
 
     public Boost CreateBoost(BoosterSO boosterSO)
@@ -35,8 +83,7 @@ public class BoosterManager : MonoBehaviour
                 return MoveSpeedBoost(boosterSO);
             case BoosterEffectType.AttackSpeed:
                 return AttackSpeedBoost(boosterSO);
-            default:
-                return null;
+            default: return null;
         }
     }
 
@@ -95,10 +142,12 @@ public class BoosterManager : MonoBehaviour
         {
             characterStatController.ModifyMagicDamage(boosterSO.BoosterValue, true);
             characterStatController.ModifyPhysicalDamage(boosterSO.BoosterValue, true);
+            pauseAttackBooster = true;
         }, () =>
         {
             characterStatController.ModifyMagicDamage(boosterSO.BoosterValue, false);
             characterStatController.ModifyPhysicalDamage(boosterSO.BoosterValue, false);
+            pauseAttackBooster = false;
         });
     }
 }

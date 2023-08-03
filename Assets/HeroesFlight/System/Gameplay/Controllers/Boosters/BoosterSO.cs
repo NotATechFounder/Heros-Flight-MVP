@@ -42,6 +42,7 @@ public enum BoosterStackType
     Effect
 }
 
+[Serializable]
 public class Boost
 {
     public BoosterSO boosterSO;
