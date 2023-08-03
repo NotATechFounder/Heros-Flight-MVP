@@ -1,4 +1,4 @@
-using System;
+
 using HeroesFlight.System.Gameplay.Enum;
 using TMPro;
 using UnityEngine;
@@ -16,10 +16,8 @@ namespace HeroesFlight.System.UI.Container
             {
                 case DamageType.NoneCritical:
                     return normalDamageAsset;
-                    break;
                 case DamageType.Critical:
                     return criticalDamageAsset;
-                    break;
                 default:
                     return null;
             }

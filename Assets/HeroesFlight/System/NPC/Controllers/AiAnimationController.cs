@@ -13,6 +13,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         AiControllerInterface aiController;
         int movementTrackIndex = 0;
         int dynamicTrackIndex = 1;
+        int aditionalAniamtionTrackIndex = 2;
 
         void Awake()
         {
@@ -56,8 +57,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public void PlayDeathAnimation(Action onCompleteAction)
         {
             skeletonAnimation.AnimationState.SetAnimation(movementTrackIndex, deathAnimation, false);
-            skeletonAnimation.AnimationState.AddEmptyAnimation(dynamicTrackIndex, 0, 0);
-            skeletonAnimation.AnimationState.AddEmptyAnimation(3, 0, 0);
+            skeletonAnimation.AnimationState.SetEmptyAnimation(dynamicTrackIndex, 0);
+            skeletonAnimation.AnimationState.SetEmptyAnimation(aditionalAniamtionTrackIndex, 0);
             CoroutineUtility.WaitForSeconds(deathAnimation.Animation.Duration, () =>
             {
                 onCompleteAction?.Invoke();
@@ -66,8 +67,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public void PlayAnimation(AnimationReferenceAsset animationReference,Action onCompleteAction=null)
         {
-            skeletonAnimation.AnimationState.SetAnimation(3, animationReference, false);
-            skeletonAnimation.AnimationState.AddEmptyAnimation(3, 0, 0);
+            skeletonAnimation.AnimationState.SetAnimation(aditionalAniamtionTrackIndex, animationReference, false);
+            skeletonAnimation.AnimationState.AddEmptyAnimation(aditionalAniamtionTrackIndex, 0, 0);
             CoroutineUtility.WaitForSeconds(animationReference.Animation.Duration, () =>
             {
                 onCompleteAction?.Invoke();

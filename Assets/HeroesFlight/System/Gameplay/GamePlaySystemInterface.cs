@@ -1,6 +1,7 @@
 ﻿using System;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
+using HeroesFlight.System.NPC.Model;
 
 namespace HeroesFlight.System.Gameplay
 {
@@ -13,8 +14,16 @@ namespace HeroesFlight.System.Gameplay
         event Action<DamageModel> OnEnemyDamaged;
         event Action<int> OnCharacterHealthChanged;
         event Action<int> OnCharacterComboChanged; 
-        event Action<GameplayState> OnGameStateChange;
+        event Action<GameState> OnGameStateChange;
+        public event Action OnNextLvlLoadRequest;
         public CountDownTimer GameTimer { get; }
-        void StartGameLoop();
+        public AngelEffectManager EffectManager { get; }
+        public int CurrentLvlIndex { get; }
+        void StartGameLoop(SpawnModel currentModel);
+        void ContinueGameLoop(SpawnModel currentModel);
+        void ReviveCharacter();
+        SpawnModel PreloadLvl();
+        void ResetLogic();
+        void EnablePortal();
     }
 }

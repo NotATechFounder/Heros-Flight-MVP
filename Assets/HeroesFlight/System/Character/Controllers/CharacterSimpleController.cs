@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using HeroesFlight.System.Character.Enum;
 using UnityEngine;
 
@@ -15,16 +15,17 @@ namespace HeroesFlight.System.Character
         Transform m_Transform;
 
         public bool IsFacingLeft { get; private set; }
+        public Transform CharacterTransform => transform;
         public CharacterSO CharacterSO => characterSO;
-
         public CharacterStatController CharacterStatController => m_CharacterStatController;
-
         public event Action<CharacterState> OnCharacterMoveStateChanged;
         CharacterState m_CurrentState;
-        public  Vector3 GetVelocity() => m_SavedVelocity;
-        bool isDisabled;
 
-        void Awake()
+        public  Vector3 GetVelocity() => m_SavedVelocity;
+
+        bool isEnabled;
+
+        public void Init()
         {
             m_MovementController = GetComponent<CharacterMovementController>();
             m_InputReceiver = GetComponent<CharacterInputReceiver>();
@@ -35,9 +36,9 @@ namespace HeroesFlight.System.Character
             viewController.SetupView(CharacterSO.GetAppearanceData);
             m_CurrentState = CharacterState.Idle;
             IsFacingLeft = true;
-            isDisabled = false;
+            isEnabled = false;
         }
-
+     
         void FixedUpdate()
         {
             
@@ -46,12 +47,12 @@ namespace HeroesFlight.System.Character
 
         public void SetActionState(bool isEnabled)
         {
-            isDisabled = isEnabled;
+            this.isEnabled = isEnabled;
         }
 
         void ControllerUpdate()
         {
-            var input = isDisabled? Vector2.zero:m_InputReceiver.GetInput();
+            var input = isEnabled? m_InputReceiver.GetInput(): Vector2.zero;
             var velocity = CalculateCharacterVelocity(input);
             m_SavedVelocity = velocity;
             m_MovementController.SetVelocity(velocity);
@@ -60,6 +61,9 @@ namespace HeroesFlight.System.Character
 
         void UpdateCharacterState(Vector3 input)
         {
+            if(!isEnabled)
+                return;
+            
             var newState = CharacterState.Idle;
             if (input.Equals(Vector3.zero))
             {

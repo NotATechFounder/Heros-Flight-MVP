@@ -20,5 +20,9 @@ namespace HeroesFlight.System.Character
         {
             canvasTransform.position = position;
         }
+
+        public void DisableVisuals(bool isDisabled) => visualsCanvas.enabled = !isDisabled;
+       
+    
     }
 }

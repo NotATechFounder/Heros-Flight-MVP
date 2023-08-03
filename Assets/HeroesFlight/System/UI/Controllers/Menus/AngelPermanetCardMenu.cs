@@ -1,8 +1,6 @@
 using Pelumi.Juicer;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using UISystem;
 using UnityEngine;
 
 namespace UISystem
@@ -40,7 +38,7 @@ namespace UISystem
 
         public override void ResetMenu()
         {
-
+           
         }
 
         public void AcivateCardPermanetEffect(AngelCard angelCard)

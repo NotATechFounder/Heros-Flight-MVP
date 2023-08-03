@@ -6,6 +6,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         float TimeSinceLastAttack { get; }
         void AttackTargets();
         void Init();
-        void DisableActions();
+        void ToggleControllerState(bool isEnabled);
     }
 }

@@ -1,5 +1,5 @@
 using HeroesFlight.System.Character;
-using UnityEngine;
+
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -7,20 +7,43 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         CharacterControllerInterface controller;
         CharacterAttackController attackController;
+        CharacterAnimationControllerInterface animator;
 
         public override void Init()
         {
             controller = GetComponent<CharacterControllerInterface>();
             attackController = GetComponent<CharacterAttackController>();
+            animator = GetComponent<CharacterAnimationControllerInterface>();
+            animator.PlayIdleAnimation();
+            animator = GetComponent<CharacterAnimationController>();
             maxHealth = controller.CharacterSO.GetPlayerStatData.Health;
             base.Init();
         }
 
         protected override void ProcessDeath()
         {
+            controller.SetActionState(false);
+            attackController.ToggleControllerState(false);
+            animator.PlayDeathAnimation();
             base.ProcessDeath();
-            controller.SetActionState(true);
-            attackController.DisableActions();
         }
+
+        public override void Reset()
+        {
+            controller.SetActionState(true);
+            attackController.ToggleControllerState(true);
+            animator.PlayDeathAnimation();
+            base.Reset();
+        }
+
+        public override void Revive()
+        {
+            controller.SetActionState(true);
+            attackController.ToggleControllerState(true);
+            animator.PlayDeathAnimation();
+            base.Revive();
+        }
+
+       
     }
 }

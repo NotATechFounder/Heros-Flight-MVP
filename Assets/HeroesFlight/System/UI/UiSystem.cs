@@ -22,9 +22,12 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnCharacterComboChanged += UpdateComboUI;
             gameplaySystem.OnMinibossSpawned += HandleMiniboss;
             gameplaySystem.OnMinibossHealthChange += HandleMinibossHealthChange;
+            gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
         }
 
         public event Action OnReturnToMainMenuRequest;
+        public event Action OnRestartLvlRequest;
+        public event Action OnReviveCharacterRequest;
 
         public UIEventHandler UiEventHandler { get; private set; }
 
@@ -91,25 +94,24 @@ namespace HeroesFlight.System.UI
                 };
 
 
-                UiEventHandler.ReviveMenu.OnMenuClosed += () =>
-                {
-                    UiEventHandler.SummaryMenu.Open();
-                };
-
+               
                 UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
                 {
-                    UiEventHandler.ReviveMenu.Close();
+                    OnReviveCharacterRequest?.Invoke();
                     return true;
                 };
                 UiEventHandler.ReviveMenu.OnCloseButtonClicked += () =>
                 {
-                    UiEventHandler.ReviveMenu.Close();
+                    UiEventHandler.SummaryMenu.Open();
+                };
+                UiEventHandler.ReviveMenu.OnCountDownCompleted += () =>
+                {
+                    UiEventHandler.SummaryMenu.Open();
                 };
 
                 UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
                 {
-                    UiEventHandler.ReviveMenu.Close();
-
+                    OnRestartLvlRequest?.Invoke();
                     return true;
                 };
 
@@ -135,22 +137,19 @@ namespace HeroesFlight.System.UI
             UiEventHandler.GameMenu.UpdateBossHealthFill(value);
         }
 
-        void HandleGameplayStateChange(GameplayState newState)
+        void HandleGameplayStateChange(GameState newState)
         {
             switch (newState)
             {
-                case GameplayState.Ongoing:
-                    gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
+                case GameState.Ongoing:
                     break;
-                case GameplayState.Won:
-                    gameplaySystem.GameTimer.OnTimeTick -= UpdateGameTimeUI;
+                case GameState.Won:
                     HandlePlayerWin();
                     break;
-                case GameplayState.Lost:
-                    gameplaySystem.GameTimer.OnTimeTick -= UpdateGameTimeUI;
+                case GameState.Lost:
                     HandlePlayerDeath();
                     break;
-                case GameplayState.Ended:
+                case GameState.Ended:
                     break;
             }
         }
@@ -208,7 +207,6 @@ namespace HeroesFlight.System.UI
             var damageText = NumberConverter.ConvertNumberToString((int)damageModel.Amount);
             var spriteAsset = container.GetDamageTextSprite(damageModel.DamageType);
             var size = damageModel.DamageType == DamageType.NoneCritical ? 60 : 100;
-            Debug.Log(size);
             UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.one, damageText,
                 spriteAsset,size);
         }

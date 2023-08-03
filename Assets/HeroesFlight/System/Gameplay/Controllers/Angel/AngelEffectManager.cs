@@ -20,7 +20,7 @@ public class AngelEffectManager : MonoBehaviour
         this.characterStatController = characterStatController;
     }
 
-    public void ComplectedLevel()
+    public void CompletedLevel()
     {
         if (currentAngelCard != null && currentAngelCard.angelCardSO != null)
         {
@@ -251,5 +251,10 @@ public class AngelEffectManager : MonoBehaviour
     public AngelCard GetActiveAngelCard()
     {
         return currentAngelCard;
+    }
+
+    public void Reset()
+    {
+        //reset current effects
     }
 }

@@ -1,10 +1,11 @@
 namespace HeroesFlight.System.Gameplay.Enum
 {
-    public enum GameplayState
+    public enum GameState
     {
         Ongoing,
         Won,
         Lost,
-        Ended
+        Ended,
+        WaitingPortal
     }
 }

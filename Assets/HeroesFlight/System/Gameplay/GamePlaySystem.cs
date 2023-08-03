@@ -2,16 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Gameplay.Container;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC;
+using HeroesFlight.System.NPC.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using CameraControllerInterface = HeroesFlightProject.System.Gameplay.Controllers.CameraControllerInterface;
 
 namespace HeroesFlight.System.Gameplay
 {
@@ -25,102 +26,149 @@ namespace HeroesFlight.System.Gameplay
             GameTimer = new CountDownTimer();
         }
 
+        public event Action OnNextLvlLoadRequest;
         public CountDownTimer GameTimer { get; private set; }
-        List<IHealthController> GetExistingEnemies() => enemyHealthControllers;
-        List<IHealthController> enemyHealthControllers = new();
-        IHealthController miniBoss;
-        IHealthController characterHealthController;
-        CharacterAttackController characterAttackController;
-        CharacterSystemInterface characterSystem;
-        CharacterControllerInterface characterController;
-        CameraControllerInterface cameraController;
-        NpcSystemInterface npcSystem;
-        GameplayState currentState;
-        float timeSinceLastStrike;
-        float timeTiResetCombo = 3f;
-        int characterComboNumber;
+        public AngelEffectManager EffectManager { get; private set; }
+
+        public int CurrentLvlIndex => container.CurrentLvlIndex;
 
         public event Action<bool> OnMinibossSpawned;
         public event Action<float> OnMinibossHealthChange;
-       
+
         public event Action<int> OnRemainingEnemiesLeft;
         public event Action<DamageModel> OnCharacterDamaged;
         public event Action<DamageModel> OnEnemyDamaged;
         public event Action<int> OnCharacterHealthChanged;
         public event Action<int> OnCharacterComboChanged;
-        public event Action<GameplayState> OnGameStateChange;
+        public event Action<GameState> OnGameStateChange;
+        List<IHealthController> GetExistingEnemies() => activeEnemyHealthControllers;
+        List<IHealthController> activeEnemyHealthControllers = new();
+        IHealthController miniBoss;
+        IHealthController characterHealthController;
+        CharacterAttackController characterAttackController;
+        CharacterSystemInterface characterSystem;
+        CameraControllerInterface cameraController;
+        NpcSystemInterface npcSystem;
+        GameplayContainer container;
+        GameState currentState;
+        float timeSinceLastStrike;
+        float timeToResetCombo = 3f;
+        int characterComboNumber;
         int enemiesToKill;
         int wavesAmount;
         Coroutine combotTimerRoutine;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
-            wavesAmount = 10;
-            enemiesToKill = 50;
-            OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
-            characterHealthController = scene.GetComponent<CharacterHealthController>();
-            characterAttackController = scene.GetComponent<CharacterAttackController>();
-            characterController = scene.GetComponent<CharacterSimpleController>();
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
-            characterController.SetActionState(true);
-            characterAttackController.SetCallback(GetExistingEnemies);
-            characterHealthController.OnDeath += HandleCharacterDeath;
-            characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
-            characterHealthController.Init();
-            OnCharacterComboChanged?.Invoke(characterComboNumber);
-            OnGameStateChange?.Invoke(currentState);
-            combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());
+            EffectManager = scene.GetComponentInChildren<AngelEffectManager>();
+            container = scene.GetComponentInChildren<GameplayContainer>();
+            container.Init();
+            container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
+            container.SetStartingIndex(0);
+            OnComplete?.Invoke();
         }
 
         public void Reset()
         {
-            enemyHealthControllers.Clear();
+            ResetLogic();
+            ResetPlayerSubscriptions();
+            container.SetStartingIndex(0);
+        }
+
+
+        void ResetPlayerSubscriptions()
+        {
+            characterAttackController.SetCallback(null);
+            characterHealthController.OnDeath -= HandleCharacterDeath;
+            characterHealthController.OnBeingDamaged -= HandleCharacterDamaged;
+            characterAttackController = null;
+            characterHealthController = null;
+        }
+
+        public void ResetLogic()
+        {
+            activeEnemyHealthControllers.Clear();
+            EffectManager.Reset();
             enemiesToKill = 0;
             GameTimer.Stop();
-            currentState = GameplayState.Ended;
-            OnGameStateChange?.Invoke(currentState);
+            ChangeState(GameState.Ended);
             OnMinibossSpawned?.Invoke(false);
             CoroutineUtility.Stop(combotTimerRoutine);
         }
 
-        public void StartGameLoop()
+        public void EnablePortal()
         {
-            currentState = GameplayState.Ongoing;
-            OnGameStateChange?.Invoke(currentState);
-            cameraController.SetCameraShakeState(true);
-            GameTimer.Start(3, null,
-                () =>
-                {
-                    characterController.SetActionState(false);
-                    CreateMiniboss();
-                    npcSystem.SpawnRandomEnemies(enemiesToKill, wavesAmount);
-                    GameTimer.Start(180, null,
-                        () =>
-                        {
-                            if (currentState != GameplayState.Ongoing)
-                                return;
-
-                            ChangeState(GameplayState.Lost);
-                        }, characterAttackController);
-                }, characterAttackController);
+            container.EnablePortal();
         }
 
-        void CreateMiniboss()
+        bool CheckCurrentModel(out SpawnModel currentLvlModel)
         {
-            var miniboss = npcSystem.SpawnMiniBoss();
+            currentLvlModel = container.GetCurrentLvlModel();
+            if (currentLvlModel == null)
+            {
+                ChangeState(GameState.Won);
+                return false;
+            }
+
+            return true;
+        }
+
+        void CreateLvL(SpawnModel currentLvlModel)
+        {
+            characterSystem.SetCharacterControllerState(true);
+            if (currentLvlModel.MiniBosses.Count > 0)
+            {
+                CreateMiniboss(currentLvlModel);
+            }
+
+            npcSystem.SpawnRandomEnemies(currentLvlModel);
+        }
+
+        public void ReviveCharacter()
+        {
+            characterHealthController.Revive();
+            GameTimer.Resume();
+            ChangeState(GameState.Ongoing);
+        }
+
+        void SetupCharacter()
+        {
+            var characterController = characterSystem.CreateCharacter();
+            characterHealthController =
+                characterController.CharacterTransform.GetComponent<CharacterHealthController>();
+            characterAttackController =
+                characterController.CharacterTransform.GetComponent<CharacterAttackController>();
+            characterAttackController.SetCallback(GetExistingEnemies);
+            characterHealthController.OnDeath += HandleCharacterDeath;
+            characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
+            characterHealthController.Init();
+            characterSystem.SetCharacterControllerState(false);
+            cameraController.SetTarget(characterController.CharacterTransform);
+            npcSystem.InjectPlayer(characterController.CharacterTransform);
+            EffectManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
+        }
+
+        void CreateMiniboss(SpawnModel currentLvlModel)
+        {
+            var miniboss = npcSystem.SpawnMiniBoss(currentLvlModel);
             miniBoss = miniboss.GetComponent<IHealthController>();
             miniBoss.OnBeingDamaged += HandleEnemyDamaged;
             miniBoss.OnBeingDamaged += HandleMinibosshealthChange;
             miniBoss.OnDeath += HandleEnemyDeath;
             miniBoss.Init();
-            enemyHealthControllers.Add(miniBoss);
+            activeEnemyHealthControllers.Add(miniBoss);
             OnMinibossSpawned?.Invoke(true);
             cameraController.SetCameraShakeState(false);
         }
 
         void HandleMinibosshealthChange(DamageModel damageModel)
         {
-           OnMinibossHealthChange?.Invoke(miniBoss.CurrentHealthProportion);
+            OnMinibossHealthChange?.Invoke(miniBoss.CurrentHealthProportion);
+            if (miniBoss.CurrentHealthProportion <= 0)
+            {
+                miniBoss.OnBeingDamaged -= HandleMinibosshealthChange;
+            }
         }
 
         void HandleEnemySpawned(AiControllerBase obj)
@@ -129,27 +177,43 @@ namespace HeroesFlight.System.Gameplay
             healthController.OnBeingDamaged += HandleEnemyDamaged;
             healthController.OnDeath += HandleEnemyDeath;
             healthController.Init();
-            enemyHealthControllers.Add(healthController);
+            activeEnemyHealthControllers.Add(healthController);
         }
 
         void HandleEnemyDeath(IHealthController iHealthController)
         {
-            if (currentState != GameplayState.Ongoing)
+            if (currentState != GameState.Ongoing)
                 return;
 
+            iHealthController.OnBeingDamaged -= HandleEnemyDamaged;
             iHealthController.OnDeath -= HandleEnemyDeath;
-            enemyHealthControllers.Remove(iHealthController);
+            activeEnemyHealthControllers.Remove(iHealthController);
             enemiesToKill--;
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
             if (enemiesToKill <= 0)
             {
-                ChangeState(GameplayState.Won);
+                GameTimer.Stop();
+              
+                if (container.FinishedLoop)
+                {
+                    characterAttackController.ToggleControllerState(false);
+                    characterSystem.SetCharacterControllerState(false);
+                    
+                    CoroutineUtility.WaitForSeconds(1f, () =>
+                    {
+                        ChangeState(GameState.Won);
+                    });
+
+                    return;
+                }
+
+                ChangeState(GameState.WaitingPortal);
             }
         }
 
         void HandleCharacterDamaged(DamageModel damageModel)
         {
-            if (currentState != GameplayState.Ongoing)
+            if (currentState != GameState.Ongoing)
                 return;
 
             OnCharacterDamaged?.Invoke(damageModel);
@@ -157,10 +221,16 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleCharacterDeath(IHealthController obj)
         {
-            if (currentState != GameplayState.Ongoing)
+            Debug.LogError($"character died and game state is {currentState}");
+            if (currentState != GameState.Ongoing)
                 return;
 
-            ChangeState(GameplayState.Lost);
+            //freezes engine?  
+            // GameTimer.Pause();
+            CoroutineUtility.WaitForSeconds(1f, () =>
+            {
+                ChangeState(GameState.Lost);
+            });
         }
 
         void HandleEnemyDamaged(DamageModel damageModel)
@@ -171,7 +241,7 @@ namespace HeroesFlight.System.Gameplay
 
         void UpdateCharacterCombo()
         {
-            timeSinceLastStrike = timeTiResetCombo;
+            timeSinceLastStrike = timeToResetCombo;
             characterComboNumber++;
             OnCharacterComboChanged?.Invoke(characterComboNumber);
         }
@@ -191,12 +261,74 @@ namespace HeroesFlight.System.Gameplay
             }
         }
 
-        void ChangeState(GameplayState newState)
+        void ChangeState(GameState newState)
         {
             if (currentState == newState)
                 return;
-            currentState =newState;
+            currentState = newState;
             OnGameStateChange?.Invoke(currentState);
+        }
+
+        void HandlePlayerTriggerPortal()
+        {
+            OnNextLvlLoadRequest?.Invoke();
+        }
+
+        public void ContinueGameLoop(SpawnModel currentModel)
+        {
+            ChangeState(GameState.Ongoing);
+            cameraController.SetCameraShakeState(currentModel.MiniBosses.Count > 0);
+            GameTimer.Start(3, null,
+                () =>
+                {
+                    CreateLvL(currentModel);
+                    GameTimer.Start(180, null,
+                        () =>
+                        {
+                            if (currentState != GameState.Ongoing)
+                                return;
+
+                            ChangeState(GameState.Lost);
+                        }, characterAttackController);
+                }, characterAttackController);
+        }
+
+        public void StartGameLoop(SpawnModel currentModel)
+        {
+            SetupCharacter();
+            ChangeState(GameState.Ongoing);
+            cameraController.SetCameraShakeState(currentModel.MiniBosses.Count > 0);
+            GameTimer.Start(3, null,
+                () =>
+                {
+                    CreateLvL(currentModel);
+                    GameTimer.Start(180, null,
+                        () =>
+                        {
+                            if (currentState != GameState.Ongoing)
+                                return;
+
+                            ChangeState(GameState.Lost);
+                        }, characterAttackController);
+                }, characterAttackController);
+        }
+
+        public SpawnModel PreloadLvl()
+        {
+            if (!CheckCurrentModel(out var currentLvlModel))
+            {
+                Debug.LogError("Current lvl loop model has 0 lvls");
+                return null;
+            }
+
+
+            enemiesToKill = currentLvlModel.MiniBosses.Count == 0
+                ? currentLvlModel.MobsAmount
+                : currentLvlModel.MobsAmount + 1;
+            OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
+            OnCharacterComboChanged?.Invoke(characterComboNumber);
+            combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());
+            return currentLvlModel;
         }
     }
 }

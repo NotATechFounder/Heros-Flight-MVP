@@ -6,11 +6,13 @@ namespace HeroesFlight.System.Character
 {
     public interface CharacterControllerInterface
     {
+        public Transform CharacterTransform { get; }
         public CharacterSO CharacterSO { get; }
         public CharacterStatController CharacterStatController { get; }
         event Action<CharacterState> OnCharacterMoveStateChanged;
         bool IsFacingLeft { get; }
+        void Init();
         Vector3 GetVelocity();
-        void SetActionState(bool isDisabled);
+        void SetActionState(bool isEnabled);
     }
 }

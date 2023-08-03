@@ -82,15 +82,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-        IEnumerator AttackLogicRoutine()
-        {
-            while (true)
-            {
-                ProcessAttackLogic();
-                yield return tick;
-            }
-        }
-
+      
 
         void ProcessAttackLogic()
         {
@@ -165,14 +157,15 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
-        public void DisableActions()
+        public void ToggleControllerState(bool isEnabled)
         {
-            isDisabled = true;
+            isDisabled = !isEnabled;
+            visualController.DisableVisuals(isDisabled);
         }
 
         void OnDrawGizmos()
         {
-            if (playerStatData == null)
+            if (playerStatData == null || controller==null)
                 return;
             var checkPosition = controller.IsFacingLeft
                 ? transform.position + Vector3.up + Vector3.left * attackPointOffset
