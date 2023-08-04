@@ -18,8 +18,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public float CurrentHealthProportion => (float)currentHealth / maxHealth;
         public event Action<DamageModel> OnBeingDamaged;
         public event Action<IHealthController> OnDeath;
+        public event Action<float, Transform> OnHeal;
 
-       
         public virtual void Init()
         {
             currentHealth = maxHealth;
@@ -49,6 +49,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             if (currentHealth > maxHealth)
                 currentHealth = maxHealth;
             heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+            OnHeal?.Invoke(amount, transform);
         }
 
         public virtual bool IsDead()
