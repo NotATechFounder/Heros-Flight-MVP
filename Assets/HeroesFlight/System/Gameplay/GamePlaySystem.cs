@@ -41,6 +41,7 @@ namespace HeroesFlight.System.Gameplay
 
         public event Action<int> OnRemainingEnemiesLeft;
         public event Action<DamageModel> OnCharacterDamaged;
+        public event Action<float, Transform> OnCharacterHeal;
         public event Action<DamageModel> OnEnemyDamaged;
         public event Action<int> OnCharacterHealthChanged;
         public event Action<int> OnCharacterComboChanged;
@@ -89,6 +90,7 @@ namespace HeroesFlight.System.Gameplay
             characterAttackController.SetCallback(null);
             characterHealthController.OnDeath -= HandleCharacterDeath;
             characterHealthController.OnBeingDamaged -= HandleCharacterDamaged;
+            characterHealthController.OnHeal -= HandleCharacterHeal;
             characterAttackController = null;
             characterHealthController = null;
         }
@@ -156,6 +158,7 @@ namespace HeroesFlight.System.Gameplay
             characterAttackController.SetCallback(GetExistingEnemies);
             characterHealthController.OnDeath += HandleCharacterDeath;
             characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
+            characterHealthController.OnHeal += HandleCharacterHeal;
             characterHealthController.Init();
             characterSystem.SetCharacterControllerState(false);
             cameraController.SetTarget(characterController.CharacterTransform);
@@ -235,6 +238,11 @@ namespace HeroesFlight.System.Gameplay
                 return;
 
             OnCharacterDamaged?.Invoke(damageModel);
+        }
+
+        private void HandleCharacterHeal(float arg1, Transform transform)
+        {
+            OnCharacterHeal?.Invoke(arg1, transform);
         }
 
         void HandleCharacterDeath(IHealthController obj)

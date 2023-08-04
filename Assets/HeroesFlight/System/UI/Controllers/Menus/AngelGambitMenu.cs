@@ -2,6 +2,7 @@ using Pelumi.Juicer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using TMPro;
 using UISystem;
 using UnityEngine;
@@ -13,6 +14,8 @@ namespace UISystem
     {
         public Action<AngelCardSO> OnCardSelected;
         public Func<AngelCardSO,AngelCard> CardExit;
+
+        [SerializeField] private Transform container;
 
         [Header("Card Buttons")]
         [SerializeField] private AdvanceButton buffCardButton;
@@ -43,6 +46,7 @@ namespace UISystem
         private List<AngelCardSO> validAngelCardSOList;
 
         JuicerRuntime openEffectBG;
+        JuicerRuntime openEffectContainer;
         JuicerRuntime closeEffectBG;
 
         JuicerRuntime buffCardEffect;
@@ -51,11 +55,14 @@ namespace UISystem
 
         public override void OnCreated()
         {
-            canvasGroup.alpha = 0;
+
+            container.localScale = Vector3.zero;
 
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
-            openEffectBG.SetOnStart(() => canvasGroup.alpha = 0);
 
+            openEffectContainer = container.JuicyScale(Vector3.one, 0.5f)
+                                            .SetEase(Ease.EaseInQuint)
+                                            .SetDelay(0.15f);
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
             closeEffectBG.SetOnComplected(CloseMenu);
@@ -82,9 +89,11 @@ namespace UISystem
 
         public override void OnOpened()
         {
-            openEffectBG.Start();
+            cardRevealPanel.SetActive(false);
+            openEffectBG.Start(() => canvasGroup.alpha = 0);
             buffCardEffect.Start();
             debuffCardEffect.Start();
+            openEffectContainer.Start(() => container.localScale = Vector3.zero);
         }
 
         public override void OnClosed()
@@ -180,7 +189,6 @@ namespace UISystem
 
         public void ActivateNewCard ()
         {
-            cardRevealPanel.SetActive(false);
             OnCardSelected?.Invoke(selectedCard);
             ToggleCardRevealProperties(false);
             Close();

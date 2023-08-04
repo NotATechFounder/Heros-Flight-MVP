@@ -2,6 +2,7 @@
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Model;
+using UnityEngine;
 
 namespace HeroesFlight.System.Gameplay
 {
@@ -11,8 +12,10 @@ namespace HeroesFlight.System.Gameplay
         event Action<float> OnMinibossHealthChange; 
         event Action<int> OnRemainingEnemiesLeft;
         event Action<DamageModel> OnCharacterDamaged;
+
         event Action<DamageModel> OnEnemyDamaged;
         event Action<int> OnCharacterHealthChanged;
+        public event Action<float, Transform> OnCharacterHeal;
         event Action<int> OnCharacterComboChanged; 
         event Action<GameState> OnGameStateChange;
         public event Action OnNextLvlLoadRequest;

@@ -18,16 +18,6 @@ public class PopUpManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    // private void Update()
-    // {
-    //     if (Input.GetMouseButtonDown(0))
-    //     {
-    //         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    //         string text = NumberConverter.ConvertNumberToString(Random.Range(100, 1000000));
-    //         PopUpAtTextPosition(mousePosition, Vector3.one / 8, text, Random.ColorHSV());
-    //     }
-    // }
-
     public void PopUpTextAtTransfrom(Transform spawnPosition, Vector3 randomIntensity, string text, Color color, bool parent = false)
     {
         TextPopUp textPopUp = ObjectPoolManager.SpawnObject(popUpPrefab);

@@ -19,6 +19,7 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
             gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
             gameplaySystem.OnCharacterDamaged += HandleCharacterDamaged;
+            gameplaySystem.OnCharacterHeal += HandleCharacterHeal;
             gameplaySystem.OnCharacterComboChanged += UpdateComboUI;
             gameplaySystem.OnMinibossSpawned += HandleMiniboss;
             gameplaySystem.OnMinibossHealthChange += HandleMinibossHealthChange;
@@ -228,6 +229,13 @@ namespace HeroesFlight.System.UI
                 : $"!!{damageModel.Amount}!!";
             UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.one, damageString,
                 Color.red);
+        }
+
+        void HandleCharacterHeal(float amount, Transform pos)
+        {
+            var damageString = $"{amount}";
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(pos, Vector3.one, damageString,
+                Color.green);
         }
 
         void UpdateComboUI(int count)
