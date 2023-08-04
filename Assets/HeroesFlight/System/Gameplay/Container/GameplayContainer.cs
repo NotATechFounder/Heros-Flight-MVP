@@ -25,6 +25,7 @@ namespace HeroesFlight.System.Gameplay.Container
         {
             portal = Instantiate(portalPrefab, currentModel.PortalSpawnPosition, Quaternion.identity);
             portal.OnPlayerEntered += HandlePlayerTriggerPortal;
+            currentModel.Init();
         }
 
         public void SetStartingIndex(int startingIndex)
