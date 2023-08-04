@@ -18,6 +18,10 @@ namespace HeroesFlight.System.Gameplay
         public event Action OnNextLvlLoadRequest;
         public CountDownTimer GameTimer { get; }
         public AngelEffectManager EffectManager { get; }
+
+        public BoosterManager BoosterManager { get; }
+
+        public BoosterSpawner BoosterSpawner { get; }
         public int CurrentLvlIndex { get; }
         void StartGameLoop(SpawnModel currentModel);
         void ContinueGameLoop(SpawnModel currentModel);

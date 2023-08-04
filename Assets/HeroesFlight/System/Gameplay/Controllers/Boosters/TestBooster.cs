@@ -14,7 +14,7 @@ public class TestBooster : MonoBehaviour
     private void Start()
     {
         characterStatController.Initialize(characterSO.GetPlayerStatData);
-        boosterManager.Initialise(characterStatController);
+        boosterManager.Initialize(characterStatController);
     }
 
     private void Update()

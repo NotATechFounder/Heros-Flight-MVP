@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,9 +7,12 @@ public class CharacterStatController : MonoBehaviour
 {
     [SerializeField] PlayerStatData playerCombatModel;
 
+    public Action<float, bool> OnHealthModified;
+
+    public Func<float> GetCurrentHealth;
+
     public bool debug = false;
 
-    [field: SerializeField] public float CurrentHealth { get; private set; }
     [field: SerializeField] public float CurrentMoveSpeed { get; private set; }
     [field: SerializeField] public float CurrentVitality { get; private set; }
     [field: SerializeField] public float CurrentAgility { get; private set; }
@@ -40,11 +44,8 @@ public class CharacterStatController : MonoBehaviour
 
     public void ModifyHealth(float percentageAmount, bool increase)
     {
-        CurrentHealth = StatCalc.ModifyValueByPercentage(playerCombatModel.Health, CurrentHealth, percentageAmount, increase);
-        if (CurrentHealth > playerCombatModel.Health)
-        {
-            CurrentHealth = playerCombatModel.Health;
-        }
+        float value = StatCalc.GetPercentage(playerCombatModel.Health, percentageAmount);
+        OnHealthModified.Invoke(value, increase);
     }
 
     public void ModifyMoveSpeed(float percentageAmount, bool increase)
@@ -99,12 +100,15 @@ public class CharacterStatController : MonoBehaviour
 
     public float GetHealthPercentage()
     {
-        return (CurrentHealth / playerCombatModel.Health) * 100; 
+        if (GetCurrentHealth != null)
+        {
+            return (GetCurrentHealth() / playerCombatModel.Health) * 100;
+        }
+        return 0;
     }
 
     public void ResetStats()
     {
-        CurrentHealth = playerCombatModel.Health;
         CurrentMoveSpeed = playerCombatModel.MoveSpeed;
         CurrentVitality = playerCombatModel.Vitality;
         CurrentAgility = playerCombatModel.Agility;
