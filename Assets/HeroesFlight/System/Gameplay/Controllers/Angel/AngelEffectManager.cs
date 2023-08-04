@@ -10,6 +10,7 @@ public class AngelEffectManager : MonoBehaviour
     [SerializeField] private List<AngelCard> collectedAngelCards = new List<AngelCard>();
     [SerializeField] private List<AngelCard> permanetStatEffect = new List<AngelCard>();
     [SerializeField] private CharacterStatController characterStatController;
+    [SerializeField] private MonsterStatController  monsterStatController;
     [SerializeField] private AngelCard currentAngelCard;
 
     public bool EffectActive => currentAngelCard != null && currentAngelCard.angelCardSO != null;
@@ -104,13 +105,13 @@ public class AngelEffectManager : MonoBehaviour
         {
             case TargetType.All:
                 ModifyPlayerStatDifference(angelCardTier, effect, true);
-                ModifyMonsterStatDifference(angelCardTier, effect, true);
+                ModifyMonsterStatRaw(angelCardTier, effect, true);
                 break;
             case TargetType.Player:
                 ModifyPlayerStatDifference(angelCardTier, effect,true);
                 break;
             case TargetType.Monster:
-                ModifyPlayerStatDifference(angelCardTier, effect, true);
+                ModifyMonsterStatRaw(angelCardTier, effect, true);
                 break;
         }
     }
@@ -127,7 +128,7 @@ public class AngelEffectManager : MonoBehaviour
                 ModifyPlayerStatRaw(angelCardTier, effect, false);
                 break;
             case TargetType.Monster:
-                ModifyPlayerStatRaw(angelCardTier, effect, false);
+                ModifyMonsterStatRaw(angelCardTier, effect, false);
                 break;
         }
     }
@@ -186,52 +187,27 @@ public class AngelEffectManager : MonoBehaviour
         }
     }
 
-    private void ModifyMonsterStatDifference(AngelCardTier angelCardTier, StatEffect effect, bool positive)
-    {
-        switch (effect.effect)
-        {
-            case BuffDebuff.AttackUp:
-
-                break;
-            case BuffDebuff.AttackDown:
-
-                break;
-            case BuffDebuff.DefenseUp:
-
-                break;
-            case BuffDebuff.DefenseDown:
-
-                break;
-            case BuffDebuff.AttackSpeedUp:
-
-                break;
-            case BuffDebuff.AttackSpeedDown:
-
-                break;
-        }
-    }
-
     private void ModifyMonsterStatRaw(AngelCardTier angelCardTier, StatEffect effect, bool positive)
     {
         switch (effect.effect)
         {
             case BuffDebuff.AttackUp:
-
+                monsterStatController.ModifyAttackModifier(effect.GetValue(angelCardTier), positive);
                 break;
             case BuffDebuff.AttackDown:
-
+                monsterStatController.ModifyAttackModifier(effect.GetValue(angelCardTier), !positive);
                 break;
             case BuffDebuff.DefenseUp:
-
+                monsterStatController.ModifyDefenseModifier(effect.GetValue(angelCardTier), positive);
                 break;
-            case BuffDebuff.DefenseDown:
-
+            case BuffDebuff.DefenseDown:    
+                monsterStatController.ModifyDefenseModifier(effect.GetValue(angelCardTier), !positive);
                 break;
             case BuffDebuff.AttackSpeedUp:
-
+                monsterStatController.ModifyAttackSpeedModifier(effect.GetValue(angelCardTier), positive);
                 break;
             case BuffDebuff.AttackSpeedDown:
-
+                monsterStatController.ModifyAttackSpeedModifier(effect.GetValue(angelCardTier), !positive);
                 break;
         }
     }
@@ -253,8 +229,18 @@ public class AngelEffectManager : MonoBehaviour
         return currentAngelCard;
     }
 
-    public void Reset()
+    public void ResetAngelEffects()
     {
-        //reset current effects
+        //foreach (AngelCard angelCard in collectedAngelCards)
+        //{
+        //    foreach (StatEffect effect in angelCard.angelCardSO.Effects)
+        //    {
+        //        RemoveEffect(angelCard.tier, effect);
+        //    }
+        //}
+        collectedAngelCards = new List<AngelCard>();
+        permanetStatEffect = new List<AngelCard>();
+        currentAngelCard = null;
+        Debug.Log("Reset Angel Effects");
     }
 }

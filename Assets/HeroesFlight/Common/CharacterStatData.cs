@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
@@ -8,14 +6,16 @@ using System;
 public class CharacterStatData
 {
     [SerializeField] protected int health;
-    [SerializeField] protected float timeBetweenAttacks;
+    [SerializeField] float attackSpeed;
     [SerializeField] protected float moveSpeed;
     [SerializeField] protected float attackRange;
+    [SerializeField] float defense;
 
     public int Health => health;
-    public float TimeBetweenAttacks => timeBetweenAttacks;
+    public float AttackSpeed => attackSpeed;
     public float MoveSpeed => moveSpeed;
     public float AttackRange => attackRange;
+    public float Defense => defense;
 }
 
 [Serializable]
@@ -23,9 +23,9 @@ public class MonsterStatData : CharacterStatData
 {
     [Header("Monster Combat")]
     [SerializeField] float agroDistance;
-    [SerializeField] int damage = 2;
+    [SerializeField] float damage = 2;
 
-    public int Damage => damage;
+    public float Damage => damage;
     public float AgroDistance => agroDistance;
 }
 
@@ -41,8 +41,6 @@ public class PlayerStatData: CharacterStatData
     [SerializeField] ValueRange physicalDamage;
     [SerializeField] float criticalHitChance = 10f;
     [SerializeField] ValueRange criticalHitDamage;
-    [SerializeField] float defense;
-    [SerializeField] float attackSpeed;
 
     public float Vitality => vitality;
     public float Agility => agility;
@@ -51,8 +49,7 @@ public class PlayerStatData: CharacterStatData
     public ValueRange PhysicalDamage => physicalDamage;
     public float CriticalHitChance => criticalHitChance;
     public ValueRange CriticalHitDamage => criticalHitDamage;
-    public float Defense => defense;
-    public float AttackSpeed => attackSpeed;
+
 }
 
 

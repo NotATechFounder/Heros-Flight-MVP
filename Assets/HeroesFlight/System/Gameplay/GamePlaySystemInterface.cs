@@ -21,6 +21,7 @@ namespace HeroesFlight.System.Gameplay
         public int CurrentLvlIndex { get; }
         void StartGameLoop(SpawnModel currentModel);
         void ContinueGameLoop(SpawnModel currentModel);
+        void CreateCharacter();
         void ReviveCharacter();
         SpawnModel PreloadLvl();
         void ResetLogic();

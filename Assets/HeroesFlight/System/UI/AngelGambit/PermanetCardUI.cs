@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Text;
 using Pelumi.Juicer;
+using System;
 
 public class PermanetCardUI : MonoBehaviour
 {
@@ -78,7 +79,7 @@ public class PermanetCardUI : MonoBehaviour
         }
     }
 
-    public void Clear()
+    internal void ResetCard()
     {
         isCardSet = false;
         content.SetActive(false);

@@ -7,6 +7,7 @@ namespace HeroesFlight.System.Character
     public class CharacterSimpleController :MonoBehaviour,CharacterControllerInterface
     {
         [SerializeField] CharacterSO characterSO;
+        CharacterAnimationControllerInterface animationController;
         CharacterMovementController m_MovementController;
         CharacterInputReceiver m_InputReceiver;
         CharacterStatController m_CharacterStatController;
@@ -27,6 +28,7 @@ namespace HeroesFlight.System.Character
 
         public void Init()
         {
+            animationController = GetComponent<CharacterAnimationController>();
             m_MovementController = GetComponent<CharacterMovementController>();
             m_InputReceiver = GetComponent<CharacterInputReceiver>();
             m_CharacterStatController = GetComponent<CharacterStatController>();
@@ -34,6 +36,7 @@ namespace HeroesFlight.System.Character
             m_Transform = GetComponent<Transform>();
             m_CharacterStatController.Initialize(CharacterSO.GetPlayerStatData);
             viewController.SetupView(CharacterSO.GetAppearanceData);
+            animationController.Init(characterSO.AnimationData);
             m_CurrentState = CharacterState.Idle;
             IsFacingLeft = true;
             isEnabled = false;
@@ -120,6 +123,7 @@ namespace HeroesFlight.System.Character
             IsFacingLeft = facingLeft;
             m_CurrentState = newState;
             OnCharacterMoveStateChanged?.Invoke(m_CurrentState);
+            animationController.AnimateCharacterMovement(m_CurrentState,IsFacingLeft);
         }
 
         Vector3 CalculateCharacterVelocity(Vector3 inputVector)

@@ -49,7 +49,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             m_CharacterAnimationController.OnDealDamageRequest += HandleDamageDealRequest;
             m_State = AttackControllerState.LookingForTarget;
             playerStatData = controller.CharacterSO.GetPlayerStatData;
-            m_TimeSinceLastAttack = playerStatData.TimeBetweenAttacks;
+            m_TimeSinceLastAttack = playerStatData.AttackSpeed;
             attackPoint = transform.position + Vector3.up + Vector3.left * attackPointOffset;
             visualController.Init(playerStatData.AttackRange);
             visualController.SetPosition(attackPoint);
@@ -112,13 +112,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public void AttackTargets()
         {
-            if (m_TimeSinceLastAttack < playerStatData.TimeBetweenAttacks)
+            if (m_TimeSinceLastAttack < playerStatData.AttackSpeed)
             {
                 return;
             }
 
 
-            m_CharacterAnimationController.PlayAttackSequence();
+            m_CharacterAnimationController.PlayAttackSequence(1f);
             m_TimeSinceLastAttack = 0;
         }
 
@@ -130,7 +130,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void ResetAttack()
         {
             m_CharacterAnimationController.StopAttackSequence();
-            m_TimeSinceLastAttack = playerStatData.TimeBetweenAttacks;
+            m_TimeSinceLastAttack = playerStatData.AttackSpeed;
         }
 
 
