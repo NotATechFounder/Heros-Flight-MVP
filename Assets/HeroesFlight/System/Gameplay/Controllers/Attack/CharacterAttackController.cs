@@ -118,7 +118,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
 
 
-            m_CharacterAnimationController.PlayAttackSequence();
+            m_CharacterAnimationController.PlayAttackSequence(1f);
             m_TimeSinceLastAttack = 0;
         }
 

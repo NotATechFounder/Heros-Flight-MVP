@@ -18,7 +18,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             timeSincelastUse = 0;
         }
 
-        void Update()
+        protected virtual void Update()
         {
             if (timeSincelastUse > 0)
             {
@@ -28,7 +28,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-        public bool ReadyToUse => timeSincelastUse <= 0;
+        public virtual bool ReadyToUse => timeSincelastUse <= 0;
         
 
         public virtual void UseAbility(IHealthController target = null,Action onComplete=null)

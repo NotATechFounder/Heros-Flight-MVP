@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace HeroesFlight.Common
+namespace  HeroesFlight.Common
 {
     [Serializable]
     public class AppearanceData
