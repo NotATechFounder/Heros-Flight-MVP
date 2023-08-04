@@ -10,23 +10,17 @@ public struct MonsterStatModifier
 
     public float CalculateAttack(float baseAttack)
     {
-        return ModifyValue(baseAttack, baseAttack, Mathf.Abs(AttackModifier), AttackModifier > 0);
+        return StatCalc.ModifyValueByPercentage(baseAttack, baseAttack, Mathf.Abs(AttackModifier), AttackModifier > 0);
     }
 
     public float CalculateDefence(float baseDefence)
     {
-        return ModifyValue(baseDefence, baseDefence, Mathf.Abs(DefenceModifier), DefenceModifier > 0);
+        return StatCalc.ModifyValueByPercentage(baseDefence, baseDefence, Mathf.Abs(DefenceModifier), DefenceModifier > 0);
     }
 
-    public float CalculateAttackSpeed(float baseAttackSpeed)
+    public float CalculateAttackSpeed(float baseAttackSpeed)// Attack speed need to be smaller to be positive
     {
-        return ModifyValue(baseAttackSpeed, baseAttackSpeed, Mathf.Abs(AttackSpeedUpModifier), AttackSpeedUpModifier > 0);
-    }
-
-    private float ModifyValue(float baseValue, float currentValue, float percentageAmount, bool increase)
-    {
-        float percentageValue = ((float)percentageAmount / 100) * baseValue;
-        return increase ? currentValue + percentageValue : currentValue - percentageValue;
+        return StatCalc.ModifyValueByPercentage(baseAttackSpeed, baseAttackSpeed, Mathf.Abs(AttackSpeedUpModifier), AttackSpeedUpModifier < 0);
     }
 }
 
@@ -45,20 +39,17 @@ public class MonsterStatController : MonoBehaviour
 
     public void ModifyAttackModifier(float modifier, bool increase)
     {
-        Debug.Log($"Modifying attack modifier with {modifier} and increase {increase}");
-        attackModifier = ModifyValue(attackModifier, modifier, increase);
+        attackModifier = StatCalc.ModifyValue(attackModifier, modifier, increase);
     }
 
     public void ModifyDefenseModifier(float modifier, bool increase)
     {
-        Debug.Log($"Modifying defence modifier with {modifier} and increase {increase}");
-        defenceModifier = ModifyValue(defenceModifier, modifier, increase);
+        defenceModifier = StatCalc.ModifyValue(defenceModifier, modifier, increase);
     }
 
     public void ModifyAttackSpeedModifier(float modifier, bool increase)
     {
-        Debug.Log($"Modifying attack speed modifier with {modifier} and increase {increase}");
-        attackSpeedUpModifier = ModifyValue(attackSpeedUpModifier, modifier, increase);
+        attackSpeedUpModifier = StatCalc.ModifyValue(attackSpeedUpModifier, modifier, increase);
     }
 
     public void ResetStats()
@@ -66,10 +57,5 @@ public class MonsterStatController : MonoBehaviour
         attackModifier = 0;
         defenceModifier = 0;
         attackSpeedUpModifier = 0;
-    }
-
-    private float ModifyValue(float currentValue, float modifier, bool increase)
-    {
-        return increase ? currentValue + modifier : currentValue - modifier;
     }
 }
