@@ -38,7 +38,10 @@ namespace UISystem
 
         public override void ResetMenu()
         {
-           
+           foreach(PermanetCardUI permanetCardUI in permanetCards)
+            {
+                permanetCardUI.ResetCard();
+            }
         }
 
         public void AcivateCardPermanetEffect(AngelCard angelCard)

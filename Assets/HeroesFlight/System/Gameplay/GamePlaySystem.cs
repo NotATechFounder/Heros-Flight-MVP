@@ -89,7 +89,7 @@ namespace HeroesFlight.System.Gameplay
         public void ResetLogic()
         {
             activeEnemyHealthControllers.Clear();
-            EffectManager.Reset();
+           // EffectManager.ResetAngelEffects();
             enemiesToKill = 0;
             GameTimer.Stop();
             ChangeState(GameState.Ended);

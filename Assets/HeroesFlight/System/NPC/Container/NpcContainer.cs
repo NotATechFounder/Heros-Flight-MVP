@@ -20,7 +20,7 @@ namespace HeroesFlight.System.NPC.Container
 
         List<AiControllerBase> spawnedEnemies = new();
         Dictionary<EnemySpawmType, List<ISpawnPointInterface>> spanwPointsCache = new();
-
+        MonsterStatController monsterStatController;
         Coroutine spawningWaveRoutine;
         Coroutine spawningRoutine;
         WaitForSeconds timeBetweenEnemySpawn;
@@ -40,7 +40,7 @@ namespace HeroesFlight.System.NPC.Container
 
         void GenerateCache()
         {
-            var spawnPoints =FindObjectsByType<SpawnPoint>(FindObjectsInactive.Include,FindObjectsSortMode.None);
+            var spawnPoints = FindObjectsByType<SpawnPoint>(FindObjectsInactive.Include,FindObjectsSortMode.None);
             foreach (var point in spawnPoints)
             {
                 if (spanwPointsCache.TryGetValue(point.TargetEnemySpawmType, out var list))
@@ -52,6 +52,9 @@ namespace HeroesFlight.System.NPC.Container
                     spanwPointsCache.Add(point.TargetEnemySpawmType,new List<ISpawnPointInterface>(){point});
                 }
             }
+
+            // To be removed
+            monsterStatController = FindObjectOfType<MonsterStatController>();
         }
 
         IEnumerator SpawnEnemiesRoutine(SpawnModel model, Action<AiControllerBase> OnOnEnemySpawned)
@@ -75,10 +78,10 @@ namespace HeroesFlight.System.NPC.Container
                 var targetEntry = PickRandomTrashMob(spawnModel.TrashMobs);
                 var targetPoints = spanwPointsCache[targetEntry.Prefab.AgentModel.EnemySpawmType];
                 var rngPoint=  Random.Range(0, targetPoints.Count);
-                var resultEnemy = Instantiate(targetEntry.Prefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
+                AiControllerBase resultEnemy = Instantiate(targetEntry.Prefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
                     , Quaternion.identity);
                 resultEnemy.transform.parent = transform;
-                resultEnemy.Init(player.transform);
+                resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier);
                 spawnedEnemies.Add(resultEnemy);
                 OnOnEnemySpawned?.Invoke(resultEnemy);
                 yield return timeBetweenEnemySpawn;
@@ -101,11 +104,11 @@ namespace HeroesFlight.System.NPC.Container
             var targetEntry = currentLvlModel.MiniBosses[rng];
             var targetPoints = spanwPointsCache[targetEntry.Prefab.AgentModel.EnemySpawmType];
             var rngPoint=  Random.Range(0, targetPoints.Count);
-            var resultEnemy = Instantiate(targetEntry.Prefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
+            AiControllerBase resultEnemy = Instantiate(targetEntry.Prefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
                 , Quaternion.identity);
             resultEnemy.transform.parent = transform;
             spawnedEnemies.Add(resultEnemy);
-            resultEnemy.Init(player.transform);
+            resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier);
             return resultEnemy;
 
         }

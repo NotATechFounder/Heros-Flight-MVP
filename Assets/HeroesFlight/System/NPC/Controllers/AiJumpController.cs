@@ -8,8 +8,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
         AiMoverInterface mover;
 
 
-        public override void Init(Transform player)
+        public override void Init(Transform player, MonsterStatModifier monsterStatModifier)
         {
+            statModifier = monsterStatModifier;
             mover = GetComponent<AiMoverInterface>();
             rigidBody = GetComponent<Rigidbody2D>();
             attackCollider = GetComponent<Collider2D>();
