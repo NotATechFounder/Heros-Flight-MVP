@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace ScriptableObjectDatabase
 {
+
+# if UNITY_EDITOR
     public static class ScriptableObjectUtils
     {
         public static List<T> GetAllScriptableObjectBaseInFile<T>(string path) where T : ScriptableObject
@@ -39,4 +41,5 @@ namespace ScriptableObjectDatabase
         }
     }
 
+    # endif
 }

@@ -17,7 +17,7 @@ namespace ScriptableObjectDatabase
 
         public T[] Items;
 
-       [ReadOnly] public List<ScriptableObjectDatabaseItem<T>> scriptableObjectDatabaseItems = new List<ScriptableObjectDatabaseItem<T>>();
+        [ReadOnly] public List<ScriptableObjectDatabaseItem<T>> scriptableObjectDatabaseItems = new List<ScriptableObjectDatabaseItem<T>>();
 
         public void AddItemAndID()
         {
@@ -63,21 +63,22 @@ namespace ScriptableObjectDatabase
             if (_manualInsert) AddItemAndID();
         }
 
-        [ContextMenu("Populate")]
-        public void Pupolate()
+
+        public void Pupolate() 
         {
+#if UNITY_EDITOR
             string path = AssetDatabase.GetAssetPath(this);
             path = path.Replace(this.name + ".asset", "");
             List<T> scriptableObjectBases = ScriptableObjectUtils.GetAllScriptableObjectBaseInFile<T>(path);
             Items = scriptableObjectBases.ToArray();
             AddItemAndID();
 
-#if UNITY_EDITOR
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
 #endif
         }
-    }
+
+}
 
 
     [System.Serializable]
@@ -111,4 +112,4 @@ namespace ScriptableObjectDatabase
         }
     }
 #endif
-    }
+}
