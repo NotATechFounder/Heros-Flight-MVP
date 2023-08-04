@@ -9,21 +9,21 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         [SerializeField] CombatTargetType targetType;
         protected float maxHealth;
-        [SerializeField] protected float currentHealh;
+        [SerializeField] protected float currentHealth;
         [SerializeField] protected HeathBarUI heathBarUI;
         public Transform currentTransform => transform;
         public CombatTargetType TargetType => targetType;
         public float MaxHealth => maxHealth;
-        public float CurrentHealth => currentHealh;
-        public float CurrentHealthProportion => (float)currentHealh / maxHealth;
+        public float CurrentHealth => currentHealth;
+        public float CurrentHealthProportion => (float)currentHealth / maxHealth;
         public event Action<DamageModel> OnBeingDamaged;
         public event Action<IHealthController> OnDeath;
 
        
         public virtual void Init()
         {
-            currentHealh = maxHealth;
-            heathBarUI?.ChangeValue((float)currentHealh / maxHealth);
+            currentHealth = maxHealth;
+            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
         }
 
         public virtual void DealDamage(DamageModel damage)
@@ -31,8 +31,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             if(IsDead())
                 return;
             
-            currentHealh -= damage.Amount;
-            heathBarUI?.ChangeValue((float)currentHealh / maxHealth);
+            currentHealth -= damage.Amount;
+            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
             damage.SetTarget(transform);
             OnBeingDamaged?.Invoke(damage);
 
@@ -40,9 +40,20 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 ProcessDeath();
         }
 
+        public virtual void Heal(float amount)
+        {
+            if (IsDead())
+                return;
+
+            currentHealth += amount;
+            if (currentHealth > maxHealth)
+                currentHealth = maxHealth;
+            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+        }
+
         public virtual bool IsDead()
         {
-            return currentHealh <= 0;
+            return currentHealth <= 0;
         }
 
         public virtual void Reset()

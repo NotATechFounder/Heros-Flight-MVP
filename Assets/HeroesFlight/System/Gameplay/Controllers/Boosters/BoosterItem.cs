@@ -9,11 +9,13 @@ public class BoosterItem : MonoBehaviour
 
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private BoosterSO boosterSO;
+    private bool isUsed;
 
     public BoosterSO BoosterSO => boosterSO;
 
     public void Initialize(BoosterSO booster,Func<BoosterItem, bool>  func)
     {
+        isUsed = false;
         boosterSO = booster;
         OnBoosterInteracted = func;
         spriteRenderer.sprite = boosterSO.BoosterSprite;
@@ -21,12 +23,13 @@ public class BoosterItem : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out CharacterStatController characterStatController))
+        if (collision.TryGetComponent(out CharacterStatController characterStatController) && !isUsed)
         {
             if (OnBoosterInteracted != null)
             {
                 if (OnBoosterInteracted.Invoke(this))
                 {
+                    isUsed = true;
                     Destroy(gameObject);
                 }
             }

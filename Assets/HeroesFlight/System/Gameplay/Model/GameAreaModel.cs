@@ -10,6 +10,11 @@ namespace HeroesFlight.System.Gameplay.Model
         [SerializeField] Vector2 portalPosition;
         [SerializeField] List<SpawnModel> avaibleLvls=new ();
 
+        public void Init()
+        {
+            OnValidate();
+        }
+        
         void OnValidate()
         {
             if (Models.Count == 0 && avaibleLvls.Count != 0)

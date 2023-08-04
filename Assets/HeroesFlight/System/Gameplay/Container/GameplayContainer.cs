@@ -10,16 +10,22 @@ namespace HeroesFlight.System.Gameplay.Container
     {
         [SerializeField] GameAreaModel currentModel;
         [SerializeField] LevelPortal portalPrefab;
+        [SerializeField] BoosterDropSO mobDrop;
+
+
         public event Action OnPlayerEnteredPortal;
         LevelPortal portal;
         public int CurrentLvlIndex { get; private set; }
 
         public bool FinishedLoop => CurrentLvlIndex >= currentModel.Models.Count;
 
+        public BoosterDropSO MobDrop => mobDrop;
+
         public void Init()
         {
             portal = Instantiate(portalPrefab, currentModel.PortalSpawnPosition, Quaternion.identity);
             portal.OnPlayerEntered += HandlePlayerTriggerPortal;
+            currentModel.Init();
         }
 
         public void SetStartingIndex(int startingIndex)
