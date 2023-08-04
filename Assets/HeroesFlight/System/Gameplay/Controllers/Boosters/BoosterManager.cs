@@ -7,11 +7,7 @@ public class BoosterManager : MonoBehaviour
     [SerializeField] private CharacterStatController characterStatController;
     [SerializeField] private List<BoosterContainer> boosterContainerList;
 
-    [SerializeField] private bool pauseAttackBooster;
-
-    public bool PauseAttackBooster => pauseAttackBooster;
-
-    public void Initialise(CharacterStatController statController)
+    public void Initialize(CharacterStatController statController)
     {
         characterStatController = statController;
     }
@@ -148,12 +144,10 @@ public class BoosterManager : MonoBehaviour
         {
             characterStatController.ModifyMagicDamage(boosterSO.BoosterValue, true);
             characterStatController.ModifyPhysicalDamage(boosterSO.BoosterValue, true);
-            pauseAttackBooster = true;
         }, () =>
         {
             characterStatController.ModifyMagicDamage(boosterSO.BoosterValue, false);
             characterStatController.ModifyPhysicalDamage(boosterSO.BoosterValue, false);
-            pauseAttackBooster = false;
         });
     }
 }

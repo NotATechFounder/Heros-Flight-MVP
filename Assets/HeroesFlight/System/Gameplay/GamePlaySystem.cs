@@ -30,6 +30,10 @@ namespace HeroesFlight.System.Gameplay
         public CountDownTimer GameTimer { get; private set; }
         public AngelEffectManager EffectManager { get; private set; }
 
+        public BoosterManager BoosterManager { get; private set; }
+
+        public BoosterSpawner BoosterSpawner { get; private set; }
+
         public int CurrentLvlIndex => container.CurrentLvlIndex;
 
         public event Action<bool> OnMinibossSpawned;
@@ -63,6 +67,9 @@ namespace HeroesFlight.System.Gameplay
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
             EffectManager = scene.GetComponentInChildren<AngelEffectManager>();
             container = scene.GetComponentInChildren<GameplayContainer>();
+            BoosterManager = scene.GetComponentInChildren<BoosterManager>();
+            BoosterSpawner = scene.GetComponentInChildren<BoosterSpawner>();
+
             container.Init();
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
             container.SetStartingIndex(0);
@@ -147,6 +154,7 @@ namespace HeroesFlight.System.Gameplay
             cameraController.SetTarget(characterController.CharacterTransform);
             npcSystem.InjectPlayer(characterController.CharacterTransform);
             EffectManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
+            BoosterManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
         }
 
         void CreateMiniboss(SpawnModel currentLvlModel)
@@ -189,6 +197,9 @@ namespace HeroesFlight.System.Gameplay
             iHealthController.OnDeath -= HandleEnemyDeath;
             activeEnemyHealthControllers.Remove(iHealthController);
             enemiesToKill--;
+
+            BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.currentTransform.position);
+
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
             if (enemiesToKill <= 0)
             {

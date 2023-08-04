@@ -6,12 +6,16 @@ public static class StatCalc
 {
     public static float ModifyValueByPercentage(float baseValue, float currentValue, float percentageAmount, bool increase)
     {
-        float percentageValue = ((float)percentageAmount / 100) * baseValue;
+        float percentageValue = (percentageAmount / 100) * baseValue;
         return increase ? currentValue + percentageValue : currentValue - percentageValue;
     }
 
     public static float ModifyValue(float currentValue, float amount, bool increase)
     {
         return increase ? currentValue + amount : currentValue - amount;
+    }
+    public static float GetPercentage(float baseValue, float currentValue)
+    {
+        return (currentValue / baseValue) * 100;
     }
 }

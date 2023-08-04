@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-[CreateAssetMenu(fileName = "New Booster", menuName = "Booster", order = 1)]
+[CreateAssetMenu(fileName = "New Booster", menuName = "Boost/Booster", order = 1)]
 public class BoosterSO : ScriptableObject, IHasID
 {
     [SerializeField] private string boosterName;

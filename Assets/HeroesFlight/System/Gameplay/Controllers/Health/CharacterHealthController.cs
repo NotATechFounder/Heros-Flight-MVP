@@ -1,5 +1,5 @@
 using HeroesFlight.System.Character;
-
+using System;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -8,6 +8,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         CharacterControllerInterface controller;
         CharacterAttackController attackController;
         CharacterAnimationControllerInterface animator;
+        CharacterStatController characterStatController;
+
+        private void Awake()
+        {
+            characterStatController = GetComponent<CharacterStatController>();
+        }
 
         public override void Init()
         {
@@ -17,7 +23,15 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             animator.PlayIdleAnimation();
             animator = GetComponent<CharacterAnimationController>();
             maxHealth = controller.CharacterSO.GetPlayerStatData.Health;
+            characterStatController.OnHealthModified += ModifyHealth;
+            characterStatController.GetCurrentHealth = () => currentHealth;
             base.Init();
+        }
+
+        private void ModifyHealth(float value, bool increase)
+        {
+            if (increase)
+                Heal(value);
         }
 
         protected override void ProcessDeath()
