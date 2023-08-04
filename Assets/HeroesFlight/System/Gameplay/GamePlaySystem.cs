@@ -89,12 +89,14 @@ namespace HeroesFlight.System.Gameplay
         public void ResetLogic()
         {
             activeEnemyHealthControllers.Clear();
-           // EffectManager.ResetAngelEffects();
+
+            // EffectManager.ResetAngelEffects();
             enemiesToKill = 0;
             GameTimer.Stop();
             ChangeState(GameState.Ended);
             OnMinibossSpawned?.Invoke(false);
-            CoroutineUtility.Stop(combotTimerRoutine);
+            if (combotTimerRoutine != null)
+                CoroutineUtility.Stop(combotTimerRoutine);
         }
 
         public void EnablePortal()
@@ -123,6 +125,11 @@ namespace HeroesFlight.System.Gameplay
             }
 
             npcSystem.SpawnRandomEnemies(currentLvlModel);
+        }
+
+        public void CreateCharacter()
+        {
+            SetupCharacter();
         }
 
         public void ReviveCharacter()
@@ -193,12 +200,12 @@ namespace HeroesFlight.System.Gameplay
             if (enemiesToKill <= 0)
             {
                 GameTimer.Stop();
-              
+
                 if (container.FinishedLoop)
                 {
                     characterAttackController.ToggleControllerState(false);
                     characterSystem.SetCharacterControllerState(false);
-                    
+
                     CoroutineUtility.WaitForSeconds(1f, () =>
                     {
                         ChangeState(GameState.Won);
@@ -295,7 +302,7 @@ namespace HeroesFlight.System.Gameplay
 
         public void StartGameLoop(SpawnModel currentModel)
         {
-            SetupCharacter();
+            //SetupCharacter();
             ChangeState(GameState.Ongoing);
             cameraController.SetCameraShakeState(currentModel.MiniBosses.Count > 0);
             GameTimer.Start(3, null,

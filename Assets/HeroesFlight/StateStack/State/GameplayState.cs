@@ -52,18 +52,23 @@ namespace HeroesFlight.StateStack.State
                     {
                         if (newState != GameState.WaitingPortal)
                             return;
+                        
+                        CoroutineUtility.WaitForSeconds(1f, () =>
+                        {
+                            gamePlaySystem.EffectManager.CompletedLevel();
+                        });
 
-                        if (gamePlaySystem.CurrentLvlIndex % 2 == 0)
-                        {
-                            CoroutineUtility.WaitForSeconds(1f, () =>
-                            {
-                                gamePlaySystem.EffectManager.CompletedLevel();
-                            });
-                        }
-                        else
-                        {
-                            ShowLevelPortal();
-                        }
+                        // if (gamePlaySystem.CurrentLvlIndex % 2 == 0)
+                        // {
+                        //     CoroutineUtility.WaitForSeconds(1f, () =>
+                        //     {
+                        //         gamePlaySystem.EffectManager.CompletedLevel();
+                        //     });
+                        // }
+                        // else
+                        // {
+                        //     ShowLevelPortal();
+                        // }
                     }
 
                     void ShowLevelPortal()
@@ -125,6 +130,7 @@ namespace HeroesFlight.StateStack.State
                         gamePlaySystem.Reset();
                         uiSystem.UiEventHandler.ReviveMenu.Close();
                         uiSystem.UiEventHandler.AngelPermanetCardMenu.ResetMenu();
+                        gamePlaySystem.CreateCharacter();
                         gamePlaySystem.StartGameLoop(gamePlaySystem.PreloadLvl());
                     }
 
@@ -142,15 +148,16 @@ namespace HeroesFlight.StateStack.State
                             npcSystem.Reset();
                             characterSystem.ResetCharacter();
                             characterSystem.SetCharacterControllerState(false);
-                            if (gamePlaySystem.CurrentLvlIndex % 2 != 0)
-                            {
-                                uiSystem.UiEventHandler.AngelGambitMenu.Open();
-                            }
-                            else
-                            {
-                                var data = gamePlaySystem.PreloadLvl();
-                                gamePlaySystem.ContinueGameLoop(data);
-                            }
+                            uiSystem.UiEventHandler.AngelGambitMenu.Open();
+                            // if (gamePlaySystem.CurrentLvlIndex % 2 != 0)
+                            // {
+                            //     uiSystem.UiEventHandler.AngelGambitMenu.Open();
+                            // }
+                            // else
+                            // {
+                            //     var data = gamePlaySystem.PreloadLvl();
+                            //     gamePlaySystem.ContinueGameLoop(data);
+                            // }
                         });
                     }
 
@@ -176,9 +183,11 @@ namespace HeroesFlight.StateStack.State
                         CoroutineUtility.WaitForSeconds(1f, () =>
                         {
                             uiSystem.UiEventHandler.LoadingMenu.Close();
-                            var data = gamePlaySystem.PreloadLvl();
-
-                            gamePlaySystem.StartGameLoop(data);
+                            gamePlaySystem.CreateCharacter();
+                            uiSystem.UiEventHandler.AngelGambitMenu.Open();
+                            // var data = gamePlaySystem.PreloadLvl();
+                            //
+                            // gamePlaySystem.StartGameLoop(data);
                         });
                     });
 
