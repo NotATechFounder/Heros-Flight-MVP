@@ -24,6 +24,8 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnMinibossSpawned += HandleMiniboss;
             gameplaySystem.OnMinibossHealthChange += HandleMinibossHealthChange;
             gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
+
+            gameplaySystem.OnBoosterActivated += HandleBoosterActivated;
         }
 
         public event Action OnReturnToMainMenuRequest;
@@ -236,6 +238,18 @@ namespace HeroesFlight.System.UI
             var damageString = $"{amount}";
             UiEventHandler.PopupManager.PopUpTextAtTransfrom(pos, Vector3.one, damageString,
                 Color.green);
+        }
+
+
+        private void HandleBoosterActivated(BoosterSO boosterSO, float arg2, Transform transform)
+        {
+            PopUpTextAtPos($"+{boosterSO.Abreviation}", new Vector2(transform.position.x, transform.position.y + 2) , boosterSO.BoosterColor);
+        }
+
+        void PopUpTextAtPos(string info, Vector2 pos, Color color)
+        {
+            UiEventHandler.PopupManager.PopUpAtTextPosition(pos, Vector2.zero, info,
+               color);
         }
 
         void UpdateComboUI(int count)

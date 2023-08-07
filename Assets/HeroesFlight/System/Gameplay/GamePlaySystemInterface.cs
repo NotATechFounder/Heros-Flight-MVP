@@ -19,6 +19,9 @@ namespace HeroesFlight.System.Gameplay
         event Action<int> OnCharacterComboChanged; 
         event Action<GameState> OnGameStateChange;
         public event Action OnNextLvlLoadRequest;
+
+        public event Action<BoosterSO, float, Transform> OnBoosterActivated;
+
         public CountDownTimer GameTimer { get; }
         public AngelEffectManager EffectManager { get; }
 

@@ -46,6 +46,8 @@ namespace HeroesFlight.System.Gameplay
         public event Action<int> OnCharacterHealthChanged;
         public event Action<int> OnCharacterComboChanged;
         public event Action<GameState> OnGameStateChange;
+        public event Action<BoosterSO, float, Transform> OnBoosterActivated;
+
         List<IHealthController> GetExistingEnemies() => activeEnemyHealthControllers;
         List<IHealthController> activeEnemyHealthControllers = new();
         IHealthController miniBoss;
@@ -70,7 +72,7 @@ namespace HeroesFlight.System.Gameplay
             container = scene.GetComponentInChildren<GameplayContainer>();
             BoosterManager = scene.GetComponentInChildren<BoosterManager>();
             BoosterSpawner = scene.GetComponentInChildren<BoosterSpawner>();
-
+            BoosterManager.OnBoosterActivated += HandleBoosterActivated;
             container.Init();
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
             container.SetStartingIndex(0);
@@ -355,6 +357,11 @@ namespace HeroesFlight.System.Gameplay
             OnCharacterComboChanged?.Invoke(characterComboNumber);
             combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());
             return currentLvlModel;
+        }
+
+        private void HandleBoosterActivated(BoosterSO sO, float arg2, Transform transform)
+        {
+            OnBoosterActivated?.Invoke(sO, arg2, transform);
         }
     }
 }
