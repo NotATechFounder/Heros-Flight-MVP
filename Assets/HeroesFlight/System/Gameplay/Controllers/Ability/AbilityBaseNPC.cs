@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class AbilityBase : MonoBehaviour,AbilityInterface
+    public class AbilityBaseNPC : MonoBehaviour,AbilityInterface
     {
         [SerializeField] AnimationReferenceAsset targetAnimation;
         [SerializeField] float coolDown;

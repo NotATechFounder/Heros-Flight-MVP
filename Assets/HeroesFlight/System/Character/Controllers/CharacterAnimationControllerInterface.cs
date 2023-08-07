@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using HeroesFlight.Common;
 using HeroesFlight.System.Character.Enum;
+using Spine.Unity;
 
 namespace HeroesFlight.System.Character
 {
@@ -13,5 +15,6 @@ namespace HeroesFlight.System.Character
         void PlayIdleAnimation();
         void PlayAttackSequence(float speedMultiplier);
         void StopAttackSequence();
+        void PlayAnimationSequence(List<AnimationReferenceAsset> animations,Action onCompleteAction=null);
     }
 }

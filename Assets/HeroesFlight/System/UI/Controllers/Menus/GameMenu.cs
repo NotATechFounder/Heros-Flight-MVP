@@ -173,9 +173,9 @@ namespace UISystem
 
         private void SpecialAttackButtonClicked()
         {
-            if (specialAttackButtonFill.fillAmount < 1) return;
-            
-            specialAttackButtonFill.fillAmount = 0;
+            // if (specialAttackButtonFill.fillAmount < 1) return;
+            //
+            // specialAttackButtonFill.fillAmount = 0;
             specialIconEffect.Start();
             OnSpecialAttackButtonClicked?.Invoke();
         }

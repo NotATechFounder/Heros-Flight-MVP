@@ -28,6 +28,7 @@ namespace HeroesFlight.System.UI
         public event Action OnReturnToMainMenuRequest;
         public event Action OnRestartLvlRequest;
         public event Action OnReviveCharacterRequest;
+        public event Action OnSpecialButtonClicked;
 
         public UIEventHandler UiEventHandler { get; private set; }
 
@@ -75,6 +76,10 @@ namespace HeroesFlight.System.UI
                 UiEventHandler.GameMenu.OnPauseButtonClicked += () =>
                 {
                     UiEventHandler.PauseMenu.Open();
+                };
+                UiEventHandler.GameMenu.OnSpecialAttackButtonClicked += () =>
+                {
+                    OnSpecialButtonClicked?.Invoke();
                 };
 
                 UiEventHandler.PauseMenu.OnSettingsButtonClicked += () =>

@@ -28,7 +28,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         AttackRangeVisualsController visualController;
 
         AttackControllerState m_State;
-
+        CharacterStatController statController;
         PlayerStatData playerStatData = null;
 
         float m_TimeSinceLastAttack = 0;
@@ -40,12 +40,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         List<IHealthController> enemiesToAttack = new();
         bool isDisabled;
         WaitForSeconds tick;
+        float attackDuration = 0;
 
         void Awake()
         {
             controller = GetComponent<CharacterControllerInterface>();
             visualController = GetComponent<AttackRangeVisualsController>();
             m_CharacterAnimationController = GetComponent<CharacterAnimationController>();
+            statController = GetComponent<CharacterStatController>();
             m_CharacterAnimationController.OnDealDamageRequest += HandleDamageDealRequest;
             m_State = AttackControllerState.LookingForTarget;
             playerStatData = controller.CharacterSO.GetPlayerStatData;
@@ -54,6 +56,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             visualController.Init(playerStatData.AttackRange);
             visualController.SetPosition(attackPoint);
             isDisabled = false;
+            attackDuration = controller.CharacterSO.AnimationData.AttackAnimation.Animation.Duration;
             tick = new WaitForSeconds(.25f);
         }
 
@@ -82,8 +85,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-      
-
         void ProcessAttackLogic()
         {
             FilterEnemies(enemiesRetriveCallback?.Invoke(), ref foundedEnemies);
@@ -100,6 +101,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void FilterEnemies(List<IHealthController> enemies, ref List<IHealthController> enemiesToUpdate)
         {
             enemiesToUpdate.Clear();
+
+            if (isDisabled)
+                return;
+
             foreach (var controller in enemies)
             {
                 if (Vector2.Distance(controller.currentTransform.position, attackPoint) <= playerStatData.AttackRange)
@@ -112,13 +117,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public void AttackTargets()
         {
-            if (m_TimeSinceLastAttack < playerStatData.AttackSpeed)
+            if (m_TimeSinceLastAttack < attackDuration * statController.CurrentAttackSpeed)
             {
                 return;
             }
 
 
-            m_CharacterAnimationController.PlayAttackSequence(1f);
+            m_CharacterAnimationController.PlayAttackSequence(statController.CurrentAttackSpeed);
             m_TimeSinceLastAttack = 0;
         }
 
@@ -130,7 +135,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void ResetAttack()
         {
             m_CharacterAnimationController.StopAttackSequence();
-            m_TimeSinceLastAttack = playerStatData.AttackSpeed;
+            m_TimeSinceLastAttack = attackDuration * statController.CurrentAttackSpeed;
         }
 
 
@@ -150,9 +155,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                     float criticalChance = controller.CharacterStatController.CurrentCriticalHitChance;
                     bool isCritical = Random.Range(0, 100) <= criticalChance;
 
-                    float damageToDeal = isCritical ? Damage * controller.CharacterStatController.CurrentCriticalHitDamage : Damage;
+                    float damageToDeal = isCritical
+                        ? Damage * controller.CharacterStatController.CurrentCriticalHitDamage
+                        : Damage;
                     var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
-                    enemy.DealDamage(new DamageModel(damageToDeal,type));
+                    enemy.DealDamage(new DamageModel(damageToDeal, type));
                 }
             }
         }
@@ -165,7 +172,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void OnDrawGizmos()
         {
-            if (playerStatData == null || controller==null)
+            if (playerStatData == null || controller == null)
                 return;
             var checkPosition = controller.IsFacingLeft
                 ? transform.position + Vector3.up + Vector3.left * attackPointOffset

@@ -41,13 +41,18 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.OnReturnToMainMenuRequest += HandleReturnToMainMenu;
                     uiSystem.OnRestartLvlRequest += HandleLvlRestart;
                     uiSystem.OnReviveCharacterRequest += HandleCharacterRevive;
+                    uiSystem.OnSpecialButtonClicked += HandleSpecialButtonCLicked;
                     uiSystem.UiEventHandler.PauseMenu.OnQuitButtonClicked += HandleReturnToMainMenu;
                     uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += HandleAngelsGambitClosed;
                     uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed += ShowLevelPortal;
                     gamePlaySystem.OnNextLvlLoadRequest += HandleContinueGameLoop;
                     gamePlaySystem.OnGameStateChange += HandleGameStateChanged;
 
-
+                    void HandleSpecialButtonCLicked()
+                    {
+                        gamePlaySystem.UseCharacterSpecial();
+                    }
+                    
                     void HandleGameStateChanged(GameState newState)
                     {
                         if (newState != GameState.WaitingPortal)
@@ -203,5 +208,7 @@ namespace HeroesFlight.StateStack.State
                     throw new ArgumentOutOfRangeException(nameof(evt.Action), evt.Action, null);
             }
         }
+
+       
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeroesFlight.Common;
 using HeroesFlight.System.Character.Enum;
 using Spine;
@@ -75,6 +74,7 @@ namespace HeroesFlight.System.Character
                 
                 var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(1,aniamtionData.AttackAnimation , false);
                 m_SkeletonAnimation.AnimationState.AddEmptyAnimation(1, .5f, 0);
+                turnTrack.TimeScale = speedMultiplier;
             }
           
         }
@@ -128,11 +128,43 @@ namespace HeroesFlight.System.Character
             StopAttackAnimation();
         }
 
+        public void PlayAnimationSequence(List<AnimationReferenceAsset> animations,Action onCompleteAction=null)
+        {
+            StopAttackAnimation();
+            m_SkeletonAnimation.AnimationState.ClearTrack(2);
+            float duration = 0;
+            for (int i = 0; i < animations.Count; i++)
+            {
+                if (i == 0)
+                {
+                    m_SkeletonAnimation.AnimationState.SetAnimation(2, animations[i], false);
+                   
+                }
+                else
+                {
+                    m_SkeletonAnimation.AnimationState.AddAnimation(2, animations[i].Animation,false,0);
+                  
+                }
+
+                duration += animations[i].Animation.Duration;
+            }
+            
+            Debug.Log(duration);
+            CoroutineUtility.WaitForSeconds(duration, () =>
+            {
+                m_SkeletonAnimation.AnimationState.SetEmptyAnimation(2, 0.5f);
+                onCompleteAction?.Invoke();
+            });
+        }
+
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
+            Debug.Log(e.Data.Name+" "+e.Data.String);
             switch (e.Data.Name)
             {
                 case "Dealing damg":
+                    var bone = m_SkeletonAnimation.Skeleton.FindBone("B_ROOT");
+                    Debug.Log(transform.TransformPoint(bone.WorldX,bone.WorldY,0));
                     OnDealDamageRequest?.Invoke(e.Data.Name);
                     break;
                 case "start_sound":

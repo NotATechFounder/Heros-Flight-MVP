@@ -6,6 +6,7 @@ namespace HeroesFlight.System.UI
         event Action OnReturnToMainMenuRequest;
         event Action OnRestartLvlRequest;
         event Action OnReviveCharacterRequest;
+        event Action OnSpecialButtonClicked;
         public UIEventHandler UiEventHandler { get; }
     }
 }

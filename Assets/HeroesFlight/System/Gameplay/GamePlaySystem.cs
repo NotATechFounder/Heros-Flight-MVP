@@ -50,6 +50,7 @@ namespace HeroesFlight.System.Gameplay
         IHealthController miniBoss;
         IHealthController characterHealthController;
         CharacterAttackController characterAttackController;
+        CharacterAbilityInterface characterAbility;
         CharacterSystemInterface characterSystem;
         CameraControllerInterface cameraController;
         NpcSystemInterface npcSystem;
@@ -91,6 +92,7 @@ namespace HeroesFlight.System.Gameplay
             characterHealthController.OnBeingDamaged -= HandleCharacterDamaged;
             characterAttackController = null;
             characterHealthController = null;
+            characterAbility = null;
         }
 
         public void ResetLogic()
@@ -109,6 +111,12 @@ namespace HeroesFlight.System.Gameplay
         public void EnablePortal()
         {
             container.EnablePortal();
+        }
+
+        public void UseCharacterSpecial()
+        {
+            Debug.Log("using character ability");
+            characterAbility.UseAbility();
         }
 
         bool CheckCurrentModel(out SpawnModel currentLvlModel)
@@ -153,6 +161,8 @@ namespace HeroesFlight.System.Gameplay
                 characterController.CharacterTransform.GetComponent<CharacterHealthController>();
             characterAttackController =
                 characterController.CharacterTransform.GetComponent<CharacterAttackController>();
+            characterAbility=characterController.CharacterTransform.GetComponent<AbilityBaseCharacter>();
+            characterAbility.Init(characterController.CharacterSO.AnimationData.UltimateAnimations);
             characterAttackController.SetCallback(GetExistingEnemies);
             characterHealthController.OnDeath += HandleCharacterDeath;
             characterHealthController.OnBeingDamaged += HandleCharacterDamaged;

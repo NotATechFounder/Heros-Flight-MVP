@@ -30,5 +30,6 @@ namespace HeroesFlight.System.Gameplay
         SpawnModel PreloadLvl();
         void ResetLogic();
         void EnablePortal();
+        void UseCharacterSpecial();
     }
 }

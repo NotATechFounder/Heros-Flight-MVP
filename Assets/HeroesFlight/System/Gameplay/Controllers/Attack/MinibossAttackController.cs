@@ -8,12 +8,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class MinibossAttackController :EnemyAttackControllerBase
     {
-        [SerializeField] AbilityBase[] abilities;
+        [SerializeField] AbilityBaseNPC[] abilities;
 
 
         void Awake()
         {
-            abilities = GetComponents<AbilityBase>();
+            abilities = GetComponents<AbilityBaseNPC>();
         }
 
         protected override void Update()
