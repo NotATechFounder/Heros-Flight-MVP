@@ -37,11 +37,18 @@ public class CurrencyManager : MonoBehaviour
         _onCurrencyChange?.Invoke(currency, false);
     }
 
-    public int GetCurrencyAmount(string currencyKey) => _currencies.Find((currency) => currency.GetKey == currencyKey).GetCurrencyAmount;
+    public float GetCurrencyAmount(string currencyKey) => _currencies.Find((currency) => currency.GetKey == currencyKey).GetCurrencyAmount;
 
     public CurrencySO GetCurrecy(string currencyKey) => _currencies.Find((currency) => currency.GetKey == currencyKey);
    
     public void LoadCurrencies() => _currencies.ForEach(currency => currency.Load());
 
     public void SaveCurrencies() => _currencies.ForEach(currency => currency.Save());
+}
+
+
+public static class CurrencyKeys
+{
+    public const string Gold = "Gold";
+    public const string Experience = "Experience";
 }

@@ -8,12 +8,13 @@ using UnityEngine;
 public class CurrencySO : ScriptableObject,IHasID
 {
     [SerializeField] private string key;
-    [SerializeField] private Sprite Icon;
+    [SerializeField] private string currencyName;
+    [SerializeField] private CurrencyItem currencyItemPrefab;
     [SerializeField] private Data _currencyData;
 
     public string GetKey => key;
-    public Sprite GetIcon => Icon;
-    public int GetCurrencyAmount => _currencyData.Amount;
+    public CurrencyItem GetCurrencyItem => currencyItemPrefab;
+    public float GetCurrencyAmount => _currencyData.Amount;
 
     public void ReduceCurrency(int amount)
     {
@@ -50,7 +51,7 @@ public class CurrencySO : ScriptableObject,IHasID
     public class Data
     {
         public string key;
-        public int Amount = 0;
+        public float Amount = 0;
 
         public Data(CurrencySO currency) { key = currency.key; }
     }
