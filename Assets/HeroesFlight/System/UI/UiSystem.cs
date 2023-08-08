@@ -26,8 +26,7 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnMinibossHealthChange += HandleMinibossHealthChange;
             gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
             gameplaySystem.OnBoosterActivated += HandleBoosterActivated;
-
-            dataSystem.OnCurrencyChange += HandleCurrencyChange;
+            gameplaySystem.OnCoinsCollected += HandleCoinChange;
         }
 
         public event Action OnReturnToMainMenuRequest;
@@ -83,10 +82,10 @@ namespace HeroesFlight.System.UI
                     UiEventHandler.PauseMenu.Open();
                 };
 
-                UiEventHandler.GameMenu.GetCoinText = () =>
-                {
-                    return dataSystem.GetCurrencyAmount(CurrencyKeys.Gold);
-                };
+                //UiEventHandler.GameMenu.GetCoinText = () =>
+                //{
+                //    return dataSystem.GetCurrencyAmount(CurrencyKeys.Gold);
+                //};
 
                 UiEventHandler.PauseMenu.OnSettingsButtonClicked += () =>
                 {
@@ -101,11 +100,9 @@ namespace HeroesFlight.System.UI
                 UiEventHandler.PauseMenu.OnQuitButtonClicked += () =>
                 {
                     UiEventHandler.ConfirmationMenu.Display(UiEventHandler.BackToMenuConfirmation, ReturnToMainMenu,
-                        ReturnToMainMenu);
+                        null);
                 };
-
-
-               
+         
                 UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
                 {
                     OnReviveCharacterRequest?.Invoke();
@@ -128,7 +125,9 @@ namespace HeroesFlight.System.UI
 
                 UiEventHandler.SummaryMenu.OnMenuOpened += () =>
                 {
+                    gameplaySystem.StoreRunReward();
                 };
+
                 UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
                 {
                     OnReturnToMainMenuRequest?.Invoke();
@@ -152,6 +151,11 @@ namespace HeroesFlight.System.UI
                     UiEventHandler.GameMenu.UpdateCoinText(currencySO.GetCurrencyAmount);
                     break;
             }
+        }
+
+        private void HandleCoinChange(int amount)
+        {
+            UiEventHandler.GameMenu.UpdateCoinText(amount);
         }
 
         void HandleMinibossHealthChange(float value)

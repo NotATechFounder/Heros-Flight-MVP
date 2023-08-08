@@ -8,7 +8,7 @@ namespace UISystem
 {
     public class GameMenu : BaseMenu<GameMenu>
     {
-        public Func<float> GetCoinText;
+     //   public Func<float> GetCoinText;
 
         public event Action OnPauseButtonClicked;
         public event Action OnSpecialAttackButtonClicked;
@@ -80,7 +80,7 @@ namespace UISystem
         {
             openEffect.Start();
 
-            UpdateCoinText(GetCoinText());
+           // UpdateCoinText(GetCoinText());
         }
 
         public override void OnClosed()

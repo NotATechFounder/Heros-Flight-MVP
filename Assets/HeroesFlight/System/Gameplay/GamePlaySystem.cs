@@ -51,6 +51,7 @@ namespace HeroesFlight.System.Gameplay
         public event Action<int> OnCharacterComboChanged;
         public event Action<GameState> OnGameStateChange;
         public event Action<BoosterSO, float, Transform> OnBoosterActivated;
+        public event Action<int> OnCoinsCollected;
 
         IDataSystemInterface dataSystemInterface;
         List<IHealthController> GetExistingEnemies() => activeEnemyHealthControllers;
@@ -69,6 +70,7 @@ namespace HeroesFlight.System.Gameplay
         int enemiesToKill;
         int wavesAmount;
         Coroutine combotTimerRoutine;
+        int collectedGold;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -80,7 +82,7 @@ namespace HeroesFlight.System.Gameplay
             BoosterManager.OnBoosterActivated += HandleBoosterActivated;
 
             CurrencySpawner = scene.GetComponentInChildren<CurrencySpawner>();
-            CurrencySpawner.Initialize(dataSystemInterface);
+            CurrencySpawner.Initialize(dataSystemInterface, this);
 
             container.Init();
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
@@ -377,6 +379,18 @@ namespace HeroesFlight.System.Gameplay
         private void HandleBoosterActivated(BoosterSO sO, float arg2, Transform transform)
         {
             OnBoosterActivated?.Invoke(sO, arg2, transform);
+        }
+
+        public void AddGold(int amount)
+        {
+            collectedGold += amount;
+            OnCoinsCollected?.Invoke(collectedGold);
+        }
+
+        public void StoreRunReward()
+        {     
+            Debug.Log($"StoreRunReward {collectedGold}");
+            dataSystemInterface.AddCurency(CurrencyKeys.Gold, collectedGold);
         }
     }
 }

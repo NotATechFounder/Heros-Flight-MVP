@@ -1,3 +1,4 @@
+using HeroesFlight.System.Gameplay;
 using Pelumi.ObjectPool;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ public class CurrencySpawner : MonoBehaviour
     [SerializeField] private CurrencyItem currencyPrefab;
     [SerializeField] private List<CurrencyItem> spawnedCurrencyItems = new List<CurrencyItem>();
     [SerializeField] private IDataSystemInterface currencyManager;
+    [SerializeField] private GamePlaySystemInterface gamePlaySystem;
     [SerializeField] private Transform playerTransfrom;
 
     private void Update()
@@ -22,9 +24,10 @@ public class CurrencySpawner : MonoBehaviour
         }
     }
 
-    public void Initialize(IDataSystemInterface currencyManager)
+    public void Initialize(IDataSystemInterface currencyManager, GamePlaySystemInterface gamePlaySystemInterface)
     {
         this.currencyManager = currencyManager;
+        gamePlaySystem = gamePlaySystemInterface;
     }
 
     public void SetPlayer(Transform playerTrans)
@@ -47,7 +50,16 @@ public class CurrencySpawner : MonoBehaviour
 
     public void ProcessCurrency(CurrencyItem currencyItem, float amount)
     {
-        currencyManager.AddCurency(currencyItem.CurrencySO.GetKey,amount);
+        switch (currencyItem.CurrencySO.GetKey)
+        {
+            case CurrencyKeys.Gold:
+                gamePlaySystem.AddGold((int)amount);
+                break;
+            case CurrencyKeys.Experience:
+                currencyManager.AddCurency(currencyItem.CurrencySO.GetKey, amount);
+                break;
+        }
+
         spawnedCurrencyItems.Remove(currencyItem);
     }
 
