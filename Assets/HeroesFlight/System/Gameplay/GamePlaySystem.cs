@@ -13,6 +13,7 @@ using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 namespace HeroesFlight.System.Gameplay
 {
@@ -221,9 +222,12 @@ namespace HeroesFlight.System.Gameplay
 
             BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.currentTransform.position);
 
-            CurrencySpawner.SpawnGoldAtPosition(10, iHealthController.currentTransform.position);
+            CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.currentTransform.position, false);
+
+            CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10, iHealthController.currentTransform.position);
 
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
+
             if (enemiesToKill <= 0)
             {
                 GameTimer.Stop();

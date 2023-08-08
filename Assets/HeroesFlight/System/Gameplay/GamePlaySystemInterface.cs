@@ -22,6 +22,8 @@ namespace HeroesFlight.System.Gameplay
 
         public event Action<BoosterSO, float, Transform> OnBoosterActivated;
 
+        public CurrencySpawner CurrencySpawner { get; }
+
         public CountDownTimer GameTimer { get; }
         public AngelEffectManager EffectManager { get; }
 

@@ -38,7 +38,11 @@ public class CurrencyManager : MonoBehaviour
         OnCurrencyChange?.Invoke(currency, false);
     }
 
-    public float GetCurrencyAmount(string currencyKey) => _currencies.Find((currency) => currency.GetKey == currencyKey).GetCurrencyAmount;
+    public float GetCurrencyAmount(string currencyKey)
+    {
+        CurrencySO currencySO = _currencies.Find((currency) => currency.GetKey == currencyKey);
+        return currencySO == null ? 0 : currencySO.GetCurrencyAmount;
+    }
 
     public CurrencySO GetCurrecy(string currencyKey) => _currencies.Find((currency) => currency.GetKey == currencyKey);
    

@@ -23,6 +23,8 @@ public class CurrencyItem : MonoBehaviour
     private JuicerRuntime scaleEffect;
     private Transform target;
     public float amount;
+    private bool autoMove = false;
+    private Coroutine moveToPlayerCoroutine;
 
     public CurrencySO CurrencySO => currencySO;
 
@@ -33,32 +35,34 @@ public class CurrencyItem : MonoBehaviour
         scaleEffect.SetOnComplected(() =>
         {
             OnCurrencyInteracted?.Invoke(this, amount);
+            moveToPlayerCoroutine = null;
             ObjectPoolManager.ReleaseObject(this);
         });
     }
 
-    public void Initialize(CurrencySO currency, Action<CurrencyItem, float> func , float amount, Transform target)
+    public void Initialize(CurrencySO currency, Action<CurrencyItem, float> func , float amount, Transform target, bool move = true)
     {
         transform.localScale = Vector3.one;
         currencySO = currency;
         spriteRenderer.sprite = currency.GetSprite;
+        spriteRenderer.color = currency.GetColor;
         OnCurrencyInteracted = func;
         this.amount = amount;
         this.target = target;
+        autoMove = move;
 
         ColorOverLifetimeModule colorOverLifetime = particle.colorOverLifetime;
         colorOverLifetime.color = currency.GetGradient;
-
 
         ColorOverLifetimeModule sparkColorOverLifetime = sparkParticle.colorOverLifetime;
         sparkColorOverLifetime.color = currency.GetSparkGradient;
 
         ApplyUpWardForce(launchForce);
 
-        CoroutineUtility.WaitForSeconds(waitTime, () =>
+        if (autoMove)
         {
             MoveToPlayer();
-        });
+        }
     }
 
     public void ApplyUpWardForce(float force)
@@ -67,8 +71,15 @@ public class CurrencyItem : MonoBehaviour
         rigid2D.AddForce(lauchPos, ForceMode2D.Impulse);
     }
 
+    public void MoveToPlayer()
+    {
+        if (moveToPlayerCoroutine != null) return;
+        moveToPlayerCoroutine = StartCoroutine(MoveToPosition(() => { scaleEffect.Start(); }));
+    }
+
     public IEnumerator MoveToPosition(Action OnReachPlayer)
     {
+        if (autoMove) yield return new WaitForSeconds(waitTime);
         yield return null;
         var currentPos = transform.position;
         var t = 0f;
@@ -79,14 +90,6 @@ public class CurrencyItem : MonoBehaviour
             yield return null;
         }
 
-        if (t >= 1) OnReachPlayer.Invoke();
-    }
-
-    public void MoveToPlayer()
-    {
-       StartCoroutine(MoveToPosition(() =>
-       {
-           scaleEffect.Start();
-       }));
+        if (t >= 1) OnReachPlayer?.Invoke();
     }
 }

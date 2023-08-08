@@ -37,17 +37,22 @@ public class CurrencySpawner : MonoBehaviour
         SpawnAtPosition(CurrencyKeys.Gold, amount, position);
     }
 
-    public void SpawnAtPosition(string key, float amount, Vector3 position)
+    public void SpawnAtPosition(string key, float amount, Vector3 position, bool autoMove = true)
     {
         CurrencySO currency = currencyDatabase.GetItemSOByID(key);
         CurrencyItem currencyObj = ObjectPoolManager.SpawnObject(currencyPrefab, position, Quaternion.identity);
-        currencyObj.Initialize(currency, ProcessCurrency, amount, playerTransfrom);
+        currencyObj.Initialize(currency, ProcessCurrency, amount, playerTransfrom, autoMove);
         spawnedCurrencyItems.Add(currencyObj);
     }
 
     public void ProcessCurrency(CurrencyItem currencyItem, float amount)
     {
-      //  currencyManager.AddCurency(currencyItem.CurrencySO.GetKey,amount);
+        currencyManager.AddCurency(currencyItem.CurrencySO.GetKey,amount);
         spawnedCurrencyItems.Remove(currencyItem);
+    }
+
+    public void ActiveAllLoot()
+    {
+        spawnedCurrencyItems.ForEach(currency => currency.MoveToPlayer());
     }
 }

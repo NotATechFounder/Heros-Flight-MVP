@@ -41,6 +41,8 @@ public class BoosterManager : MonoBehaviour
 
         boosterContainer.SetActiveBoost(this, boost);
 
+        OnBoosterActivated?.Invoke(boosterSO, boosterSO.BoosterValue, characterStatController.transform);
+
         return true;
     }
 

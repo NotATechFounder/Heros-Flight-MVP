@@ -246,28 +246,28 @@ namespace HeroesFlight.System.UI
         void HandleCharacterDamaged(DamageModel damageModel)
         {
             var damageString = damageModel.DamageType == DamageType.NoneCritical
-                ? $"{damageModel.Amount}"
-                : $"!!{damageModel.Amount}!!";
+                ? $"{(int)damageModel.Amount}"
+                : $"!!{(int)damageModel.Amount}!!";
             UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.one, damageString,
                 Color.red);
         }
 
         void HandleCharacterHeal(float amount, Transform pos)
         {
-            var damageString = $"{amount}";
-            UiEventHandler.PopupManager.PopUpTextAtTransfrom(pos, Vector3.one, damageString,
-                Color.green);
+            //var damageString = $"{(int)amount}";
+            //UiEventHandler.PopupManager.PopUpTextAtTransfrom(pos, Vector3.one, damageString,
+            //    Color.green);
         }
 
 
         private void HandleBoosterActivated(BoosterSO boosterSO, float arg2, Transform transform)
         {
-            PopUpTextAtPos($"+{boosterSO.Abreviation}", new Vector2(transform.position.x, transform.position.y + 2) , boosterSO.BoosterColor);
+            PopUpTextAtPos($"+{boosterSO.Abreviation} %{arg2}", new Vector2(transform.position.x, transform.position.y + 2) , boosterSO.BoosterColor);
         }
 
         void PopUpTextAtPos(string info, Vector2 pos, Color color)
         {
-            UiEventHandler.PopupManager.PopUpAtTextPosition(pos, Vector2.zero, info,
+            UiEventHandler.PopupManager.PopUpAtTextPosition(pos, new Vector2(0, 1), info,
                color);
         }
 

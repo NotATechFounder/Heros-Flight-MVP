@@ -98,7 +98,7 @@ namespace UISystem
 
         public void UpdateCoinText(float value)
         {
-            coinText.text = value.ToString();
+            coinText.JuicyTextNumber(value, 0.5f).Start();
         }
 
         public void UpdateTimerText(float value)
