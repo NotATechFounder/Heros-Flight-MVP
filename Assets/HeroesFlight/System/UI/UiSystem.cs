@@ -23,11 +23,15 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnMinibossSpawned += HandleMiniboss;
             gameplaySystem.OnMinibossHealthChange += HandleMinibossHealthChange;
             gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
+            gameplaySystem.OnUltimateChargesChange += UpdateUltimateButton;
         }
 
         public event Action OnReturnToMainMenuRequest;
+
         public event Action OnRestartLvlRequest;
+
         public event Action OnReviveCharacterRequest;
+
         public event Action OnSpecialButtonClicked;
 
         public UIEventHandler UiEventHandler { get; private set; }
@@ -41,6 +45,7 @@ namespace HeroesFlight.System.UI
         public const string GameMusicLoopID = "ForestLoop";
 
         UiContainer container;
+
         GamePlaySystemInterface gameplaySystem;
 
         public void Init(Scene scene = default, Action onComplete = null)
@@ -157,6 +162,11 @@ namespace HeroesFlight.System.UI
                 case GameState.Ended:
                     break;
             }
+        }
+
+        void UpdateUltimateButton(float value)
+        {
+           UiEventHandler.GameMenu.FillSpecial(value);
         }
 
         void HandleMiniboss(bool isEnabled)

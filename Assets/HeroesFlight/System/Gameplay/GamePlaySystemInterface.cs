@@ -7,6 +7,7 @@ namespace HeroesFlight.System.Gameplay
 {
     public interface GamePlaySystemInterface : ISystemInterface
     {
+        event Action<float> OnUltimateChargesChange; 
         event Action<bool> OnMinibossSpawned;
         event Action<float> OnMinibossHealthChange; 
         event Action<int> OnRemainingEnemiesLeft;

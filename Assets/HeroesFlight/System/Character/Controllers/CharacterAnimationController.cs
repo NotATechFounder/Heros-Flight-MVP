@@ -131,7 +131,7 @@ namespace HeroesFlight.System.Character
         public void PlayAnimationSequence(List<AnimationReferenceAsset> animations,Action onCompleteAction=null)
         {
             StopAttackAnimation();
-            m_SkeletonAnimation.AnimationState.ClearTrack(2);
+            //m_SkeletonAnimation.AnimationState.ClearTrack(2);
             float duration = 0;
             for (int i = 0; i < animations.Count; i++)
             {
@@ -152,7 +152,7 @@ namespace HeroesFlight.System.Character
             Debug.Log(duration);
             CoroutineUtility.WaitForSeconds(duration, () =>
             {
-                m_SkeletonAnimation.AnimationState.SetEmptyAnimation(2, 0.5f);
+                m_SkeletonAnimation.AnimationState.SetEmptyAnimation(2, 0f);
                 onCompleteAction?.Invoke();
             });
         }
@@ -164,7 +164,6 @@ namespace HeroesFlight.System.Character
             {
                 case "Dealing damg":
                     var bone = m_SkeletonAnimation.Skeleton.FindBone("B_ROOT");
-                    Debug.Log(transform.TransformPoint(bone.WorldX,bone.WorldY,0));
                     OnDealDamageRequest?.Invoke(e.Data.Name);
                     break;
                 case "start_sound":

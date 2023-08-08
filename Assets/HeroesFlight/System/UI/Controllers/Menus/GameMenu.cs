@@ -148,10 +148,7 @@ namespace UISystem
         public void FillSpecial(float normalisedValue)
         {
             specialAttackButtonFill.fillAmount = normalisedValue;
-            if (normalisedValue >= 1)
-            {
-                ToggleSpecialAttackButton(true);
-            }
+            ToggleSpecialAttackButton(normalisedValue >= 1);
         }
 
         public void ToggleSpecialAttackButton(bool value)
@@ -173,9 +170,9 @@ namespace UISystem
 
         private void SpecialAttackButtonClicked()
         {
-            // if (specialAttackButtonFill.fillAmount < 1) return;
-            //
-            // specialAttackButtonFill.fillAmount = 0;
+            if (specialAttackButtonFill.fillAmount < 1) return;
+            
+            specialAttackButtonFill.fillAmount = 0;
             specialIconEffect.Start();
             OnSpecialAttackButtonClicked?.Invoke();
         }

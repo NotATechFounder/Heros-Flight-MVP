@@ -117,7 +117,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public void AttackTargets()
         {
-            if (m_TimeSinceLastAttack < attackDuration * statController.CurrentAttackSpeed)
+            if (m_TimeSinceLastAttack < attackDuration / statController.CurrentAttackSpeed)
             {
                 return;
             }
@@ -135,7 +135,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void ResetAttack()
         {
             m_CharacterAnimationController.StopAttackSequence();
-            m_TimeSinceLastAttack = attackDuration * statController.CurrentAttackSpeed;
+            m_TimeSinceLastAttack = attackDuration / statController.CurrentAttackSpeed;
         }
 
 
