@@ -138,7 +138,7 @@ public class BoosterManager : MonoBehaviour
             }
             else
             {
-                characterStatController.ModifyHealth(boosterSO.BoosterValue  + 10, true);
+                characterStatController.ModifyHealth(boosterSO.BoosterValue  + 5, true);
             }
 
         }, null);

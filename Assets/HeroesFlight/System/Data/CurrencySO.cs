@@ -9,26 +9,34 @@ public class CurrencySO : ScriptableObject,IHasID
 {
     [SerializeField] private string key;
     [SerializeField] private string currencyName;
-    [SerializeField] private CurrencyItem currencyItemPrefab;
+    [SerializeField] private Sprite currencySprite;
+    [SerializeField] private Gradient currencyGradient;
+    [SerializeField] private Gradient currencySparkGradient;
+    [SerializeField] private Color currencyColor;
+
     [SerializeField] private Data _currencyData;
 
+    public string GetCurrencyName => currencyName;
+    public Gradient GetGradient => currencyGradient;
+    public Gradient GetSparkGradient => currencySparkGradient;
+    public Color GetColor => currencyColor;
     public string GetKey => key;
-    public CurrencyItem GetCurrencyItem => currencyItemPrefab;
+    public Sprite GetSprite => currencySprite;
     public float GetCurrencyAmount => _currencyData.Amount;
 
-    public void ReduceCurrency(int amount)
+    public void ReduceCurrency(float amount)
     {
         _currencyData.Amount -= amount;
         Save();
     }
 
-    public void IncreaseCurrency(int amount)
+    public void IncreaseCurrency(float amount)
     {
         _currencyData.Amount += amount;
         Save();
     }
 
-    public void SetCurrency(int amount)
+    public void SetCurrency(float amount)
     {
         _currencyData.Amount = amount;
         Save();

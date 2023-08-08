@@ -8,6 +8,8 @@ namespace UISystem
 {
     public class GameMenu : BaseMenu<GameMenu>
     {
+        public Func<float> GetCoinText;
+
         public event Action OnPauseButtonClicked;
         public event Action OnSpecialAttackButtonClicked;
 
@@ -77,6 +79,8 @@ namespace UISystem
         public override void OnOpened()
         {
             openEffect.Start();
+
+            UpdateCoinText(GetCoinText());
         }
 
         public override void OnClosed()
@@ -92,7 +96,7 @@ namespace UISystem
             comboCounterText.text = "0";
         }
 
-        public void UpdateCoinText(int value)
+        public void UpdateCoinText(float value)
         {
             coinText.text = value.ToString();
         }
@@ -163,7 +167,6 @@ namespace UISystem
                     specialEffect.Start();
                     break;
                 case false:
-                    Debug.Log("Special Attack Button Disabled");
                     specialEffect.Pause();
                     specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r, specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
                     specialAttackIcon.transform.localScale = Vector3.one;

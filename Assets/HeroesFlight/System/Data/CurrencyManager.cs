@@ -8,33 +8,34 @@ using System;
 
 public class CurrencyManager : MonoBehaviour
 {
+    public event Action<CurrencySO, bool> OnCurrencyChange;
     [SerializeField] private List<CurrencySO> _currencies;
-    [SerializeField] private event Action<CurrencySO, bool> _onCurrencyChange;
+
 
     private void Awake()
     {
         LoadCurrencies();
     }
 
-    public void ReduceCurency(string key, int amount)
+    public void ReduceCurency(string key, float amount)
     {
         CurrencySO currency = GetCurrecy(key);
         currency.ReduceCurrency(amount);
-        _onCurrencyChange?.Invoke(currency, false);
+        OnCurrencyChange?.Invoke(currency, false);
     }
 
-    public void AddCurency(string key, int amount)
+    public void AddCurency(string key, float amount)
     {
         CurrencySO currency = GetCurrecy(key);
         currency.IncreaseCurrency(amount);
-        _onCurrencyChange?.Invoke(currency, false);
+        OnCurrencyChange?.Invoke(currency, false);
     }
 
-    public void SetCurencyAmount(string key, int amount)
+    public void SetCurencyAmount(string key, float amount)
     {
         CurrencySO currency = GetCurrecy(key);
         currency.SetCurrency(amount);
-        _onCurrencyChange?.Invoke(currency, false);
+        OnCurrencyChange?.Invoke(currency, false);
     }
 
     public float GetCurrencyAmount(string currencyKey) => _currencies.Find((currency) => currency.GetKey == currencyKey).GetCurrencyAmount;
@@ -44,11 +45,4 @@ public class CurrencyManager : MonoBehaviour
     public void LoadCurrencies() => _currencies.ForEach(currency => currency.Load());
 
     public void SaveCurrencies() => _currencies.ForEach(currency => currency.Save());
-}
-
-
-public static class CurrencyKeys
-{
-    public const string Gold = "Gold";
-    public const string Experience = "Experience";
 }

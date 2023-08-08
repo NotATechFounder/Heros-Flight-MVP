@@ -11,8 +11,9 @@ namespace HeroesFlight.System.UI
 {
     public class UiSystem : IUISystem
     {
-        public UiSystem(GamePlaySystemInterface gamePlaySystem)
+        public UiSystem(IDataSystemInterface dataSystemInterface, GamePlaySystemInterface gamePlaySystem)
         {
+            dataSystem = dataSystemInterface;
             gameplaySystem = gamePlaySystem;
             gameplaySystem.OnGameStateChange += HandleGameplayStateChange;
             gameplaySystem.OnEnemyDamaged += HandleEnemyDamaged;
@@ -24,8 +25,9 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnMinibossSpawned += HandleMiniboss;
             gameplaySystem.OnMinibossHealthChange += HandleMinibossHealthChange;
             gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
-
             gameplaySystem.OnBoosterActivated += HandleBoosterActivated;
+
+            dataSystem.OnCurrencyChange += HandleCurrencyChange;
         }
 
         public event Action OnReturnToMainMenuRequest;
@@ -44,6 +46,7 @@ namespace HeroesFlight.System.UI
 
         UiContainer container;
         GamePlaySystemInterface gameplaySystem;
+        IDataSystemInterface dataSystem;
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
@@ -78,6 +81,11 @@ namespace HeroesFlight.System.UI
                 UiEventHandler.GameMenu.OnPauseButtonClicked += () =>
                 {
                     UiEventHandler.PauseMenu.Open();
+                };
+
+                UiEventHandler.GameMenu.GetCoinText = () =>
+                {
+                    return dataSystem.GetCurrencyAmount(CurrencyKeys.Gold);
                 };
 
                 UiEventHandler.PauseMenu.OnSettingsButtonClicked += () =>
@@ -133,6 +141,17 @@ namespace HeroesFlight.System.UI
 
         public void Reset()
         {
+
+        }
+
+        private void HandleCurrencyChange(CurrencySO currencySO, bool arg2)
+        {
+            switch (currencySO.GetKey)
+            {
+                case CurrencyKeys.Gold:
+                    UiEventHandler.GameMenu.UpdateCoinText(currencySO.GetCurrencyAmount);
+                    break;
+            }
         }
 
         void HandleMinibossHealthChange(float value)

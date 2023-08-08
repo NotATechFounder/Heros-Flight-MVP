@@ -18,8 +18,9 @@ namespace HeroesFlight.System.Gameplay
 {
     public class GamePlaySystem : GamePlaySystemInterface
     {
-        public GamePlaySystem(CharacterSystemInterface characterSystem, NpcSystemInterface npcSystem)
+        public GamePlaySystem(IDataSystemInterface dataSystemInterface, CharacterSystemInterface characterSystem, NpcSystemInterface npcSystem)
         {
+            this.dataSystemInterface = dataSystemInterface;
             this.npcSystem = npcSystem;
             this.characterSystem = characterSystem;
             npcSystem.OnEnemySpawned += HandleEnemySpawned;
@@ -33,6 +34,8 @@ namespace HeroesFlight.System.Gameplay
         public BoosterManager BoosterManager { get; private set; }
 
         public BoosterSpawner BoosterSpawner { get; private set; }
+
+        public CurrencySpawner CurrencySpawner { get; private set; }
 
         public int CurrentLvlIndex => container.CurrentLvlIndex;
 
@@ -48,6 +51,7 @@ namespace HeroesFlight.System.Gameplay
         public event Action<GameState> OnGameStateChange;
         public event Action<BoosterSO, float, Transform> OnBoosterActivated;
 
+        IDataSystemInterface dataSystemInterface;
         List<IHealthController> GetExistingEnemies() => activeEnemyHealthControllers;
         List<IHealthController> activeEnemyHealthControllers = new();
         IHealthController miniBoss;
@@ -73,6 +77,10 @@ namespace HeroesFlight.System.Gameplay
             BoosterManager = scene.GetComponentInChildren<BoosterManager>();
             BoosterSpawner = scene.GetComponentInChildren<BoosterSpawner>();
             BoosterManager.OnBoosterActivated += HandleBoosterActivated;
+
+            CurrencySpawner = scene.GetComponentInChildren<CurrencySpawner>();
+            CurrencySpawner.Initialize(dataSystemInterface);
+
             container.Init();
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
             container.SetStartingIndex(0);
@@ -167,6 +175,7 @@ namespace HeroesFlight.System.Gameplay
             npcSystem.InjectPlayer(characterController.CharacterTransform);
             EffectManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
             BoosterManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
+            CurrencySpawner.SetPlayer(characterController.CharacterTransform);
         }
 
         void CreateMiniboss(SpawnModel currentLvlModel)
@@ -211,6 +220,8 @@ namespace HeroesFlight.System.Gameplay
             enemiesToKill--;
 
             BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.currentTransform.position);
+
+            CurrencySpawner.SpawnGoldAtPosition(10, iHealthController.currentTransform.position);
 
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
             if (enemiesToKill <= 0)
