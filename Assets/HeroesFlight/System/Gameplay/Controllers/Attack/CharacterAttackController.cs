@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using HeroesFlight.Common;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Gameplay.Data.Animation;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
@@ -48,7 +47,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             visualController = GetComponent<AttackRangeVisualsController>();
             m_CharacterAnimationController = GetComponent<CharacterAnimationController>();
             statController = GetComponent<CharacterStatController>();
-            m_CharacterAnimationController.OnDealDamageRequest += HandleDamageDealRequest;
+            m_CharacterAnimationController.OnAnimationEvent += HandleDamageDealRequest;
             m_State = AttackControllerState.LookingForTarget;
             playerStatData = controller.CharacterSO.GetPlayerStatData;
             m_TimeSinceLastAttack = playerStatData.AttackSpeed;
@@ -87,7 +86,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void ProcessAttackLogic()
         {
-            FilterEnemies(enemiesRetriveCallback?.Invoke(), ref foundedEnemies);
+            FilterEnemies(enemiesRetriveCallback?.Invoke(), ref foundedEnemies,
+                new AttackAnimationEvent(AttackType.Regular,0));
             if (foundedEnemies.Count > 0)
             {
                 AttackTargets();
@@ -98,20 +98,34 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
-        void FilterEnemies(List<IHealthController> enemies, ref List<IHealthController> enemiesToUpdate)
+        void FilterEnemies(List<IHealthController> enemies, ref List<IHealthController> enemiesToUpdate,
+            AttackAnimationEvent dataAttackType)
         {
             enemiesToUpdate.Clear();
 
             if (isDisabled)
                 return;
-
-            foreach (var controller in enemies)
+           
+            switch (dataAttackType.AttackType)
             {
-                if (Vector2.Distance(controller.currentTransform.position, attackPoint) <= playerStatData.AttackRange)
-                {
-                    enemiesToUpdate.Add(controller);
-                }
+                case AttackType.Regular:
+                    foreach (var controller in enemies)
+                    {
+                        if (Vector2.Distance(controller.currentTransform.position, attackPoint) <= playerStatData.AttackRange)
+                        {
+                            enemiesToUpdate.Add(controller);
+                        }
+                    }
+                    
+                    break;
+                case AttackType.Ultimate_Base:
+                    Debug.Log($"should deal dmg with ultimate at index {dataAttackType.AttackIndex}");
+                    break;
+                case AttackType.Ultimate_Lancer:
+                    break;
+               
             }
+           
         }
 
 
@@ -139,9 +153,15 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-        void HandleDamageDealRequest(string attackId)
+        void HandleDamageDealRequest(AnimationEventInterface animationEvent)
         {
-            FilterEnemies(enemiesRetriveCallback?.Invoke(), ref enemiesToAttack);
+            if (animationEvent.Type != AniamtionEventType.Attack)
+                return;
+
+            var data = animationEvent as AttackAnimationEvent;
+            
+            
+            FilterEnemies(enemiesRetriveCallback?.Invoke(), ref enemiesToAttack,data);
             if (enemiesToAttack.Count > 0)
             {
                 var enemiesAttacked = 0;

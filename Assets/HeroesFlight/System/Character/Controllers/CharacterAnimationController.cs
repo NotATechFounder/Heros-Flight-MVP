@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using HeroesFlight.Common;
 using HeroesFlight.System.Character.Enum;
+using HeroesFlight.System.Gameplay.Data.Animation;
+using HeroesFlight.System.Gameplay.Enum;
 using Spine;
 using Spine.Unity;
 using StansAssets.Foundation.Async;
@@ -17,7 +19,7 @@ namespace HeroesFlight.System.Character
         bool m_WasFacingLeft;
         Dictionary<CharacterState, AnimationReferenceAsset> m_AnimationsCache = new();
 
-        public event Action<string> OnDealDamageRequest;
+        public event Action<AnimationEventInterface> OnAnimationEvent;
 
 
         public void Init(AnimationData data)
@@ -159,15 +161,41 @@ namespace HeroesFlight.System.Character
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
-            Debug.Log(e.Data.Name+" "+e.Data.String);
             switch (e.Data.Name)
             {
                 case "Dealing damg":
-                    var bone = m_SkeletonAnimation.Skeleton.FindBone("B_ROOT");
-                    OnDealDamageRequest?.Invoke(e.Data.Name);
+                    switch (trackentry.Animation.Name)
+                    {
+                        case AnimationNames.RegularAttack_Base:
+                            Debug.Log(trackentry.Animation.Name);
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Regular,0));
+                            break;
+                        case AnimationNames.Ultimate_Base_1:
+                            Debug.Log(trackentry.Animation.Name);
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,1));
+                            break;
+                        case AnimationNames.Ultimate_Base_2:
+                            Debug.Log(trackentry.Animation.Name);
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,2));
+                            break;
+                        case AnimationNames.Ultimate_Base_3:
+                            Debug.Log(trackentry.Animation.Name);
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,3));
+                            break;
+                        case AnimationNames.Ultimate_Base_4:
+                            Debug.Log(trackentry.Animation.Name);
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,4));
+                            break;
+                        
+                        
+                    }
+                   
                     break;
                 case "start_sound":
                     AudioManager.PlaySoundEffect("Attack Sound");
+                    break;
+                case "Attack Ultimate":
+                    OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,0));
                     break;
             }
         }
