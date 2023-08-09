@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Patterns;
 using StansAssets.SceneManagement;
-using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace HeroesFlight.StateStack.State
 {
@@ -24,7 +24,10 @@ namespace HeroesFlight.StateStack.State
             switch (evt.Action)
             {
                 case StackAction.Added:
-                    Debug.Log(ApplicationState);
+
+                    IDataSystemInterface dataSystem = GetService<IDataSystemInterface>();
+                    dataSystem.Init(SceneManager.GetActiveScene());
+
                     progressReporter.SetDone();
                     var uiScene = $"{SceneType.UIScene}";
                     m_SceneActionsQueue.AddAction(SceneActionType.Load, uiScene);

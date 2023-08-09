@@ -14,7 +14,10 @@ public class BoosterSO : ScriptableObject, IHasID
     [SerializeField] private BoosterStackType boosterStackType;
     [SerializeField] private float boosterValue;
     [SerializeField] private float boosterDuration;
+    [SerializeField] private Color boosterColor;
+    [SerializeField] private string abreviation;
 
+    public Color BoosterColor => boosterColor;
     public string BoosterName => boosterName;
     public Sprite BoosterSprite => boosterSprite;
 
@@ -25,6 +28,8 @@ public class BoosterSO : ScriptableObject, IHasID
     public float BoosterValue => boosterValue;
 
     public float BoosterDuration => boosterDuration;
+
+    public string Abreviation => abreviation;
 
     public string GetID()
     {

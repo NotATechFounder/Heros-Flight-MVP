@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
@@ -11,18 +11,21 @@ namespace HeroesFlight.System.UI
 {
     public class UiSystem : IUISystem
     {
-        public UiSystem(GamePlaySystemInterface gamePlaySystem)
+        public UiSystem(IDataSystemInterface dataSystemInterface, GamePlaySystemInterface gamePlaySystem)
         {
+            dataSystem = dataSystemInterface;
             gameplaySystem = gamePlaySystem;
-            gameplaySystem.OnGameStateChange += HandleGameplayStateChange;
             gameplaySystem.OnEnemyDamaged += HandleEnemyDamaged;
             gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
             gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
             gameplaySystem.OnCharacterDamaged += HandleCharacterDamaged;
+            gameplaySystem.OnCharacterHeal += HandleCharacterHeal;
             gameplaySystem.OnCharacterComboChanged += UpdateComboUI;
             gameplaySystem.OnMinibossSpawned += HandleMiniboss;
             gameplaySystem.OnMinibossHealthChange += HandleMinibossHealthChange;
             gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
+            gameplaySystem.OnBoosterActivated += HandleBoosterActivated;
+            gameplaySystem.OnCoinsCollected += HandleCoinChange;
             gameplaySystem.OnUltimateChargesChange += UpdateUltimateButton;
         }
 
@@ -47,6 +50,7 @@ namespace HeroesFlight.System.UI
         UiContainer container;
 
         GamePlaySystemInterface gameplaySystem;
+        IDataSystemInterface dataSystem;
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
@@ -87,6 +91,11 @@ namespace HeroesFlight.System.UI
                     OnSpecialButtonClicked?.Invoke();
                 };
 
+                //UiEventHandler.GameMenu.GetCoinText = () =>
+                //{
+                //    return dataSystem.GetCurrencyAmount(CurrencyKeys.Gold);
+                //};
+
                 UiEventHandler.PauseMenu.OnSettingsButtonClicked += () =>
                 {
                     UiEventHandler.SettingsMenu.Open();
@@ -100,11 +109,9 @@ namespace HeroesFlight.System.UI
                 UiEventHandler.PauseMenu.OnQuitButtonClicked += () =>
                 {
                     UiEventHandler.ConfirmationMenu.Display(UiEventHandler.BackToMenuConfirmation, ReturnToMainMenu,
-                        ReturnToMainMenu);
+                        null);
                 };
-
-
-               
+         
                 UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
                 {
                     OnReviveCharacterRequest?.Invoke();
@@ -127,7 +134,9 @@ namespace HeroesFlight.System.UI
 
                 UiEventHandler.SummaryMenu.OnMenuOpened += () =>
                 {
+ 
                 };
+
                 UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
                 {
                     OnReturnToMainMenuRequest?.Invoke();
@@ -140,26 +149,15 @@ namespace HeroesFlight.System.UI
 
         public void Reset()
         {
+
         }
 
-        void HandleMinibossHealthChange(float value)
+        private void HandleCurrencyChange(CurrencySO currencySO, bool arg2)
         {
-            UiEventHandler.GameMenu.UpdateBossHealthFill(value);
-        }
-
-        void HandleGameplayStateChange(GameState newState)
-        {
-            switch (newState)
+            switch (currencySO.GetKey)
             {
-                case GameState.Ongoing:
-                    break;
-                case GameState.Won:
-                    HandlePlayerWin();
-                    break;
-                case GameState.Lost:
-                    HandlePlayerDeath();
-                    break;
-                case GameState.Ended:
+                case CurrencyKeys.Gold:
+                    UiEventHandler.GameMenu.UpdateCoinText(currencySO.GetCurrencyAmount);
                     break;
             }
         }
@@ -167,6 +165,16 @@ namespace HeroesFlight.System.UI
         void UpdateUltimateButton(float value)
         {
            UiEventHandler.GameMenu.FillSpecial(value);
+        }
+
+        private void HandleCoinChange(int amount)
+        {
+            UiEventHandler.GameMenu.UpdateCoinText(amount);
+        }
+
+        void HandleMinibossHealthChange(float value)
+        {
+            UiEventHandler.GameMenu.UpdateBossHealthFill(value);
         }
 
         void HandleMiniboss(bool isEnabled)
@@ -239,10 +247,29 @@ namespace HeroesFlight.System.UI
         void HandleCharacterDamaged(DamageModel damageModel)
         {
             var damageString = damageModel.DamageType == DamageType.NoneCritical
-                ? $"{damageModel.Amount}"
-                : $"!!{damageModel.Amount}!!";
+                ? $"{(int)damageModel.Amount}"
+                : $"!!{(int)damageModel.Amount}!!";
             UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.one, damageString,
                 Color.red);
+        }
+
+        void HandleCharacterHeal(float amount, Transform pos)
+        {
+            //var damageString = $"{(int)amount}";
+            //UiEventHandler.PopupManager.PopUpTextAtTransfrom(pos, Vector3.one, damageString,
+            //    Color.green);
+        }
+
+
+        private void HandleBoosterActivated(BoosterSO boosterSO, float arg2, Transform transform)
+        {
+            PopUpTextAtPos($"+{boosterSO.Abreviation} %{arg2}", new Vector2(transform.position.x, transform.position.y + 2) , boosterSO.BoosterColor);
+        }
+
+        void PopUpTextAtPos(string info, Vector2 pos, Color color)
+        {
+            UiEventHandler.PopupManager.PopUpAtTextPosition(pos, new Vector2(0, 1), info,
+               color);
         }
 
         void UpdateComboUI(int count)

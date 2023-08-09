@@ -29,6 +29,7 @@ public class MonsterStatController : MonoBehaviour
     [SerializeField] private float attackModifier;
     [SerializeField] private float defenceModifier;
     [SerializeField] private float attackSpeedUpModifier;
+    [SerializeField] private Sprite currentCardIcon;
 
     public MonsterStatModifier GetMonsterStatModifier => new MonsterStatModifier
     {
@@ -36,6 +37,13 @@ public class MonsterStatController : MonoBehaviour
         DefenceModifier = defenceModifier,
         AttackSpeedUpModifier = attackSpeedUpModifier
     };
+
+    public Sprite CurrentCardIcon => currentCardIcon;
+
+    public void SetCurrentCardIcon(Sprite sprite)
+    {
+        currentCardIcon = sprite;
+    }
 
     public void ModifyAttackModifier(float modifier, bool increase)
     {

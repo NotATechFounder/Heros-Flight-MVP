@@ -8,6 +8,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 {
     public abstract class AiControllerBase : MonoBehaviour, AiControllerInterface
     {
+        [SerializeField] protected SpriteRenderer buffDebuffIcon;
         [SerializeField] protected AiAgentModel m_Model;
         [SerializeField] protected float wanderDistance = 10f;
         [SerializeField] protected float knockbackForce = 10f;
@@ -27,9 +28,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
         Vector2 wanderPosition;
         protected MonsterStatModifier statModifier;
 
-        public virtual void Init(Transform player, MonsterStatModifier monsterStatModifier)
+        public virtual void Init(Transform player, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
-            statModifier = monsterStatModifier;
+            statModifier = EnemyType == EnemyType.MiniBoss ? new MonsterStatModifier() : monsterStatModifier;
             rigidBody = GetComponent<Rigidbody2D>();
             attackCollider = GetComponent<Collider2D>();
             animator = GetComponent<AiAnimatorInterface>();
@@ -38,6 +39,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             viewController.Init();
             OnInit();
             viewController.StartFadeIn(2f, Enable);
+            DisplayModifiyer(currentCardIcon);
         }
 
         void Update()
@@ -113,6 +115,19 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             return Vector2.Distance(CurrentTarget.position, transform.position) 
                 <= m_Model.CombatModel.GetMonsterStatData.AttackRange;
+        }
+
+        public void DisplayModifiyer(Sprite sprite)
+        {
+            if(sprite == null)
+            {
+                buffDebuffIcon.enabled = false;
+            }
+            else
+            {
+                buffDebuffIcon.enabled = true;
+                buffDebuffIcon.sprite = sprite;
+            }
         }
 
         protected void OnInit()

@@ -13,13 +13,15 @@ using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 namespace HeroesFlight.System.Gameplay
 {
     public class GamePlaySystem : GamePlaySystemInterface
     {
-        public GamePlaySystem(CharacterSystemInterface characterSystem, NpcSystemInterface npcSystem)
+        public GamePlaySystem(IDataSystemInterface dataSystemInterface, CharacterSystemInterface characterSystem, NpcSystemInterface npcSystem)
         {
+            this.dataSystemInterface = dataSystemInterface;
             this.npcSystem = npcSystem;
             this.characterSystem = characterSystem;
             npcSystem.OnEnemySpawned += HandleEnemySpawned;
@@ -34,6 +36,8 @@ namespace HeroesFlight.System.Gameplay
 
         public BoosterSpawner BoosterSpawner { get; private set; }
 
+        public CurrencySpawner CurrencySpawner { get; private set; }
+
         public int CurrentLvlIndex => container.CurrentLvlIndex;
 
         public event Action<float> OnUltimateChargesChange;
@@ -42,10 +46,15 @@ namespace HeroesFlight.System.Gameplay
 
         public event Action<int> OnRemainingEnemiesLeft;
         public event Action<DamageModel> OnCharacterDamaged;
+        public event Action<float, Transform> OnCharacterHeal;
         public event Action<DamageModel> OnEnemyDamaged;
         public event Action<int> OnCharacterHealthChanged;
         public event Action<int> OnCharacterComboChanged;
         public event Action<GameState> OnGameStateChange;
+        public event Action<BoosterSO, float, Transform> OnBoosterActivated;
+        public event Action<int> OnCoinsCollected;
+
+        IDataSystemInterface dataSystemInterface;
         List<IHealthController> GetExistingEnemies() => activeEnemyHealthControllers;
         List<IHealthController> activeEnemyHealthControllers = new();
         IHealthController miniBoss;
@@ -63,6 +72,7 @@ namespace HeroesFlight.System.Gameplay
         int enemiesToKill;
         int wavesAmount;
         Coroutine combotTimerRoutine;
+        int collectedGold;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -71,6 +81,10 @@ namespace HeroesFlight.System.Gameplay
             container = scene.GetComponentInChildren<GameplayContainer>();
             BoosterManager = scene.GetComponentInChildren<BoosterManager>();
             BoosterSpawner = scene.GetComponentInChildren<BoosterSpawner>();
+            BoosterManager.OnBoosterActivated += HandleBoosterActivated;
+
+            CurrencySpawner = scene.GetComponentInChildren<CurrencySpawner>();
+            CurrencySpawner.Initialize(dataSystemInterface, this);
 
             container.Init();
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
@@ -92,6 +106,7 @@ namespace HeroesFlight.System.Gameplay
             characterAttackController.SetCallback(null);
             characterHealthController.OnDeath -= HandleCharacterDeath;
             characterHealthController.OnBeingDamaged -= HandleCharacterDamaged;
+            characterHealthController.OnHeal -= HandleCharacterHeal;
             characterAttackController = null;
             characterHealthController = null;
             characterAbility = null;
@@ -176,12 +191,14 @@ namespace HeroesFlight.System.Gameplay
             characterAttackController.SetCallback(GetExistingEnemies);
             characterHealthController.OnDeath += HandleCharacterDeath;
             characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
+            characterHealthController.OnHeal += HandleCharacterHeal;
             characterHealthController.Init();
             characterSystem.SetCharacterControllerState(false);
             cameraController.SetTarget(characterController.CharacterTransform);
             npcSystem.InjectPlayer(characterController.CharacterTransform);
             EffectManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
             BoosterManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
+            CurrencySpawner.SetPlayer(characterController.CharacterTransform);
         }
 
         void CreateMiniboss(SpawnModel currentLvlModel)
@@ -228,7 +245,12 @@ namespace HeroesFlight.System.Gameplay
             OnUltimateChargesChange?.Invoke(characterAbility.CurrentCharge);
             BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.currentTransform.position);
 
+            CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.currentTransform.position, false);
+
+            CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10, iHealthController.currentTransform.position);
+
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
+
             if (enemiesToKill <= 0)
             {
                 GameTimer.Stop();
@@ -256,6 +278,11 @@ namespace HeroesFlight.System.Gameplay
                 return;
 
             OnCharacterDamaged?.Invoke(damageModel);
+        }
+
+        private void HandleCharacterHeal(float arg1, Transform transform)
+        {
+            OnCharacterHeal?.Invoke(arg1, transform);
         }
 
         void HandleCharacterDeath(IHealthController obj)
@@ -368,6 +395,24 @@ namespace HeroesFlight.System.Gameplay
             OnCharacterComboChanged?.Invoke(characterComboNumber);
             combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());
             return currentLvlModel;
+        }
+
+        private void HandleBoosterActivated(BoosterSO sO, float arg2, Transform transform)
+        {
+            OnBoosterActivated?.Invoke(sO, arg2, transform);
+        }
+
+        public void AddGold(int amount)
+        {
+            collectedGold += amount;
+            OnCoinsCollected?.Invoke(collectedGold);
+        }
+
+        public void StoreRunReward()
+        {     
+            Debug.Log($"StoreRunReward {collectedGold}");
+            dataSystemInterface.AddCurency(CurrencyKeys.Gold, collectedGold);
+            collectedGold = 0;
         }
     }
 }

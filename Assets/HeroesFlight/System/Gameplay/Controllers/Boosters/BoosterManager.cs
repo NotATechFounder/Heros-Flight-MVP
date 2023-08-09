@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BoosterManager : MonoBehaviour
 {
+    public event Action<BoosterSO, float, Transform> OnBoosterActivated;
+
     [SerializeField] private CharacterStatController characterStatController;
     [SerializeField] private List<BoosterContainer> boosterContainerList;
 
@@ -18,6 +21,7 @@ public class BoosterManager : MonoBehaviour
 
         if (IsInstantBoost(boosterSO))
         {
+            OnBoosterActivated?.Invoke(boosterSO, boosterSO.BoosterValue, characterStatController.transform);
             boost.OnStart?.Invoke();
             return true;
         }
@@ -36,6 +40,8 @@ public class BoosterManager : MonoBehaviour
         }
 
         boosterContainer.SetActiveBoost(this, boost);
+
+        OnBoosterActivated?.Invoke(boosterSO, boosterSO.BoosterValue, characterStatController.transform);
 
         return true;
     }
@@ -57,10 +63,12 @@ public class BoosterManager : MonoBehaviour
                         used = false;
                         return true;
                     case BoosterStackType.Duration:
+                        OnBoosterActivated?.Invoke(boosterSO, boosterSO.BoosterValue, characterStatController.transform);
                         boosterContainer.ResetBoostDuration();
                         used = true;
                         return true;
                     case BoosterStackType.Effect:
+                        OnBoosterActivated?.Invoke(boosterSO, boosterSO.BoosterValue, characterStatController.transform);
                         boosterContainer.IncreaseStackCount();
                         used = true;
                         return true;
@@ -132,7 +140,7 @@ public class BoosterManager : MonoBehaviour
             }
             else
             {
-                characterStatController.ModifyHealth(boosterSO.BoosterValue  + 10, true);
+                characterStatController.ModifyHealth(boosterSO.BoosterValue  + 5, true);
             }
 
         }, null);
