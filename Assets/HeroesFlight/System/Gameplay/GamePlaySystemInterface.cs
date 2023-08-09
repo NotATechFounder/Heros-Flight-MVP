@@ -19,6 +19,13 @@ namespace HeroesFlight.System.Gameplay
         event Action<int> OnCharacterComboChanged; 
         event Action<GameState> OnGameStateChange;
         public event Action OnNextLvlLoadRequest;
+
+        public event Action<BoosterSO, float, Transform> OnBoosterActivated;
+
+        public event Action<int> OnCoinsCollected;
+
+        public CurrencySpawner CurrencySpawner { get; }
+
         public CountDownTimer GameTimer { get; }
         public AngelEffectManager EffectManager { get; }
 
@@ -33,5 +40,9 @@ namespace HeroesFlight.System.Gameplay
         SpawnModel PreloadLvl();
         void ResetLogic();
         void EnablePortal();
+
+        void AddGold (int amount);
+
+        public void StoreRunReward();
     }
 }

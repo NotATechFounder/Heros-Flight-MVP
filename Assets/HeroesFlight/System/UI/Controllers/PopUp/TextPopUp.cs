@@ -35,8 +35,9 @@ public class TextPopUp : MonoBehaviour
         });
     }
 
-    public void Init(string text, Color color, Vector3 pos)
+    public void Init(string text, Color color, Vector3 pos, float size = 60)
     {
+        textMeshPro.fontSize = size;
         textMeshPro.text = text;
         textMeshPro.color = color;
         transform.position = pos;

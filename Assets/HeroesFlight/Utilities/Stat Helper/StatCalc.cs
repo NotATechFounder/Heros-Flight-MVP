@@ -14,8 +14,8 @@ public static class StatCalc
     {
         return increase ? currentValue + amount : currentValue - amount;
     }
-    public static float GetPercentage(float baseValue, float currentValue)
+    public static float GetPercentage(float baseValue, float percentageAmount)
     {
-        return (currentValue / baseValue) * 100;
+        return (percentageAmount / 100) * baseValue;
     }
 }
