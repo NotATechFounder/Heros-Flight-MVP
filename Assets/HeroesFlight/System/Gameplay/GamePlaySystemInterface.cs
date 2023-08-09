@@ -24,6 +24,8 @@ namespace HeroesFlight.System.Gameplay
 
         public event Action<int> OnCoinsCollected;
 
+        public event Action<BoosterContainer> OnBoosterContainerCreated;
+
         public CurrencySpawner CurrencySpawner { get; }
 
         public CountDownTimer GameTimer { get; }

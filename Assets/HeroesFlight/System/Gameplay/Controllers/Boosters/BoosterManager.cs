@@ -7,6 +7,8 @@ public class BoosterManager : MonoBehaviour
 {
     public event Action<BoosterSO, float, Transform> OnBoosterActivated;
 
+    public event Action<BoosterContainer> OnBoosterContainerCreated;
+
     [SerializeField] private CharacterStatController characterStatController;
     [SerializeField] private List<BoosterContainer> boosterContainerList;
 
@@ -40,6 +42,8 @@ public class BoosterManager : MonoBehaviour
         }
 
         boosterContainer.SetActiveBoost(this, boost);
+
+        OnBoosterContainerCreated?.Invoke(boosterContainer);
 
         OnBoosterActivated?.Invoke(boosterSO, boosterSO.BoosterValue, characterStatController.transform);
 

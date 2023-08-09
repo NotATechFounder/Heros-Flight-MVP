@@ -26,6 +26,7 @@ namespace HeroesFlight.System.UI
             gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
             gameplaySystem.OnBoosterActivated += HandleBoosterActivated;
             gameplaySystem.OnCoinsCollected += HandleCoinChange;
+            gameplaySystem.OnBoosterContainerCreated += HandleBoosterContainerCreated;
         }
 
         public event Action OnReturnToMainMenuRequest;
@@ -248,7 +249,8 @@ namespace HeroesFlight.System.UI
 
         private void HandleBoosterActivated(BoosterSO boosterSO, float arg2, Transform transform)
         {
-            PopUpTextAtPos($"+{boosterSO.Abreviation} %{arg2}", new Vector2(transform.position.x, transform.position.y + 2) , boosterSO.BoosterColor);
+          //  PopUpTextAtPos($"+{boosterSO.Abreviation} %{arg2}", new Vector2(transform.position.x, transform.position.y + 2) , boosterSO.BoosterColor);
+            PopUpTextAtPos($"+{boosterSO.Abreviation}", new Vector2(transform.position.x, transform.position.y + 2), boosterSO.BoosterColor);
         }
 
         void PopUpTextAtPos(string info, Vector2 pos, Color color)
@@ -260,6 +262,12 @@ namespace HeroesFlight.System.UI
         void UpdateComboUI(int count)
         {
             UiEventHandler.GameMenu.UpdateComboCounterText(count);
+        }
+
+
+        private void HandleBoosterContainerCreated(BoosterContainer container)
+        {
+            UiEventHandler.GameMenu.VisualiseBooster(container);
         }
     }
 }

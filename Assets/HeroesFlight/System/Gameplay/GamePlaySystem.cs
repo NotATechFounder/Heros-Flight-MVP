@@ -52,6 +52,7 @@ namespace HeroesFlight.System.Gameplay
         public event Action<GameState> OnGameStateChange;
         public event Action<BoosterSO, float, Transform> OnBoosterActivated;
         public event Action<int> OnCoinsCollected;
+        public event Action<BoosterContainer> OnBoosterContainerCreated;
 
         IDataSystemInterface dataSystemInterface;
         List<IHealthController> GetExistingEnemies() => activeEnemyHealthControllers;
@@ -81,6 +82,7 @@ namespace HeroesFlight.System.Gameplay
             BoosterManager = scene.GetComponentInChildren<BoosterManager>();
             BoosterSpawner = scene.GetComponentInChildren<BoosterSpawner>();
             BoosterManager.OnBoosterActivated += HandleBoosterActivated;
+            BoosterManager.OnBoosterContainerCreated += HandleBoosterWithDurationActivated;
 
             CurrencySpawner = scene.GetComponentInChildren<CurrencySpawner>();
             CurrencySpawner.Initialize(this);
@@ -399,6 +401,11 @@ namespace HeroesFlight.System.Gameplay
             dataSystemInterface.AddCurency(CurrencyKeys.Experience, collectedXp);
             collectedGold = 0;
             collectedXp = 0;
+        }
+
+        private void HandleBoosterWithDurationActivated(BoosterContainer container)
+        {
+            OnBoosterContainerCreated?.Invoke(container);
         }
     }
 }
