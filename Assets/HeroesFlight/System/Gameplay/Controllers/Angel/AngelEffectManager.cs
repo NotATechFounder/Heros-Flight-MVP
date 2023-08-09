@@ -21,7 +21,7 @@ public class AngelEffectManager : MonoBehaviour
         this.characterStatController = characterStatController;
     }
 
-    public void CompletedLevel()
+    public bool CompletedLevel()
     {
         if (currentAngelCard != null && currentAngelCard.angelCardSO != null)
         {
@@ -30,7 +30,10 @@ public class AngelEffectManager : MonoBehaviour
                 RemoveEffect(currentAngelCard.tier, effect);
             }
             AddAfterBonusEffect(currentAngelCard.tier, currentAngelCard);
+            return true;
         }
+
+        return false;
     }
 
     private void AddAfterBonusEffect(AngelCardTier angelCardTier, AngelCard newAngelCard)
@@ -49,6 +52,7 @@ public class AngelEffectManager : MonoBehaviour
         ModifyPlayerStatRaw(angelCardTier, newAngelCard.angelCardSO.AffterBonusEffect, true);
         OnPermanetCard?.Invoke(newAngelCard);
         currentAngelCard = null;
+        monsterStatController.SetCurrentCardIcon(null);
     }
 
     public void AddAngelCardSO(AngelCardSO angelCardSO)
@@ -64,6 +68,7 @@ public class AngelEffectManager : MonoBehaviour
             }
 
             currentAngelCard = angelCard;
+            monsterStatController.SetCurrentCardIcon(angelCardSO.CardImage);
         }
     }
 

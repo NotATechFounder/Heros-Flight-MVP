@@ -81,7 +81,7 @@ namespace HeroesFlight.System.NPC.Container
                 AiControllerBase resultEnemy = Instantiate(targetEntry.Prefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition()
                     , Quaternion.identity);
                 resultEnemy.transform.parent = transform;
-                resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier);
+                resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier, monsterStatController.CurrentCardIcon);
                 spawnedEnemies.Add(resultEnemy);
                 OnOnEnemySpawned?.Invoke(resultEnemy);
                 yield return timeBetweenEnemySpawn;
@@ -108,7 +108,7 @@ namespace HeroesFlight.System.NPC.Container
                 , Quaternion.identity);
             resultEnemy.transform.parent = transform;
             spawnedEnemies.Add(resultEnemy);
-            resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier);
+            resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier,null);
             return resultEnemy;
 
         }

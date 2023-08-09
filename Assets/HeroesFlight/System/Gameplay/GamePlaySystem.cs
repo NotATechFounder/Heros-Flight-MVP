@@ -391,6 +391,7 @@ namespace HeroesFlight.System.Gameplay
         {     
             Debug.Log($"StoreRunReward {collectedGold}");
             dataSystemInterface.AddCurency(CurrencyKeys.Gold, collectedGold);
+            collectedGold = 0;
         }
     }
 }

@@ -28,9 +28,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
         Vector2 wanderPosition;
         protected MonsterStatModifier statModifier;
 
-        public virtual void Init(Transform player, MonsterStatModifier monsterStatModifier)
+        public virtual void Init(Transform player, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
-            statModifier = monsterStatModifier;
+            statModifier = EnemyType == EnemyType.MiniBoss ? new MonsterStatModifier() : monsterStatModifier;
             rigidBody = GetComponent<Rigidbody2D>();
             attackCollider = GetComponent<Collider2D>();
             animator = GetComponent<AiAnimatorInterface>();
@@ -39,7 +39,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             viewController.Init();
             OnInit();
             viewController.StartFadeIn(2f, Enable);
-            DisplayModifiyer();
+            DisplayModifiyer(currentCardIcon);
         }
 
         void Update()
@@ -117,26 +117,17 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 <= m_Model.CombatModel.GetMonsterStatData.AttackRange;
         }
 
-        public void DisplayModifiyer()
+        public void DisplayModifiyer(Sprite sprite)
         {
-            bool hasModifier = false;
-
-            if (statModifier.AttackModifier > 0)
+            if(sprite == null)
             {
-                hasModifier = true;
+                buffDebuffIcon.enabled = false;
             }
-
-            if (statModifier.DefenceModifier > 0)
+            else
             {
-                hasModifier = true;
+                buffDebuffIcon.enabled = true;
+                buffDebuffIcon.sprite = sprite;
             }
-
-            if (statModifier.AttackSpeedUpModifier > 0)
-            {
-                hasModifier = true;
-            }
-
-            buffDebuffIcon.enabled = hasModifier;
         }
 
         protected void OnInit()

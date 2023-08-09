@@ -78,6 +78,7 @@ namespace UISystem
 
         public override void OnOpened()
         {
+            ResetMenu();
             openEffect.Start();
 
            // UpdateCoinText(GetCoinText());

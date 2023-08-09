@@ -50,18 +50,37 @@ namespace HeroesFlight.StateStack.State
 
                     void HandleGameStateChanged(GameState newState)
                     {
-                        if (newState != GameState.WaitingPortal)
-                            return;
-
-                        CoroutineUtility.WaitForSeconds(2f, () =>
+                        switch (newState)
                         {
-                            gamePlaySystem.CurrencySpawner.ActiveAllLoot();
-                        });
+                            case GameState.Ongoing:
+                                break;
+                            case GameState.Won:
+                                gamePlaySystem.StoreRunReward();
+                                uiSystem.UiEventHandler.SummaryMenu.Open();
+                                break;
+                            case GameState.Lost:
+                                gamePlaySystem.StoreRunReward();
+                                uiSystem.UiEventHandler.ReviveMenu.Open();
+                                break;
+                            case GameState.Ended:
+                                break;
+                            case GameState.WaitingPortal:
 
-                        CoroutineUtility.WaitForSeconds(5f, () =>
-                        {
-                            gamePlaySystem.EffectManager.CompletedLevel();
-                        });
+                                CoroutineUtility.WaitForSeconds(2f, () =>
+                                {
+                                    gamePlaySystem.CurrencySpawner.ActiveAllLoot();
+                                });
+
+                                CoroutineUtility.WaitForSeconds(5f, () =>
+                                {
+                                    if (!gamePlaySystem.EffectManager.CompletedLevel())
+                                    {
+                                        ShowLevelPortal();
+                                    }
+                                });
+
+                                break;
+                        }
 
                         // if (gamePlaySystem.CurrentLvlIndex % 2 == 0)
                         // {

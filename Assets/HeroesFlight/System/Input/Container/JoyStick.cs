@@ -80,6 +80,11 @@ public class Joystick : OnScreenControl
 
     private void ETouch_onFingerDown(Finger touchedFinger)
     {
+        if(ClickOnUI(touchedFinger))
+        {
+            return;
+        }
+
         if (_movementFinger == null && touchedFinger.screenPosition.y >= Screen.height / 1.5f)
         {
             return;
@@ -116,6 +121,11 @@ public class Joystick : OnScreenControl
 
     private void ETouch_onFingerMove(Finger onFingerMove)
     {
+        if (ClickOnUI(onFingerMove))
+        {
+            return;
+        }
+
         if (_movementFinger == onFingerMove)
         {
             _releaseTime += Time.deltaTime;
@@ -173,7 +183,7 @@ public class Joystick : OnScreenControl
 
         foreach (RaycastResult item in uiHit)
         {
-            Debug.Log(item.gameObject.name);
+           if(item.gameObject.layer == LayerMask.NameToLayer("UI_IgnoreTouch"))
             return true;
         }
         return false;

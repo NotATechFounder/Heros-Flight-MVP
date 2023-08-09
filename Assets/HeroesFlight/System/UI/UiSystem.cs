@@ -15,7 +15,6 @@ namespace HeroesFlight.System.UI
         {
             dataSystem = dataSystemInterface;
             gameplaySystem = gamePlaySystem;
-            gameplaySystem.OnGameStateChange += HandleGameplayStateChange;
             gameplaySystem.OnEnemyDamaged += HandleEnemyDamaged;
             gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
             gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
@@ -125,7 +124,7 @@ namespace HeroesFlight.System.UI
 
                 UiEventHandler.SummaryMenu.OnMenuOpened += () =>
                 {
-                    gameplaySystem.StoreRunReward();
+ 
                 };
 
                 UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
@@ -161,23 +160,6 @@ namespace HeroesFlight.System.UI
         void HandleMinibossHealthChange(float value)
         {
             UiEventHandler.GameMenu.UpdateBossHealthFill(value);
-        }
-
-        void HandleGameplayStateChange(GameState newState)
-        {
-            switch (newState)
-            {
-                case GameState.Ongoing:
-                    break;
-                case GameState.Won:
-                    HandlePlayerWin();
-                    break;
-                case GameState.Lost:
-                    HandlePlayerDeath();
-                    break;
-                case GameState.Ended:
-                    break;
-            }
         }
 
         void HandleMiniboss(bool isEnabled)
