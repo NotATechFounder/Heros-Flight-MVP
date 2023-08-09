@@ -9,11 +9,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class AbilityBaseCharacter : MonoBehaviour,CharacterAbilityInterface
     {
-        [SerializeField] int targetCharges = 100;
-        [SerializeField] protected AnimationReferenceAsset[] targetAnimations;
+        protected AnimationReferenceAsset[] targetAnimations;
         protected  CharacterAnimationControllerInterface animator;
-      
-      
+        int targetCharges = 0;
         int currentCharges = 0;
 
         void Awake()
@@ -35,9 +33,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public float CurrentCharge => (float)currentCharges/targetCharges;
      
-        public void Init(AnimationReferenceAsset[] animations)
+        public void Init(AnimationReferenceAsset[] animations,int charges)
         {
             targetAnimations = animations;
+            targetCharges = charges;
+            currentCharges = 0;
         }
 
         public virtual void UpdateAbilityCharges(int value)

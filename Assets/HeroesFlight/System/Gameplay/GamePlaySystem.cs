@@ -171,7 +171,8 @@ namespace HeroesFlight.System.Gameplay
             characterAttackController =
                 characterController.CharacterTransform.GetComponent<CharacterAttackController>();
             characterAbility=characterController.CharacterTransform.GetComponent<AbilityBaseCharacter>();
-            characterAbility.Init(characterController.CharacterSO.AnimationData.UltimateAnimations);
+            characterAbility.Init(characterController.CharacterSO.AnimationData.UltimateAnimations,
+                characterController.CharacterSO.UltimateData.Charges);
             characterAttackController.SetCallback(GetExistingEnemies);
             characterHealthController.OnDeath += HandleCharacterDeath;
             characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
