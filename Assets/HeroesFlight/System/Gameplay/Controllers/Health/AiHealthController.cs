@@ -6,12 +6,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class AiHealthController : HealthController
     {
         AiControllerInterface aiController;
-
+        
         public override void Init()
         {
             aiController = GetComponent<AiControllerInterface>();
             maxHealth = aiController.AgentModel.CombatModel.GetMonsterStatData.Health;
             heathBarUI?.ChangeType(HeathBarUI.HealthBarType.ToggleVisibilityOnHit);
+            defence=aiController.GetMonsterStatModifier().CalculateDefence(aiController.AgentModel.CombatModel.GetMonsterStatData.Defense);
             base.Init();
         }
 
