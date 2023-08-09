@@ -241,9 +241,9 @@ namespace HeroesFlight.System.UI
 
         void HandleCharacterHeal(float amount, Transform pos)
         {
-            //var damageString = $"{(int)amount}";
-            //UiEventHandler.PopupManager.PopUpTextAtTransfrom(pos, Vector3.one, damageString,
-            //    Color.green);
+            var damageString = $"{(int)amount}";
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(pos, Vector3.one, damageString,
+                Color.green);
         }
 
 
