@@ -8,6 +8,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 {
     public abstract class AiControllerBase : MonoBehaviour, AiControllerInterface
     {
+        [SerializeField] protected SpriteRenderer buffDebuffIcon;
         [SerializeField] protected AiAgentModel m_Model;
         [SerializeField] protected float wanderDistance = 10f;
         [SerializeField] protected float knockbackForce = 10f;
@@ -38,6 +39,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             viewController.Init();
             OnInit();
             viewController.StartFadeIn(2f, Enable);
+            DisplayModifiyer();
         }
 
         void Update()
@@ -113,6 +115,28 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             return Vector2.Distance(CurrentTarget.position, transform.position) 
                 <= m_Model.CombatModel.GetMonsterStatData.AttackRange;
+        }
+
+        public void DisplayModifiyer()
+        {
+            bool hasModifier = false;
+
+            if (statModifier.AttackModifier > 0)
+            {
+                hasModifier = true;
+            }
+
+            if (statModifier.DefenceModifier > 0)
+            {
+                hasModifier = true;
+            }
+
+            if (statModifier.AttackSpeedUpModifier > 0)
+            {
+                hasModifier = true;
+            }
+
+            buffDebuffIcon.enabled = hasModifier;
         }
 
         protected void OnInit()
