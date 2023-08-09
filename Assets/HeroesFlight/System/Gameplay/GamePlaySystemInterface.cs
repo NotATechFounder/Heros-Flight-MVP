@@ -24,7 +24,7 @@ namespace HeroesFlight.System.Gameplay
         public event Action<BoosterSO, float, Transform> OnBoosterActivated;
 
         public event Action<int> OnCoinsCollected;
-
+        public event Action<BoosterContainer> OnBoosterContainerCreated;
         public CurrencySpawner CurrencySpawner { get; }
 
         public CountDownTimer GameTimer { get; }
@@ -43,6 +43,7 @@ namespace HeroesFlight.System.Gameplay
         void EnablePortal();
         void UseCharacterSpecial();
         void AddGold (int amount);
+        void AddExperience(int amount);
         public void StoreRunReward();
     }
 }
