@@ -52,6 +52,7 @@ public class AngelEffectManager : MonoBehaviour
         ModifyPlayerStatRaw(angelCardTier, newAngelCard.angelCardSO.AffterBonusEffect, true);
         OnPermanetCard?.Invoke(newAngelCard);
         currentAngelCard = null;
+        characterStatController.SetCurrentCardIcon(null);
         monsterStatController.SetCurrentCardIcon(null);
     }
 
@@ -68,6 +69,7 @@ public class AngelEffectManager : MonoBehaviour
             }
 
             currentAngelCard = angelCard;
+            characterStatController.SetCurrentCardIcon(angelCardSO.CardImage);
             monsterStatController.SetCurrentCardIcon(angelCardSO.CardImage);
         }
     }
