@@ -13,16 +13,6 @@ public class CurrencySpawner : MonoBehaviour
     [SerializeField] private GamePlaySystemInterface gamePlaySystem;
     [SerializeField] private Transform playerTransfrom;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            for (int i = 0; i < 10; i++)
-          //  SpawnGoldAtPosition(100, transform.position);
-            SpawnAtPosition(CurrencyKeys.Experience, 100, transform.position);
-        }
-    }
-
     public void Initialize(GamePlaySystemInterface gamePlaySystemInterface)
     {
         gamePlaySystem = gamePlaySystemInterface;
@@ -31,11 +21,6 @@ public class CurrencySpawner : MonoBehaviour
     public void SetPlayer(Transform playerTrans)
     {
         playerTransfrom = playerTrans;
-    }
-
-    public void SpawnGoldAtPosition(float amount, Vector3 position)
-    {
-        SpawnAtPosition(CurrencyKeys.Gold, amount, position);
     }
 
     public void SpawnAtPosition(string key, float amount, Vector3 position)
@@ -59,10 +44,5 @@ public class CurrencySpawner : MonoBehaviour
         }
 
         spawnedCurrencyItems.Remove(currencyItem);
-    }
-
-    public void ActiveAllLoot()
-    {
-        spawnedCurrencyItems.ForEach(currency => currency.MoveToPlayer());
     }
 }

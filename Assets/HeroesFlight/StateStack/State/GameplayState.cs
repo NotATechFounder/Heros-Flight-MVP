@@ -44,6 +44,7 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.UiEventHandler.PauseMenu.OnQuitButtonClicked += HandleReturnToMainMenu;
                     uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += HandleAngelsGambitClosed;
                     uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed += ShowLevelPortal;
+                    uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += gamePlaySystem.StoreRunReward;
                     gamePlaySystem.OnNextLvlLoadRequest += HandleContinueGameLoop;
                     gamePlaySystem.OnGameStateChange += HandleGameStateChanged;
 
@@ -55,11 +56,9 @@ namespace HeroesFlight.StateStack.State
                             case GameState.Ongoing:
                                 break;
                             case GameState.Won:
-                                gamePlaySystem.StoreRunReward();
                                 uiSystem.UiEventHandler.SummaryMenu.Open();
                                 break;
                             case GameState.Lost:
-                                gamePlaySystem.StoreRunReward();
                                 uiSystem.UiEventHandler.ReviveMenu.Open();
                                 break;
                             case GameState.Ended:
@@ -121,6 +120,7 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.UiEventHandler.PauseMenu.OnQuitButtonClicked -= HandleReturnToMainMenu;
                         uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= HandleAngelsGambitClosed;
                         uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed -= ShowLevelPortal;
+                        uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= gamePlaySystem.StoreRunReward;
                         gamePlaySystem.OnNextLvlLoadRequest -= HandleContinueGameLoop;
                         gamePlaySystem.OnGameStateChange -= HandleGameStateChanged;
                         uiSystem.UiEventHandler.LoadingMenu.Open();
