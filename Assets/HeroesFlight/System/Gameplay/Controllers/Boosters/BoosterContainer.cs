@@ -1,9 +1,15 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 [System.Serializable]
 public class BoosterContainer
 {
+    public Action OnStart;
+    public Action<float> OnTick;
+    public Action OnEnd;
+    public Action OnResetDuration;
+
     [SerializeField] private Boost activeBoost;
     [SerializeField] private float currentDuration;
     [SerializeField] private int stackCount = 1;
@@ -27,6 +33,7 @@ public class BoosterContainer
 
     public void ApplyBoost()
     {
+        OnStart?.Invoke();
         activeBoost.OnStart?.Invoke();
         currentDuration = activeBoost.boosterSO.BoosterDuration;
         countDownRoutine = monoBehaviour.StartCoroutine(CountDownRoutine());
@@ -36,6 +43,7 @@ public class BoosterContainer
     {
         while (currentDuration > 0)
         {
+            OnTick?.Invoke(currentDuration / activeBoost.boosterSO.BoosterDuration);
             currentDuration -= Time.deltaTime;
             yield return null;
         }
@@ -52,6 +60,7 @@ public class BoosterContainer
         activeBoost = null;
         countDownRoutine = null;
         isRunning = false;
+        OnEnd?.Invoke();
     }
 
     public void ClearBoost(bool triggerEnd)
@@ -62,6 +71,8 @@ public class BoosterContainer
             {
                 activeBoost.OnEnd?.Invoke();
             }
+
+            OnEnd?.Invoke();
         }
         monoBehaviour.StopCoroutine(countDownRoutine);
         activeBoost = null;
@@ -72,6 +83,7 @@ public class BoosterContainer
     public void ResetBoostDuration()
     {
         currentDuration = activeBoost.boosterSO.BoosterDuration;
+        OnResetDuration?.Invoke();
     }
 
     public void IncreaseStackCount()

@@ -53,6 +53,7 @@ namespace HeroesFlight.System.Gameplay
         public event Action<GameState> OnGameStateChange;
         public event Action<BoosterSO, float, Transform> OnBoosterActivated;
         public event Action<int> OnCoinsCollected;
+        public event Action<BoosterContainer> OnBoosterContainerCreated;
 
         IDataSystemInterface dataSystemInterface;
         List<IHealthController> GetExistingEnemies() => activeEnemyHealthControllers;
@@ -73,6 +74,7 @@ namespace HeroesFlight.System.Gameplay
         int wavesAmount;
         Coroutine combotTimerRoutine;
         int collectedGold;
+        float collectedXp;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -82,9 +84,10 @@ namespace HeroesFlight.System.Gameplay
             BoosterManager = scene.GetComponentInChildren<BoosterManager>();
             BoosterSpawner = scene.GetComponentInChildren<BoosterSpawner>();
             BoosterManager.OnBoosterActivated += HandleBoosterActivated;
+            BoosterManager.OnBoosterContainerCreated += HandleBoosterWithDurationActivated;
 
             CurrencySpawner = scene.GetComponentInChildren<CurrencySpawner>();
-            CurrencySpawner.Initialize(dataSystemInterface, this);
+            CurrencySpawner.Initialize(this);
 
             container.Init();
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
@@ -245,7 +248,7 @@ namespace HeroesFlight.System.Gameplay
             OnUltimateChargesChange?.Invoke(characterAbility.CurrentCharge);
             BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.currentTransform.position);
 
-            CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.currentTransform.position, false);
+            CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.currentTransform.position);
 
             CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10, iHealthController.currentTransform.position);
 
@@ -408,11 +411,22 @@ namespace HeroesFlight.System.Gameplay
             OnCoinsCollected?.Invoke(collectedGold);
         }
 
+        public void AddExperience(int amount)
+        {
+            collectedXp += amount;
+        }
+
         public void StoreRunReward()
         {     
-            Debug.Log($"StoreRunReward {collectedGold}");
             dataSystemInterface.AddCurency(CurrencyKeys.Gold, collectedGold);
+            dataSystemInterface.AddCurency(CurrencyKeys.Experience, collectedXp);
             collectedGold = 0;
+            collectedXp = 0;
+        }
+
+        private void HandleBoosterWithDurationActivated(BoosterContainer container)
+        {
+            OnBoosterContainerCreated?.Invoke(container);
         }
     }
 }

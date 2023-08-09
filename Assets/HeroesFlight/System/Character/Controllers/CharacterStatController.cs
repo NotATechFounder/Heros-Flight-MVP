@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class CharacterStatController : MonoBehaviour
 {
+    [SerializeField] private SpriteRenderer currentCardIcon;
+
     [SerializeField] PlayerStatData playerCombatModel;
 
     public Action<float, bool> OnHealthModified;
@@ -40,6 +42,19 @@ public class CharacterStatController : MonoBehaviour
     {
         this.playerCombatModel = playerCombatModel;
         ResetStats();
+    }
+
+    public void SetCurrentCardIcon(Sprite sprite)
+    {
+        if (sprite != null)
+        {
+            currentCardIcon.sprite = sprite;
+            currentCardIcon.enabled = true;
+        }
+        else
+        {
+            currentCardIcon.enabled = false;
+        }
     }
 
     public void ModifyHealth(float percentageAmount, bool increase)

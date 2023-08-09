@@ -38,7 +38,7 @@ namespace Pelumi.Juicer
 
     public static class JuicerCore
     {
-        public static IEnumerator Do<T>(T startingValue, Action<T> valueToModify, T destination, JuicerRuntimeParam juicerRuntimeParam, JuicerRuntimeController juicerRuntimeController)
+        public static IEnumerator Do<T>(T startingValue, Action<T> valueToModify, T destination, JuicerRuntimeParam juicerRuntimeParam, JuicerRuntimeController juicerRuntimeController, bool forwardDir = true)
         {
             float currentDelay = juicerRuntimeController.StartDelay;
 
@@ -52,7 +52,7 @@ namespace Pelumi.Juicer
 
             float i = 0.0f;
             float rate = 1.0f / juicerRuntimeController.Duration;
-            bool forward = true; // Flag to indicate the animation direction
+            bool forward = forwardDir; // Flag to indicate the animation direction
             int loopCount = 0;
 
             T previousDestination = destination;
