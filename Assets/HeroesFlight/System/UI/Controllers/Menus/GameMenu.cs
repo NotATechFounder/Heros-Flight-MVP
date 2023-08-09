@@ -38,6 +38,9 @@ namespace UISystem
         [SerializeField] private AdvanceButton specialAttackButton;
         [SerializeField] private Image specialAttackButtonFill;
         [SerializeField] private Image specialAttackIcon;
+
+        [Header("Boosters")]
+        [SerializeField] private BoosterUI[] boosterButtons;
         
         JuicerRuntime openEffect;
         JuicerRuntime closeEffect;
@@ -179,6 +182,18 @@ namespace UISystem
             specialAttackButtonFill.fillAmount = 0;
             specialIconEffect.Start();
             OnSpecialAttackButtonClicked?.Invoke();
+        }
+
+        public void VisualiseBooster(BoosterContainer boosterContainer)
+        {
+            foreach (BoosterUI boosterButton in boosterButtons)
+            {
+                if (boosterButton.GetBoosterSO == null)
+                {
+                    boosterButton.Initialize(boosterContainer);
+                    break;
+                }
+            }
         }
     }
 }
