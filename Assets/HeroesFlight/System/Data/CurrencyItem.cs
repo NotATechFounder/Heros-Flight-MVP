@@ -23,7 +23,6 @@ public class CurrencyItem : MonoBehaviour
     private JuicerRuntime scaleEffect;
     private Transform target;
     public float amount;
-    private bool autoMove = false;
     private Coroutine moveToPlayerCoroutine;
 
     public CurrencySO CurrencySO => currencySO;
@@ -40,7 +39,7 @@ public class CurrencyItem : MonoBehaviour
         });
     }
 
-    public void Initialize(CurrencySO currency, Action<CurrencyItem, float> func , float amount, Transform target, bool move = true)
+    public void Initialize(CurrencySO currency, Action<CurrencyItem, float> func , float amount, Transform target)
     {
         transform.localScale = Vector3.one;
         currencySO = currency;
@@ -49,7 +48,6 @@ public class CurrencyItem : MonoBehaviour
         OnCurrencyInteracted = func;
         this.amount = amount;
         this.target = target;
-        autoMove = move;
 
         ColorOverLifetimeModule colorOverLifetime = particle.colorOverLifetime;
         colorOverLifetime.color = currency.GetGradient;
@@ -59,10 +57,7 @@ public class CurrencyItem : MonoBehaviour
 
         ApplyUpWardForce(launchForce);
 
-        if (autoMove)
-        {
-            MoveToPlayer();
-        }
+        MoveToPlayer();
     }
 
     public void ApplyUpWardForce(float force)
@@ -79,7 +74,7 @@ public class CurrencyItem : MonoBehaviour
 
     public IEnumerator MoveToPosition(Action OnReachPlayer)
     {
-        if (autoMove) yield return new WaitForSeconds(waitTime);
+        yield return new WaitForSeconds(waitTime);
         yield return null;
         var currentPos = transform.position;
         var t = 0f;

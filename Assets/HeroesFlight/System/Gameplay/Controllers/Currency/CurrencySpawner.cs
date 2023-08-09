@@ -10,7 +10,6 @@ public class CurrencySpawner : MonoBehaviour
     [SerializeField] private CurrencyDatabase currencyDatabase;
     [SerializeField] private CurrencyItem currencyPrefab;
     [SerializeField] private List<CurrencyItem> spawnedCurrencyItems = new List<CurrencyItem>();
-    [SerializeField] private IDataSystemInterface currencyManager;
     [SerializeField] private GamePlaySystemInterface gamePlaySystem;
     [SerializeField] private Transform playerTransfrom;
 
@@ -24,9 +23,8 @@ public class CurrencySpawner : MonoBehaviour
         }
     }
 
-    public void Initialize(IDataSystemInterface currencyManager, GamePlaySystemInterface gamePlaySystemInterface)
+    public void Initialize(GamePlaySystemInterface gamePlaySystemInterface)
     {
-        this.currencyManager = currencyManager;
         gamePlaySystem = gamePlaySystemInterface;
     }
 
@@ -40,11 +38,11 @@ public class CurrencySpawner : MonoBehaviour
         SpawnAtPosition(CurrencyKeys.Gold, amount, position);
     }
 
-    public void SpawnAtPosition(string key, float amount, Vector3 position, bool autoMove = true)
+    public void SpawnAtPosition(string key, float amount, Vector3 position)
     {
         CurrencySO currency = currencyDatabase.GetItemSOByID(key);
         CurrencyItem currencyObj = ObjectPoolManager.SpawnObject(currencyPrefab, position, Quaternion.identity);
-        currencyObj.Initialize(currency, ProcessCurrency, amount, playerTransfrom, autoMove);
+        currencyObj.Initialize(currency, ProcessCurrency, amount, playerTransfrom);
         spawnedCurrencyItems.Add(currencyObj);
     }
 
@@ -56,7 +54,7 @@ public class CurrencySpawner : MonoBehaviour
                 gamePlaySystem.AddGold((int)amount);
                 break;
             case CurrencyKeys.Experience:
-                currencyManager.AddCurency(currencyItem.CurrencySO.GetKey, amount);
+                gamePlaySystem.AddExperience((int)amount);
                 break;
         }
 

@@ -43,6 +43,8 @@ namespace HeroesFlight.System.Gameplay
 
         void AddGold (int amount);
 
+        void AddExperience(int amount);
+
         public void StoreRunReward();
     }
 }

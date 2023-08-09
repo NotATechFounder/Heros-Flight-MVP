@@ -66,12 +66,7 @@ namespace HeroesFlight.StateStack.State
                                 break;
                             case GameState.WaitingPortal:
 
-                                CoroutineUtility.WaitForSeconds(2f, () =>
-                                {
-                                    gamePlaySystem.CurrencySpawner.ActiveAllLoot();
-                                });
-
-                                CoroutineUtility.WaitForSeconds(5f, () =>
+                                CoroutineUtility.WaitForSeconds(3f, () =>
                                 {
                                     if (!gamePlaySystem.EffectManager.CompletedLevel())
                                     {
