@@ -8,9 +8,13 @@ public class CharacterSO : ScriptableObject
     [SerializeField] AppearanceData appearanceData;
     [SerializeField] PlayerStatData playerStatData;
     [SerializeField] AnimationData aniamtionData;
+    [SerializeField] UltimateData ultimateData;
+    [SerializeField] AttackData attackData;
 
     public string CharacterName => characterName;
     public PlayerStatData GetPlayerStatData => playerStatData;
     public AppearanceData GetAppearanceData => appearanceData;
     public AnimationData AnimationData => aniamtionData;
+    public UltimateData UltimateData => ultimateData;
+    public AttackData AttackData => attackData;
 }

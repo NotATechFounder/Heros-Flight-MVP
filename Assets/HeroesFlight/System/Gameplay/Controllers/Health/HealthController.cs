@@ -11,6 +11,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected float maxHealth;
         [SerializeField] protected float currentHealth;
         [SerializeField] protected HeathBarUI heathBarUI;
+        [SerializeField] protected float defence;
+        public bool IsImmortal { get; protected set; }
         public Transform currentTransform => transform;
         public CombatTargetType TargetType => targetType;
         public float MaxHealth => maxHealth;
@@ -19,7 +21,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public event Action<DamageModel> OnBeingDamaged;
         public event Action<IHealthController> OnDeath;
         public event Action<float, Transform> OnHeal;
-
         public virtual void Init()
         {
             currentHealth = maxHealth;
@@ -28,10 +29,16 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public virtual void DealDamage(DamageModel damage)
         {
-            if(IsDead())
+            if (IsImmortal)
                 return;
             
-            currentHealth -= damage.Amount;
+            if(IsDead())
+                return;
+
+            var resultDamage = damage.Amount -
+                StatCalc.GetValueOfPercentage(damage.Amount, defence);
+            damage.ModifyAmount(resultDamage);
+            currentHealth -= resultDamage;
             heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
             damage.SetTarget(transform);
             OnBeingDamaged?.Invoke(damage);
@@ -67,6 +74,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public virtual void Revive()
         {
             Init();
+        }
+
+        public virtual void SetInvulnerableState(bool isImmortal)
+        {
+            IsImmortal = isImmortal;
         }
 
         protected virtual void ProcessDeath()

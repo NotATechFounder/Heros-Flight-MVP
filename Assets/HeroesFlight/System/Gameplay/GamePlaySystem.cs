@@ -40,6 +40,7 @@ namespace HeroesFlight.System.Gameplay
 
         public int CurrentLvlIndex => container.CurrentLvlIndex;
 
+        public event Action<float> OnUltimateChargesChange;
         public event Action<bool> OnMinibossSpawned;
         public event Action<float> OnMinibossHealthChange;
 
@@ -59,6 +60,7 @@ namespace HeroesFlight.System.Gameplay
         IHealthController miniBoss;
         IHealthController characterHealthController;
         CharacterAttackController characterAttackController;
+        CharacterAbilityInterface characterAbility;
         CharacterSystemInterface characterSystem;
         CameraControllerInterface cameraController;
         NpcSystemInterface npcSystem;
@@ -87,6 +89,7 @@ namespace HeroesFlight.System.Gameplay
             container.Init();
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
             container.SetStartingIndex(0);
+            OnUltimateChargesChange?.Invoke(0);
             OnComplete?.Invoke();
         }
 
@@ -106,6 +109,7 @@ namespace HeroesFlight.System.Gameplay
             characterHealthController.OnHeal -= HandleCharacterHeal;
             characterAttackController = null;
             characterHealthController = null;
+            characterAbility = null;
         }
 
         public void ResetLogic()
@@ -124,6 +128,19 @@ namespace HeroesFlight.System.Gameplay
         public void EnablePortal()
         {
             container.EnablePortal();
+        }
+
+        public void UseCharacterSpecial()
+        {
+            characterHealthController.SetInvulnerableState(true);
+            characterSystem.SetCharacterControllerState(false);
+            characterAttackController.ToggleControllerState(false);
+            characterAbility.UseAbility(null, () =>
+            {
+                characterSystem.SetCharacterControllerState(true);
+                characterAttackController.ToggleControllerState(true);
+                characterHealthController.SetInvulnerableState(false);
+            });
         }
 
         bool CheckCurrentModel(out SpawnModel currentLvlModel)
@@ -168,6 +185,9 @@ namespace HeroesFlight.System.Gameplay
                 characterController.CharacterTransform.GetComponent<CharacterHealthController>();
             characterAttackController =
                 characterController.CharacterTransform.GetComponent<CharacterAttackController>();
+            characterAbility=characterController.CharacterTransform.GetComponent<AbilityBaseCharacter>();
+            characterAbility.Init(characterController.CharacterSO.AnimationData.UltimateAnimations,
+                characterController.CharacterSO.UltimateData.Charges);
             characterAttackController.SetCallback(GetExistingEnemies);
             characterHealthController.OnDeath += HandleCharacterDeath;
             characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
@@ -186,7 +206,7 @@ namespace HeroesFlight.System.Gameplay
             var miniboss = npcSystem.SpawnMiniBoss(currentLvlModel);
             miniBoss = miniboss.GetComponent<IHealthController>();
             miniBoss.OnBeingDamaged += HandleEnemyDamaged;
-            miniBoss.OnBeingDamaged += HandleMinibosshealthChange;
+            miniBoss.OnBeingDamaged += HandleMinibossHealthChange;
             miniBoss.OnDeath += HandleEnemyDeath;
             miniBoss.Init();
             activeEnemyHealthControllers.Add(miniBoss);
@@ -194,12 +214,12 @@ namespace HeroesFlight.System.Gameplay
             cameraController.SetCameraShakeState(false);
         }
 
-        void HandleMinibosshealthChange(DamageModel damageModel)
+        void HandleMinibossHealthChange(DamageModel damageModel)
         {
             OnMinibossHealthChange?.Invoke(miniBoss.CurrentHealthProportion);
             if (miniBoss.CurrentHealthProportion <= 0)
             {
-                miniBoss.OnBeingDamaged -= HandleMinibosshealthChange;
+                miniBoss.OnBeingDamaged -= HandleMinibossHealthChange;
             }
         }
 
@@ -221,7 +241,8 @@ namespace HeroesFlight.System.Gameplay
             iHealthController.OnDeath -= HandleEnemyDeath;
             activeEnemyHealthControllers.Remove(iHealthController);
             enemiesToKill--;
-
+            characterAbility.UpdateAbilityCharges(20);
+            OnUltimateChargesChange?.Invoke(characterAbility.CurrentCharge);
             BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.currentTransform.position);
 
             CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.currentTransform.position, false);

@@ -11,13 +11,18 @@ namespace HeroesFlight.System.Gameplay.Model
             DamageType = type;
         }
       
-        public float Amount { get; }
+        public float Amount { get;  private set;}
         public DamageType DamageType { get; }
         public Transform Target { get; private set; }
 
         public void SetTarget(Transform damageTarget)
         {
             Target = damageTarget;
+        }
+
+        public void ModifyAmount(float newValue)
+        {
+            Amount = newValue;
         }
     }
 }

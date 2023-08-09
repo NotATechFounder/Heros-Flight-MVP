@@ -1,5 +1,5 @@
 using HeroesFlight.System.Character;
-using System;
+using HeroesFlight.System.Gameplay.Model;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -58,6 +58,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             base.Revive();
         }
 
-       
+        public override void DealDamage(DamageModel damage)
+        {
+            defence = characterStatController.CurrentDefense;
+            base.DealDamage(damage);
+        }
     }
 }

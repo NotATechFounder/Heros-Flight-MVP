@@ -9,6 +9,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         Transform currentTransform { get; }
         CombatTargetType TargetType { get; }
+        bool IsImmortal { get; }
         float MaxHealth { get; }
         float CurrentHealth { get; }
         float CurrentHealthProportion { get; }
@@ -20,6 +21,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         bool IsDead();
         void Reset();
         void Revive();
+
+        void SetInvulnerableState(bool isImmortal);
 
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Model;
@@ -8,6 +8,7 @@ namespace HeroesFlight.System.Gameplay
 {
     public interface GamePlaySystemInterface : ISystemInterface
     {
+        event Action<float> OnUltimateChargesChange; 
         event Action<bool> OnMinibossSpawned;
         event Action<float> OnMinibossHealthChange; 
         event Action<int> OnRemainingEnemiesLeft;
@@ -40,9 +41,8 @@ namespace HeroesFlight.System.Gameplay
         SpawnModel PreloadLvl();
         void ResetLogic();
         void EnablePortal();
-
+        void UseCharacterSpecial();
         void AddGold (int amount);
-
         public void StoreRunReward();
     }
 }

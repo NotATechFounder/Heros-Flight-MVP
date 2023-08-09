@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeroesFlight.Common;
 using HeroesFlight.System.Character.Enum;
+using HeroesFlight.System.Gameplay.Data.Animation;
+using HeroesFlight.System.Gameplay.Enum;
 using Spine;
 using Spine.Unity;
 using StansAssets.Foundation.Async;
@@ -18,7 +19,7 @@ namespace HeroesFlight.System.Character
         bool m_WasFacingLeft;
         Dictionary<CharacterState, AnimationReferenceAsset> m_AnimationsCache = new();
 
-        public event Action<string> OnDealDamageRequest;
+        public event Action<AnimationEventInterface> OnAnimationEvent;
 
 
         public void Init(AnimationData data)
@@ -75,6 +76,7 @@ namespace HeroesFlight.System.Character
                 
                 var turnTrack = m_SkeletonAnimation.AnimationState.SetAnimation(1,aniamtionData.AttackAnimation , false);
                 m_SkeletonAnimation.AnimationState.AddEmptyAnimation(1, .5f, 0);
+                turnTrack.TimeScale = speedMultiplier;
             }
           
         }
@@ -128,15 +130,66 @@ namespace HeroesFlight.System.Character
             StopAttackAnimation();
         }
 
+        public void PlayAnimationSequence(List<AnimationReferenceAsset> animations,Action onCompleteAction=null)
+        {
+            StopAttackAnimation();
+            float duration = 0;
+            for (var i = 0; i < animations.Count; i++)
+            {
+                if (i == 0)
+                {
+                    m_SkeletonAnimation.AnimationState.SetAnimation(2, animations[i], false);
+                   
+                }
+                else
+                {
+                    m_SkeletonAnimation.AnimationState.AddAnimation(2, animations[i].Animation,false,0);
+                  
+                }
+
+                duration += animations[i].Animation.Duration;
+            }
+            
+            CoroutineUtility.WaitForSeconds(duration, () =>
+            {
+                m_SkeletonAnimation.AnimationState.SetEmptyAnimation(2, 0f);
+                onCompleteAction?.Invoke();
+            });
+        }
+
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
             switch (e.Data.Name)
             {
                 case "Dealing damg":
-                    OnDealDamageRequest?.Invoke(e.Data.Name);
+                    switch (trackentry.Animation.Name)
+                    {
+                        case AnimationNames.RegularAttack_Base:
+                            Debug.Log(trackentry.Animation.Name);
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Regular,0));
+                            break;
+                        case AnimationNames.Ultimate_Base_1:
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,1));
+                            break;
+                        case AnimationNames.Ultimate_Base_2:
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,2));
+                            break;
+                        case AnimationNames.Ultimate_Base_3:
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,3));
+                            break;
+                        case AnimationNames.Ultimate_Base_4:
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,4));
+                            break;
+                        
+                        
+                    }
+                   
                     break;
                 case "start_sound":
                     AudioManager.PlaySoundEffect("Attack Sound");
+                    break;
+                case "Attack Ultimate":
+                    OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,0));
                     break;
             }
         }

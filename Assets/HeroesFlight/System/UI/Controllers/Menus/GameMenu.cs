@@ -153,10 +153,7 @@ namespace UISystem
         public void FillSpecial(float normalisedValue)
         {
             specialAttackButtonFill.fillAmount = normalisedValue;
-            if (normalisedValue >= 1)
-            {
-                ToggleSpecialAttackButton(true);
-            }
+            ToggleSpecialAttackButton(normalisedValue >= 1);
         }
 
         public void ToggleSpecialAttackButton(bool value)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
@@ -26,11 +26,16 @@ namespace HeroesFlight.System.UI
             gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
             gameplaySystem.OnBoosterActivated += HandleBoosterActivated;
             gameplaySystem.OnCoinsCollected += HandleCoinChange;
+            gameplaySystem.OnUltimateChargesChange += UpdateUltimateButton;
         }
 
         public event Action OnReturnToMainMenuRequest;
+
         public event Action OnRestartLvlRequest;
+
         public event Action OnReviveCharacterRequest;
+
+        public event Action OnSpecialButtonClicked;
 
         public UIEventHandler UiEventHandler { get; private set; }
 
@@ -43,6 +48,7 @@ namespace HeroesFlight.System.UI
         public const string GameMusicLoopID = "ForestLoop";
 
         UiContainer container;
+
         GamePlaySystemInterface gameplaySystem;
         IDataSystemInterface dataSystem;
 
@@ -79,6 +85,10 @@ namespace HeroesFlight.System.UI
                 UiEventHandler.GameMenu.OnPauseButtonClicked += () =>
                 {
                     UiEventHandler.PauseMenu.Open();
+                };
+                UiEventHandler.GameMenu.OnSpecialAttackButtonClicked += () =>
+                {
+                    OnSpecialButtonClicked?.Invoke();
                 };
 
                 //UiEventHandler.GameMenu.GetCoinText = () =>
@@ -150,6 +160,11 @@ namespace HeroesFlight.System.UI
                     UiEventHandler.GameMenu.UpdateCoinText(currencySO.GetCurrencyAmount);
                     break;
             }
+        }
+
+        void UpdateUltimateButton(float value)
+        {
+           UiEventHandler.GameMenu.FillSpecial(value);
         }
 
         private void HandleCoinChange(int amount)
