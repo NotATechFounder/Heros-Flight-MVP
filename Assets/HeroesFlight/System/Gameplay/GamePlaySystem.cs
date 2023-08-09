@@ -117,13 +117,14 @@ namespace HeroesFlight.System.Gameplay
 
         public void UseCharacterSpecial()
         {
-            Debug.Log("using character ability");
+            characterHealthController.SetInvulnerableState(true);
             characterSystem.SetCharacterControllerState(false);
             characterAttackController.ToggleControllerState(false);
             characterAbility.UseAbility(null, () =>
             {
                 characterSystem.SetCharacterControllerState(true);
                 characterAttackController.ToggleControllerState(true);
+                characterHealthController.SetInvulnerableState(false);
             });
         }
 

@@ -13,6 +13,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected AnimationReferenceAsset[] targetAnimations;
         protected  CharacterAnimationControllerInterface animator;
       
+      
         int currentCharges = 0;
 
         void Awake()

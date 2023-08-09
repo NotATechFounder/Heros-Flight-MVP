@@ -133,9 +133,8 @@ namespace HeroesFlight.System.Character
         public void PlayAnimationSequence(List<AnimationReferenceAsset> animations,Action onCompleteAction=null)
         {
             StopAttackAnimation();
-            //m_SkeletonAnimation.AnimationState.ClearTrack(2);
             float duration = 0;
-            for (int i = 0; i < animations.Count; i++)
+            for (var i = 0; i < animations.Count; i++)
             {
                 if (i == 0)
                 {
@@ -151,7 +150,6 @@ namespace HeroesFlight.System.Character
                 duration += animations[i].Animation.Duration;
             }
             
-            Debug.Log(duration);
             CoroutineUtility.WaitForSeconds(duration, () =>
             {
                 m_SkeletonAnimation.AnimationState.SetEmptyAnimation(2, 0f);
@@ -171,19 +169,15 @@ namespace HeroesFlight.System.Character
                             OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Regular,0));
                             break;
                         case AnimationNames.Ultimate_Base_1:
-                            Debug.Log(trackentry.Animation.Name);
                             OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,1));
                             break;
                         case AnimationNames.Ultimate_Base_2:
-                            Debug.Log(trackentry.Animation.Name);
                             OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,2));
                             break;
                         case AnimationNames.Ultimate_Base_3:
-                            Debug.Log(trackentry.Animation.Name);
                             OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,3));
                             break;
                         case AnimationNames.Ultimate_Base_4:
-                            Debug.Log(trackentry.Animation.Name);
                             OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,4));
                             break;
                         
