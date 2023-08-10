@@ -135,11 +135,13 @@ namespace HeroesFlight.System.Gameplay
 
         public void UseCharacterSpecial()
         {
+            cameraController.SetCameraState(GameCameraType.Skill);
             characterHealthController.SetInvulnerableState(true);
             characterSystem.SetCharacterControllerState(false);
             characterAttackController.ToggleControllerState(false);
             characterAbility.UseAbility(null, () =>
             {
+                cameraController.SetCameraState(GameCameraType.Character);
                 characterSystem.SetCharacterControllerState(true);
                 characterAttackController.ToggleControllerState(true);
                 characterHealthController.SetInvulnerableState(false);
@@ -160,7 +162,6 @@ namespace HeroesFlight.System.Gameplay
 
         void CreateLvL(SpawnModel currentLvlModel)
         {
-            characterSystem.SetCharacterControllerState(true);
             if (currentLvlModel.MiniBosses.Count > 0)
             {
                 CreateMiniboss(currentLvlModel);
@@ -244,7 +245,7 @@ namespace HeroesFlight.System.Gameplay
             iHealthController.OnDeath -= HandleEnemyDeath;
             activeEnemyHealthControllers.Remove(iHealthController);
             enemiesToKill--;
-            characterAbility.UpdateAbilityCharges(20);
+            characterAbility.UpdateAbilityCharges(5);
             OnUltimateChargesChange?.Invoke(characterAbility.CurrentCharge);
             BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.currentTransform.position);
 
@@ -347,6 +348,7 @@ namespace HeroesFlight.System.Gameplay
         {
             ChangeState(GameState.Ongoing);
             cameraController.SetCameraShakeState(currentModel.MiniBosses.Count > 0);
+            characterSystem.SetCharacterControllerState(true);
             GameTimer.Start(3, null,
                 () =>
                 {
@@ -364,9 +366,9 @@ namespace HeroesFlight.System.Gameplay
 
         public void StartGameLoop(SpawnModel currentModel)
         {
-            //SetupCharacter();
             ChangeState(GameState.Ongoing);
             cameraController.SetCameraShakeState(currentModel.MiniBosses.Count > 0);
+            characterSystem.SetCharacterControllerState(true);
             GameTimer.Start(3, null,
                 () =>
                 {

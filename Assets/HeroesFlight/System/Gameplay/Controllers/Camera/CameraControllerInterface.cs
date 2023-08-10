@@ -1,3 +1,4 @@
+using HeroesFlight.System.Gameplay.Enum;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -6,5 +7,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         void SetCameraShakeState(bool shouldShake);
         void SetTarget(Transform target);
+
+        void SetCameraState(GameCameraType newState);
     }
 }

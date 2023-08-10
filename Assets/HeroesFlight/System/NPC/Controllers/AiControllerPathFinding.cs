@@ -9,7 +9,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
     {
        
         [SerializeField] bool useKnockback=true;
-        Path currentPath;
         IAstarAI ai;
         AIDestinationSetter setter;
         bool isInknockback;
@@ -55,7 +54,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             if(isDisabled)
                 return;
             setter.target = null;
-            ai.canMove = !InAttackRange();
+            ai.isStopped = InAttackRange();
             if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath))
             {
                 ai.destination = GetRandomPosition2D();
@@ -71,7 +70,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             if (isInknockback)
                 return;
             isInknockback = true;
-            ai.canMove = false;
+            ai.isStopped = true;
             var forceVector = currentTarget.position.x >= transform.position.x ? Vector2.left : Vector2.right;
             CoroutineUtility.WaitForSeconds(.1f, () =>
             {
@@ -81,7 +80,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
                     if (rigidBody == null)
                         return;
 
-                    ai.canMove = true;
+                    ai.isStopped = false;
                     isInknockback = false;
                     rigidBody.velocity = Vector2.zero;
                 });
@@ -103,7 +102,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         Vector2 GetRandomPosition2D()
         {
-            return Random.insideUnitCircle * wanderDistance;
+            var point= Random.insideUnitCircle * wanderDistance;
+                point +=(Vector2) ai.position;
+                return point;
         }
     }
 }

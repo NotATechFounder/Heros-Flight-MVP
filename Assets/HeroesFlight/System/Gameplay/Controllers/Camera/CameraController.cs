@@ -1,23 +1,39 @@
+using System;
 using Cinemachine;
+using HeroesFlight.System.Gameplay.Enum;
 using UnityEngine;
+
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class CameraController : MonoBehaviour,CameraControllerInterface
     {
         [SerializeField] float shakeIntensity=1f;
-        CinemachineVirtualCamera camera;
+        [SerializeField] Collider2D boundsCollider;
+        [SerializeField] CinemachineVirtualCamera characterCamera;
+        [SerializeField] CinemachineVirtualCamera skillCamera;
         CinemachineBasicMultiChannelPerlin noise;
         bool shouldShake;
-
+        CameraUiHook hook;
+        
         void Awake()
         {
-            camera = GetComponent<CinemachineVirtualCamera>();
-            noise = camera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            noise = characterCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            characterCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = boundsCollider;
+            skillCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = boundsCollider;
             noise.m_AmplitudeGain = 0;
+            hook = FindObjectOfType<CameraUiHook>();
+           
         }
 
-       
+        void Start()
+        {
+            hook.SetCharacterSliderValue(characterCamera.m_Lens.OrthographicSize);
+            hook.SetSkillSliderValue(skillCamera.m_Lens.OrthographicSize);
+            hook.CharacterSlider.onValueChanged.AddListener(UpdateCharacterCameraFOW);
+            hook.SkillSLider.onValueChanged.AddListener(UpdateSkillCameraFOW);
+        }
+
 
         public void SetCameraShakeState(bool shouldShake)
         {
@@ -33,8 +49,24 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public void SetTarget(Transform target)
         {
-            camera.Follow = target;
-            camera.LookAt = target;
+            characterCamera.Follow = target;
+            characterCamera.LookAt = target;
+            skillCamera.Follow = target;
+            skillCamera.LookAt = target;
+        }
+
+        public void SetCameraState(GameCameraType newType)
+        {
+            switch (newType)
+            {
+                case GameCameraType.Character:
+                    characterCamera.enabled = true;
+                    break;
+                case GameCameraType.Skill:
+                    characterCamera.enabled = false;
+                    break;
+               
+            }
         }
 
         void StopCameraShake()
@@ -46,5 +78,17 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             noise.m_AmplitudeGain = shakeIntensity;
         }
+
+        public void UpdateCharacterCameraFOW(float newValue)
+        {
+            characterCamera.m_Lens.OrthographicSize = newValue;
+        }
+
+        public void UpdateSkillCameraFOW(float newValue)
+        {
+            skillCamera.m_Lens.OrthographicSize = newValue;
+            Debug.Log(skillCamera.m_Lens.OrthographicSize);
+        }
+        
     }
 }

@@ -272,8 +272,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 var enemiesAttacked = 0;
                 foreach (var enemy in enemiesToAttack)
                 {
-                    if (enemiesAttacked >= maxEnemiesToHit)
-                        break;
+                    // if (enemiesAttacked >= maxEnemiesToHit)
+                    //     break;
 
                     enemiesAttacked++;
 

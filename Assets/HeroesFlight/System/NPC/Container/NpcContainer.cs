@@ -28,9 +28,7 @@ namespace HeroesFlight.System.NPC.Container
         public void Init()
         {
             GenerateCache();
-            timeBetweenEnemySpawn = new WaitForSeconds(1f);
-            timeBeweenWaves = new WaitForSeconds(10f);
-
+            
         }
 
         public void SpawnEnemies(SpawnModel model, Action<AiControllerBase> OnOnEnemySpawned)
@@ -59,6 +57,8 @@ namespace HeroesFlight.System.NPC.Container
 
         IEnumerator SpawnEnemiesRoutine(SpawnModel model, Action<AiControllerBase> OnOnEnemySpawned)
         {
+            timeBetweenEnemySpawn = new WaitForSeconds(model.TimeBetweenMobs);
+            timeBeweenWaves = new WaitForSeconds(model.TimeBetweenWaves);
             spawnAmount = model.MobsAmount;
             var amountToSpawnPerWave =model.MobsAmount / model.WavesAmount ;
             while (spawnAmount>0)
