@@ -9,6 +9,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class CameraController : MonoBehaviour,CameraControllerInterface
     {
         [SerializeField] float shakeIntensity=1f;
+        [SerializeField] Collider2D boundsCollider;
         [SerializeField] CinemachineVirtualCamera characterCamera;
         [SerializeField] CinemachineVirtualCamera skillCamera;
         CinemachineBasicMultiChannelPerlin noise;
@@ -18,6 +19,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void Awake()
         {
             noise = characterCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            characterCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = boundsCollider;
+            skillCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = boundsCollider;
             noise.m_AmplitudeGain = 0;
             hook = FindObjectOfType<CameraUiHook>();
            
