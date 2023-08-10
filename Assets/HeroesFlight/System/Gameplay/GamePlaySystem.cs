@@ -162,7 +162,6 @@ namespace HeroesFlight.System.Gameplay
 
         void CreateLvL(SpawnModel currentLvlModel)
         {
-            characterSystem.SetCharacterControllerState(true);
             if (currentLvlModel.MiniBosses.Count > 0)
             {
                 CreateMiniboss(currentLvlModel);
@@ -349,6 +348,7 @@ namespace HeroesFlight.System.Gameplay
         {
             ChangeState(GameState.Ongoing);
             cameraController.SetCameraShakeState(currentModel.MiniBosses.Count > 0);
+            characterSystem.SetCharacterControllerState(true);
             GameTimer.Start(3, null,
                 () =>
                 {
@@ -366,9 +366,9 @@ namespace HeroesFlight.System.Gameplay
 
         public void StartGameLoop(SpawnModel currentModel)
         {
-            //SetupCharacter();
             ChangeState(GameState.Ongoing);
             cameraController.SetCameraShakeState(currentModel.MiniBosses.Count > 0);
+            characterSystem.SetCharacterControllerState(true);
             GameTimer.Start(3, null,
                 () =>
                 {
