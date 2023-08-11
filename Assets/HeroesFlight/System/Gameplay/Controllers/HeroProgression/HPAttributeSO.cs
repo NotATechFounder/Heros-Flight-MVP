@@ -9,9 +9,12 @@ public class HPAttributeSO : ScriptableObject
     [SerializeField] private HeroProgressionAttribute attribute;
     [TextArea(3, 10)]
     [SerializeField] private string description;
+    [SerializeField] private Sprite icon;
     [SerializeField] private AttributeKeyValue[] KeyValues;
 
+    public Sprite Icon => icon;
     public HeroProgressionAttribute Attribute => attribute;
+    public string Description => description;
 
     public float GetKeyValue(string key)
     {

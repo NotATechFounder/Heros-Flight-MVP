@@ -10,17 +10,24 @@ public class HeroProgression : MonoBehaviour
 
     public event Action<int> OnLevelUp;
 
+    [SerializeField] private int spPerLevel;
     [SerializeField] private float expToNextLevelBase;
     [SerializeField] private float expToNextLevelMultiplier;
-    [SerializeField] private HeroProgressionAttributeInfo[] HeroProgressionAttributeInfo;
+    [SerializeField] private HPAttributeSO[] HPAttributeSOs;
+    [SerializeField] private HeroProgressionAttributeInfo[] heroProgressionAttributeInfos;
 
+    private int currentSp;
     private int currentLevel;
     private float currentExp;
     private float expToNextLevel;
 
+    public HeroProgressionAttributeInfo[]  HeroProgressionAttributeInfos => heroProgressionAttributeInfos;
+
     private void Start()
     {
         expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
+
+        SetUpHeroProgressionAttributeInfo();
     }
 
     private void Update()
@@ -31,29 +38,40 @@ public class HeroProgression : MonoBehaviour
         }
     }
 
+    public void SetUpHeroProgressionAttributeInfo()
+    {
+        heroProgressionAttributeInfos = new HeroProgressionAttributeInfo[HPAttributeSOs.Length];
+        for (int i = 0; i < HPAttributeSOs.Length; i++)
+        {
+            HeroProgressionAttributeInfo heroProgressionAttributeInfo =  new HeroProgressionAttributeInfo();
+            heroProgressionAttributeInfos[i] = heroProgressionAttributeInfo;
+            heroProgressionAttributeInfos[i].Initialize(HPAttributeSOs[i]);
+        }
+    }
+
     public void SubscribeAttributeCallBacks()
     {
-        foreach (var attribute in HeroProgressionAttributeInfo)
+        foreach (var attribute in heroProgressionAttributeInfos)
         {
             switch (attribute.AttributeSO.Attribute)
             {
                 case HeroProgressionAttribute.Power:
-                    attribute.SubscribeToSPChanged(OnPowerSPChanged);
+                    attribute.SetEffect(OnPowerSPChanged);
                     break;
                 case HeroProgressionAttribute.Vitality:
-                    attribute.SubscribeToSPChanged(OnVitalitySPChanged);
+                    attribute.SetEffect(OnVitalitySPChanged);
                     break;
                 case HeroProgressionAttribute.Agility:
-                    attribute.SubscribeToSPChanged(OnAgilitySPChanged);
+                    attribute.SetEffect(OnAgilitySPChanged);
                     break;
                 case HeroProgressionAttribute.Defense:
-                    attribute.SubscribeToSPChanged(OnDefenseSPChanged);
+                    attribute.SetEffect(OnDefenseSPChanged);
                     break;
                 case HeroProgressionAttribute.HealthBoost:
-                    attribute.SubscribeToSPChanged(OnHealthBoostSPChanged);
+                    attribute.SetEffect(OnHealthBoostSPChanged);
                     break;
                 case HeroProgressionAttribute.CriticalHit:
-                    attribute.SubscribeToSPChanged(OnCriticalHitSPChanged);
+                    attribute.SetEffect(OnCriticalHitSPChanged);
                     break;
             }   
         }
@@ -66,27 +84,27 @@ public class HeroProgression : MonoBehaviour
 
     private void OnVitalitySPChanged(HeroProgressionAttributeInfo info)
     {
-        throw new NotImplementedException();
+
     }
 
     private void OnAgilitySPChanged(HeroProgressionAttributeInfo info)
     {
-        throw new NotImplementedException();
+
     }
 
     private void OnDefenseSPChanged(HeroProgressionAttributeInfo info)
     {
-        throw new NotImplementedException();
+
     }
 
     private void OnHealthBoostSPChanged(HeroProgressionAttributeInfo info)
     {
-        throw new NotImplementedException();
+
     }
 
     private void OnCriticalHitSPChanged(HeroProgressionAttributeInfo info)
     {
-        throw new NotImplementedException();
+ 
     }
 
     public void AddExp(float exp)
@@ -104,72 +122,54 @@ public class HeroProgression : MonoBehaviour
 
     private void LevelUp()
     {
+        currentSp += spPerLevel;
         currentLevel++;
         currentExp -= expToNextLevel;
         expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
         OnLevelUp?.Invoke(currentLevel);
     }
 
-    public void UnsubscribeAttributeCallBacks()
+    public bool CanSpendSP()
     {
-        foreach (var attribute in HeroProgressionAttributeInfo)
-        {
-            switch (attribute.AttributeSO.Attribute)
-            {
-                case HeroProgressionAttribute.Power:
-                    attribute.UnsubscribeToSPChanged(OnPowerSPChanged);
-                    break;
-                case HeroProgressionAttribute.Vitality:
-                    attribute.UnsubscribeToSPChanged(OnVitalitySPChanged);
-                    break;
-                case HeroProgressionAttribute.Agility:
-                    attribute.UnsubscribeToSPChanged(OnAgilitySPChanged);
-                    break;
-                case HeroProgressionAttribute.Defense:
-                    attribute.UnsubscribeToSPChanged(OnDefenseSPChanged);
-                    break;
-                case HeroProgressionAttribute.HealthBoost:
-                    attribute.UnsubscribeToSPChanged(OnHealthBoostSPChanged);
-                    break;
-                case HeroProgressionAttribute.CriticalHit:
-                    attribute.UnsubscribeToSPChanged(OnCriticalHitSPChanged);
-                    break;
-            }
-        }
+        return currentSp > 0;
     }
 }
 
 [Serializable]
 public class HeroProgressionAttributeInfo
 {
+    public Action<int> OnSPChanged;
     [SerializeField] HPAttributeSO attributeSO;
     [SerializeField] private int currentSP;
-    private Action<HeroProgressionAttributeInfo> OnSPChanged;
+    private Action<HeroProgressionAttributeInfo> OnChange;
 
     public HPAttributeSO AttributeSO => attributeSO;
 
-    public float CurrentSP => currentSP;
+    public int CurrentSP => currentSP;
 
-    public void IncrementdSP()
+    public void Initialize(HPAttributeSO hPAttributeSO)
+    {
+        attributeSO = hPAttributeSO;
+        currentSP = 0;
+    }
+
+    public void IncrementSP()
     {
         ++currentSP;
-        OnSPChanged?.Invoke(this);
+        OnSPChanged?.Invoke(currentSP);
+        OnChange?.Invoke(this);
     }
 
     public void DecrementSP()
     {
         --currentSP;
-        OnSPChanged?.Invoke(this);
+        OnSPChanged?.Invoke(currentSP);
+        OnChange?.Invoke(this);
     }
 
-    public void SubscribeToSPChanged(Action<HeroProgressionAttributeInfo> action)
+    public void SetEffect(Action<HeroProgressionAttributeInfo> action)
     {
-        OnSPChanged = action;
-    }
-
-    public void UnsubscribeToSPChanged(Action<HeroProgressionAttributeInfo> action)
-    {
-        OnSPChanged = action;
+        OnChange = action;
     }
 }
 
