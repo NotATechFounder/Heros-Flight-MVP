@@ -159,6 +159,8 @@ namespace HeroesFlight.System.Character
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
+            Debug.Log(e.Data.Name);
+            Debug.Log(trackentry.Animation.Name);
             switch (e.Data.Name)
             {
                 case "Dealing damg":
@@ -179,6 +181,12 @@ namespace HeroesFlight.System.Character
                             break;
                         case AnimationNames.Ultimate_Base_4:
                             OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,4));
+                            break;
+                        case AnimationNames.Regular_Attack_Spear:
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Regular,0));
+                            break;
+                        case AnimationNames.Ultimate_Spear:
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Lancer,0));
                             break;
                         
                         
