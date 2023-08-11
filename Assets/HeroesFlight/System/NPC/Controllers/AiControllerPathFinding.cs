@@ -54,7 +54,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             if(isDisabled)
                 return;
             setter.target = null;
-            ai.isStopped = InAttackRange();
+            ai.canMove = !InAttackRange();
             if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath))
             {
                 ai.destination = GetRandomPosition2D();
@@ -70,7 +70,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             if (isInknockback)
                 return;
             isInknockback = true;
-            ai.isStopped = true;
+            ai.canMove = false;
             var forceVector = currentTarget.position.x >= transform.position.x ? Vector2.left : Vector2.right;
             CoroutineUtility.WaitForSeconds(.1f, () =>
             {
@@ -80,7 +80,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
                     if (rigidBody == null)
                         return;
 
-                    ai.isStopped = false;
+                    ai.canMove = true;
                     isInknockback = false;
                     rigidBody.velocity = Vector2.zero;
                 });
