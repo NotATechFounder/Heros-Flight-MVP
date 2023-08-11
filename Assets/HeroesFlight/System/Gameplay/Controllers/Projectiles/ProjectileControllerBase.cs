@@ -1,4 +1,6 @@
 using System;
+using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -10,7 +12,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         Transform view;
         public event Action OnEnded;
         Vector2 currentDirection = default;
-        int damage;
+        float damage;
         float currentLifetime;
 
 
@@ -31,7 +33,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             Destroy(this.gameObject);
         }
 
-        public void SetupProjectile(int targetDamage, Transform currentTarget, Vector2 targetDirection)
+        public void SetupProjectile(float targetDamage, Transform currentTarget, Vector2 targetDirection)
         {
             currentDirection = targetDirection;
             damage = targetDamage;
@@ -46,7 +48,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (col.gameObject.TryGetComponent<IHealthController>(out var healthController))
             {
-                healthController.DealDamage(damage);
+                healthController.DealDamage(new DamageModel(damage,DamageType.NoneCritical));
                 OnEnded?.Invoke();
                 gameObject.SetActive(false);
             }

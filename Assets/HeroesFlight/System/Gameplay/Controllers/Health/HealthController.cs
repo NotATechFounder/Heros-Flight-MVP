@@ -1,5 +1,6 @@
 using System;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -7,43 +8,77 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class HealthController : MonoBehaviour, IHealthController
     {
         [SerializeField] CombatTargetType targetType;
-        protected int maxHealth;
-        [SerializeField] protected int currentHealh;
+        protected float maxHealth;
+        [SerializeField] protected float currentHealth;
         [SerializeField] protected HeathBarUI heathBarUI;
+        [SerializeField] protected float defence;
+        public bool IsImmortal { get; protected set; }
         public Transform currentTransform => transform;
         public CombatTargetType TargetType => targetType;
-        public int MaxHealth => maxHealth;
-        public int CurrentHealth => currentHealh;
-        public float CurrentHealthProportion => (float)currentHealh / maxHealth;
-        public event Action<Transform,int> OnBeingDamaged;
+        public float MaxHealth => maxHealth;
+        public float CurrentHealth => currentHealth;
+        public float CurrentHealthProportion => (float)currentHealth / maxHealth;
+        public event Action<DamageModel> OnBeingDamaged;
         public event Action<IHealthController> OnDeath;
-
-        void Awake()
-        {
-            Init();
-        }
-
+        public event Action<float, Transform> OnHeal;
         public virtual void Init()
         {
-            currentHealh = maxHealth;
+            currentHealth = maxHealth;
+            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
         }
 
-        public virtual void DealDamage(int damage)
+        public virtual void DealDamage(DamageModel damage)
         {
+            if (IsImmortal)
+                return;
+            
             if(IsDead())
                 return;
 
-            currentHealh -= damage;
-            heathBarUI?.ChangeValue((float)currentHealh / maxHealth);
-            OnBeingDamaged?.Invoke(transform, damage);
+            var resultDamage = damage.Amount -
+                StatCalc.GetValueOfPercentage(damage.Amount, defence);
+            damage.ModifyAmount(resultDamage);
+            currentHealth -= resultDamage;
+            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+            damage.SetTarget(transform);
+            OnBeingDamaged?.Invoke(damage);
 
             if (IsDead())
                 ProcessDeath();
         }
 
+        public virtual void Heal(float amount)
+        {
+            if (IsDead())
+                return;
+
+            currentHealth += amount;
+            if (currentHealth > maxHealth)
+                currentHealth = maxHealth;
+            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+            OnHeal?.Invoke(amount, transform);
+        }
+
         public virtual bool IsDead()
         {
-            return currentHealh <= 0;
+            return currentHealth <= 0;
+        }
+
+        public virtual void Reset()
+        {
+            Init();
+            OnBeingDamaged = null;
+            OnDeath = null;
+        }
+
+        public virtual void Revive()
+        {
+            Init();
+        }
+
+        public virtual void SetInvulnerableState(bool isImmortal)
+        {
+            IsImmortal = isImmortal;
         }
 
         protected virtual void ProcessDeath()
@@ -51,9 +86,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
            OnDeath?.Invoke(this);
         }
 
-        protected void TriggerDamageMessage(int damage)
+        protected void TriggerDamageMessage(DamageModel damage)
         {
-            OnBeingDamaged?.Invoke(transform,damage);
+            damage.SetTarget(transform);
+            OnBeingDamaged?.Invoke(damage);
         }
     }
 }

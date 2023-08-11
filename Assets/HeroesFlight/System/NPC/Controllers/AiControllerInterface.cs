@@ -15,9 +15,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
         
         Vector2 GetVelocity();
 
+        MonsterStatModifier GetMonsterStatModifier();
+
         void SetAttackState(bool canAttack);
         void ProcessKnockBack();
-        void Init(Transform player);
+        void Init(Transform player, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon);
         void Enable();
         void Disable();
 

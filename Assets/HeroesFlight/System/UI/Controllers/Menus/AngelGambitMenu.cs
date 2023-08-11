@@ -2,6 +2,7 @@ using Pelumi.Juicer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using TMPro;
 using UISystem;
 using UnityEngine;
@@ -11,8 +12,10 @@ namespace UISystem
 {
     public class AngelGambitMenu : BaseMenu<AngelGambitMenu>
     {
-        public event Action<AngelCardSO> OnCardSelected;
-        public Func<AngelCard> CardExit;
+        public Action<AngelCardSO> OnCardSelected;
+        public Func<AngelCardSO,AngelCard> CardExit;
+
+        [SerializeField] private Transform container;
 
         [Header("Card Buttons")]
         [SerializeField] private AdvanceButton buffCardButton;
@@ -39,47 +42,30 @@ namespace UISystem
         [SerializeField] private AngelCardSO[] angelCardSOList;
 
         AngelCardSO selectedCard = null;
+        private float totalChance;
+        private List<AngelCardSO> validAngelCardSOList;
 
         JuicerRuntime openEffectBG;
+        JuicerRuntime openEffectContainer;
         JuicerRuntime closeEffectBG;
 
         JuicerRuntime buffCardEffect;
         JuicerRuntime debuffCardEffect;
         JuicerRuntime spinCardEffect;
 
-        private void Start()
-        {
-            OnCreated();
-            Open();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                OnClosed();
-            }
-
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                OnOpened();
-            }
-
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                spinCardEffect.Start();
-            }
-        }
-
         public override void OnCreated()
         {
-            canvasGroup.alpha = 0;
+
+            container.localScale = Vector3.zero;
 
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
-            openEffectBG.SetOnStart(() => canvasGroup.alpha = 0);
+
+            openEffectContainer = container.JuicyScale(Vector3.one, 0.5f)
+                                            .SetEase(Ease.EaseInQuint)
+                                            .SetDelay(0.15f);
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
-            //closeEffectBG.SetOnComplected(CloseMenu);
+            closeEffectBG.SetOnComplected(CloseMenu);
 
             buffCardEffect = buffCardButton.transform.JuicyScale(Vector3.one * 1.2f, .5f).SetEase(Ease.EaseOutSine).SetLoop(-1);
             debuffCardEffect = debuffCardButton.transform.JuicyScale(Vector3.one * 1.2f, .5f).SetEase(Ease.EaseOutSine).SetLoop(-1);
@@ -95,7 +81,7 @@ namespace UISystem
 
             continueButton.onClick.AddListener(()=>
             {
-                ActivateCard();
+                ActivateNewCard();
             });
 
             ToggleCardRevealProperties (false);
@@ -103,9 +89,11 @@ namespace UISystem
 
         public override void OnOpened()
         {
-            openEffectBG.Start();
+            cardRevealPanel.SetActive(false);
+            openEffectBG.Start(() => canvasGroup.alpha = 0);
             buffCardEffect.Start();
             debuffCardEffect.Start();
+            openEffectContainer.Start(() => container.localScale = Vector3.zero);
         }
 
         public override void OnClosed()
@@ -122,16 +110,56 @@ namespace UISystem
             debuffCardButton.transform.localScale = Vector3.one;
         }
 
+        public void GetValidCardSO(AngelCardType angelCardType)
+        {
+            validAngelCardSOList = new List<AngelCardSO>();
+
+            foreach (AngelCardSO angelCardSO in angelCardSOList)
+            {
+                if (angelCardSO.CardType == angelCardType)
+                {
+                    AngelCard existingCard = CardExit?.Invoke(angelCardSO);
+
+                    if (existingCard != null)
+                    {
+                        if (existingCard.tier == AngelCardTier.Six)
+                        {
+                            Debug.Log("All tiers are completed");
+                            continue;
+                        }
+                    }
+                    totalChance += angelCardSO.Chance;
+                    validAngelCardSOList.Add(angelCardSO);
+                }
+            }
+        }
+
         public void GenerateRandomCards(AngelCardType angelCardType)
         {
-            int randomCard = UnityEngine.Random.Range(0, angelCardSOList.Length);
+            totalChance = 0;
+            selectedCard = null;
 
-            while (angelCardSOList[randomCard].CardType != angelCardType)
+            GetValidCardSO(angelCardType);
+
+            float randomChance = UnityEngine.Random.Range(0, totalChance);
+
+            foreach (AngelCardSO angelCardSO in validAngelCardSOList)
             {
-                randomCard = UnityEngine.Random.Range(0, angelCardSOList.Length);
+                randomChance -= angelCardSO.Chance;
+
+                if (randomChance <= 0)
+                {
+                    selectedCard = angelCardSO;
+                    break;
+                }
             }
 
-            selectedCard = angelCardSOList[randomCard];
+            if(selectedCard == null)
+            {
+                Debug.Log("No card was selected");
+                return;
+            }
+
             DisplayCard();
         }   
         
@@ -139,10 +167,7 @@ namespace UISystem
         {
             cardRevealPanel.SetActive(true);
 
-            AngelCard existingCard = CardExit?.Invoke();
-
-            // To be removed
-            existingCard = StatEffectManager.Instance.Exists(selectedCard);
+            AngelCard existingCard = CardExit?.Invoke(selectedCard);
 
             if (existingCard != null)
             {
@@ -162,14 +187,11 @@ namespace UISystem
             spinCardEffect.Start();
         }
 
-        public void ActivateCard ()
+        public void ActivateNewCard ()
         {
-            cardRevealPanel.SetActive(false);
             OnCardSelected?.Invoke(selectedCard);
             ToggleCardRevealProperties(false);
-            // To be removed
-            StatEffectManager.Instance.AddAngelCardSO(selectedCard);
-           // Close();
+            Close();
         }
 
         public void ToggleCardRevealProperties(bool toggle)

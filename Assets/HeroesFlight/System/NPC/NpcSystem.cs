@@ -1,7 +1,9 @@
 using System;
 using HeroesFlight.System.NPC.Container;
+using HeroesFlight.System.NPC.Model;
 using HeroesFlightProject.System.NPC.Controllers;
 using StansAssets.Foundation.Extensions;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace HeroesFlight.System.NPC
@@ -12,22 +14,30 @@ namespace HeroesFlight.System.NPC
         NpcContainer container;
         public void Init(Scene scene = default, Action onComplete = null)
         {
-            container = scene.GetComponent<NpcContainer>();
+            container = scene.GetComponentInChildren<NpcContainer>();
             container.Init();
         }
 
-        public void Reset() { }
+        public void Reset()
+        {
+            container.Reset();
+        }
 
         public event Action<AiControllerBase> OnEnemySpawned;
       
-        public void SpawnRandomEnemies(int enemiesToKill, int waves)
+        public void SpawnRandomEnemies(SpawnModel model)
         {
-            container.SpawnEnemies(enemiesToKill,waves,OnEnemySpawned);
+            container.SpawnEnemies(model,OnEnemySpawned);
         }
 
-        public AiControllerBase SpawnMiniBoss(Action onComplete=null)
+        public AiControllerBase SpawnMiniBoss(SpawnModel currentLvlModel, Action onComplete = null)
         {
-             return container.SpawnMiniBoss();
+             return container.SpawnMiniBoss(currentLvlModel);
+        }
+
+        public void InjectPlayer(Transform player)
+        {
+            container.InjectPlayer(player);
         }
     }
 }

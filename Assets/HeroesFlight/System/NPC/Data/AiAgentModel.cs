@@ -11,11 +11,11 @@ namespace HeroesFlightProject.System.NPC.Data
         [SerializeField] EnemyType enemyType;
         [SerializeField] EnemySpawmType enemySpawmType;
         [SerializeField] float wanderingDistance;
-        [SerializeField] CombatModel m_CombatModel;
+        [SerializeField] AiAgentCombatModel m_CombatModel;
 
         public EnemyType EnemyType => enemyType;
         public EnemySpawmType EnemySpawmType => enemySpawmType;
         public float WanderingDistance => wanderingDistance;
-        public CombatModel CombatModel => m_CombatModel;
+        public AiAgentCombatModel CombatModel => m_CombatModel;
     }
 }

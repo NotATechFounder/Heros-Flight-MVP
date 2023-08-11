@@ -8,6 +8,8 @@ namespace UISystem
 {
     public class GameMenu : BaseMenu<GameMenu>
     {
+     //   public Func<float> GetCoinText;
+
         public event Action OnPauseButtonClicked;
         public event Action OnSpecialAttackButtonClicked;
 
@@ -36,6 +38,9 @@ namespace UISystem
         [SerializeField] private AdvanceButton specialAttackButton;
         [SerializeField] private Image specialAttackButtonFill;
         [SerializeField] private Image specialAttackIcon;
+
+        [Header("Boosters")]
+        [SerializeField] private BoosterUI[] boosterButtons;
         
         JuicerRuntime openEffect;
         JuicerRuntime closeEffect;
@@ -76,7 +81,10 @@ namespace UISystem
 
         public override void OnOpened()
         {
+            ResetMenu();
             openEffect.Start();
+
+           // UpdateCoinText(GetCoinText());
         }
 
         public override void OnClosed()
@@ -92,9 +100,9 @@ namespace UISystem
             comboCounterText.text = "0";
         }
 
-        public void UpdateCoinText(int value)
+        public void UpdateCoinText(float value)
         {
-            coinText.text = value.ToString();
+            coinText.JuicyTextNumber(value, 0.5f).Start();
         }
 
         public void UpdateTimerText(float value)
@@ -148,10 +156,7 @@ namespace UISystem
         public void FillSpecial(float normalisedValue)
         {
             specialAttackButtonFill.fillAmount = normalisedValue;
-            if (normalisedValue >= 1)
-            {
-                ToggleSpecialAttackButton(true);
-            }
+            ToggleSpecialAttackButton(normalisedValue >= 1);
         }
 
         public void ToggleSpecialAttackButton(bool value)
@@ -163,7 +168,6 @@ namespace UISystem
                     specialEffect.Start();
                     break;
                 case false:
-                    Debug.Log("Special Attack Button Disabled");
                     specialEffect.Pause();
                     specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r, specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
                     specialAttackIcon.transform.localScale = Vector3.one;
@@ -178,6 +182,18 @@ namespace UISystem
             specialAttackButtonFill.fillAmount = 0;
             specialIconEffect.Start();
             OnSpecialAttackButtonClicked?.Invoke();
+        }
+
+        public void VisualiseBooster(BoosterContainer boosterContainer)
+        {
+            foreach (BoosterUI boosterButton in boosterButtons)
+            {
+                if (boosterButton.GetBoosterSO == null)
+                {
+                    boosterButton.Initialize(boosterContainer);
+                    break;
+                }
+            }
         }
     }
 }

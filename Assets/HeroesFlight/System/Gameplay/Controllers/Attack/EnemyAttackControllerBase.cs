@@ -1,4 +1,6 @@
 using System;
+using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
 
@@ -13,8 +15,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected float timeSinceLastAttack;
         protected AiAnimatorInterface animator;
         protected IHealthController health;
+        protected float currentDamage;
 
-        public int Damage => aiController.AgentModel.CombatModel.Damage;
+        public float Damage => currentDamage;
         public float TimeSinceLastAttack => timeSinceLastAttack;
 
         void Start()
@@ -25,9 +28,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             health.OnDeath += HandleDeath;
             target = aiController.CurrentTarget.GetComponent<IHealthController>();
             timeSinceLastAttack = 0;
-            timeBetweenAttacks = aiController.AgentModel.CombatModel.TimeBetweenAttacks;
-            attackRange = aiController.AgentModel.CombatModel.AttackRange;
+            timeBetweenAttacks = aiController.GetMonsterStatModifier().CalculateAttackSpeed(aiController.AgentModel.CombatModel.GetMonsterStatData.AttackSpeed);
+            attackRange = aiController.AgentModel.CombatModel.GetMonsterStatData.AttackRange;
             aiController.SetAttackState(true);
+            currentDamage = aiController.GetMonsterStatModifier().CalculateAttack(aiController.AgentModel.CombatModel.GetMonsterStatData.Damage);
         }
 
         void HandleDeath(IHealthController obj)
@@ -57,7 +61,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             timeSinceLastAttack = 0;
             aiController.SetAttackState(false);
-            target.DealDamage(Damage);
+            target.DealDamage(new DamageModel(Damage,DamageType.NoneCritical));
         }
 
         public virtual void AttackTargets()
@@ -70,6 +74,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public void Init() { }
 
-        public virtual void DisableActions() { }
+        public virtual void ToggleControllerState(bool isEnabled) { }
     }
 }

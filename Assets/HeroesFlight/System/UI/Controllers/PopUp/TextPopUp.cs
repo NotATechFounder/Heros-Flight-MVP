@@ -1,7 +1,5 @@
 using Pelumi.Juicer;
 using Pelumi.ObjectPool;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -31,12 +29,15 @@ public class TextPopUp : MonoBehaviour
         fadeEffect = textMeshPro.JuicyAlpha(0, fadeDuration).SetDelay(0.1f);
         fadeEffect.SetOnComplected(() =>
         {
+            textMeshPro.color = Color.white;
+            textMeshPro.spriteAsset = null;
             ObjectPoolManager.ReleaseObject(this);
         });
     }
 
-    public void Init(string text, Color color, Vector3 pos)
+    public void Init(string text, Color color, Vector3 pos, float size = 60)
     {
+        textMeshPro.fontSize = size;
         textMeshPro.text = text;
         textMeshPro.color = color;
         transform.position = pos;
@@ -49,5 +50,15 @@ public class TextPopUp : MonoBehaviour
         textMeshPro.color = new Color(textMeshPro.color.r, textMeshPro.color.g, textMeshPro.color.b, 1);
         moveEffect.ChangeDesination(transform.position + Vector3.up * moveLenght);
         scaleEffect.Start();
+    }
+
+    public void Init(string damageText, TMP_SpriteAsset spriteAsset, Vector2 finalPos,float size)
+    {
+        textMeshPro.text = damageText;
+        textMeshPro.fontSize = size;
+        textMeshPro.color = Color.white;
+        textMeshPro.spriteAsset = spriteAsset;
+        transform.position = finalPos;
+        Effect();
     }
 }

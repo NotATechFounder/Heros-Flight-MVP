@@ -3,10 +3,12 @@ using HeroesFlight.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Data;
 using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
+
 namespace HeroesFlightProject.System.NPC.Controllers
 {
     public abstract class AiControllerBase : MonoBehaviour, AiControllerInterface
     {
+        [SerializeField] protected SpriteRenderer buffDebuffIcon;
         [SerializeField] protected AiAgentModel m_Model;
         [SerializeField] protected float wanderDistance = 10f;
         [SerializeField] protected float knockbackForce = 10f;
@@ -22,13 +24,13 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected Rigidbody2D rigidBody;
         protected Transform currentTarget;
         protected bool isDisabled;
-      [SerializeField]  bool canAttack;
+        bool canAttack;
         Vector2 wanderPosition;
-       
+        protected MonsterStatModifier statModifier;
 
-      
-        public virtual void Init(Transform player)
+        public virtual void Init(Transform player, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
+            statModifier = EnemyType == EnemyType.MiniBoss ? new MonsterStatModifier() : monsterStatModifier;
             rigidBody = GetComponent<Rigidbody2D>();
             attackCollider = GetComponent<Collider2D>();
             animator = GetComponent<AiAnimatorInterface>();
@@ -36,14 +38,15 @@ namespace HeroesFlightProject.System.NPC.Controllers
             currentTarget = player;
             viewController.Init();
             OnInit();
-            viewController.StartFadeIn(2f,Enable);
+            viewController.StartFadeIn(2f, Enable);
+            DisplayModifiyer(currentCardIcon);
         }
 
         void Update()
         {
             if (isDisabled)
                 return;
-            
+
             if (OutOfAgroRange() || !canAttack)
             {
                 ProcessWanderingState();
@@ -54,12 +57,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
             }
         }
 
-        
 
         public virtual Vector2 GetVelocity()
         {
             return Vector2.zero;
-            
         }
 
         public void SetAttackState(bool attackState)
@@ -67,7 +68,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
             canAttack = attackState;
         }
 
-        public virtual void ProcessKnockBack() { }
+        public virtual void ProcessKnockBack()
+        {
+        }
 
         public virtual void Enable()
         {
@@ -84,32 +87,57 @@ namespace HeroesFlightProject.System.NPC.Controllers
             rigidBody.bodyType = RigidbodyType2D.Static;
             animator.PlayDeathAnimation(() =>
             {
-                gameObject.SetActive(false);
+                if (gameObject != null)
+                {
+                    gameObject.SetActive(false);
+                }
+
                 OnDisabled?.Invoke();
             });
         }
 
 
-        public virtual void ProcessWanderingState() {}
+        public virtual void ProcessWanderingState()
+        {
+        }
 
-        public virtual void ProcessFollowingState() {}
+        public virtual void ProcessFollowingState()
+        {
+        }
 
         protected bool OutOfAgroRange()
         {
             return Vector2.Distance(CurrentTarget.position, transform.position)
-                > m_Model.CombatModel.AgroDistance;
+                > m_Model.CombatModel.GetMonsterStatData.AgroDistance;
         }
 
         protected bool InAttackRange()
         {
             return Vector2.Distance(CurrentTarget.position, transform.position) 
-                <= m_Model.CombatModel.AttackRange;
+                <= m_Model.CombatModel.GetMonsterStatData.AttackRange;
+        }
+
+        public void DisplayModifiyer(Sprite sprite)
+        {
+            if(sprite == null)
+            {
+                buffDebuffIcon.enabled = false;
+            }
+            else
+            {
+                buffDebuffIcon.enabled = true;
+                buffDebuffIcon.sprite = sprite;
+            }
         }
 
         protected void OnInit()
         {
             OnInitialized?.Invoke();
         }
-      
+
+        public MonsterStatModifier GetMonsterStatModifier()
+        {
+            return statModifier;
+        }
     }
 }

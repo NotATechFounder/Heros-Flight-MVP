@@ -1,38 +1,47 @@
-﻿using System;
+using System;
 using HeroesFlight.System.Character.Enum;
-using HeroesFlight.System.Character.Model;
 using UnityEngine;
 
 namespace HeroesFlight.System.Character
 {
     public class CharacterSimpleController :MonoBehaviour,CharacterControllerInterface
     {
-        [SerializeField] CharacterModel model;
+        [SerializeField] CharacterSO characterSO;
+        CharacterAnimationControllerInterface animationController;
         CharacterMovementController m_MovementController;
         CharacterInputReceiver m_InputReceiver;
+        CharacterStatController m_CharacterStatController;
         ICharacterViewController viewController;
         Vector3 m_SavedVelocity = default;
         Transform m_Transform;
 
         public bool IsFacingLeft { get; private set; }
-        public CharacterData Data => model.Data;
+        public Transform CharacterTransform => transform;
+        public CharacterSO CharacterSO => characterSO;
+        public CharacterStatController CharacterStatController => m_CharacterStatController;
         public event Action<CharacterState> OnCharacterMoveStateChanged;
         CharacterState m_CurrentState;
-        public  Vector3 GetVelocity() => m_SavedVelocity;
-        bool isDisabled;
 
-        void Awake()
+        public  Vector3 GetVelocity() => m_SavedVelocity;
+
+        bool isEnabled;
+
+        public void Init()
         {
+            animationController = GetComponent<CharacterAnimationController>();
             m_MovementController = GetComponent<CharacterMovementController>();
             m_InputReceiver = GetComponent<CharacterInputReceiver>();
+            m_CharacterStatController = GetComponent<CharacterStatController>();
             viewController = GetComponent<ICharacterViewController>();
             m_Transform = GetComponent<Transform>();
-            viewController.SetupView(model.Data.AppearenceModel.Data);
+            m_CharacterStatController.Initialize(CharacterSO.GetPlayerStatData);
+            viewController.SetupView(CharacterSO.GetAppearanceData);
+            animationController.Init(characterSO.AnimationData);
             m_CurrentState = CharacterState.Idle;
             IsFacingLeft = true;
-            isDisabled = false;
+            isEnabled = false;
         }
-
+     
         void FixedUpdate()
         {
             
@@ -41,12 +50,12 @@ namespace HeroesFlight.System.Character
 
         public void SetActionState(bool isEnabled)
         {
-            isDisabled = isEnabled;
+            this.isEnabled = isEnabled;
         }
 
         void ControllerUpdate()
         {
-            var input = isDisabled? Vector2.zero:m_InputReceiver.GetInput();
+            var input = isEnabled? m_InputReceiver.GetInput(): Vector2.zero;
             var velocity = CalculateCharacterVelocity(input);
             m_SavedVelocity = velocity;
             m_MovementController.SetVelocity(velocity);
@@ -55,6 +64,9 @@ namespace HeroesFlight.System.Character
 
         void UpdateCharacterState(Vector3 input)
         {
+            if(!isEnabled)
+                return;
+            
             var newState = CharacterState.Idle;
             if (input.Equals(Vector3.zero))
             {
@@ -111,12 +123,13 @@ namespace HeroesFlight.System.Character
             IsFacingLeft = facingLeft;
             m_CurrentState = newState;
             OnCharacterMoveStateChanged?.Invoke(m_CurrentState);
+            animationController.AnimateCharacterMovement(m_CurrentState,IsFacingLeft);
         }
 
         Vector3 CalculateCharacterVelocity(Vector3 inputVector)
         {
             var velocity = CalculateMovementDirection(inputVector);
-            return velocity * model.Data.CombatModel.Speed;
+            return velocity * CharacterStatController.CurrentMoveSpeed;
         }
 
         Vector3 CalculateMovementDirection(Vector3 inputVector)

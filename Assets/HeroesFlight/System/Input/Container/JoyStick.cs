@@ -90,8 +90,13 @@ public class Joystick : OnScreenControl
         _movementAmount = Vector2.zero;
 
         joyStick.gameObject.SetActive(true);
-        _joystickSize = joyStick.sizeDelta;
-        if (!fixedJoystick) joyStick.anchoredPosition = ClampStartPosition(touchedFinger.screenPosition);
+
+        if (!ClickOnUI(touchedFinger))
+        {
+            _joystickSize = joyStick.sizeDelta;
+            if (!fixedJoystick) joyStick.anchoredPosition = ClampStartPosition(touchedFinger.screenPosition);
+        }
+
         SetFocus();
     }
 
@@ -116,6 +121,11 @@ public class Joystick : OnScreenControl
 
     private void ETouch_onFingerMove(Finger onFingerMove)
     {
+        if (ClickOnUI(onFingerMove))
+        {
+            return;
+        }
+
         if (_movementFinger == onFingerMove)
         {
             _releaseTime += Time.deltaTime;
@@ -173,7 +183,7 @@ public class Joystick : OnScreenControl
 
         foreach (RaycastResult item in uiHit)
         {
-            Debug.Log(item.gameObject.name);
+           if(item.gameObject.layer == LayerMask.NameToLayer("UI_IgnoreTouch"))
             return true;
         }
         return false;

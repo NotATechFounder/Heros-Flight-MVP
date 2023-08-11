@@ -26,12 +26,15 @@ namespace HeroesFlight.Core.Bootstrapper
         public ServiceLocator ResolveServices()
         {
             m_ServiceLocator = new ServiceLocator();
+
+            IDataSystemInterface dataSystem = new DataSystem();
             IInputSystem inputSystem = new InputSystem();
             CharacterSystemInterface characterSystem = new CharacterSystem(inputSystem);
             NpcSystemInterface npcSystem = new NpcSystem();
-            GamePlaySystemInterface gamePlaySystem = new GamePlaySystem(characterSystem,npcSystem);
-            IUISystem uiSystem = new UiSystem(gamePlaySystem);
+            GamePlaySystemInterface gamePlaySystem = new GamePlaySystem(dataSystem,characterSystem, npcSystem);
+            IUISystem uiSystem = new UiSystem(dataSystem,gamePlaySystem);
 
+            m_ServiceLocator.Register(dataSystem);
             m_ServiceLocator.Register(uiSystem);
             m_ServiceLocator.Register(gamePlaySystem);
             m_ServiceLocator.Register(inputSystem);

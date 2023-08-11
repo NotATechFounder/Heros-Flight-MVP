@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pelumi.Juicer;
 using Pelumi.ObjectPool;
+using TMPro;
 
 public class PopUpManager : MonoBehaviour
 {
@@ -17,16 +18,6 @@ public class PopUpManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    // private void Update()
-    // {
-    //     if (Input.GetMouseButtonDown(0))
-    //     {
-    //         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    //         string text = NumberConverter.ConvertNumberToString(Random.Range(100, 1000000));
-    //         PopUpAtTextPosition(mousePosition, Vector3.one / 8, text, Random.ColorHSV());
-    //     }
-    // }
-
     public void PopUpTextAtTransfrom(Transform spawnPosition, Vector3 randomIntensity, string text, Color color, bool parent = false)
     {
         TextPopUp textPopUp = ObjectPoolManager.SpawnObject(popUpPrefab);
@@ -34,13 +25,13 @@ public class PopUpManager : MonoBehaviour
         SetPopUpInfo(textPopUp, spawnPosition.position, randomIntensity, text, color);
     }
 
-    public void PopUpAtTextPosition(Vector3 spawnPosition, Vector3 randomIntensity, string text, Color color)
+    public void PopUpAtTextPosition(Vector3 spawnPosition, Vector3 randomIntensity, string text, Color color, float txtSize = 60)
     {
         TextPopUp textPopUp = ObjectPoolManager.SpawnObject(popUpPrefab);
-        SetPopUpInfo(textPopUp, spawnPosition, randomIntensity, text, color);
+        SetPopUpInfo(textPopUp, spawnPosition, randomIntensity, text, color, size: txtSize);
     }
 
-    public void SetPopUpInfo(TextPopUp textPopUp, Vector3 spawnPosition, Vector3 randomIntensity, string text, Color color)
+    public void SetPopUpInfo(TextPopUp textPopUp, Vector3 spawnPosition, Vector3 randomIntensity, string text, Color color, float size = 60)
     {
         Vector2 finalPos = spawnPosition += new Vector3
             (
@@ -48,6 +39,24 @@ public class PopUpManager : MonoBehaviour
                 Random.Range(-randomIntensity.y, randomIntensity.y),
                 Random.Range(-randomIntensity.z, randomIntensity.z)
             );
-        textPopUp.Init(text, color, finalPos);
+        textPopUp.Init(text, color, finalPos, size);
+    }
+
+    public void PopUpTextAtTransfrom(Transform damageModelTarget, Vector3 randomIntensity, string damageText, TMP_SpriteAsset spriteAsset,float size, bool parent = false)
+    {
+        TextPopUp textPopUp = ObjectPoolManager.SpawnObject(popUpPrefab);
+        if (parent) textPopUp.transform.SetParent(damageModelTarget);
+        SetPopUpInfo(textPopUp, damageModelTarget.position, randomIntensity, damageText, spriteAsset,size);
+    }
+
+    void SetPopUpInfo(TextPopUp textPopUp, Vector3 spawnPosition, Vector3 randomIntensity, string damageText, TMP_SpriteAsset spriteAsset,float size)
+    {
+        Vector2 finalPos = spawnPosition += new Vector3
+        (
+            Random.Range(-randomIntensity.x, randomIntensity.x),
+            Random.Range(-randomIntensity.y, randomIntensity.y),
+            Random.Range(-randomIntensity.z, randomIntensity.z)
+        );
+        textPopUp.Init(damageText, spriteAsset, finalPos,size);
     }
 }

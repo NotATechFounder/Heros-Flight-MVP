@@ -1,10 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using HeroesFlight.Common;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Gameplay.Data.Animation;
 using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -14,20 +16,22 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] int enemiesToHitPerAttack = 4;
         [SerializeField] float attackPointOffset = 1f;
 
-        public int Damage => controller.Data.CombatModel.Damage;
+        public float Damage => characterController.CharacterStatController.CurrentPhysicalDamage;
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
 
 
-        CharacterControllerInterface controller;
+        CharacterControllerInterface characterController;
 
         CharacterAnimationControllerInterface m_CharacterAnimationController;
 
         AttackRangeVisualsController visualController;
 
         AttackControllerState m_State;
-
-        CombatModel combatModel;
+        CharacterStatController statController;
+        PlayerStatData playerStatData = null;
+        UltimateData ultimateData;
+        AttackData attackData;
 
         float m_TimeSinceLastAttack = 0;
 
@@ -38,20 +42,27 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         List<IHealthController> enemiesToAttack = new();
         bool isDisabled;
         WaitForSeconds tick;
+        float attackDuration = 0;
 
         void Awake()
         {
-            controller = GetComponent<CharacterControllerInterface>();
+            characterController = GetComponent<CharacterControllerInterface>();
             visualController = GetComponent<AttackRangeVisualsController>();
             m_CharacterAnimationController = GetComponent<CharacterAnimationController>();
-            m_CharacterAnimationController.OnDealDamageRequest += HandleDamageDealRequest;
+            statController = GetComponent<CharacterStatController>();
+            m_CharacterAnimationController.OnAnimationEvent += HandleDamageDealRequest;
             m_State = AttackControllerState.LookingForTarget;
-            combatModel = controller.Data.CombatModel;
-            m_TimeSinceLastAttack = combatModel.TimeBetweenAttacks;
+            playerStatData = characterController.CharacterSO.GetPlayerStatData;
+            ultimateData = characterController.CharacterSO.UltimateData;
+            attackData = characterController.CharacterSO.AttackData;
+            enemiesToHitPerAttack = attackData.EnemiesPerAttack;
+            attackPointOffset = attackData.AttackPositionOffset;
+            m_TimeSinceLastAttack = playerStatData.AttackSpeed;
             attackPoint = transform.position + Vector3.up + Vector3.left * attackPointOffset;
-            visualController.Init(combatModel.AttackRange);
+            visualController.Init(playerStatData.AttackRange);
             visualController.SetPosition(attackPoint);
             isDisabled = false;
+            attackDuration = characterController.CharacterSO.AnimationData.AttackAnimation.Animation.Duration;
             tick = new WaitForSeconds(.25f);
         }
 
@@ -70,7 +81,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             m_TimeSinceLastAttack += Time.deltaTime;
 
-            attackPoint = controller.IsFacingLeft
+            attackPoint = characterController.IsFacingLeft
                 ? transform.position + Vector3.up + Vector3.left * attackPointOffset
                 : transform.position + Vector3.up + Vector3.right * attackPointOffset;
 
@@ -80,19 +91,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-        IEnumerator AttackLogicRoutine()
-        {
-            while (true)
-            {
-                ProcessAttackLogic();
-                yield return tick;
-            }
-        }
-
-
         void ProcessAttackLogic()
         {
-            FilterEnemies(enemiesRetriveCallback?.Invoke(), ref foundedEnemies);
+            if (isDisabled)
+            {
+                foundedEnemies.Clear();
+            }
+            else
+            {
+                FilterEnemies(enemiesRetriveCallback?.Invoke(), ref foundedEnemies,
+                    new AttackAnimationEvent(AttackType.Regular,0));
+            }
+          
             if (foundedEnemies.Count > 0)
             {
                 AttackTargets();
@@ -103,28 +113,133 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
-        void FilterEnemies(List<IHealthController> enemies, ref List<IHealthController> enemiesToUpdate)
+        void FilterEnemies(List<IHealthController> enemies, ref List<IHealthController> enemiesToUpdate,
+            AttackAnimationEvent dataAttackType)
         {
             enemiesToUpdate.Clear();
+       
+            switch (dataAttackType.AttackType)
+            {
+                case AttackType.Regular:
+                    FilterEnemiesForBaseAttack(enemies, ref enemiesToUpdate);
+                    
+                    break;
+                case AttackType.Ultimate_Base:
+                    FilterEnemiesForBaseUltimate(enemies,ref  enemiesToUpdate, dataAttackType);
+                    break;
+                case AttackType.Ultimate_Lancer:
+                    break;
+               
+            }
+           
+        }
+
+        void FilterEnemiesForBaseAttack(List<IHealthController> enemies, ref List<IHealthController> enemiesToUpdate)
+        {
             foreach (var controller in enemies)
             {
-                if (Vector2.Distance(controller.currentTransform.position, attackPoint) <= combatModel.AttackRange)
+                if (Vector2.Distance(controller.currentTransform.position, attackPoint) <= playerStatData.AttackRange)
                 {
                     enemiesToUpdate.Add(controller);
                 }
             }
         }
 
+        void FilterEnemiesForBaseUltimate(List<IHealthController> enemies,ref List<IHealthController> enemiesToUpdate, AttackAnimationEvent dataAttackType)
+        {
+            var offsetPosition = characterController.IsFacingLeft
+                ? attackPoint + Vector2.left * ultimateData.OffsetMultiplier
+                : attackPoint + Vector2.right * ultimateData.OffsetMultiplier;
+            foreach (var controller in enemies)
+            {
+                if (Vector2.Distance(controller.currentTransform.position, offsetPosition) <= playerStatData.AttackRange*ultimateData.RangeMultiplier)
+                {
+                    enemiesToUpdate.Add(controller);
+                }
+            }
+            
+            
+            //     switch (dataAttackType.AttackIndex)
+            // {
+            //     case 1:
+            //         foreach (var controller in enemies)
+            //         {
+            //             if (characterController.IsFacingLeft)
+            //             {
+            //                 if (Mathf.Abs(controller.currentTransform.position.y - attackPoint.y) <= playerStatData.AttackRange
+            //                     && controller.currentTransform.position.x <= transform.position.x)
+            //                 {
+            //                     enemiesToUpdate.Add(controller);
+            //                 }
+            //             }
+            //             else
+            //             {
+            //                 if (Mathf.Abs(controller.currentTransform.position.y - attackPoint.y) <= playerStatData.AttackRange
+            //                     && controller.currentTransform.position.x >= transform.position.x)
+            //                 {
+            //                     enemiesToUpdate.Add(controller);
+            //                 }
+            //             }
+            //         }
+            //
+            //         break;
+            //     case 2:
+            //         foreach (var controller in enemies)
+            //         {
+            //             if (characterController.IsFacingLeft)
+            //             {
+            //                 if (Mathf.Abs(controller.currentTransform.position.y - attackPoint.y-1) <= playerStatData.AttackRange
+            //                     && controller.currentTransform.position.x <= transform.position.x)
+            //                 {
+            //                     enemiesToUpdate.Add(controller);
+            //                 }
+            //             }
+            //             else
+            //             {
+            //                 if (Mathf.Abs(controller.currentTransform.position.y - attackPoint.y-1) <= playerStatData.AttackRange
+            //                     && controller.currentTransform.position.x >= transform.position.x)
+            //                 {
+            //                     enemiesToUpdate.Add(controller);
+            //                 }
+            //             }
+            //         }
+            //
+            //         break;
+            //     case 3:
+            //         foreach (var controller in enemies)
+            //         {
+            //             if (characterController.IsFacingLeft)
+            //             {
+            //                 if (Mathf.Abs(controller.currentTransform.position.y - attackPoint.y-1) <= playerStatData.AttackRange
+            //                     && controller.currentTransform.position.x >= transform.position.x - 2.5f)
+            //                 {
+            //                     enemiesToUpdate.Add(controller);
+            //                 }
+            //             }
+            //             else
+            //             {
+            //                 if (Mathf.Abs(controller.currentTransform.position.y - attackPoint.y-1) <= playerStatData.AttackRange
+            //                     && controller.currentTransform.position.x <= transform.position.x + 2.5f)
+            //                 {
+            //                     enemiesToUpdate.Add(controller);
+            //                 }
+            //             }
+            //         }
+            //
+            //         break;
+            // }
+        }
+
 
         public void AttackTargets()
         {
-            if (m_TimeSinceLastAttack < combatModel.TimeBetweenAttacks)
+            if (m_TimeSinceLastAttack < attackDuration / statController.CurrentAttackSpeed)
             {
                 return;
             }
 
 
-            m_CharacterAnimationController.PlayAttackSequence();
+            m_CharacterAnimationController.PlayAttackSequence(statController.CurrentAttackSpeed);
             m_TimeSinceLastAttack = 0;
         }
 
@@ -136,40 +251,66 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void ResetAttack()
         {
             m_CharacterAnimationController.StopAttackSequence();
-            m_TimeSinceLastAttack = combatModel.TimeBetweenAttacks;
+            m_TimeSinceLastAttack = attackDuration / statController.CurrentAttackSpeed;
         }
 
 
-        void HandleDamageDealRequest(string attackId)
+        void HandleDamageDealRequest(AnimationEventInterface animationEvent)
         {
-            FilterEnemies(enemiesRetriveCallback?.Invoke(), ref enemiesToAttack);
+            if (animationEvent.Type != AniamtionEventType.Attack)
+                return;
+
+            var data = animationEvent as AttackAnimationEvent;
+            
+            FilterEnemies(enemiesRetriveCallback?.Invoke(), ref enemiesToAttack,data);
+
+            int maxEnemiesToHit =
+                data.AttackType == AttackType.Regular ? enemiesToHitPerAttack : ultimateData.EnemiesPerAttack;
+            var baseDamage=data.AttackType == AttackType.Regular ? Damage : Damage*ultimateData.DamageMultiplier;
             if (enemiesToAttack.Count > 0)
             {
                 var enemiesAttacked = 0;
                 foreach (var enemy in enemiesToAttack)
                 {
-                    if (enemiesAttacked >= enemiesToHitPerAttack)
-                        break;
+                    // if (enemiesAttacked >= maxEnemiesToHit)
+                    //     break;
 
                     enemiesAttacked++;
-                    enemy.DealDamage(Damage);
+
+                    float criticalChance = characterController.CharacterStatController.CurrentCriticalHitChance;
+                    bool isCritical = Random.Range(0, 100) <= criticalChance;
+
+                    float damageToDeal = isCritical
+                        ? baseDamage * characterController.CharacterStatController.CurrentCriticalHitDamage
+                        : baseDamage;
+                    var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
+                    enemy.DealDamage(new DamageModel(damageToDeal, type));
                 }
             }
         }
 
-        public void DisableActions()
+        public void ToggleControllerState(bool isEnabled)
         {
-            isDisabled = true;
+            isDisabled = !isEnabled;
+            visualController.DisableVisuals(isDisabled);
         }
 
         void OnDrawGizmos()
         {
-            if (combatModel == null)
+            if (playerStatData == null || characterController == null)
                 return;
-            var checkPosition = controller.IsFacingLeft
+            var checkPosition = characterController.IsFacingLeft
                 ? transform.position + Vector3.up + Vector3.left * attackPointOffset
                 : transform.position + Vector3.up + Vector3.right * attackPointOffset;
-            Gizmos.DrawWireSphere(checkPosition, combatModel.AttackRange);
+            Gizmos.DrawWireSphere(checkPosition, playerStatData.AttackRange);
+            
+            
+            
+            var ultimatePosition = characterController.IsFacingLeft
+                ? checkPosition + (Vector3.left * ultimateData.OffsetMultiplier)
+                : checkPosition +(Vector3.right * ultimateData.OffsetMultiplier);
+            Gizmos.DrawWireSphere(ultimatePosition, playerStatData.AttackRange  *ultimateData.RangeMultiplier);
+
         }
     }
 }

@@ -8,8 +8,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
         AiMoverInterface mover;
 
 
-        public override void Init(Transform player)
+        public override void Init(Transform player, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
+            statModifier = monsterStatModifier;
             mover = GetComponent<AiMoverInterface>();
             rigidBody = GetComponent<Rigidbody2D>();
             attackCollider = GetComponent<Collider2D>();
@@ -20,6 +21,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             currentTarget = player;
             OnInit();
             viewController.StartFadeIn(2f,Enable);
+            DisplayModifiyer(currentCardIcon);
         }
 
 

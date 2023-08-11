@@ -1,6 +1,8 @@
 ﻿using System;
+using HeroesFlight.System.Character.Container;
 using HeroesFlight.System.Input;
 using HeroesFlight.System.Input.Model;
+using StansAssets.Foundation.Extensions;
 using UnityEngine.SceneManagement;
 
 namespace HeroesFlight.System.Character
@@ -13,16 +15,40 @@ namespace HeroesFlight.System.Character
             inputSystem.OnInput += HandleCharacterInput;
         }
 
+        public CharacterControllerInterface CurrentCharacter => characterController;
+         
+        CharacterControllerInterface characterController;
+        CharacterContainer container;
+
+
         public void Init(Scene scene = default, Action OnComplete = null)
         {
-            //implementation is your to handle
+            container=scene.GetComponentInChildren<CharacterContainer>();
         }
 
-        public void Reset(){ }
-        public void ShakeCharacterCamera(float duration)
+        public void Reset()
         {
-            throw new NotImplementedException();
+            characterController = null;
+            container.Reset();
         }
+
+        public CharacterControllerInterface CreateCharacter()
+        {
+            characterController = container.CreateCharacter();
+            return characterController;
+        }
+
+        public void SetCharacterControllerState(bool isEnabled)
+        {
+            container.SetCharacterControllerState(isEnabled);
+        }
+
+        public void ResetCharacter()
+        {
+            container.ResetCharacter();
+        }
+
+       
 
         void HandleCharacterInput(InputModel obj)
         {

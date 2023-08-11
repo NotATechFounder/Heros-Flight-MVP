@@ -1,5 +1,6 @@
 using System;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -8,14 +9,20 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         Transform currentTransform { get; }
         CombatTargetType TargetType { get; }
-        int MaxHealth { get; }
-        int CurrentHealth { get; }
+        bool IsImmortal { get; }
+        float MaxHealth { get; }
+        float CurrentHealth { get; }
         float CurrentHealthProportion { get; }
         void Init();
-        event Action<Transform,int> OnBeingDamaged;
+        event Action<DamageModel> OnBeingDamaged;
         event Action<IHealthController> OnDeath;
-        void DealDamage(int damage);
+        event Action<float, Transform> OnHeal;
+        void DealDamage(DamageModel damage);
         bool IsDead();
-        
+        void Reset();
+        void Revive();
+
+        void SetInvulnerableState(bool isImmortal);
+
     }
 }
