@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using TMPro;
 using UISystem;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UISystem
 {
@@ -13,12 +14,18 @@ namespace UISystem
     {
         public event Func<HeroProgressionAttributeInfo[]> GetHeroAttributes;
 
-        public Func<bool> OnUpButtonClicked;
-        public Func<bool> OnDownButtonClicked;
+        public Action<HeroProgressionAttributeInfo> OnUpButtonClickedEvent;
+        public Action<HeroProgressionAttributeInfo> OnDownButtonClickedEvent;
+        public Action OnCloseButtonPressed;
+        public Action OnResetButtonPressed;
 
         [SerializeField] private Transform container;
+        [SerializeField] private TextMeshProUGUI levelText;
+        [SerializeField] private TextMeshProUGUI spText;
         [SerializeField] private HeroAttributeUI[] heroAttributeUIArray;
         [SerializeField] private TextMeshProUGUI infoText;
+        [SerializeField] private AdvanceButton closeButton;
+        [SerializeField] private AdvanceButton resetButton;
 
         JuicerRuntime openEffectBG;
         JuicerRuntime openEffectContainer;
@@ -29,33 +36,51 @@ namespace UISystem
         private bool loadedHeroAttributes = false;
 
         // TODO: Remove this
-        public HeroProgression heroProgressionMenu;
+        public HeroProgression heroProgression;
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.S))
             {
-                OnUpButtonClicked = () =>
+                OnUpButtonClickedEvent = (HeroProgressionAttributeInfo) =>
                 {
-                    return heroProgressionMenu.CanSpendSP();
+                     heroProgression.DecrementAttributeSP(HeroProgressionAttributeInfo);
                 };
 
-                OnDownButtonClicked = () =>
+                OnDownButtonClickedEvent = (HeroProgressionAttributeInfo) =>
                 {
-                    return heroProgressionMenu.CanSpendSP();
+                    heroProgression.IncrementAttributeSP(HeroProgressionAttributeInfo);
                 };
 
                 GetHeroAttributes = () =>
                 {
-                    return heroProgressionMenu.HeroProgressionAttributeInfos;
+                    return heroProgression.HeroProgressionAttributeInfos;
                 };
 
-                heroProgressionMenu.OnLevelUp += (level) =>
+                heroProgression.OnLevelUp += (level) =>
                 {
-                    infoText.text = $"Level Up! You are now level {level}";
+                    OnLevelUp(level);
+                };
+
+                heroProgression.OnSpChanged += (sp) =>
+                {
+                    OnSpChanged(sp);
+                };
+
+                OnCloseButtonPressed = () =>
+                {
+                    heroProgression.Confirm();
+                    Close();
+                };
+
+                OnResetButtonPressed = () =>
+                {
+                    heroProgression.ResetSP();
                 };
 
                 OnCreated();
                 OnOpened();
+
+                Close();
             }
         }
 
@@ -67,6 +92,9 @@ namespace UISystem
             closeEffectContainer = container.JuicyScale(Vector3.zero, 0.15f).SetEase(Ease.EaseInQuart);
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(0.15f);
             closeEffectBG.SetOnComplected(CloseMenu);
+
+            closeButton.onClick.AddListener(ForceClose);
+            resetButton.onClick.AddListener(ResetButtonPressed);
         }
 
         public override void OnOpened()
@@ -91,6 +119,19 @@ namespace UISystem
             loadedHeroAttributes = false;
         }
 
+        public void OnLevelUp(int level)
+        {
+            levelText.text = $"Level {level}";
+            ResetHeroAttributeUIs();
+            Open(); 
+        }
+
+        public void OnSpChanged(int sp)
+        {
+            spText.text = $"Avaliable SP : {sp}";
+            closeButton.interactable = (sp == 0);
+        }
+
         public void SetHeroAttributeUIs()
         {
             HeroProgressionAttributeInfo[] heroProgressionAttributeInfos = GetHeroAttributes?.Invoke();
@@ -105,19 +146,29 @@ namespace UISystem
             loadedHeroAttributes = true;
         }
 
+        public void ResetHeroAttributeUIs()
+        {
+            foreach (var heroAttributeUI in heroAttributeUIArray)
+            {
+                heroAttributeUI.ResetSpTextColor();
+            }
+        }
+
         private void OnInfoButtonClickedEvent(HPAttributeSO sO)
         {
             infoText.text = sO.Description;
         }
 
-        private bool OnDownButtonClickedEvent()
+        public void ForceClose()
         {
-            return OnUpButtonClicked.Invoke();
+            OnCloseButtonPressed?.Invoke();
+            Close();
         }
 
-        private bool OnUpButtonClickedEvent()
+        private void ResetButtonPressed()
         {
-            return OnDownButtonClicked.Invoke();
+            ResetHeroAttributeUIs();
+            OnResetButtonPressed?.Invoke();
         }
     }
 }

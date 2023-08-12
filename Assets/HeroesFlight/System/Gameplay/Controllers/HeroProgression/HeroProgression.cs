@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class HeroProgression : MonoBehaviour
 {
+    public event Action<int> OnSpChanged;
     public event Action<float> OnXpAdded;
-
     public event Action<int> OnLevelUp;
 
     [SerializeField] private int spPerLevel;
@@ -16,15 +16,21 @@ public class HeroProgression : MonoBehaviour
     [SerializeField] private HPAttributeSO[] HPAttributeSOs;
     [SerializeField] private HeroProgressionAttributeInfo[] heroProgressionAttributeInfos;
 
-    private int currentSp;
-    private int currentLevel;
-    private float currentExp;
-    private float expToNextLevel;
+    private Dictionary<HeroProgressionAttribute, int> hPAttributeSpModifiedDic;
+    [Header("Debug")]
+    [SerializeField] private int avaliableSp;
+    [SerializeField] private int totalUsedSp;
+    [SerializeField] private int currentUsedSp;
+    [SerializeField] private int currentLevel;
+    [SerializeField] private float currentExp;
+    [SerializeField] private float expToNextLevel;
 
     public HeroProgressionAttributeInfo[]  HeroProgressionAttributeInfos => heroProgressionAttributeInfos;
 
     private void Start()
     {
+        hPAttributeSpModifiedDic = new Dictionary<HeroProgressionAttribute, int>();
+
         expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
 
         SetUpHeroProgressionAttributeInfo();
@@ -35,6 +41,11 @@ public class HeroProgression : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             AddExp(100);
+        }
+
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            Confirm();
         }
     }
 
@@ -107,6 +118,82 @@ public class HeroProgression : MonoBehaviour
  
     }
 
+    public void IncrementAttributeSP(HeroProgressionAttributeInfo attributeInfo)
+    {
+        if (CanGiveSP())
+        {
+            if (hPAttributeSpModifiedDic.ContainsKey(attributeInfo.AttributeSO.Attribute))
+            {
+                hPAttributeSpModifiedDic[attributeInfo.AttributeSO.Attribute]++;
+            }
+            else
+            {
+                hPAttributeSpModifiedDic.Add(attributeInfo.AttributeSO.Attribute, 1);
+            }
+
+            attributeInfo.TriggerModified(true);
+            attributeInfo.IncrementSP();
+            avaliableSp--;
+            OnSpChanged?.Invoke(avaliableSp);
+        }
+    }
+
+    public void DecrementAttributeSP(HeroProgressionAttributeInfo attributeInfo)
+    {
+        if (CanReturnSP())
+        {
+            if (hPAttributeSpModifiedDic.ContainsKey(attributeInfo.AttributeSO.Attribute)
+               && hPAttributeSpModifiedDic[attributeInfo.AttributeSO.Attribute] > 0)
+            {
+                hPAttributeSpModifiedDic[attributeInfo.AttributeSO.Attribute]--;
+
+                if (hPAttributeSpModifiedDic[attributeInfo.AttributeSO.Attribute] == 0)
+                {
+                    attributeInfo.TriggerModified(false);
+                }
+
+                attributeInfo.DecrementSP();
+                avaliableSp++;
+                OnSpChanged?.Invoke(avaliableSp);
+            }  
+        }
+    }
+
+    public bool CanGiveSP()
+    {
+        return avaliableSp + totalUsedSp > totalUsedSp;
+    }
+
+    public bool CanReturnSP()
+    {
+        return avaliableSp >= 0;
+    }
+
+    public void Confirm()
+    {
+        hPAttributeSpModifiedDic.Clear();
+        totalUsedSp += currentUsedSp;
+    }
+
+    public void ResetSP()
+    {
+        if (totalUsedSp == 0)
+        {
+            return;
+        }
+
+        foreach (var attribute in heroProgressionAttributeInfos)
+        {
+            attribute.ResetSP();
+        }
+
+        hPAttributeSpModifiedDic.Clear();
+        avaliableSp = totalUsedSp + spPerLevel;
+        currentUsedSp = avaliableSp;
+        totalUsedSp = 0;
+        OnSpChanged?.Invoke(avaliableSp);
+    }
+
     public void AddExp(float exp)
     {
         currentExp += exp;
@@ -122,23 +209,22 @@ public class HeroProgression : MonoBehaviour
 
     private void LevelUp()
     {
-        currentSp += spPerLevel;
+        avaliableSp = spPerLevel;
+        currentUsedSp = avaliableSp;
         currentLevel++;
         currentExp -= expToNextLevel;
         expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
         OnLevelUp?.Invoke(currentLevel);
-    }
-
-    public bool CanSpendSP()
-    {
-        return currentSp > 0;
+        OnSpChanged?.Invoke(avaliableSp);
     }
 }
 
 [Serializable]
 public class HeroProgressionAttributeInfo
 {
+    public Action<bool> OnModified;
     public Action<int> OnSPChanged;
+
     [SerializeField] HPAttributeSO attributeSO;
     [SerializeField] private int currentSP;
     private Action<HeroProgressionAttributeInfo> OnChange;
@@ -170,6 +256,18 @@ public class HeroProgressionAttributeInfo
     public void SetEffect(Action<HeroProgressionAttributeInfo> action)
     {
         OnChange = action;
+    }
+
+    public void TriggerModified(bool modified)
+    {
+        OnModified?.Invoke(modified);
+    }
+
+    internal void ResetSP()
+    {
+        currentSP = 0;
+        OnSPChanged?.Invoke(currentSP);
+        OnChange?.Invoke(this);
     }
 }
 

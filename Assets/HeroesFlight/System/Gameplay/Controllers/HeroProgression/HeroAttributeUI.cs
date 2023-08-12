@@ -7,8 +7,8 @@ using System;
 
 public class HeroAttributeUI : MonoBehaviour
 {
-    public Func<bool> OnUpButtonClickedEvent;
-    public Func<bool> OnDownButtonClickedEvent;
+    public Action<HeroProgressionAttributeInfo> OnUpButtonClickedEvent;
+    public Action<HeroProgressionAttributeInfo> OnDownButtonClickedEvent;
     public Action<HPAttributeSO> OnInfoButtonClickedEvent;
 
     [SerializeField] private AdvanceButton upButton;
@@ -34,6 +34,7 @@ public class HeroAttributeUI : MonoBehaviour
         attributeValue.text = attribute.CurrentSP.ToString();
         icon.sprite = attribute.AttributeSO.Icon;
         attribute.OnSPChanged = OnSPChanged;
+        attribute.OnModified = OnModified;
     }
 
     public void OnSPChanged(int sp)
@@ -41,26 +42,33 @@ public class HeroAttributeUI : MonoBehaviour
         attributeValue.text = sp.ToString();
     }
 
+    private void OnModified(bool modified)
+    {
+        attributeValue.color = modified ? Color.green : Color.white;
+    }
+
     public void OnUpButtonClicked()
     {
-        if(OnUpButtonClickedEvent.Invoke())
-        {
-            attributeInfo.IncrementSP();
-            attributeValue.text = attributeInfo.CurrentSP.ToString();
-        }
+        OnUpButtonClickedEvent?.Invoke(attributeInfo);
     }
 
     public void OnDownButtonClicked()
     {
-        if (OnUpButtonClickedEvent.Invoke())
-        {
-            attributeInfo.DecrementSP();
-            attributeValue.text = attributeInfo.CurrentSP.ToString();
-        }
+        OnDownButtonClickedEvent?.Invoke(attributeInfo);
     }
 
     public void OnInfoButtonClicked()
     {
         OnInfoButtonClickedEvent?.Invoke(attributeInfo.AttributeSO);
+    }
+
+    public void ResetSpText()
+    {
+        attributeValue.text = 0.ToString();
+    }
+
+    public void ResetSpTextColor()
+    {
+        attributeValue.color = Color.white;
     }
 }
