@@ -15,19 +15,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class CharacterAttackController : MonoBehaviour, IAttackControllerInterface
     {
         [SerializeField] int enemiesToHitPerAttack = 4;
-        [SerializeField] float attackPointOffset = 1f;
-
         public float Damage => characterController.CharacterStatController.CurrentPhysicalDamage;
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
 
-
         CharacterControllerInterface characterController;
-
         CharacterAnimationControllerInterface m_CharacterAnimationController;
-
         AttackRangeVisualsController visualController;
-
         AttackControllerState m_State;
         CharacterStatController statController;
         PlayerStatData playerStatData = null;
@@ -35,6 +29,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         AttackData attackData;
         AttackZoneEnemiesFilterInterface attackZoneFilter;
         float m_TimeSinceLastAttack = 0;
+        float attackPointOffset = 1f;
 
         Vector2 attackPoint;
 
@@ -44,15 +39,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         bool isDisabled;
         float attackDuration = 0;
 
-        void Awake()
-        {
-            Init();
-        }
-
-        public void SetCallback(Func<List<IHealthController>> enemiesCallback)
-        {
-            enemiesRetriveCallback = enemiesCallback;
-        }
 
         public void Init()
         {
@@ -73,7 +59,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             visualController.SetPosition(attackPoint);
             isDisabled = false;
             attackDuration = characterController.CharacterSO.AnimationData.AttackAnimation.Animation.Duration;
-            attackZoneFilter = new AttackZoneFilter(characterController.CharacterSO);
+            attackZoneFilter = new AttackZoneFilter(characterController.CharacterSO,transform);
+        }
+
+        public void SetCallback(Func<List<IHealthController>> enemiesCallback)
+        {
+            enemiesRetriveCallback = enemiesCallback;
         }
 
         void Update()
@@ -104,7 +95,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
             else
             {
-                attackZoneFilter.FilterEnemies(attackPoint,characterController.IsFacingLeft,
+                attackZoneFilter.FilterEnemies(attackPoint, characterController.IsFacingLeft,
                     enemiesRetriveCallback?.Invoke(), ref foundedEnemies,
                     new AttackAnimationEvent(AttackType.Regular, 0));
             }
@@ -147,7 +138,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             var data = animationEvent as AttackAnimationEvent;
 
-            attackZoneFilter.FilterEnemies(attackPoint,characterController.IsFacingLeft,
+            attackZoneFilter.FilterEnemies(attackPoint, characterController.IsFacingLeft,
                 enemiesRetriveCallback?.Invoke(), ref enemiesToAttack, data);
 
             int maxEnemiesToHit =
@@ -190,11 +181,30 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 : transform.position + Vector3.up + Vector3.right * attackPointOffset;
             Gizmos.DrawWireSphere(checkPosition, playerStatData.AttackRange);
 
-
             var ultimatePosition = characterController.IsFacingLeft
                 ? checkPosition + (Vector3.left * ultimateData.OffsetMultiplier)
                 : checkPosition + (Vector3.right * ultimateData.OffsetMultiplier);
-            Gizmos.DrawWireSphere(ultimatePosition, playerStatData.AttackRange * ultimateData.RangeMultiplier);
+            switch (characterController.CharacterSO.CharacterType)
+            {
+                case CharacterType.Tagon:
+                    Gizmos.DrawWireSphere(ultimatePosition, playerStatData.AttackRange * ultimateData.RangeMultiplier);
+                    break;
+                case CharacterType.Lancer:
+                    float totalFOV = 45.0f;
+                    float rayRange =Vector2.Distance(transform.position,attackPoint)+ playerStatData.AttackRange * ultimateData.RangeMultiplier;
+                    float halfFOV = totalFOV / 2.0f;
+                    Quaternion leftRayRotation = Quaternion.AngleAxis( -halfFOV, Vector3.forward );
+                    Quaternion rightRayRotation = Quaternion.AngleAxis( halfFOV, Vector3.forward );
+                    Vector3 facingvector = characterController.IsFacingLeft ? Vector3.left : Vector3.right;
+                    Vector3 leftRayDirection = leftRayRotation * facingvector;
+                    Vector3 rightRayDirection = rightRayRotation * facingvector;
+                    Gizmos.DrawRay(  transform.position + Vector3.up, leftRayDirection * rayRange );
+                    Gizmos.DrawRay(  transform.position + Vector3.up, rightRayDirection * rayRange );
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+          
         }
     }
 }

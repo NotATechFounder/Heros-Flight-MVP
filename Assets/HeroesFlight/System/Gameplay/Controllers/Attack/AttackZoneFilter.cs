@@ -8,12 +8,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class AttackZoneFilter : AttackZoneEnemiesFilterInterface
     {
-        public AttackZoneFilter(CharacterSO data)
+        public AttackZoneFilter(CharacterSO data, Transform transform)
         {
             characterData = data;
+            characterTransform = transform;
         }
 
         CharacterSO characterData;
+        Transform characterTransform;
 
         public void FilterEnemies(Vector2 attackPoint, bool characterFacingLeft,
             List<IHealthController> enemies, ref List<IHealthController> enemiesToUpdate,
@@ -34,7 +36,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                             FilterEnemiesForBaseUltimate(attackPoint,characterFacingLeft, enemies, ref enemiesToUpdate, dataAttackType);
                             break;
                         case CharacterType.Lancer:
-                            FilterEnemiesForLancerUltimate(attackPoint, enemies, ref enemiesToUpdate);
+                            FilterEnemiesForLancerUltimate(attackPoint,characterFacingLeft, enemies, ref enemiesToUpdate, dataAttackType);
                             break;
                     }
 
@@ -55,13 +57,21 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
-        void FilterEnemiesForLancerUltimate(Vector2 attackPoint, List<IHealthController> enemies,
-            ref List<IHealthController> enemiesToUpdate)
+        void FilterEnemiesForLancerUltimate(Vector2 attackPoint,bool characterFacingLeft, List<IHealthController> enemies,
+            ref List<IHealthController> enemiesToUpdate,
+            AttackAnimationEvent dataAttackType)
         {
+            var offsetPosition = characterFacingLeft
+                ? attackPoint + Vector2.left * characterData.UltimateData.OffsetMultiplier
+                : attackPoint + Vector2.right * characterData.UltimateData.OffsetMultiplier;
             foreach (var controller in enemies)
             {
-                if (Vector2.Distance(controller.currentTransform.position, attackPoint) <=
-                    characterData.GetPlayerStatData.AttackRange)
+                var checkPosition = new Vector2(characterTransform.position.x, attackPoint.y);
+                var angle = Vector2.Angle(checkPosition, controller.currentTransform.position);
+                bool inAngle = angle <= 45f;
+                Debug.Log(angle);
+                if (Vector2.Distance(controller.currentTransform.position, offsetPosition) <=
+                    characterData.GetPlayerStatData.AttackRange * characterData.UltimateData.RangeMultiplier && inAngle)
                 {
                     enemiesToUpdate.Add(controller);
                 }
