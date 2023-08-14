@@ -159,8 +159,6 @@ namespace HeroesFlight.System.Character
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
-            Debug.Log(e.Data.Name);
-            Debug.Log(trackentry.Animation.Name);
             switch (e.Data.Name)
             {
                 case "Dealing damg":
@@ -171,22 +169,22 @@ namespace HeroesFlight.System.Character
                             OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Regular,0));
                             break;
                         case AnimationNames.Ultimate_Base_1:
-                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,1));
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate,1));
                             break;
                         case AnimationNames.Ultimate_Base_2:
-                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,2));
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate,2));
                             break;
                         case AnimationNames.Ultimate_Base_3:
-                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,3));
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate,3));
                             break;
                         case AnimationNames.Ultimate_Base_4:
-                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,4));
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate,4));
                             break;
                         case AnimationNames.Regular_Attack_Spear:
                             OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Regular,0));
                             break;
                         case AnimationNames.Ultimate_Spear:
-                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Lancer,0));
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate,0));
                             break;
                         
                         
@@ -196,9 +194,9 @@ namespace HeroesFlight.System.Character
                 case "start_sound":
                     AudioManager.PlaySoundEffect("Attack Sound");
                     break;
-                case "Attack Ultimate":
-                    OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate_Base,0));
-                    break;
+                // case "Attack Ultimate":
+                //     OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate,0));
+                //     break;
             }
         }
     }
