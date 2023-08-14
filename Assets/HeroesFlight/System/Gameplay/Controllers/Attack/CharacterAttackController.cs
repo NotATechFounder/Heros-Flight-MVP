@@ -200,6 +200,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                     Vector3 rightRayDirection = rightRayRotation * facingvector;
                     Gizmos.DrawRay(  transform.position + Vector3.up, leftRayDirection * rayRange );
                     Gizmos.DrawRay(  transform.position + Vector3.up, rightRayDirection * rayRange );
+                    Gizmos.DrawWireSphere(attackPoint, playerStatData.AttackRange * ultimateData.RangeMultiplier);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

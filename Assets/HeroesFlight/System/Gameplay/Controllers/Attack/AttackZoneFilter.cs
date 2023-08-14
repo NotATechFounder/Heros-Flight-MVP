@@ -33,10 +33,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                     switch (characterData.CharacterType)
                     {
                         case CharacterType.Tagon:
-                            FilterEnemiesForBaseUltimate(attackPoint,characterFacingLeft, enemies, ref enemiesToUpdate, dataAttackType);
+                            FilterEnemiesForBaseUltimate(attackPoint, characterFacingLeft, enemies, ref enemiesToUpdate,
+                                dataAttackType);
                             break;
                         case CharacterType.Lancer:
-                            FilterEnemiesForLancerUltimate(attackPoint,characterFacingLeft, enemies, ref enemiesToUpdate, dataAttackType);
+                            FilterEnemiesForLancerUltimate(attackPoint, characterFacingLeft, enemies,
+                                ref enemiesToUpdate, dataAttackType);
                             break;
                     }
 
@@ -57,28 +59,33 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
-        void FilterEnemiesForLancerUltimate(Vector2 attackPoint,bool characterFacingLeft, List<IHealthController> enemies,
+        void FilterEnemiesForLancerUltimate(Vector2 attackPoint, bool characterFacingLeft,
+            List<IHealthController> enemies,
             ref List<IHealthController> enemiesToUpdate,
             AttackAnimationEvent dataAttackType)
         {
-            var offsetPosition = characterFacingLeft
-                ? attackPoint + Vector2.left * characterData.UltimateData.OffsetMultiplier
-                : attackPoint + Vector2.right * characterData.UltimateData.OffsetMultiplier;
             foreach (var controller in enemies)
             {
+                if (Vector2.Distance(controller.currentTransform.position, attackPoint) >
+                    characterData.GetPlayerStatData.AttackRange * characterData.UltimateData.RangeMultiplier)
+                {
+                    continue;
+                }
+
+
                 var checkPosition = new Vector2(characterTransform.position.x, attackPoint.y);
                 var angle = Vector2.Angle(checkPosition, controller.currentTransform.position);
-                bool inAngle = angle <= 45f;
-                Debug.Log(angle);
-                if (Vector2.Distance(controller.currentTransform.position, offsetPosition) <=
-                    characterData.GetPlayerStatData.AttackRange * characterData.UltimateData.RangeMultiplier && inAngle)
+                var inAngle = angle <= 45f;
+
+                if (inAngle)
                 {
                     enemiesToUpdate.Add(controller);
                 }
             }
         }
 
-        void FilterEnemiesForBaseUltimate(Vector2 attackPoint,bool characterFacingLeft, List<IHealthController> enemies,
+        void FilterEnemiesForBaseUltimate(Vector2 attackPoint, bool characterFacingLeft,
+            List<IHealthController> enemies,
             ref List<IHealthController> enemiesToUpdate,
             AttackAnimationEvent dataAttackType)
         {
