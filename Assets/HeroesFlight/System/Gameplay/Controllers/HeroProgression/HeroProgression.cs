@@ -16,7 +16,10 @@ public class HeroProgression : MonoBehaviour
     [SerializeField] private HeroProgressionAttributeInfo[] heroProgressionAttributeInfos;
 
     private Dictionary<HeroProgressionAttribute, int> hPAttributeSpModifiedDic;
+
     [Header("Debug")]
+    [SerializeField] private CharacterSO characterSO;
+    [SerializeField] private CharacterStatController characterStatController;
     [SerializeField] private int avaliableSp;
     [SerializeField] private int totalUsedSp;
     [SerializeField] private int currentUsedSp;
@@ -48,6 +51,15 @@ public class HeroProgression : MonoBehaviour
         }
     }
 
+    public void Initialise(CharacterSO characterSO, CharacterStatController characterStatController)
+    {
+        this.characterSO = characterSO;
+        this.characterStatController = characterStatController;
+        hPAttributeSpModifiedDic = new Dictionary<HeroProgressionAttribute, int>();
+        expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
+        SetUpHeroProgressionAttributeInfo();
+    }
+
     public void SetUpHeroProgressionAttributeInfo()
     {
         heroProgressionAttributeInfos = new HeroProgressionAttributeInfo[HPAttributeSOs.Length];
@@ -59,62 +71,135 @@ public class HeroProgression : MonoBehaviour
         }
     }
 
-    public void SubscribeAttributeCallBacks()
+    public void ProccessAttributes()
     {
-        foreach (var attribute in heroProgressionAttributeInfos)
+        foreach (KeyValuePair<HeroProgressionAttribute, int> attribute in hPAttributeSpModifiedDic)
         {
-            switch (attribute.AttributeSO.Attribute)
+            switch (attribute.Key)
             {
                 case HeroProgressionAttribute.Power:
-                    attribute.SetEffect(OnPowerSPChanged);
+                    ProccessPower(GetAttributeInfo(HeroProgressionAttribute.Power), attribute.Value);
                     break;
-                case HeroProgressionAttribute.Vitality:
-                    attribute.SetEffect(OnVitalitySPChanged);
+                    case HeroProgressionAttribute.Vitality:
+                    ProccessVitality(GetAttributeInfo(HeroProgressionAttribute.Vitality));
                     break;
-                case HeroProgressionAttribute.Agility:
-                    attribute.SetEffect(OnAgilitySPChanged);
+                    case HeroProgressionAttribute.Agility:
+                    ProccessAgility(GetAttributeInfo(HeroProgressionAttribute.Agility));
                     break;
-                case HeroProgressionAttribute.Defense:
-                    attribute.SetEffect(OnDefenseSPChanged);
+                    case HeroProgressionAttribute.Defense:
+                    ProccessDefense(GetAttributeInfo(HeroProgressionAttribute.Defense));
                     break;
-                case HeroProgressionAttribute.HealthBoost:
-                    attribute.SetEffect(OnHealthBoostSPChanged);
+                    case HeroProgressionAttribute.HealthBoost:
+                    ProccessHealthBoost(GetAttributeInfo(HeroProgressionAttribute.HealthBoost));
                     break;
-                case HeroProgressionAttribute.CriticalHit:
-                    attribute.SetEffect(OnCriticalHitSPChanged);
+                    case HeroProgressionAttribute.CriticalHit:
+                    ProccessCriticalHit(GetAttributeInfo(HeroProgressionAttribute.CriticalHit));
                     break;
-            }   
+            }
         }
     }
 
-    private void OnPowerSPChanged(HeroProgressionAttributeInfo info)
+    public void ResetAttributes()
     {
-        float physicalDamageIncrease = info.AttributeSO.GetKeyValue("PhysicalOutput");
+        foreach (var attributeInfo in heroProgressionAttributeInfos)
+        {
+            if (hPAttributeSpModifiedDic.ContainsKey(attributeInfo.AttributeSO.Attribute))
+            {
+                attributeInfo.ReduceSP(hPAttributeSpModifiedDic[attributeInfo.AttributeSO.Attribute]);
+            }
+
+            switch (attributeInfo.AttributeSO.Attribute)
+            {
+                case HeroProgressionAttribute.Power:
+
+                    characterStatController.ModifyPhysicalDamage(attributeInfo.GetTotalValue("PhysicalOutput"), false);
+                    characterStatController.ModifyMagicDamage(attributeInfo.GetTotalValue("MagicalOutput"), false);
+
+                    break;
+                case HeroProgressionAttribute.Vitality:
+
+                    characterStatController.ModifyMaxHealth(attributeInfo.GetTotalValue("VitalityOutput"), false);
+
+                    break;
+                case HeroProgressionAttribute.Agility:
+
+                    characterStatController.ModifyMoveSpeed(attributeInfo.GetTotalValue("FlySpeedOutput"), false);
+                    characterStatController.ModifyAttackSpeed(attributeInfo.GetTotalValue("AttackSpeedOutput"), false);
+
+                    if (characterSO.HeroType == HeroType.Ranged)
+                    {
+                        characterStatController.ModifyPhysicalDamage(attributeInfo.GetTotalValue("RangeDamageOutput"), false);
+                    }
+
+                    characterStatController.ModifyDodgeChance(attributeInfo.GetTotalValue("DodgeOutput"), false, false);
+
+                    break;
+                case HeroProgressionAttribute.Defense:
+                    characterStatController.ModifyDefense(attributeInfo.GetTotalValue("DefenseOutput"), false, false);
+                    break;
+                case HeroProgressionAttribute.HealthBoost:
+
+                    characterStatController.ModifyHealth(attributeInfo.GetTotalValue("HealthBoostOutput"), false);
+     
+                    break;
+                case HeroProgressionAttribute.CriticalHit:
+
+                    characterStatController.ModifyCriticalHitChance(attributeInfo.GetTotalValue("CriticalHitOutput"),false, false);
+
+                    break;
+            }
+        }
     }
 
-    private void OnVitalitySPChanged(HeroProgressionAttributeInfo info)
+    public HeroProgressionAttributeInfo GetAttributeInfo(HeroProgressionAttribute attribute)
     {
-
+        foreach (var attributeInfo in heroProgressionAttributeInfos)
+        {
+            if (attributeInfo.AttributeSO.Attribute == attribute)
+            {
+                return attributeInfo;
+            }
+        }
+        return null;
     }
 
-    private void OnAgilitySPChanged(HeroProgressionAttributeInfo info)
+    private void ProccessPower(HeroProgressionAttributeInfo info, int newValue)
     {
-
+        characterStatController.ModifyPhysicalDamage(info.GetKeyValue("PhysicalOutput", newValue), true);
+        characterStatController.ModifyMagicDamage(info.GetKeyValue("MagicalOutput", newValue), true);
     }
 
-    private void OnDefenseSPChanged(HeroProgressionAttributeInfo info)
+    private void ProccessVitality(HeroProgressionAttributeInfo info)
     {
-
+        characterStatController.ModifyMaxHealth(info.GetTotalValue("VitalityOutput"), true);
     }
 
-    private void OnHealthBoostSPChanged(HeroProgressionAttributeInfo info)
+    private void ProccessAgility(HeroProgressionAttributeInfo info)
     {
+        characterStatController.ModifyMoveSpeed(info.GetTotalValue("FlySpeedOutput"), true);
+        characterStatController.ModifyAttackSpeed(info.GetTotalValue("AttackSpeedOutput"), true);
 
+        if (characterSO.HeroType == HeroType.Ranged)
+        {
+            characterStatController.ModifyPhysicalDamage(info.GetTotalValue("RangeDamageOutput"), false);
+        }
+
+        characterStatController.ModifyDodgeChance(info.GetTotalValue("DodgeOutput"), true,false);
     }
 
-    private void OnCriticalHitSPChanged(HeroProgressionAttributeInfo info)
+    private void ProccessDefense(HeroProgressionAttributeInfo info)
     {
- 
+        characterStatController.ModifyDefense(info.GetTotalValue("DefenseOutput"), true,false);
+    }
+
+    private void ProccessHealthBoost(HeroProgressionAttributeInfo info)
+    {
+        characterStatController.ModifyHealth(info.GetTotalValue("HealthBoostOutput"), true);
+    }
+
+    private void ProccessCriticalHit(HeroProgressionAttributeInfo info)
+    {
+        characterStatController.ModifyCriticalHitChance(info.GetTotalValue("CriticalHitOutput"), true, false);
     }
 
     public void IncrementAttributeSP(HeroProgressionAttributeInfo attributeInfo)
@@ -141,14 +226,14 @@ public class HeroProgression : MonoBehaviour
     {
         if (CanReturnSP())
         {
-            if (hPAttributeSpModifiedDic.ContainsKey(attributeInfo.AttributeSO.Attribute)
-               && hPAttributeSpModifiedDic[attributeInfo.AttributeSO.Attribute] > 0)
+            if (hPAttributeSpModifiedDic.ContainsKey(attributeInfo.AttributeSO.Attribute))
             {
                 hPAttributeSpModifiedDic[attributeInfo.AttributeSO.Attribute]--;
 
                 if (hPAttributeSpModifiedDic[attributeInfo.AttributeSO.Attribute] == 0)
                 {
                     attributeInfo.TriggerModified(false);
+                    hPAttributeSpModifiedDic.Remove(attributeInfo.AttributeSO.Attribute);
                 }
 
                 attributeInfo.DecrementSP();
@@ -170,6 +255,7 @@ public class HeroProgression : MonoBehaviour
 
     public void Confirm()
     {
+        ProccessAttributes();
         hPAttributeSpModifiedDic.Clear();
         totalUsedSp += currentUsedSp;
     }
@@ -180,6 +266,8 @@ public class HeroProgression : MonoBehaviour
         {
             return;
         }
+
+        ResetAttributes();
 
         foreach (var attribute in heroProgressionAttributeInfos)
         {
@@ -226,7 +314,6 @@ public class HeroProgressionAttributeInfo
 
     [SerializeField] HPAttributeSO attributeSO;
     [SerializeField] private int currentSP;
-    private Action<HeroProgressionAttributeInfo> OnChange;
 
     public HPAttributeSO AttributeSO => attributeSO;
 
@@ -242,19 +329,12 @@ public class HeroProgressionAttributeInfo
     {
         ++currentSP;
         OnSPChanged?.Invoke(currentSP);
-        OnChange?.Invoke(this);
     }
 
     public void DecrementSP()
     {
         --currentSP;
         OnSPChanged?.Invoke(currentSP);
-        OnChange?.Invoke(this);
-    }
-
-    public void SetEffect(Action<HeroProgressionAttributeInfo> action)
-    {
-        OnChange = action;
     }
 
     public void TriggerModified(bool modified)
@@ -262,11 +342,51 @@ public class HeroProgressionAttributeInfo
         OnModified?.Invoke(modified);
     }
 
-    internal void ResetSP()
+    public void ResetSP()
     {
         currentSP = 0;
         OnSPChanged?.Invoke(currentSP);
-        OnChange?.Invoke(this);
+        OnModified?.Invoke(false);
+    }
+
+    public void ReduceSP(int sp)
+    {
+        currentSP -= sp;
+    }
+
+    public float GetTotalValue(string key)
+    {
+        foreach (var keyValue in attributeSO.KeyValues)
+        {
+            if (keyValue.key == key)
+            {
+                return (currentSP / keyValue.pointThreshold) * keyValue.Value;
+            }
+        }
+        return 0;
+    }
+
+    public float GetKeyValue(string key, int newValue)
+    {
+        int difference = 0;
+
+        if (currentSP == newValue)
+        {
+            difference = newValue;
+        }
+        else
+        {
+            difference = Mathf.Abs(newValue - currentSP);
+        }
+
+        foreach (var keyValue in attributeSO.KeyValues)
+        {
+            if (keyValue.key == key)
+            {
+                return (difference / keyValue.pointThreshold) * keyValue.Value;
+            }
+        }
+        return 0;
     }
 }
 

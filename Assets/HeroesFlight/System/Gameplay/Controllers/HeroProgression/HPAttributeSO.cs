@@ -10,21 +10,10 @@ public class HPAttributeSO : ScriptableObject
     [TextArea(3, 10)]
     [SerializeField] private string description;
     [SerializeField] private Sprite icon;
-    [SerializeField] private AttributeKeyValue[] KeyValues;
+    [SerializeField] private AttributeKeyValue[] keyValues;
 
     public Sprite Icon => icon;
     public HeroProgressionAttribute Attribute => attribute;
     public string Description => description;
-
-    public float GetKeyValue(string key)
-    {
-        foreach (var keyValue in KeyValues)
-        {
-            if (keyValue.key == key)
-            {
-                return keyValue.Value;
-            }
-        }
-        return 0;
-    }
+    public AttributeKeyValue[] KeyValues => keyValues;
 }

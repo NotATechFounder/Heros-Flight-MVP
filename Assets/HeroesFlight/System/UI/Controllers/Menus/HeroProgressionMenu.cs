@@ -150,7 +150,7 @@ namespace UISystem
         {
             foreach (var heroAttributeUI in heroAttributeUIArray)
             {
-                heroAttributeUI.ResetSpTextColor();
+                heroAttributeUI.OnModified(false);
             }
         }
 
@@ -167,7 +167,6 @@ namespace UISystem
 
         private void ResetButtonPressed()
         {
-            ResetHeroAttributeUIs();
             OnResetButtonPressed?.Invoke();
         }
     }

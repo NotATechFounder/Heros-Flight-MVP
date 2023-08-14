@@ -36,6 +36,7 @@ public class PlayerStatData: CharacterStatData
     [SerializeField] float vitality;
     [SerializeField] float agility;
     [SerializeField] float resilience;
+    [SerializeField] float dodgeChance;
 
     [SerializeField] RangeValue magicDamage;
     [SerializeField] RangeValue physicalDamage;
@@ -45,6 +46,7 @@ public class PlayerStatData: CharacterStatData
     public float Vitality => vitality;
     public float Agility => agility;
     public float Resilience => resilience;
+    public float DodgeChance => dodgeChance;
     public RangeValue MagicDamage => magicDamage;
     public RangeValue PhysicalDamage => physicalDamage;
     public float CriticalHitChance => criticalHitChance;

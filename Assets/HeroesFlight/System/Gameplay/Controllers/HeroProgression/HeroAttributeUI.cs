@@ -42,7 +42,7 @@ public class HeroAttributeUI : MonoBehaviour
         attributeValue.text = sp.ToString();
     }
 
-    private void OnModified(bool modified)
+    public void OnModified(bool modified)
     {
         attributeValue.color = modified ? Color.green : Color.white;
     }
@@ -65,10 +65,5 @@ public class HeroAttributeUI : MonoBehaviour
     public void ResetSpText()
     {
         attributeValue.text = 0.ToString();
-    }
-
-    public void ResetSpTextColor()
-    {
-        attributeValue.color = Color.white;
     }
 }
