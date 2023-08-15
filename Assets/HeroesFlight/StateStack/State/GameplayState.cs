@@ -71,6 +71,8 @@ namespace HeroesFlight.StateStack.State
 
                                 CoroutineUtility.WaitForSeconds(3f, () =>
                                 {
+                                    gamePlaySystem.HandleHeroProgression();
+
                                     if (!gamePlaySystem.EffectManager.CompletedLevel())
                                     {
                                         ShowLevelPortal();
@@ -136,6 +138,15 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -=
                             gamePlaySystem.EffectManager.AddAngelCardSO;
                         uiSystem.UiEventHandler.AngelPermanetCardMenu.ResetMenu();
+
+                        uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent -= gamePlaySystem.HeroProgression.DecrementAttributeSP;
+                        uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent -= gamePlaySystem.HeroProgression.IncrementAttributeSP;
+                        uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -= () => gamePlaySystem.HeroProgression.HeroProgressionAttributeInfos;
+                        uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -= gamePlaySystem.HeroProgression.Confirm;
+                        uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -= gamePlaySystem.HeroProgression.ResetSP;
+                        gamePlaySystem.HeroProgression.OnLevelUp -= uiSystem.UiEventHandler.HeroProgressionMenu.OnLevelUp;
+                        gamePlaySystem.HeroProgression.OnSpChanged -= uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
+
                         m_SceneActionsQueue.Start(uiSystem.UiEventHandler.LoadingMenu.UpdateLoadingBar, () =>
                         {
                             uiSystem.UiEventHandler.MainMenu.Open();
@@ -199,8 +210,16 @@ namespace HeroesFlight.StateStack.State
                             gamePlaySystem.EffectManager.OnPermanetCard += uiSystem.UiEventHandler.AngelPermanetCardMenu
                                 .AcivateCardPermanetEffect;
                             uiSystem.UiEventHandler.AngelGambitMenu.CardExit += gamePlaySystem.EffectManager.Exists;
-                            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected +=
-                                gamePlaySystem.EffectManager.AddAngelCardSO;
+                            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += gamePlaySystem.EffectManager.AddAngelCardSO;
+
+                            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes += () => gamePlaySystem.HeroProgression.HeroProgressionAttributeInfos;
+                            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent += gamePlaySystem.HeroProgression.DecrementAttributeSP;
+                            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent += gamePlaySystem.HeroProgression.IncrementAttributeSP;
+                            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed += gamePlaySystem.HeroProgression.Confirm;
+                            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed += gamePlaySystem.HeroProgression.ResetSP;
+                            gamePlaySystem.HeroProgression.OnLevelUp += uiSystem.UiEventHandler.HeroProgressionMenu.OnLevelUp;
+                            gamePlaySystem.HeroProgression.OnSpChanged += uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
+
                         });
                         uiSystem.UiEventHandler.GameMenu.Open();
                         CoroutineUtility.WaitForSeconds(1f, () =>

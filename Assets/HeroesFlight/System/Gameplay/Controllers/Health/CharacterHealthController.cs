@@ -22,9 +22,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             animator = GetComponent<CharacterAnimationControllerInterface>();
             animator.PlayIdleAnimation();
             animator = GetComponent<CharacterAnimationController>();
-            maxHealth = controller.CharacterSO.GetPlayerStatData.Health;
+            maxHealth = characterStatController.CurrentMaxHealth;
             characterStatController.OnHealthModified += ModifyHealth;
             characterStatController.GetCurrentHealth = () => currentHealth;
+            characterStatController.OnMaxHealthChanged = SetMaxHealth;
             base.Init();
         }
 

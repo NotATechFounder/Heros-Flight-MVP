@@ -91,5 +91,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             damage.SetTarget(transform);
             OnBeingDamaged?.Invoke(damage);
         }
+
+        protected void SetMaxHealth(float health)
+        {
+            maxHealth = health;
+            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+        }
     }
 }

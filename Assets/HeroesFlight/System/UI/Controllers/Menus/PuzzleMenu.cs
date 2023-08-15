@@ -24,10 +24,22 @@ namespace UISystem
         [SerializeField] private PuzzlePiece[] puzzlePieces;
         [SerializeField] private PuzzleSO puzzleSO;
 
+        [Header("Debug")]
+        [SerializeField] private bool debug = false;
+
         private CountDownTimer countDownTimer;
         private JuicerRuntime countDownTextEffect;
         private JuicerRuntime openEffectBG;
         private JuicerRuntime closeEffectBG;
+
+        private void Start()
+        {
+            if (debug)
+            {
+                OnCreated();
+                Open();
+            }
+        }
 
         public override void OnCreated()
         {
