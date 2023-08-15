@@ -7,7 +7,7 @@ namespace Pelumi.ObjectPool
 {
     public class ObjectPoolManager : MonoBehaviour
     {
-        public static List<PoolObjectInfo> objectPools;
+        public static Dictionary<string, PoolObjectInfo> objectPoolDictionary;
 
         public static GameObject _poolHolder;
         public static GameObject _particleSystemParent;
@@ -28,7 +28,7 @@ namespace Pelumi.ObjectPool
             _uiParent = new GameObject("UI Parent");
             _uiParent.transform.SetParent(_poolHolder.transform);
 
-            objectPools = new List<PoolObjectInfo>();
+            objectPoolDictionary = new Dictionary<string, PoolObjectInfo>();
         }
 
         public static T SpawnObject<T>(T original, PoolType poolType = PoolType.Any) where T : MonoBehaviour
@@ -110,13 +110,18 @@ namespace Pelumi.ObjectPool
 
         public static GameObject SpawnObject(GameObject objectPrefab, Vector3 position, Quaternion rotation, PoolType poolType = PoolType.Any)
         {
-            PoolObjectInfo poolObjectInfo = objectPools.Find(x => x.key == objectPrefab.name);
+            PoolObjectInfo poolObjectInfo = null;
 
-            if (poolObjectInfo == null)
+            if (objectPoolDictionary.ContainsKey(objectPrefab.name))
+            {
+                poolObjectInfo = objectPoolDictionary[objectPrefab.name];
+            }
+            else
             {
                 poolObjectInfo = new PoolObjectInfo(objectPrefab, poolType);
-                objectPools.Add(poolObjectInfo);
+                objectPoolDictionary.Add(objectPrefab.name, poolObjectInfo);
             }
+
 
             GameObject gameObject = poolObjectInfo.pool.Get();
             gameObject.transform.SetPositionAndRotation(position, rotation);
@@ -130,7 +135,12 @@ namespace Pelumi.ObjectPool
 
         public static void ReleaseObject(GameObject poolObject)
         {
-            PoolObjectInfo poolObjectInfo = objectPools.Find(x => x.key == poolObject.GetRawName());
+            PoolObjectInfo poolObjectInfo = null;
+
+            if (objectPoolDictionary.ContainsKey(poolObject.GetRawName()))
+            {
+                poolObjectInfo = objectPoolDictionary[poolObject.GetRawName()];
+            }
 
             if (poolObjectInfo == null)
             {
