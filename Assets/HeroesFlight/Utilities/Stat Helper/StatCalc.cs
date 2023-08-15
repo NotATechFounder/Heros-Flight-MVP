@@ -24,3 +24,16 @@ public static class StatCalc
         return (baseValue / 100) * percent;
     }
 }
+
+
+[System.Serializable]
+public class KeyValue
+{
+    public string key;
+    public float Value;
+
+    public float GetValue()
+    {
+        return Value;
+    }
+}

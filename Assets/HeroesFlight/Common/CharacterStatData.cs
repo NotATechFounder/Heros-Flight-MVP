@@ -36,30 +36,32 @@ public class PlayerStatData: CharacterStatData
     [SerializeField] float vitality;
     [SerializeField] float agility;
     [SerializeField] float resilience;
+    [SerializeField] float dodgeChance;
 
-    [SerializeField] ValueRange magicDamage;
-    [SerializeField] ValueRange physicalDamage;
+    [SerializeField] RangeValue magicDamage;
+    [SerializeField] RangeValue physicalDamage;
     [SerializeField] float criticalHitChance = 10f;
-    [SerializeField] ValueRange criticalHitDamage;
+    [SerializeField] RangeValue criticalHitDamage;
 
     public float Vitality => vitality;
     public float Agility => agility;
     public float Resilience => resilience;
-    public ValueRange MagicDamage => magicDamage;
-    public ValueRange PhysicalDamage => physicalDamage;
+    public float DodgeChance => dodgeChance;
+    public RangeValue MagicDamage => magicDamage;
+    public RangeValue PhysicalDamage => physicalDamage;
     public float CriticalHitChance => criticalHitChance;
-    public ValueRange CriticalHitDamage => criticalHitDamage;
+    public RangeValue CriticalHitDamage => criticalHitDamage;
 
 }
 
 
 [System.Serializable]
-public struct ValueRange
+public struct RangeValue
 {
     public float min;
     public float max;
 
-    public ValueRange(float min, float max)
+    public RangeValue(float min, float max)
     {
         this.min = min;
         this.max = max;

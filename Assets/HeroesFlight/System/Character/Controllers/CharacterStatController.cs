@@ -10,15 +10,18 @@ public class CharacterStatController : MonoBehaviour
     [SerializeField] PlayerStatData playerCombatModel;
 
     public Action<float, bool> OnHealthModified;
+    public Action<float> OnMaxHealthChanged;
 
     public Func<float> GetCurrentHealth;
 
     public bool debug = false;
 
+    public float CurrentMaxHealth => runtimeMaxHealth;
     [field: SerializeField] public float CurrentMoveSpeed { get; private set; }
     [field: SerializeField] public float CurrentVitality { get; private set; }
     [field: SerializeField] public float CurrentAgility { get; private set; }
     [field: SerializeField] public float CurrentResilience { get; private set; }
+    [field: SerializeField] public float CurrentDodgeChance { get; private set; }
     public float CurrentMagicDamage => playerCombatModel.MagicDamage.GetRandomValue() + runtimeMagicDamage;
     public float CurrentPhysicalDamage  => playerCombatModel.PhysicalDamage.GetRandomValue() + runtimePhysicalDamage;
     [field: SerializeField] public float CurrentCriticalHitChance { get; private set; }
@@ -26,6 +29,7 @@ public class CharacterStatController : MonoBehaviour
     [field: SerializeField] public float CurrentDefense { get; private set; }
     [field: SerializeField] public float CurrentAttackSpeed { get; private set; }
 
+    [SerializeField] private float runtimeMaxHealth;
     [SerializeField] private float runtimeMagicDamage;
     [SerializeField] private float runtimePhysicalDamage;
     [SerializeField] private float runtimeCriticalHitDamage;
@@ -57,10 +61,16 @@ public class CharacterStatController : MonoBehaviour
         }
     }
 
+    public void ModifyMaxHealth(float amount, bool increase)
+    {
+        runtimeMaxHealth += increase ? amount : -amount;
+        OnMaxHealthChanged?.Invoke(runtimeMaxHealth);
+    }
+
     public void ModifyHealth(float percentageAmount, bool increase)
     {
         float value = StatCalc.GetPercentage(playerCombatModel.Health, percentageAmount);
-        OnHealthModified.Invoke(value, increase);
+        OnHealthModified?.Invoke(value, increase);
     }
 
     public void ModifyMoveSpeed(float percentageAmount, bool increase)
@@ -83,6 +93,19 @@ public class CharacterStatController : MonoBehaviour
         CurrentResilience = StatCalc.ModifyValueByPercentage(playerCombatModel.Resilience, CurrentResilience, percentageAmount, increase);
     }
 
+    public void ModifyDodgeChance(float amount, bool increase, bool isPercentage = true)
+    {
+        if (isPercentage)
+        {
+            CurrentDodgeChance = StatCalc.ModifyValueByPercentage(playerCombatModel.DodgeChance, CurrentDodgeChance, amount, increase);
+        }
+        else
+        {
+            CurrentDodgeChance += increase ? amount : -amount;
+        }
+
+    }
+
     public void ModifyMagicDamage(float percentageAmount, bool increase)
     {
         runtimeMagicDamage = StatCalc.ModifyValueByPercentage(playerCombatModel.MagicDamage.max, runtimeMagicDamage, percentageAmount, increase);
@@ -93,9 +116,17 @@ public class CharacterStatController : MonoBehaviour
         runtimePhysicalDamage = StatCalc.ModifyValueByPercentage(playerCombatModel.PhysicalDamage.max, runtimePhysicalDamage, percentageAmount, increase);
     }
 
-    public void ModifyCriticalHitChance(float percentageAmount, bool increase)
+    public void ModifyCriticalHitChance(float amount,bool increase, bool isPercentage = true)
     {
-        CurrentCriticalHitChance = StatCalc.ModifyValueByPercentage(playerCombatModel.CriticalHitChance, CurrentCriticalHitChance, percentageAmount, increase);
+        if (isPercentage)
+        {
+            CurrentCriticalHitChance = StatCalc.ModifyValueByPercentage(playerCombatModel.CriticalHitChance, CurrentCriticalHitChance, amount, increase);
+        }
+        else
+        {
+            CurrentCriticalHitChance += increase ? amount : -amount;
+        }
+
     }
 
     public void ModifyCriticalHitDamage(float percentageAmount, bool increase)
@@ -103,9 +134,17 @@ public class CharacterStatController : MonoBehaviour
         runtimeCriticalHitDamage = StatCalc.ModifyValueByPercentage(playerCombatModel.CriticalHitDamage.max, runtimeCriticalHitDamage, percentageAmount, increase);
     }
 
-    public void ModifyDefense(float percentageAmount, bool increase)
+    public void ModifyDefense(float amount, bool increase, bool isPercentage = true)
     {
-        CurrentDefense = StatCalc.ModifyValueByPercentage(playerCombatModel.Defense, CurrentDefense, percentageAmount, increase);
+        if (isPercentage)
+        {
+            CurrentDefense = StatCalc.ModifyValueByPercentage(playerCombatModel.Defense, CurrentDefense, amount, increase);
+        }
+        else
+        {
+            CurrentDefense += increase ? amount : -amount;
+        }
+
     }
 
     public void ModifyAttackSpeed(float percentageAmount, bool increase) // Attack speed need to be smaller to be positive
@@ -124,10 +163,12 @@ public class CharacterStatController : MonoBehaviour
 
     public void ResetStats()
     {
+        runtimeMaxHealth = playerCombatModel.Health;
         CurrentMoveSpeed = playerCombatModel.MoveSpeed;
         CurrentVitality = playerCombatModel.Vitality;
         CurrentAgility = playerCombatModel.Agility;
         CurrentResilience = playerCombatModel.Resilience;
+        CurrentDodgeChance = playerCombatModel.DodgeChance;
         CurrentCriticalHitChance = playerCombatModel.CriticalHitChance;
         CurrentDefense = playerCombatModel.Defense;
         CurrentAttackSpeed = playerCombatModel.AttackSpeed;
