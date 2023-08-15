@@ -38,6 +38,8 @@ namespace HeroesFlight.System.Gameplay
 
         public CurrencySpawner CurrencySpawner { get; private set; }
 
+        public HeroProgression HeroProgression { get; private set;}
+
         public int CurrentLvlIndex => container.CurrentLvlIndex;
 
         public event Action<float> OnUltimateChargesChange;
@@ -75,6 +77,7 @@ namespace HeroesFlight.System.Gameplay
         Coroutine combotTimerRoutine;
         int collectedGold;
         float collectedXp;
+        float collectedHeroProgressionSp;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -88,6 +91,8 @@ namespace HeroesFlight.System.Gameplay
 
             CurrencySpawner = scene.GetComponentInChildren<CurrencySpawner>();
             CurrencySpawner.Initialize(this);
+
+            HeroProgression = scene.GetComponentInChildren<HeroProgression>();
 
             container.Init();
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
@@ -203,6 +208,7 @@ namespace HeroesFlight.System.Gameplay
             EffectManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
             BoosterManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
             CurrencySpawner.SetPlayer(characterController.CharacterTransform);
+            HeroProgression.Initialise(characterController.CharacterSO, characterController.CharacterTransform.GetComponent<CharacterStatController>());
         }
 
         void CreateMiniboss(SpawnModel currentLvlModel)
@@ -252,6 +258,8 @@ namespace HeroesFlight.System.Gameplay
             CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.currentTransform.position);
 
             CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10, iHealthController.currentTransform.position);
+
+            collectedHeroProgressionSp += 100;
 
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
 
@@ -429,6 +437,12 @@ namespace HeroesFlight.System.Gameplay
         private void HandleBoosterWithDurationActivated(BoosterContainer container)
         {
             OnBoosterContainerCreated?.Invoke(container);
+        }
+
+        public void HandleHeroProgression()
+        {
+            HeroProgression.AddExp(collectedHeroProgressionSp);
+            collectedHeroProgressionSp = 0;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace UISystem
 {
     public class HeroProgressionMenu : BaseMenu<HeroProgressionMenu>
     {
-        public event Func<HeroProgressionAttributeInfo[]> GetHeroAttributes;
+        public Func<HeroProgressionAttributeInfo[]> GetHeroAttributes;
 
         public Action<HeroProgressionAttributeInfo> OnUpButtonClickedEvent;
         public Action<HeroProgressionAttributeInfo> OnDownButtonClickedEvent;
@@ -34,55 +34,6 @@ namespace UISystem
         JuicerRuntime closeEffectContainer;
 
         private bool loadedHeroAttributes = false;
-
-        // TODO: Remove this
-        public HeroProgression heroProgression;
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                OnUpButtonClickedEvent = (HeroProgressionAttributeInfo) =>
-                {
-                     heroProgression.DecrementAttributeSP(HeroProgressionAttributeInfo);
-                };
-
-                OnDownButtonClickedEvent = (HeroProgressionAttributeInfo) =>
-                {
-                    heroProgression.IncrementAttributeSP(HeroProgressionAttributeInfo);
-                };
-
-                GetHeroAttributes = () =>
-                {
-                    return heroProgression.HeroProgressionAttributeInfos;
-                };
-
-                heroProgression.OnLevelUp += (level) =>
-                {
-                    OnLevelUp(level);
-                };
-
-                heroProgression.OnSpChanged += (sp) =>
-                {
-                    OnSpChanged(sp);
-                };
-
-                OnCloseButtonPressed = () =>
-                {
-                    heroProgression.Confirm();
-                    Close();
-                };
-
-                OnResetButtonPressed = () =>
-                {
-                    heroProgression.ResetSP();
-                };
-
-                OnCreated();
-                OnOpened();
-
-                Close();
-            }
-        }
 
         public override void OnCreated()
         {
@@ -121,8 +72,8 @@ namespace UISystem
 
         public void OnLevelUp(int level)
         {
-            levelText.text = $"Level {level}";
             ResetHeroAttributeUIs();
+            levelText.text = $"Level {level}";
             Open(); 
         }
 

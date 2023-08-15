@@ -29,10 +29,9 @@ namespace HeroesFlight.System.Gameplay
 
         public CountDownTimer GameTimer { get; }
         public AngelEffectManager EffectManager { get; }
-
         public BoosterManager BoosterManager { get; }
-
         public BoosterSpawner BoosterSpawner { get; }
+        public HeroProgression HeroProgression { get; }
         public int CurrentLvlIndex { get; }
         void StartGameLoop(SpawnModel currentModel);
         void ContinueGameLoop(SpawnModel currentModel);
@@ -44,6 +43,7 @@ namespace HeroesFlight.System.Gameplay
         void UseCharacterSpecial();
         void AddGold (int amount);
         void AddExperience(int amount);
+        void HandleHeroProgression();
         public void StoreRunReward();
     }
 }

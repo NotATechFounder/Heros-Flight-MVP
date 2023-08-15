@@ -29,28 +29,6 @@ public class HeroProgression : MonoBehaviour
 
     public HeroProgressionAttributeInfo[]  HeroProgressionAttributeInfos => heroProgressionAttributeInfos;
 
-    private void Start()
-    {
-        hPAttributeSpModifiedDic = new Dictionary<HeroProgressionAttribute, int>();
-
-        expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
-
-        SetUpHeroProgressionAttributeInfo();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            AddExp(100);
-        }
-
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            Confirm();
-        }
-    }
-
     public void Initialise(CharacterSO characterSO, CharacterStatController characterStatController)
     {
         this.characterSO = characterSO;
@@ -88,9 +66,6 @@ public class HeroProgression : MonoBehaviour
                     break;
                     case HeroProgressionAttribute.Defense:
                     ProccessDefense(GetAttributeInfo(HeroProgressionAttribute.Defense));
-                    break;
-                    case HeroProgressionAttribute.HealthBoost:
-                    ProccessHealthBoost(GetAttributeInfo(HeroProgressionAttribute.HealthBoost));
                     break;
                     case HeroProgressionAttribute.CriticalHit:
                     ProccessCriticalHit(GetAttributeInfo(HeroProgressionAttribute.CriticalHit));
@@ -136,11 +111,6 @@ public class HeroProgression : MonoBehaviour
                     break;
                 case HeroProgressionAttribute.Defense:
                     characterStatController.ModifyDefense(attributeInfo.GetTotalValue("DefenseOutput"), false, false);
-                    break;
-                case HeroProgressionAttribute.HealthBoost:
-
-                    characterStatController.ModifyHealth(attributeInfo.GetTotalValue("HealthBoostOutput"), false);
-     
                     break;
                 case HeroProgressionAttribute.CriticalHit:
 
@@ -190,11 +160,6 @@ public class HeroProgression : MonoBehaviour
     private void ProccessDefense(HeroProgressionAttributeInfo info)
     {
         characterStatController.ModifyDefense(info.GetTotalValue("DefenseOutput"), true,false);
-    }
-
-    private void ProccessHealthBoost(HeroProgressionAttributeInfo info)
-    {
-        characterStatController.ModifyHealth(info.GetTotalValue("HealthBoostOutput"), true);
     }
 
     private void ProccessCriticalHit(HeroProgressionAttributeInfo info)
@@ -396,7 +361,6 @@ public enum HeroProgressionAttribute
     Vitality,
     Agility,
     Defense,
-    HealthBoost,
     CriticalHit,
 }
 

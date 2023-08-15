@@ -25,6 +25,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             maxHealth = characterStatController.CurrentMaxHealth;
             characterStatController.OnHealthModified += ModifyHealth;
             characterStatController.GetCurrentHealth = () => currentHealth;
+            characterStatController.OnMaxHealthChanged = SetMaxHealth;
             base.Init();
         }
 
