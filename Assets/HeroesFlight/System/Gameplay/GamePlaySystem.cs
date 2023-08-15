@@ -208,7 +208,7 @@ namespace HeroesFlight.System.Gameplay
             EffectManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
             BoosterManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
             CurrencySpawner.SetPlayer(characterController.CharacterTransform);
-            HeroProgression.Initialise(characterController.CharacterSO, characterController.CharacterTransform.GetComponent<CharacterStatController>());
+            HeroProgression.Initialise(characterController.CharacterTransform.GetComponent<CharacterStatController>());
         }
 
         void CreateMiniboss(SpawnModel currentLvlModel)

@@ -10,10 +10,10 @@ public class HPAttributeSO : ScriptableObject
     [TextArea(3, 10)]
     [SerializeField] private string description;
     [SerializeField] private Sprite icon;
-    [SerializeField] private AttributeKeyValue[] keyValues;
+    [SerializeField] private HeroProgressionAttributeKeyValue[] keyValues;
 
     public Sprite Icon => icon;
     public HeroProgressionAttribute Attribute => attribute;
     public string Description => description;
-    public AttributeKeyValue[] KeyValues => keyValues;
+    public HeroProgressionAttributeKeyValue[] KeyValues => keyValues;
 }

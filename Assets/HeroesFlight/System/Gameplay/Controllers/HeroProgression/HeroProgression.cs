@@ -18,7 +18,6 @@ public class HeroProgression : MonoBehaviour
     private Dictionary<HeroProgressionAttribute, int> hPAttributeSpModifiedDic;
 
     [Header("Debug")]
-    [SerializeField] private CharacterSO characterSO;
     [SerializeField] private CharacterStatController characterStatController;
     [SerializeField] private int avaliableSp;
     [SerializeField] private int totalUsedSp;
@@ -29,9 +28,8 @@ public class HeroProgression : MonoBehaviour
 
     public HeroProgressionAttributeInfo[]  HeroProgressionAttributeInfos => heroProgressionAttributeInfos;
 
-    public void Initialise(CharacterSO characterSO, CharacterStatController characterStatController)
+    public void Initialise(CharacterStatController characterStatController)
     {
-        this.characterSO = characterSO;
         this.characterStatController = characterStatController;
         hPAttributeSpModifiedDic = new Dictionary<HeroProgressionAttribute, int>();
         expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
@@ -101,7 +99,7 @@ public class HeroProgression : MonoBehaviour
                     characterStatController.ModifyMoveSpeed(attributeInfo.GetTotalValue("FlySpeedOutput"), false);
                     characterStatController.ModifyAttackSpeed(attributeInfo.GetTotalValue("AttackSpeedOutput"), false);
 
-                    if (characterSO.HeroType == HeroType.Ranged)
+                    if (characterStatController.GetHeroType != HeroType.Melee)
                     {
                         characterStatController.ModifyPhysicalDamage(attributeInfo.GetTotalValue("RangeDamageOutput"), false);
                     }
@@ -149,7 +147,7 @@ public class HeroProgression : MonoBehaviour
         characterStatController.ModifyMoveSpeed(info.GetTotalValue("FlySpeedOutput"), true);
         characterStatController.ModifyAttackSpeed(info.GetTotalValue("AttackSpeedOutput"), true);
 
-        if (characterSO.HeroType == HeroType.Ranged)
+        if (characterStatController.GetHeroType != HeroType.Melee)
         {
             characterStatController.ModifyPhysicalDamage(info.GetTotalValue("RangeDamageOutput"), false);
         }
@@ -365,7 +363,7 @@ public enum HeroProgressionAttribute
 }
 
 [System.Serializable]
-public class AttributeKeyValue
+public class HeroProgressionAttributeKeyValue
 {
     public string key;
     public int pointThreshold;

@@ -32,6 +32,7 @@ public class MonsterStatData : CharacterStatData
 [Serializable]
 public class PlayerStatData: CharacterStatData
 {
+    [SerializeField] HeroType heroType;
     [Header("Player Combat")]
     [SerializeField] float vitality;
     [SerializeField] float agility;
@@ -43,6 +44,7 @@ public class PlayerStatData: CharacterStatData
     [SerializeField] float criticalHitChance = 10f;
     [SerializeField] RangeValue criticalHitDamage;
 
+    public HeroType HeroType => heroType;
     public float Vitality => vitality;
     public float Agility => agility;
     public float Resilience => resilience;
@@ -71,4 +73,11 @@ public struct RangeValue
     {
         return UnityEngine.Random.Range(min, max);
     }
+}
+
+public enum HeroType
+{
+    Melee,
+    Archer,
+    Mage
 }

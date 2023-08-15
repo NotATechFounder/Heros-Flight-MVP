@@ -15,13 +15,14 @@ public class CharacterStatController : MonoBehaviour
     public Func<float> GetCurrentHealth;
 
     public bool debug = false;
-
+    public HeroType GetHeroType => playerCombatModel.HeroType;
     public float CurrentMaxHealth => runtimeMaxHealth;
     [field: SerializeField] public float CurrentMoveSpeed { get; private set; }
     [field: SerializeField] public float CurrentVitality { get; private set; }
     [field: SerializeField] public float CurrentAgility { get; private set; }
     [field: SerializeField] public float CurrentResilience { get; private set; }
     [field: SerializeField] public float CurrentDodgeChance { get; private set; }
+    [field: SerializeField] public float CurrentAttackRange;
     public float CurrentMagicDamage => playerCombatModel.MagicDamage.GetRandomValue() + runtimeMagicDamage;
     public float CurrentPhysicalDamage  => playerCombatModel.PhysicalDamage.GetRandomValue() + runtimePhysicalDamage;
     [field: SerializeField] public float CurrentCriticalHitChance { get; private set; }
@@ -33,6 +34,7 @@ public class CharacterStatController : MonoBehaviour
     [SerializeField] private float runtimeMagicDamage;
     [SerializeField] private float runtimePhysicalDamage;
     [SerializeField] private float runtimeCriticalHitDamage;
+
 
     private void Start()
     {
@@ -172,5 +174,6 @@ public class CharacterStatController : MonoBehaviour
         CurrentCriticalHitChance = playerCombatModel.CriticalHitChance;
         CurrentDefense = playerCombatModel.Defense;
         CurrentAttackSpeed = playerCombatModel.AttackSpeed;
+        CurrentAttackRange = playerCombatModel.AttackRange;
     }
 }
