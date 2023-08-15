@@ -23,6 +23,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             enemiesToUpdate.Clear();
 
+            if (enemies == null || enemies.Count == 0)
+                return;
+            
             switch (dataAttackType.AttackType)
             {
                 case AttackType.Regular:

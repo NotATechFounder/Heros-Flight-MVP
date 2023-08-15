@@ -1,5 +1,6 @@
 ﻿using System;
 using HeroesFlight.System.Character.Container;
+using HeroesFlight.System.Character.Enum;
 using HeroesFlight.System.Input;
 using HeroesFlight.System.Input.Model;
 using StansAssets.Foundation.Extensions;
@@ -19,6 +20,7 @@ namespace HeroesFlight.System.Character
          
         CharacterControllerInterface characterController;
         CharacterContainer container;
+        CharacterType targetCharacterType;
 
 
         public void Init(Scene scene = default, Action OnComplete = null)
@@ -34,8 +36,13 @@ namespace HeroesFlight.System.Character
 
         public CharacterControllerInterface CreateCharacter()
         {
-            characterController = container.CreateCharacter();
+            characterController = container.CreateCharacter(targetCharacterType);
             return characterController;
+        }
+
+        public void SetCurrentCharacterType(CharacterType currentType)
+        {
+            targetCharacterType = currentType;
         }
 
         public void SetCharacterControllerState(bool isEnabled)

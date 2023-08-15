@@ -23,6 +23,7 @@ public class UIEventHandler : MonoBehaviour
     public AngelPermanetCardMenu AngelPermanetCardMenu { get; private set; }
     public ConfirmationUISO BackToMenuConfirmation => backToMenu;
     public ConfirmationUISO PuzzleConfirmation => puzzleConfirmation;
+    public CharacterSelectionMenu CharacterSelectionMenu { get; private set; }
 
     public void Init(Action OnComplecte = null)
     {
@@ -39,6 +40,7 @@ public class UIEventHandler : MonoBehaviour
         AngelGambitMenu = uIManager.InitMenu<AngelGambitMenu>();
         AngelPermanetCardMenu = uIManager.InitMenu<AngelPermanetCardMenu>();
         PopupManager = PopUpManager.Instance;
+        CharacterSelectionMenu = uIManager.InitMenu<CharacterSelectionMenu>();
         OnComplecte?.Invoke();
     }
 }

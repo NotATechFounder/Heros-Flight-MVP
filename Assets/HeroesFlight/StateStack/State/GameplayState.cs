@@ -194,6 +194,7 @@ namespace HeroesFlight.StateStack.State
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(gameScene);
                         SceneManager.SetActiveScene(loadedScene);
                         characterSystem.Init(loadedScene);
+                        characterSystem.SetCurrentCharacterType(uiSystem.UiEventHandler.CharacterSelectionMenu.selectedType);
                         npcSystem.Init(loadedScene);
                         gamePlaySystem.Init(loadedScene, () =>
                         {

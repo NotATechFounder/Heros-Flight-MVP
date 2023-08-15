@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 namespace UISystem
 {
@@ -10,10 +8,11 @@ namespace UISystem
     {
         public event Action OnPlayButtonPressed;
         public event Action OnSettingsButtonPressed;
+        public event Action OnCharacterSelectButtonPressed; 
 
         [SerializeField] private AdvanceButton playButton;
         [SerializeField] private AdvanceButton settingsButton;
-
+        [SerializeField] AdvanceButton selectCharacterButton;
         public override void OnCreated()
         {
             playButton.onClick.AddListener(()=>
@@ -24,6 +23,10 @@ namespace UISystem
             settingsButton.onClick.AddListener(() =>
             {
                 OnSettingsButtonPressed?.Invoke();
+            });
+            selectCharacterButton.onClick.AddListener(() =>
+            {
+                OnCharacterSelectButtonPressed?.Invoke();
             });
         }
 
