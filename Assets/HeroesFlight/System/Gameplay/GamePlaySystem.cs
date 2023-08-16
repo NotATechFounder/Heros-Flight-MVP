@@ -123,7 +123,7 @@ namespace HeroesFlight.System.Gameplay
         public void ResetLogic()
         {
             activeEnemyHealthControllers.Clear();
-
+            BoosterSpawner.ClearAllBoosters(); 
             // EffectManager.ResetAngelEffects();
             enemiesToKill = 0;
             GameTimer.Stop();

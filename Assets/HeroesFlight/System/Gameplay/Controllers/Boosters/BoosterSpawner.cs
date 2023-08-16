@@ -1,3 +1,4 @@
+using Pelumi.ObjectPool;
 using StansAssets.Foundation.Async;
 using System;
 using System.Collections;
@@ -44,7 +45,7 @@ public class BoosterSpawner : MonoBehaviour
                 }
             }
 
-            BoosterItem newBoosterItem = Instantiate(boosterItemPrefab, position, Quaternion.identity);
+            BoosterItem newBoosterItem = ObjectPoolManager.SpawnObject(boosterItemPrefab, position, Quaternion.identity);
             newBoosterItem.Initialize(boosterSO, OnBoosterItemInteracted);
             spawnedBoosterItem.Add(newBoosterItem);
         }
@@ -62,5 +63,14 @@ public class BoosterSpawner : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void ClearAllBoosters()
+    {
+        foreach (var boosterItem in spawnedBoosterItem)
+        {
+            ObjectPoolManager.ReleaseObject(boosterItem);
+        }
+        spawnedBoosterItem.Clear();
     }
 }

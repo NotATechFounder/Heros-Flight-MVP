@@ -6,8 +6,8 @@ using UnityEngine;
 public class HeroProgression : MonoBehaviour
 {
     public event Action<int> OnSpChanged;
-    public event Action<float> OnXpAdded;
-    public event Action<int> OnLevelUp;
+    public event Action<float> OnEXPAdded;
+    public event Action<int, int, float> OnLevelUp;
 
     [SerializeField] private int spPerLevel;
     [SerializeField] private float expToNextLevelBase;
@@ -253,18 +253,40 @@ public class HeroProgression : MonoBehaviour
         }
         else
         {
-            OnXpAdded?.Invoke(currentExp/ expToNextLevel);
+            OnEXPAdded?.Invoke(currentExp / expToNextLevel);
         }
     }
 
+    private void LevelUpOnce()
+    {
+        avaliableSp += spPerLevel;
+        currentUsedSp = avaliableSp;
+        currentLevel++;
+        currentExp -= expToNextLevel;
+        expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
+    }
+
+
     private void LevelUp()
+    {
+        int currentLvl = currentLevel;
+        int numberOfLevelsGained = 0;
+        do
+        {
+            LevelUpOnce();
+            ++numberOfLevelsGained;
+        } while (currentExp >= expToNextLevel);
+
+        OnLevelUp?.Invoke(currentLvl, numberOfLevelsGained, currentExp / expToNextLevel);
+    }
+
+    private void OldLevelUp()
     {
         avaliableSp = spPerLevel;
         currentUsedSp = avaliableSp;
         currentLevel++;
         currentExp -= expToNextLevel;
         expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
-        OnLevelUp?.Invoke(currentLevel);
         OnSpChanged?.Invoke(avaliableSp);
     }
 }

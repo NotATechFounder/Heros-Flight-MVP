@@ -3,6 +3,8 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 using Pelumi.Juicer;
+using System.Collections;
+using log4net.Core;
 
 namespace UISystem
 {
@@ -12,6 +14,7 @@ namespace UISystem
 
         public event Action OnPauseButtonClicked;
         public event Action OnSpecialAttackButtonClicked;
+        public event Action<int> OnLevelUpComplete;
 
         [Header("Main")]
         [SerializeField] private TextMeshProUGUI coinText;
@@ -20,6 +23,7 @@ namespace UISystem
         [SerializeField] private AdvanceButton pauseButton;
 
         [Header("level Progress")]
+        [SerializeField] private GameObject levelProgressPanel;
         [SerializeField] private TextMeshProUGUI levelProgressText;
         [SerializeField] private Image levelProgressFill;
 
@@ -46,15 +50,11 @@ namespace UISystem
         JuicerRuntime closeEffect;
         JuicerRuntime specialEffect;
         JuicerRuntime specialIconEffect;
+        JuicerRuntime levelProgressEffect;
 
-        // TESTING
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                FillSpecial(specialAttackButtonFill.fillAmount += 0.25F);
-            }
-        }
+        private bool isExpComplete;
+
+        public bool IsExpComplete => isExpComplete;
 
         public override void OnCreated()
         {
@@ -75,6 +75,8 @@ namespace UISystem
             pauseButton.onClick.AddListener(() => OnPauseButtonClicked?.Invoke());
 
             specialAttackButton.onClick.AddListener(SpecialAttackButtonClicked);
+
+            levelProgressEffect = levelProgressFill.JuicyFillAmount(1, 1f);
 
             ResetMenu();
         }
@@ -98,6 +100,7 @@ namespace UISystem
             timerText.text = "00:00";
             enemyCountText.text = "0";
             comboCounterText.text = "0";
+            levelProgressText.text = "LV.0";
         }
 
         public void UpdateCoinText(float value)
@@ -133,15 +136,64 @@ namespace UISystem
             levelProgressText.text = value.ToString();
         }
 
-        public void UpdateLevelProgressFill(float value)
+        public void UpdateExpBar(float value)
         {
-            levelProgressFill.fillAmount = value;
+            isExpComplete = false;
+            StartCoroutine(UpdateExpBarRoutine(value));
         }
 
-        public void UpdateLevelProgress(int value, float fill)
+        public IEnumerator UpdateExpBarRoutine(float value)
         {
-            UpdateLevelProgressText(value);
-            UpdateLevelProgressFill(fill);
+            levelProgressPanel.SetActive(true);
+            yield return new WaitForSeconds(0.5f);
+
+            levelProgressEffect.ChangeDesination(value);
+            levelProgressEffect.Start();
+            yield return new WaitUntilJuicerComplected(levelProgressEffect);
+
+            yield return new WaitForSeconds(0.25f);
+            levelProgressPanel.SetActive(false);
+            isExpComplete = true;
+        }
+
+        public void UpdateExpBarLevelUp(int currentLevel, int numberOfLevelInc, float value)
+        {
+            isExpComplete = false;
+            StartCoroutine(UpdateExpBarLevelUpRoutine(currentLevel, numberOfLevelInc, value));
+        }
+
+        public IEnumerator UpdateExpBarLevelUpRoutine(int currentLevel, int numberOfLevelInc, float value)
+        {
+            levelProgressPanel.SetActive(true);
+            yield return new WaitForSeconds(0.5f);
+
+
+            for (int i = 0; i < numberOfLevelInc; i++)
+            {
+                levelProgressEffect.ChangeDesination(1f);
+                levelProgressEffect.Start();
+
+                yield return new WaitUntilJuicerComplected(levelProgressEffect);
+
+                yield return new WaitForSeconds(0.1f);
+
+                levelProgressText.text = "LV." + (currentLevel + i + 1).ToString();
+                levelProgressFill.fillAmount = 0;
+
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            if (value > 0)
+            {
+                levelProgressEffect.ChangeDesination(value);
+                levelProgressEffect.Start();
+                yield return new WaitUntilJuicerComplected(levelProgressEffect);
+            }
+
+            yield return new WaitForSeconds(0.25f);
+            levelProgressPanel.SetActive(false);
+            OnLevelUpComplete?.Invoke(currentLevel + numberOfLevelInc);
+            isExpComplete = true;
         }
 
         public void UpdateBossHealthFill(float value)
@@ -153,6 +205,7 @@ namespace UISystem
         {
             bossCanvas.enabled=isEnabled;
         }
+
         public void FillSpecial(float normalisedValue)
         {
             specialAttackButtonFill.fillAmount = normalisedValue;
