@@ -30,6 +30,7 @@ namespace UISystem
         protected CanvasGroup canvasGroup;
 
         public Close_Behaviour CloseBehaviour => closeBehaviour;
+        public Status MenuStatus => status;
 
         private void OnValidate()
         {

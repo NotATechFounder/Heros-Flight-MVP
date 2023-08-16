@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Gameplay;
@@ -69,15 +70,17 @@ namespace HeroesFlight.StateStack.State
                                 break;
                             case GameState.WaitingPortal:
 
-                                CoroutineUtility.WaitForSeconds(3f, () =>
-                                {
-                                    gamePlaySystem.HandleHeroProgression();
+                                //gamePlaySystem.HandleHeroProgression();
 
-                                    if (!gamePlaySystem.EffectManager.CompletedLevel())
-                                    {
-                                        ShowLevelPortal();
-                                    }
-                                });
+                                //CoroutineUtility.WaitForSeconds(3f, () =>
+                                //{
+                                //    if (!gamePlaySystem.EffectManager.CompletedLevel())
+                                //    {
+                                //        ShowLevelPortal();
+                                //    }
+                                //});
+
+                                CoroutineUtility.Start(WaitingPortalRoutine());
 
                                 break;
                         }
@@ -93,6 +96,18 @@ namespace HeroesFlight.StateStack.State
                         // {
                         //     ShowLevelPortal();
                         // }
+                    }
+
+                    IEnumerator WaitingPortalRoutine()
+                    {
+                       gamePlaySystem.HandleHeroProgression();
+
+                       yield return new WaitUntil(() => uiSystem.UiEventHandler.GameMenu.IsExpComplete && uiSystem.UiEventHandler.HeroProgressionMenu.MenuStatus == UISystem.Menu.Status.Closed);
+
+                        if (!gamePlaySystem.EffectManager.CompletedLevel())
+                        {
+                            ShowLevelPortal();
+                        }
                     }
 
                     void ShowLevelPortal()
@@ -144,7 +159,9 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -= () => gamePlaySystem.HeroProgression.HeroProgressionAttributeInfos;
                         uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -= gamePlaySystem.HeroProgression.Confirm;
                         uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -= gamePlaySystem.HeroProgression.ResetSP;
-                        gamePlaySystem.HeroProgression.OnLevelUp -= uiSystem.UiEventHandler.HeroProgressionMenu.OnLevelUp;
+                        gamePlaySystem.HeroProgression.OnEXPAdded -= uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
+                        gamePlaySystem.HeroProgression.OnLevelUp -= uiSystem.UiEventHandler.GameMenu.UpdateExpBarLevelUp;
+                        //gamePlaySystem.HeroProgression.OnLevelUp -= uiSystem.UiEventHandler.HeroProgressionMenu.OnLevelUp;
                         gamePlaySystem.HeroProgression.OnSpChanged -= uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
 
                         m_SceneActionsQueue.Start(uiSystem.UiEventHandler.LoadingMenu.UpdateLoadingBar, () =>
@@ -217,7 +234,9 @@ namespace HeroesFlight.StateStack.State
                             uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent += gamePlaySystem.HeroProgression.IncrementAttributeSP;
                             uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed += gamePlaySystem.HeroProgression.Confirm;
                             uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed += gamePlaySystem.HeroProgression.ResetSP;
-                            gamePlaySystem.HeroProgression.OnLevelUp += uiSystem.UiEventHandler.HeroProgressionMenu.OnLevelUp;
+                            gamePlaySystem.HeroProgression.OnEXPAdded += uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
+                            gamePlaySystem.HeroProgression.OnLevelUp += uiSystem.UiEventHandler.GameMenu.UpdateExpBarLevelUp;
+                            //  gamePlaySystem.HeroProgression.OnLevelUp += uiSystem.UiEventHandler.HeroProgressionMenu.OnLevelUp;
                             gamePlaySystem.HeroProgression.OnSpChanged += uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
 
                         });

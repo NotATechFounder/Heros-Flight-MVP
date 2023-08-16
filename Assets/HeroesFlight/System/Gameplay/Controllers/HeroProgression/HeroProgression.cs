@@ -6,8 +6,8 @@ using UnityEngine;
 public class HeroProgression : MonoBehaviour
 {
     public event Action<int> OnSpChanged;
-    public event Action<float> OnXpAdded;
-    public event Action<int> OnLevelUp;
+    public event Action<float> OnEXPAdded;
+    public event Action<int, int, float> OnLevelUp;
 
     [SerializeField] private int spPerLevel;
     [SerializeField] private float expToNextLevelBase;
@@ -18,7 +18,6 @@ public class HeroProgression : MonoBehaviour
     private Dictionary<HeroProgressionAttribute, int> hPAttributeSpModifiedDic;
 
     [Header("Debug")]
-    [SerializeField] private CharacterSO characterSO;
     [SerializeField] private CharacterStatController characterStatController;
     [SerializeField] private int avaliableSp;
     [SerializeField] private int totalUsedSp;
@@ -29,9 +28,8 @@ public class HeroProgression : MonoBehaviour
 
     public HeroProgressionAttributeInfo[]  HeroProgressionAttributeInfos => heroProgressionAttributeInfos;
 
-    public void Initialise(CharacterSO characterSO, CharacterStatController characterStatController)
+    public void Initialise(CharacterStatController characterStatController)
     {
-        this.characterSO = characterSO;
         this.characterStatController = characterStatController;
         hPAttributeSpModifiedDic = new Dictionary<HeroProgressionAttribute, int>();
         expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
@@ -101,7 +99,7 @@ public class HeroProgression : MonoBehaviour
                     characterStatController.ModifyMoveSpeed(attributeInfo.GetTotalValue("FlySpeedOutput"), false);
                     characterStatController.ModifyAttackSpeed(attributeInfo.GetTotalValue("AttackSpeedOutput"), false);
 
-                    if (characterSO.HeroType == HeroType.Ranged)
+                    if (characterStatController.GetHeroType != HeroType.Melee)
                     {
                         characterStatController.ModifyPhysicalDamage(attributeInfo.GetTotalValue("RangeDamageOutput"), false);
                     }
@@ -149,7 +147,7 @@ public class HeroProgression : MonoBehaviour
         characterStatController.ModifyMoveSpeed(info.GetTotalValue("FlySpeedOutput"), true);
         characterStatController.ModifyAttackSpeed(info.GetTotalValue("AttackSpeedOutput"), true);
 
-        if (characterSO.HeroType == HeroType.Ranged)
+        if (characterStatController.GetHeroType != HeroType.Melee)
         {
             characterStatController.ModifyPhysicalDamage(info.GetTotalValue("RangeDamageOutput"), false);
         }
@@ -255,18 +253,40 @@ public class HeroProgression : MonoBehaviour
         }
         else
         {
-            OnXpAdded?.Invoke(currentExp/ expToNextLevel);
+            OnEXPAdded?.Invoke(currentExp / expToNextLevel);
         }
     }
 
+    private void LevelUpOnce()
+    {
+        avaliableSp += spPerLevel;
+        currentUsedSp = avaliableSp;
+        currentLevel++;
+        currentExp -= expToNextLevel;
+        expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
+    }
+
+
     private void LevelUp()
+    {
+        int currentLvl = currentLevel;
+        int numberOfLevelsGained = 0;
+        do
+        {
+            LevelUpOnce();
+            ++numberOfLevelsGained;
+        } while (currentExp >= expToNextLevel);
+
+        OnLevelUp?.Invoke(currentLvl, numberOfLevelsGained, currentExp / expToNextLevel);
+    }
+
+    private void OldLevelUp()
     {
         avaliableSp = spPerLevel;
         currentUsedSp = avaliableSp;
         currentLevel++;
         currentExp -= expToNextLevel;
         expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
-        OnLevelUp?.Invoke(currentLevel);
         OnSpChanged?.Invoke(avaliableSp);
     }
 }
@@ -365,7 +385,7 @@ public enum HeroProgressionAttribute
 }
 
 [System.Serializable]
-public class AttributeKeyValue
+public class HeroProgressionAttributeKeyValue
 {
     public string key;
     public int pointThreshold;

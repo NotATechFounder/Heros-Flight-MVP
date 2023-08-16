@@ -92,6 +92,8 @@ namespace HeroesFlight.System.UI
                     OnSpecialButtonClicked?.Invoke();
                 };
 
+                UiEventHandler.GameMenu.OnLevelUpComplete += UiEventHandler.HeroProgressionMenu.OnLevelUp;
+
                 //UiEventHandler.GameMenu.GetCoinText = () =>
                 //{
                 //    return dataSystem.GetCurrencyAmount(CurrencyKeys.Gold);
