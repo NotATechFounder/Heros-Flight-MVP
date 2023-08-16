@@ -42,7 +42,6 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.OnRestartLvlRequest += HandleLvlRestart;
                     uiSystem.OnReviveCharacterRequest += HandleCharacterRevive;
                     uiSystem.OnSpecialButtonClicked += HandleSpecialButtonCLicked;
-                    uiSystem.UiEventHandler.PauseMenu.OnQuitButtonClicked += HandleReturnToMainMenu;
                     uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += HandleAngelsGambitClosed;
                     uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed += ShowLevelPortal;
                     uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += gamePlaySystem.StoreRunReward;
@@ -113,7 +112,7 @@ namespace HeroesFlight.StateStack.State
                             characterSystem.ResetCharacter();
                             characterSystem.SetCharacterControllerState(false);
                             var data = gamePlaySystem.PreloadLvl();
-                            gamePlaySystem.ContinueGameLoop(data);
+                            gamePlaySystem.StartGameLoop(data);
                         });
                     }
 
@@ -124,7 +123,6 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.OnReturnToMainMenuRequest -= HandleReturnToMainMenu;
                         uiSystem.OnRestartLvlRequest -= HandleLvlRestart;
                         uiSystem.OnReviveCharacterRequest -= HandleCharacterRevive;
-                        uiSystem.UiEventHandler.PauseMenu.OnQuitButtonClicked -= HandleReturnToMainMenu;
                         uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= HandleAngelsGambitClosed;
                         uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed -= ShowLevelPortal;
                         uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= gamePlaySystem.StoreRunReward;
@@ -205,6 +203,7 @@ namespace HeroesFlight.StateStack.State
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(gameScene);
                         SceneManager.SetActiveScene(loadedScene);
                         characterSystem.Init(loadedScene);
+                        characterSystem.SetCurrentCharacterType(uiSystem.UiEventHandler.CharacterSelectionMenu.selectedType);
                         npcSystem.Init(loadedScene);
                         gamePlaySystem.Init(loadedScene, () =>
                         {

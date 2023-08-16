@@ -1,5 +1,6 @@
+using System.Collections;
+using HeroesFlightProject.System.NPC.Enum;
 using Pathfinding;
-using StansAssets.Foundation.Async;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,12 +8,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
 {
     public class AiControllerPathFinding : AiControllerBase
     {
-       
-        [SerializeField] bool useKnockback=true;
+        [SerializeField] bool useKnockback = true;
         IAstarAI ai;
         AIDestinationSetter setter;
         bool isInknockback;
-      
+        Coroutine knockBackRoutine;
 
 
         public override void Init(Transform player, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
@@ -22,7 +22,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             ai = GetComponent<IAstarAI>();
             ai.canMove = false;
             ai.maxSpeed = m_Model.CombatModel.GetMonsterStatData.MoveSpeed;
-            base.Init(player, monsterStatModifier,currentCardIcon);
+            base.Init(player, monsterStatModifier, currentCardIcon);
         }
 
         public override void Enable()
@@ -39,6 +39,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
             base.Disable();
         }
 
+        void OnDestroy()
+        {
+            if (knockBackRoutine != null)
+            {
+                StopCoroutine(knockBackRoutine);
+            }
+        }
+
         public override void ProcessFollowingState()
         {
             if (isInknockback)
@@ -51,7 +59,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void ProcessWanderingState()
         {
-            if(isDisabled)
+            if (isDisabled)
                 return;
             setter.target = null;
             ai.canMove = !InAttackRange();
@@ -66,25 +74,13 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             if (!useKnockback)
                 return;
-            
+
             if (isInknockback)
                 return;
             isInknockback = true;
             ai.canMove = false;
             var forceVector = currentTarget.position.x >= transform.position.x ? Vector2.left : Vector2.right;
-            CoroutineUtility.WaitForSeconds(.1f, () =>
-            {
-                rigidBody.AddForce(forceVector * knockbackForce);
-                CoroutineUtility.WaitForSeconds(.5f, () =>
-                {
-                    if (rigidBody == null)
-                        return;
-
-                    ai.canMove = true;
-                    isInknockback = false;
-                    rigidBody.velocity = Vector2.zero;
-                });
-            });
+            knockBackRoutine = StartCoroutine(KnockBackRoutine(forceVector));
         }
 
         public override Vector2 GetVelocity()
@@ -100,11 +96,23 @@ namespace HeroesFlightProject.System.NPC.Controllers
             return velocity;
         }
 
+        IEnumerator KnockBackRoutine(Vector2 forceVector)
+        {
+            yield return new WaitForSeconds(.1f);
+            rigidBody.AddForce(forceVector * knockbackForce);
+            yield return new WaitForSeconds(.5f);
+            ai.canMove = true;
+            isInknockback = false;
+            rigidBody.velocity = Vector2.zero;
+        }
+
         Vector2 GetRandomPosition2D()
         {
-            var point= Random.insideUnitCircle * wanderDistance;
-                point +=(Vector2) ai.position;
-                return point;
+            var point = Random.insideUnitCircle * wanderDistance;
+            if (m_Model.EnemySpawmType == EnemySpawmType.Ground)
+                point += (Vector2)ai.position;
+            
+            return point;
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HeroesFlight.Common;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Character.Enum;
 using HeroesFlight.System.Gameplay.Data.Animation;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
@@ -14,26 +15,21 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class CharacterAttackController : MonoBehaviour, IAttackControllerInterface
     {
         [SerializeField] int enemiesToHitPerAttack = 4;
-        [SerializeField] float attackPointOffset = 1f;
-
         public float Damage => characterController.CharacterStatController.CurrentPhysicalDamage;
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
 
-
         CharacterControllerInterface characterController;
-
         CharacterAnimationControllerInterface m_CharacterAnimationController;
-
         AttackRangeVisualsController visualController;
-
         AttackControllerState m_State;
         CharacterStatController statController;
         PlayerStatData playerStatData = null;
         UltimateData ultimateData;
         AttackData attackData;
-
+        AttackZoneEnemiesFilterInterface attackZoneFilter;
         float m_TimeSinceLastAttack = 0;
+        float attackPointOffset = 1f;
 
         Vector2 attackPoint;
 
@@ -41,10 +37,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         List<IHealthController> foundedEnemies = new();
         List<IHealthController> enemiesToAttack = new();
         bool isDisabled;
-        WaitForSeconds tick;
         float attackDuration = 0;
 
-        void Awake()
+
+        public void Init()
         {
             characterController = GetComponent<CharacterControllerInterface>();
             visualController = GetComponent<AttackRangeVisualsController>();
@@ -63,7 +59,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             visualController.SetPosition(attackPoint);
             isDisabled = false;
             attackDuration = characterController.CharacterSO.AnimationData.AttackAnimation.Animation.Duration;
-            tick = new WaitForSeconds(.25f);
+            attackZoneFilter = new AttackZoneFilter(characterController.CharacterSO,transform);
         }
 
         public void SetCallback(Func<List<IHealthController>> enemiesCallback)
@@ -99,10 +95,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
             else
             {
-                FilterEnemies(enemiesRetriveCallback?.Invoke(), ref foundedEnemies,
-                    new AttackAnimationEvent(AttackType.Regular,0));
+                attackZoneFilter.FilterEnemies(attackPoint, characterController.IsFacingLeft,
+                    enemiesRetriveCallback?.Invoke(), ref foundedEnemies,
+                    new AttackAnimationEvent(AttackType.Regular, 0));
             }
-          
+
             if (foundedEnemies.Count > 0)
             {
                 AttackTargets();
@@ -111,123 +108,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 ResetAttack();
             }
-        }
-
-        void FilterEnemies(List<IHealthController> enemies, ref List<IHealthController> enemiesToUpdate,
-            AttackAnimationEvent dataAttackType)
-        {
-            enemiesToUpdate.Clear();
-       
-            switch (dataAttackType.AttackType)
-            {
-                case AttackType.Regular:
-                    FilterEnemiesForBaseAttack(enemies, ref enemiesToUpdate);
-                    
-                    break;
-                case AttackType.Ultimate_Base:
-                    FilterEnemiesForBaseUltimate(enemies,ref  enemiesToUpdate, dataAttackType);
-                    break;
-                case AttackType.Ultimate_Lancer:
-                    break;
-               
-            }
-           
-        }
-
-        void FilterEnemiesForBaseAttack(List<IHealthController> enemies, ref List<IHealthController> enemiesToUpdate)
-        {
-            foreach (var controller in enemies)
-            {
-                if (Vector2.Distance(controller.currentTransform.position, attackPoint) <= playerStatData.AttackRange)
-                {
-                    enemiesToUpdate.Add(controller);
-                }
-            }
-        }
-
-        void FilterEnemiesForBaseUltimate(List<IHealthController> enemies,ref List<IHealthController> enemiesToUpdate, AttackAnimationEvent dataAttackType)
-        {
-            var offsetPosition = characterController.IsFacingLeft
-                ? attackPoint + Vector2.left * ultimateData.OffsetMultiplier
-                : attackPoint + Vector2.right * ultimateData.OffsetMultiplier;
-            foreach (var controller in enemies)
-            {
-                if (Vector2.Distance(controller.currentTransform.position, offsetPosition) <= playerStatData.AttackRange*ultimateData.RangeMultiplier)
-                {
-                    enemiesToUpdate.Add(controller);
-                }
-            }
-            
-            
-            //     switch (dataAttackType.AttackIndex)
-            // {
-            //     case 1:
-            //         foreach (var controller in enemies)
-            //         {
-            //             if (characterController.IsFacingLeft)
-            //             {
-            //                 if (Mathf.Abs(controller.currentTransform.position.y - attackPoint.y) <= playerStatData.AttackRange
-            //                     && controller.currentTransform.position.x <= transform.position.x)
-            //                 {
-            //                     enemiesToUpdate.Add(controller);
-            //                 }
-            //             }
-            //             else
-            //             {
-            //                 if (Mathf.Abs(controller.currentTransform.position.y - attackPoint.y) <= playerStatData.AttackRange
-            //                     && controller.currentTransform.position.x >= transform.position.x)
-            //                 {
-            //                     enemiesToUpdate.Add(controller);
-            //                 }
-            //             }
-            //         }
-            //
-            //         break;
-            //     case 2:
-            //         foreach (var controller in enemies)
-            //         {
-            //             if (characterController.IsFacingLeft)
-            //             {
-            //                 if (Mathf.Abs(controller.currentTransform.position.y - attackPoint.y-1) <= playerStatData.AttackRange
-            //                     && controller.currentTransform.position.x <= transform.position.x)
-            //                 {
-            //                     enemiesToUpdate.Add(controller);
-            //                 }
-            //             }
-            //             else
-            //             {
-            //                 if (Mathf.Abs(controller.currentTransform.position.y - attackPoint.y-1) <= playerStatData.AttackRange
-            //                     && controller.currentTransform.position.x >= transform.position.x)
-            //                 {
-            //                     enemiesToUpdate.Add(controller);
-            //                 }
-            //             }
-            //         }
-            //
-            //         break;
-            //     case 3:
-            //         foreach (var controller in enemies)
-            //         {
-            //             if (characterController.IsFacingLeft)
-            //             {
-            //                 if (Mathf.Abs(controller.currentTransform.position.y - attackPoint.y-1) <= playerStatData.AttackRange
-            //                     && controller.currentTransform.position.x >= transform.position.x - 2.5f)
-            //                 {
-            //                     enemiesToUpdate.Add(controller);
-            //                 }
-            //             }
-            //             else
-            //             {
-            //                 if (Mathf.Abs(controller.currentTransform.position.y - attackPoint.y-1) <= playerStatData.AttackRange
-            //                     && controller.currentTransform.position.x <= transform.position.x + 2.5f)
-            //                 {
-            //                     enemiesToUpdate.Add(controller);
-            //                 }
-            //             }
-            //         }
-            //
-            //         break;
-            // }
         }
 
 
@@ -241,10 +121,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             m_CharacterAnimationController.PlayAttackSequence(statController.CurrentAttackSpeed);
             m_TimeSinceLastAttack = 0;
-        }
-
-        public void Init()
-        {
         }
 
 
@@ -261,12 +137,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 return;
 
             var data = animationEvent as AttackAnimationEvent;
-            
-            FilterEnemies(enemiesRetriveCallback?.Invoke(), ref enemiesToAttack,data);
+
+            attackZoneFilter.FilterEnemies(attackPoint, characterController.IsFacingLeft,
+                enemiesRetriveCallback?.Invoke(), ref enemiesToAttack, data);
 
             int maxEnemiesToHit =
                 data.AttackType == AttackType.Regular ? enemiesToHitPerAttack : ultimateData.EnemiesPerAttack;
-            var baseDamage=data.AttackType == AttackType.Regular ? Damage : Damage*ultimateData.DamageMultiplier;
+            var baseDamage = data.AttackType == AttackType.Regular ? Damage : Damage * ultimateData.DamageMultiplier;
             if (enemiesToAttack.Count > 0)
             {
                 var enemiesAttacked = 0;
@@ -303,14 +180,32 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 ? transform.position + Vector3.up + Vector3.left * attackPointOffset
                 : transform.position + Vector3.up + Vector3.right * attackPointOffset;
             Gizmos.DrawWireSphere(checkPosition, playerStatData.AttackRange);
-            
-            
-            
+
             var ultimatePosition = characterController.IsFacingLeft
                 ? checkPosition + (Vector3.left * ultimateData.OffsetMultiplier)
-                : checkPosition +(Vector3.right * ultimateData.OffsetMultiplier);
-            Gizmos.DrawWireSphere(ultimatePosition, playerStatData.AttackRange  *ultimateData.RangeMultiplier);
-
+                : checkPosition + (Vector3.right * ultimateData.OffsetMultiplier);
+            switch (characterController.CharacterSO.CharacterType)
+            {
+                case CharacterType.Tagon:
+                    Gizmos.DrawWireSphere(ultimatePosition, playerStatData.AttackRange * ultimateData.RangeMultiplier);
+                    break;
+                case CharacterType.Lancer:
+                    float totalFOV = 45.0f;
+                    float rayRange =Vector2.Distance(transform.position,attackPoint)+ playerStatData.AttackRange * ultimateData.RangeMultiplier;
+                    float halfFOV = totalFOV / 2.0f;
+                    Quaternion leftRayRotation = Quaternion.AngleAxis( -halfFOV, Vector3.forward );
+                    Quaternion rightRayRotation = Quaternion.AngleAxis( halfFOV, Vector3.forward );
+                    Vector3 facingvector = characterController.IsFacingLeft ? Vector3.left : Vector3.right;
+                    Vector3 leftRayDirection = leftRayRotation * facingvector;
+                    Vector3 rightRayDirection = rightRayRotation * facingvector;
+                    Gizmos.DrawRay(  transform.position + Vector3.up, leftRayDirection * rayRange );
+                    Gizmos.DrawRay(  transform.position + Vector3.up, rightRayDirection * rayRange );
+                    Gizmos.DrawWireSphere(attackPoint, playerStatData.AttackRange * ultimateData.RangeMultiplier);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+          
         }
     }
 }

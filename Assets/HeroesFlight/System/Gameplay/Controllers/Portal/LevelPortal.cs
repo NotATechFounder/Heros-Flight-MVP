@@ -18,6 +18,7 @@ public class LevelPortal : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        OnPlayerEntered?.Invoke();
+        if(col.CompareTag("Player"))
+            OnPlayerEntered?.Invoke();
     }
 }

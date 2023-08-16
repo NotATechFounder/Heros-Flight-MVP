@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Character.Enum;
 using HeroesFlight.System.Gameplay.Container;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
@@ -13,7 +14,6 @@ using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 namespace HeroesFlight.System.Gameplay
 {
@@ -197,6 +197,7 @@ namespace HeroesFlight.System.Gameplay
             characterAbility=characterController.CharacterTransform.GetComponent<AbilityBaseCharacter>();
             characterAbility.Init(characterController.CharacterSO.AnimationData.UltimateAnimations,
                 characterController.CharacterSO.UltimateData.Charges);
+            characterAttackController.Init();
             characterAttackController.SetCallback(GetExistingEnemies);
             characterHealthController.OnDeath += HandleCharacterDeath;
             characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
@@ -254,11 +255,8 @@ namespace HeroesFlight.System.Gameplay
             characterAbility.UpdateAbilityCharges(5);
             OnUltimateChargesChange?.Invoke(characterAbility.CurrentCharge);
             BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.currentTransform.position);
-
             CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.currentTransform.position);
-
             CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10, iHealthController.currentTransform.position);
-
             collectedHeroProgressionSp += 100;
 
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
@@ -266,12 +264,16 @@ namespace HeroesFlight.System.Gameplay
             if (enemiesToKill <= 0)
             {
                 GameTimer.Stop();
-
+                
+               
                 if (container.FinishedLoop)
                 {
                     characterAttackController.ToggleControllerState(false);
                     characterSystem.SetCharacterControllerState(false);
-
+                    //Temp rewarding player with unlock here
+                    dataSystemInterface.RewardHandler.GrantReward();
+                    characterSystem.UpdateUnlockedClasses(CharacterType.Lancer);
+                   
                     CoroutineUtility.WaitForSeconds(1f, () =>
                     {
                         ChangeState(GameState.Won);
@@ -352,26 +354,6 @@ namespace HeroesFlight.System.Gameplay
             OnNextLvlLoadRequest?.Invoke();
         }
 
-        public void ContinueGameLoop(SpawnModel currentModel)
-        {
-            ChangeState(GameState.Ongoing);
-            cameraController.SetCameraShakeState(currentModel.MiniBosses.Count > 0);
-            characterSystem.SetCharacterControllerState(true);
-            GameTimer.Start(3, null,
-                () =>
-                {
-                    CreateLvL(currentModel);
-                    GameTimer.Start(180, null,
-                        () =>
-                        {
-                            if (currentState != GameState.Ongoing)
-                                return;
-
-                            ChangeState(GameState.Lost);
-                        }, characterAttackController);
-                }, characterAttackController);
-        }
-
         public void StartGameLoop(SpawnModel currentModel)
         {
             ChangeState(GameState.Ongoing);
@@ -391,6 +373,7 @@ namespace HeroesFlight.System.Gameplay
                         }, characterAttackController);
                 }, characterAttackController);
         }
+      
 
         public SpawnModel PreloadLvl()
         {

@@ -1,10 +1,12 @@
 using HeroesFlight.Common;
+using HeroesFlight.System.Character.Enum;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Character", menuName = "Character", order = 0)]
 public class CharacterSO : ScriptableObject
 {
     [SerializeField] string characterName;
+    [SerializeField] CharacterType characterType;
     [SerializeField] HeroType heroType;
     [SerializeField] AppearanceData appearanceData;
     [SerializeField] PlayerStatData playerStatData;
@@ -19,6 +21,7 @@ public class CharacterSO : ScriptableObject
     public AnimationData AnimationData => aniamtionData;
     public UltimateData UltimateData => ultimateData;
     public AttackData AttackData => attackData;
+    public CharacterType CharacterType => characterType;
 }
 
 
