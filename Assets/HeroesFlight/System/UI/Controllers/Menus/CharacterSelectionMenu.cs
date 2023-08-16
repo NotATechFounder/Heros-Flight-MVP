@@ -45,6 +45,10 @@ namespace UISystem
             currentIndex = 0;
         }
 
+        public void SetUnlockedCharacters(List<CharacterType> unlockedCharacters)
+        {
+            unlockedTypes=unlockedCharacters;
+        }
         void GenerateCache()
         {
             for (int i = 0; i < characters.Length; i++)
@@ -63,6 +67,9 @@ namespace UISystem
 
         public override void OnOpened()
         {
+            var characterUnlocked = unlockedTypes.Contains(dataCache[currentIndex].CharacterData.CharacterType);
+            selectButton.interactable = characterUnlocked;
+            lockImage.enabled = !characterUnlocked;
             viewController.SetupView(dataCache[currentIndex]);
         }
 

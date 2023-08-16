@@ -144,10 +144,10 @@ namespace HeroesFlight.System.UI
                     UiEventHandler.SummaryMenu.Close();
                 };
 
-                UiEventHandler.MainMenu.OnCharacterSelectButtonPressed += () =>
-                {
-                    UiEventHandler.CharacterSelectionMenu.Open();
-                };
+                // UiEventHandler.MainMenu.OnCharacterSelectButtonPressed += () =>
+                // {
+                //     UiEventHandler.CharacterSelectionMenu.Open();
+                // };
 
                 onComplete?.Invoke();
             });

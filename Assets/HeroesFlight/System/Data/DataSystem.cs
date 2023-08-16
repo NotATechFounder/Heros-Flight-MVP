@@ -1,15 +1,19 @@
 using StansAssets.Foundation.Extensions;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using HeroesFlight.System.FileManager.Rewards;
 using UnityEngine.SceneManagement;
 
 public class DataSystem : IDataSystemInterface
 {
+    public DataSystem()
+    {
+        RewardHandler = new RewardsHandler();
+    }
     CurrencyManager currencyManager;
+    public RewardsHandlerInterface RewardHandler { get; private set; }
 
     public event Action<CurrencySO, bool> OnCurrencyChange;
+
 
     public void Init(Scene scene = default, Action onComplete = null)
     {

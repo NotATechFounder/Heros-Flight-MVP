@@ -1,4 +1,5 @@
-﻿using HeroesFlight.System.Character.Enum;
+﻿using System.Collections.Generic;
+using HeroesFlight.System.Character.Enum;
 
 namespace HeroesFlight.System.Character
 {
@@ -11,5 +12,10 @@ namespace HeroesFlight.System.Character
         void SetCharacterControllerState(bool isEnabled);
         
         void ResetCharacter();
+
+        void UpdateUnlockedClasses(CharacterType typeToUnlock);
+
+        List<CharacterType> GetUnlockedClasses();
+
     }
 }

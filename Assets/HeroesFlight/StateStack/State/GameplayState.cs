@@ -112,7 +112,7 @@ namespace HeroesFlight.StateStack.State
                             characterSystem.ResetCharacter();
                             characterSystem.SetCharacterControllerState(false);
                             var data = gamePlaySystem.PreloadLvl();
-                            gamePlaySystem.ContinueGameLoop(data);
+                            gamePlaySystem.StartGameLoop(data);
                         });
                     }
 
