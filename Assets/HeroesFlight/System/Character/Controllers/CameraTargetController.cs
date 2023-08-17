@@ -24,20 +24,11 @@ namespace HeroesFlight.System.Character
 
             var desiredPosition = parent.position + resultVector;
 
-            // if (transform.position != desiredPosition)
-            // {
-            //     sinTime += Time.deltaTime * speed;
-            //     sinTime = Mathf.Clamp(sinTime, 0, Mathf.PI);
-            //     var t = Evaluate(sinTime);
-            //     transform.position = Vector3.Lerp(transform.position, desiredPosition, t);
-            // }
+            
             transform.position = Vector3.Lerp(transform.position, desiredPosition, speed * Time.deltaTime);
         }
 
 
-        float Evaluate(float x)
-        {
-            return 0.5f * Mathf.Sin(x - Mathf.PI / 2f) + 0.5f;
-        }
+       
     }
 }
