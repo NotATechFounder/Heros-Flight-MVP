@@ -264,6 +264,7 @@ public class HeroProgression : MonoBehaviour
         currentLevel++;
         currentExp -= expToNextLevel;
         expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
+        OnSpChanged?.Invoke(avaliableSp);
     }
 
 
