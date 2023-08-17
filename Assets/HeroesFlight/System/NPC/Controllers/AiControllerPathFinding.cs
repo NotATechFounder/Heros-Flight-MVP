@@ -85,7 +85,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override Vector2 GetVelocity()
         {
-            if (OutOfAgroRange())
+            if (!IsAggravated())
             {
                 return ai.velocity.normalized;
             }

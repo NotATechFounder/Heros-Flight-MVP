@@ -204,7 +204,7 @@ namespace HeroesFlight.System.Gameplay
             characterHealthController.OnHeal += HandleCharacterHeal;
             characterHealthController.Init();
             characterSystem.SetCharacterControllerState(false);
-            cameraController.SetTarget(characterController.CharacterTransform);
+            cameraController.SetTarget(characterController.CharacterTransform.GetComponentInChildren<CameraTargetController>().transform);
             npcSystem.InjectPlayer(characterController.CharacterTransform);
             EffectManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
             BoosterManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
