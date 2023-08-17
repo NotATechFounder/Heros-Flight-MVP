@@ -11,7 +11,7 @@ public class GodsBenevolence : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private bool debug;
-    [SerializeField] private GodBenevolenceType debugBenevolenceType;
+    [SerializeField] private GodsBenevolenceSO debugBenevolenceType;
     [SerializeField] private CharacterStatController characterStatController;
     [SerializeField] private GodsBenevolenceSO currentBenevolenceSO;
     [SerializeField] private List<GodsBenevolenceAfterEffectInfo> afterEffectGodsBenevolences = new List<GodsBenevolenceAfterEffectInfo>();
@@ -21,7 +21,7 @@ public class GodsBenevolence : MonoBehaviour
     public GodsBenevolenceSO[] GodsBenevolenceSOs => godsBenevolenceArray;
     public GodsBenevolenceSO CurrentBenevolenceSO => currentBenevolenceSO;
 
-    [field: SerializeField] public float CurrentLifeSteal { get; private set; }
+    [field: SerializeField] public float CurrentLifeSteal;
 
     private void Start()
     {
@@ -55,27 +55,26 @@ public class GodsBenevolence : MonoBehaviour
         }
     }
 
-    public void ActivateGodsBenevolence(GodBenevolenceType godBenevolenceType)
+    public void ActivateGodsBenevolence(GodsBenevolenceSO godsBenevolence)
     {
         if (currentBenevolenceSO != null)
         {
             return;
         }
 
-        GodsBenevolenceSO godsBenevolenceInfo = GetGodsBenevolenceSO(godBenevolenceType);
-        currentBenevolenceSO = godsBenevolenceInfo;
+        currentBenevolenceSO = godsBenevolence;
 
-        switch (godBenevolenceType)
+        switch (godsBenevolence.BenevolenceType)
         {
             case GodBenevolenceType.Zeus:
 
                 break;
             case GodBenevolenceType.Ares:
-                benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolenceInfo.EffectPrefab, benevolenceSocket.TopSocket);
+                benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolence.EffectPrefab, benevolenceSocket.TopSocket);
 
-                CurrentLifeSteal += godsBenevolenceInfo.GetValue("LifeSteal");
+                CurrentLifeSteal += godsBenevolence.GetValue("LifeSteal");
 
-                float damageInc = godsBenevolenceInfo.GetValue("DamageInc");
+                float damageInc = godsBenevolence.GetValue("DamageInc");
                 damageInc = StatCalc.GetPercentage(characterStatController.PlayerStatData.PhysicalDamage.GetRandomValue(), damageInc);
                 benevolenceEffect.GetComponent<AresSword>().SetUp(characterStatController.GetComponent<CharacterControllerInterface>(), damageInc, OnEnemyKilled);
                 break;
@@ -83,9 +82,9 @@ public class GodsBenevolence : MonoBehaviour
 
                 break;
             case GodBenevolenceType.Hermes:
-                benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolenceInfo.EffectPrefab, benevolenceSocket.BottomSocket);
-                characterStatController.ModifyMoveSpeed(godsBenevolenceInfo.GetValue("FlySpeedInc"), true);
-                characterStatController.ModifyAttackRange(godsBenevolenceInfo.GetValue("AttackRangeInc"), true);
+                benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolence.EffectPrefab, benevolenceSocket.BottomSocket);
+                characterStatController.ModifyMoveSpeed(godsBenevolence.GetValue("FlySpeedInc"), true);
+                characterStatController.ModifyAttackRange(godsBenevolence.GetValue("AttackRangeInc"), true);
                 break;
             case GodBenevolenceType.Sekhmet:
 
@@ -112,7 +111,9 @@ public class GodsBenevolence : MonoBehaviour
 
                 break;
             case GodBenevolenceType.Ares:
+
                 CurrentLifeSteal -= currentBenevolenceSO.GetValue("LifeSteal");
+
                 break;
             case GodBenevolenceType.Apollo:
 
@@ -137,18 +138,6 @@ public class GodsBenevolence : MonoBehaviour
         currentBenevolenceSO = null;
     }
 
-    public GodsBenevolenceSO GetGodsBenevolenceSO(GodBenevolenceType godBenevolenceType)
-    {
-        foreach (var benevolence in godsBenevolenceArray)
-        {
-            if (benevolence.BenevolenceType == godBenevolenceType)
-            {
-                return benevolence;
-            }
-        }
-        return null;
-    }
-
     public GodsBenevolenceAfterEffectInfo AlreadyExists(GodBenevolenceType godBenevolenceType)
     {
         foreach (var benevolence in afterEffectGodsBenevolences)
@@ -163,6 +152,11 @@ public class GodsBenevolence : MonoBehaviour
 
     public void AddAfterEffects()
     {
+        if (currentBenevolenceSO == null)
+        {
+            return;
+        }
+
         GodsBenevolenceAfterEffectInfo godsBenevolenceAfterEffectInfo = afterEffectGodsBenevolences.Find(x => x.GodBenevolenceType == currentBenevolenceSO.BenevolenceType);
 
         if (godsBenevolenceAfterEffectInfo == null)
@@ -181,7 +175,7 @@ public class GodsBenevolence : MonoBehaviour
 
                 break;
             case GodBenevolenceType.Ares:
-                CurrentLifeSteal += currentBenevolenceSO.GetValue("LifeSteal");
+                characterStatController.ModifyLifeSteal(godsBenevolenceAfterEffectInfo.GetValue("LifeSteal"), true);
                 break;
             case GodBenevolenceType.Apollo:
 
@@ -211,7 +205,8 @@ public class GodsBenevolence : MonoBehaviour
 
                     break;
                 case GodBenevolenceType.Ares:
-                    CurrentLifeSteal -= currentBenevolenceSO.GetValue("LifeSteal");
+                    Debug.Log("LifeSteal: " + benevolenceAfterEffectInfo.GetTotalValue("LifeSteal"));
+                    characterStatController.ModifyLifeSteal(benevolenceAfterEffectInfo.GetTotalValue("LifeSteal"), false);
                     break;
                 case GodBenevolenceType.Apollo:
 
@@ -219,7 +214,7 @@ public class GodsBenevolence : MonoBehaviour
                 case GodBenevolenceType.Hermes:
 
                     characterStatController.ModifyMoveSpeed(benevolenceAfterEffectInfo.GetTotalValue("FlySpeedInc"), false);
-                    characterStatController.ModifyAttackRange(benevolenceAfterEffectInfo.GetValue("AttackRangeInc"), false);
+                    characterStatController.ModifyAttackRange(benevolenceAfterEffectInfo.GetTotalValue("AttackRangeInc"), false);
 
                     break;
                 case GodBenevolenceType.Sekhmet:

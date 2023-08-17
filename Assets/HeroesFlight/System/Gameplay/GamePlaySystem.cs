@@ -429,6 +429,8 @@ namespace HeroesFlight.System.Gameplay
 
         public void HandleHeroProgression()
         {
+            GodsBenevolence.DeactivateGodsBenevolence();
+
             HeroProgression.AddExp(collectedHeroProgressionSp);
             collectedHeroProgressionSp = 0;
         }

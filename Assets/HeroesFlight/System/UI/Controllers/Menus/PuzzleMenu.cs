@@ -10,7 +10,7 @@ namespace UISystem
 {
     public class PuzzleMenu : BaseMenu<PuzzleMenu>
     {
-        public event Action OnPuzzleSolved;
+        public event Action<GodsBenevolenceSO> OnPuzzleSolved;
         public event Action OnPuzzleFailed;
 
         [SerializeField] private int countDownTime = 60;
@@ -20,12 +20,13 @@ namespace UISystem
         [SerializeField] private GameObject blocker;
 
         [Header("Puzzle Menu")]
+        [SerializeField] private GodsBenevolenceSO[] godsBenevolenceArray;
         [SerializeField] private GridLayoutGroup gridLayoutGroup;
         [SerializeField] private PuzzlePiece[] puzzlePieces;
-        [SerializeField] private PuzzleSO puzzleSO;
 
         [Header("Debug")]
         [SerializeField] private bool debug = false;
+        [SerializeField] private GodsBenevolenceSO selectedBenevolence;
 
         private CountDownTimer countDownTimer;
         private JuicerRuntime countDownTextEffect;
@@ -43,6 +44,8 @@ namespace UISystem
 
         public override void OnCreated()
         {
+            selectedBenevolence = godsBenevolenceArray[UnityEngine.Random.Range(0, godsBenevolenceArray.Length)];
+
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
@@ -58,11 +61,19 @@ namespace UISystem
 
         public override void OnOpened()
         {
+            GodsBenevolenceSO random = null;
+            do
+            {
+                random = godsBenevolenceArray[UnityEngine.Random.Range(0, godsBenevolenceArray.Length)];
+            } while (random == selectedBenevolence);
+
+            selectedBenevolence = random;
+
             for (int i = 0; i < puzzlePieces.Length; i++)
             {
                 puzzlePieces[i].OnPuzzlePieceClicked += OnPuzzlePieceClicked;
                 puzzlePieces[i].ShuffleRotation();
-                puzzlePieces[i].SetSprite(puzzleSO.Sprites[i]);
+                puzzlePieces[i].SetSprite(selectedBenevolence.BenevolencePuzzle[i]);
             }
 
             blocker.SetActive(false);
@@ -121,7 +132,7 @@ namespace UISystem
             countDownTimer.Stop();
             blocker.SetActive(true);
             yield return new WaitForSeconds(3f);
-            OnPuzzleSolved?.Invoke();
+            OnPuzzleSolved?.Invoke(selectedBenevolence);
             Close();
         }
 

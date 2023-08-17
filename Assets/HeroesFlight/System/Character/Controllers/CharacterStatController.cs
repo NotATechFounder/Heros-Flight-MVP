@@ -25,6 +25,7 @@ public class CharacterStatController : MonoBehaviour
     [field: SerializeField] public float CurrentResilience { get; private set; }
     [field: SerializeField] public float CurrentDodgeChance { get; private set; }
     [field: SerializeField] public float CurrentAttackRange { get; private set; }
+    [field: SerializeField] public float CurrentLifeSteal { get; private set; }
     public float CurrentMagicDamage => playerCombatModel.MagicDamage.GetRandomValue() + runtimeMagicDamage;
     public float CurrentPhysicalDamage  => playerCombatModel.PhysicalDamage.GetRandomValue() + runtimePhysicalDamage;
     [field: SerializeField] public float CurrentCriticalHitChance { get; private set; }
@@ -165,6 +166,11 @@ public class CharacterStatController : MonoBehaviour
         }
     }
 
+    public void ModifyLifeSteal(float amount, bool increase)
+    {
+        CurrentLifeSteal += increase ? amount : -amount;
+    }
+
     public float GetHealthPercentage()
     {
         if (GetCurrentHealth != null)
@@ -186,5 +192,6 @@ public class CharacterStatController : MonoBehaviour
         CurrentDefense = playerCombatModel.Defense;
         CurrentAttackSpeed = playerCombatModel.AttackSpeed;
         CurrentAttackRange = playerCombatModel.AttackRange;
+        CurrentLifeSteal = 0;
     }
 }
