@@ -8,24 +8,33 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class CameraController : MonoBehaviour,CameraControllerInterface
     {
-        [SerializeField] float shakeIntensity=1f;
+        [Header("General references")]
         [SerializeField] Collider2D boundsCollider;
         [SerializeField] CinemachineVirtualCamera characterCamera;
         [SerializeField] CinemachineVirtualCamera skillCamera;
-        CinemachineBasicMultiChannelPerlin noise;
-        bool shouldShake;
+
+        [Header("Impulse sources")]
+        [SerializeField] CinemachineImpulseSource bumpSource;
+        [SerializeField] CinemachineImpulseSource explosionSource;
+        [SerializeField] CinemachineImpulseSource rumbleSource;
+        [SerializeField] CinemachineImpulseSource recoilSource;
+        [SerializeField] CinemachineImpulseSource genericSource;
+
+        CinemachineImpulseListener listener;
         CameraUiHook hook;
-        
+       
+   
         void Awake()
         {
-            noise = characterCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
             characterCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = boundsCollider;
             skillCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = boundsCollider;
-            noise.m_AmplitudeGain = 0;
+            listener = characterCamera.GetComponent<CinemachineImpulseListener>();
             hook = FindObjectOfType<CameraUiHook>();
-           
+            CameraShaker = new CinemachineCameraShaker(bumpSource,explosionSource,rumbleSource,recoilSource,genericSource,listener);
+
         }
 
+      
         void Start()
         {
             hook.SetCharacterSliderValue(characterCamera.m_Lens.OrthographicSize);
@@ -35,17 +44,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-        public void SetCameraShakeState(bool shouldShake)
-        {
-            if (shouldShake)
-            {
-                StartCameraShake();
-            }
-            else
-            {
-                StopCameraShake();
-            }
-        }
+        public CameraShakerInterface CameraShaker { get; private set; }
 
         public void SetTarget(Transform target)
         {
@@ -69,15 +68,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
-        void StopCameraShake()
-        {
-            noise.m_AmplitudeGain = 0;
-        }
+      
 
-        void StartCameraShake()
-        {
-            noise.m_AmplitudeGain = shakeIntensity;
-        }
+        
 
         public void UpdateCharacterCameraFOW(float newValue)
         {
@@ -87,7 +80,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public void UpdateSkillCameraFOW(float newValue)
         {
             skillCamera.m_Lens.OrthographicSize = newValue;
-            Debug.Log(skillCamera.m_Lens.OrthographicSize);
         }
         
     }
