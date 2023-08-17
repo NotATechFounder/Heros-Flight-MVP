@@ -52,6 +52,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void ProcessKnockBack()
         {
+            rigidBody.velocity = Vector2.zero;
             var forceVector = currentTarget.position.x > transform.position.x ? Vector2.left : Vector2.right;
             rigidBody.AddForce(forceVector *knockbackForce);
         }

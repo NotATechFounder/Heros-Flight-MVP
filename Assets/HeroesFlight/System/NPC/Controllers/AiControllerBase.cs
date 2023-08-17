@@ -12,6 +12,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         [SerializeField] protected AiAgentModel m_Model;
         [SerializeField] protected float wanderDistance = 10f;
         [SerializeField] protected float knockbackForce = 10f;
+        [SerializeField] protected float agroCooldown = 5f;
         protected AiViewController viewController;
         protected AiAnimatorInterface animator;
         protected Collider2D attackCollider;
@@ -24,9 +25,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected Rigidbody2D rigidBody;
         protected Transform currentTarget;
         protected bool isDisabled;
+        protected bool isAggravated;
+        protected MonsterStatModifier statModifier;
         bool canAttack;
         Vector2 wanderPosition;
-        protected MonsterStatModifier statModifier;
+        float timeSinceAggravated = Mathf.Infinity;
 
         public virtual void Init(Transform player, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
@@ -47,7 +50,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             if (isDisabled)
                 return;
 
-            if (OutOfAgroRange() || !canAttack)
+            if (!IsAggravated() || !canAttack)
             {
                 ProcessWanderingState();
             }
@@ -55,6 +58,13 @@ namespace HeroesFlightProject.System.NPC.Controllers
             {
                 ProcessFollowingState();
             }
+
+            UpdateTimers();
+        }
+
+        void UpdateTimers()
+        {
+            timeSinceAggravated += Time.deltaTime;
         }
 
 
@@ -105,10 +115,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
         }
 
-        protected bool OutOfAgroRange()
+        protected bool IsAggravated()
         {
-            return Vector2.Distance(CurrentTarget.position, transform.position)
-                > m_Model.CombatModel.GetMonsterStatData.AgroDistance;
+            var distance = Vector2.Distance(CurrentTarget.position, transform.position);
+            return distance <= m_Model.CombatModel.GetMonsterStatData.AgroDistance || timeSinceAggravated< agroCooldown;
         }
 
         protected bool InAttackRange()
@@ -138,6 +148,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public MonsterStatModifier GetMonsterStatModifier()
         {
             return statModifier;
+        }
+
+        public void Aggravate()
+        {
+            timeSinceAggravated = 0;
         }
     }
 }

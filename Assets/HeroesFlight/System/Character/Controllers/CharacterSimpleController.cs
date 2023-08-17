@@ -13,6 +13,7 @@ namespace HeroesFlight.System.Character
         CharacterStatController m_CharacterStatController;
         ICharacterViewController viewController;
         Vector3 m_SavedVelocity = default;
+        Vector3 inputVelocity=Vector3.zero;
         Transform m_Transform;
 
         public bool IsFacingLeft { get; private set; }
@@ -128,8 +129,8 @@ namespace HeroesFlight.System.Character
 
         Vector3 CalculateCharacterVelocity(Vector3 inputVector)
         {
-            var velocity = CalculateMovementDirection(inputVector);
-            return velocity * CharacterStatController.CurrentMoveSpeed;
+            inputVelocity = CalculateMovementDirection(inputVector);
+            return inputVelocity * CharacterStatController.CurrentMoveSpeed;
         }
 
         Vector3 CalculateMovementDirection(Vector3 inputVector)
@@ -140,7 +141,7 @@ namespace HeroesFlight.System.Character
             
             if(velocity.magnitude>1)
                 velocity.Normalize();
-
+            
             return velocity;
         }
     }

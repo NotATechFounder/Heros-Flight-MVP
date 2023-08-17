@@ -19,6 +19,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         void SetAttackState(bool canAttack);
         void ProcessKnockBack();
+        void Aggravate();
         void Init(Transform player, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon);
         void Enable();
         void Disable();

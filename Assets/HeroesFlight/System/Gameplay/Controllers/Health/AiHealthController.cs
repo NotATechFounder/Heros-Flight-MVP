@@ -24,6 +24,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public override void DealDamage(DamageModel damage)
         {
+            aiController.Aggravate();
             aiController.ProcessKnockBack();
             base.DealDamage(damage);
         }
