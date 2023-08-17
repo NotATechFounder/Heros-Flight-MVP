@@ -90,7 +90,8 @@ namespace Pelumi.ObjectPool
             GameObject gameObject = SpawnObject(original, parent.transform.position, parent.transform.rotation, poolType);
             if (gameObject != null)
             {
-                gameObject.transform.SetParent(parent, true);
+                gameObject.transform.SetParent(parent, false);
+                gameObject.transform.localPosition = Vector3.zero;
             }
             return gameObject;
         }

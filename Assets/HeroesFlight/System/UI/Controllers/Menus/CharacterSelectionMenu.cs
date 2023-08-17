@@ -22,29 +22,6 @@ namespace UISystem
         Dictionary<int, CharacterUiViewData> dataCache = new();
         int currentIndex;
 
-        protected override void Awake()
-        {
-            base.Awake();
-            viewController = GetComponentInChildren<UiSpineViewController>();
-            GenerateCache();
-            unlockedTypes.Add(CharacterType.Tagon);
-            unlockedTypes.Add(CharacterType.Lancer);
-            selectedType = CharacterType.Tagon;
-            previousButton.onClick.AddListener(() =>
-            {
-                ChangeCharacter(-1);
-            });
-            nextButton.onClick.AddListener(() =>
-            {
-                ChangeCharacter(1);
-            });
-            selectButton.onClick.AddListener(() =>
-            {
-                Close();
-            });
-            currentIndex = 0;
-        }
-
         public void SetUnlockedCharacters(List<CharacterType> unlockedCharacters)
         {
             unlockedTypes=unlockedCharacters;
@@ -63,6 +40,24 @@ namespace UISystem
 
         public override void OnCreated()
         {
+            viewController = GetComponentInChildren<UiSpineViewController>();
+            GenerateCache();
+            unlockedTypes.Add(CharacterType.Tagon);
+            unlockedTypes.Add(CharacterType.Lancer);
+            selectedType = CharacterType.Tagon;
+            previousButton.onClick.AddListener(() =>
+            {
+                ChangeCharacter(-1);
+            });
+            nextButton.onClick.AddListener(() =>
+            {
+                ChangeCharacter(1);
+            });
+            selectButton.onClick.AddListener(() =>
+            {
+                Close();
+            });
+            currentIndex = 0;
         }
 
         public override void OnOpened()
