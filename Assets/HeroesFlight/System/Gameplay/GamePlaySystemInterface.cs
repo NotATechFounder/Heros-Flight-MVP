@@ -32,6 +32,7 @@ namespace HeroesFlight.System.Gameplay
         public BoosterManager BoosterManager { get; }
         public BoosterSpawner BoosterSpawner { get; }
         public HeroProgression HeroProgression { get; }
+        public GodsBenevolence GodsBenevolence { get; }
         public int CurrentLvlIndex { get; }
         void StartGameLoop(SpawnModel currentModel);
         void CreateCharacter();

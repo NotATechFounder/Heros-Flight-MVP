@@ -1,4 +1,9 @@
+using HeroesFlight.System.Character;
+using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlight.System.Gameplay.Model;
+using HeroesFlightProject.System.Gameplay.Controllers;
 using Pelumi.Juicer;
+using Pelumi.ObjectPool;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,6 +11,12 @@ using UnityEngine;
 
 public class AresSword : MonoBehaviour
 {
+    public Action OnHitEnemy;
+
+    [SerializeField] private float autoAttackSpeed = 2f;
+    [SerializeField] private float damage = 10f;
+
+    [Header("Clash")]
     [SerializeField] private Transform swordHolder;
     [SerializeField] private Transform swordHandle;
     [SerializeField] private OverlapChecker overlapChecker;
@@ -23,6 +34,8 @@ public class AresSword : MonoBehaviour
 
     JuicerRuntime clashFowardEffectFoward;
     JuicerRuntime clashFowardEffectBackward;
+    private CharacterControllerInterface characterController;
+    private float timer;
 
     private void Start()
     {
@@ -30,9 +43,12 @@ public class AresSword : MonoBehaviour
 
         clashFowardEffectFoward = swordHandle.JuicyLocalRotate(rotateFowardDest, fowardSpeed);
         clashFowardEffectFoward.SetEase(fowardEase);
+        clashFowardEffectFoward.SetOnStart(() =>
+        {
+            clashEffect.Play();
+        });
         clashFowardEffectFoward.AddTimeEvent(0.5f, () =>
         {
-            overlapChecker.SetDirection(swordHolder.localScale.x == 1 ? OverlapChecker.Direction.Right : OverlapChecker.Direction.Left);
             overlapChecker.Detect();
         });
         clashFowardEffectFoward.SetOnComplected(() =>
@@ -44,25 +60,53 @@ public class AresSword : MonoBehaviour
         clashFowardEffectBackward.SetEase(backwardEase);
     }
 
-    private void Update()
+    public IEnumerator AutoAttack()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        while (true)
         {
-            clashEffect.Play();
-            clashFowardEffectFoward.Start();
+            timer += Time.deltaTime;
+            if (timer >= autoAttackSpeed)
+            {
+                timer = 0;
+
+                if(overlapChecker.TargetInRange())
+                clashFowardEffectFoward.Start();
+            }
+            yield return null;
         }
     }
 
-    public void Flip(float direction)
+    public void SetUp(CharacterControllerInterface characterControllerInterface, float damage, Action OnHitEvent)
     {
-        swordHolder.localScale = new Vector3(direction, 1, 1);
+        characterController = characterControllerInterface;
+        this.damage = damage;
+        OnHitEnemy = OnHitEvent;
+        characterController.OnFaceDirectionChange += Flip;
+        StartCoroutine(AutoAttack());
+    }
+
+    public void Flip(bool facingLeft)
+    {
+        swordHolder.localScale = new Vector3(facingLeft ? 1 : -1, 1, 1);
+        overlapChecker.SetDirection(swordHolder.localScale.x == 1 ? OverlapChecker.Direction.Right : OverlapChecker.Direction.Left);
     }
 
     private void OnOverlap(int count, Collider2D[] colliders)
     {
         for (int i = 0; i < count; i++)
         {
-            Debug.Log(i + " " + colliders[i].name);
+            if (colliders[i].TryGetComponent( out AiHealthController damageable))
+            {
+                damageable.DealDamage(new DamageModel(damage, DamageType.Critical));
+                OnHitEnemy?.Invoke();
+            }
         }
+    }
+
+    private void OnDisable()
+    {
+        OnHitEnemy = null;
+        StopAllCoroutines();
+        characterController.OnFaceDirectionChange -= Flip;
     }
 }

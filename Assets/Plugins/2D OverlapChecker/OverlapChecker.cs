@@ -12,7 +12,7 @@ public abstract class OverlapChecker : MonoBehaviour
     [SerializeField] protected Color color;
     [SerializeField] protected Vector2 localOffset;
     [SerializeField] protected int maxHit = 10;
-    [SerializeField] protected ContactFilter2D contactFilter;
+    [SerializeField] protected LayerMask layerMask;
 
     protected Direction _direction = Direction.Right;
     protected Collider2D[] colliders;
@@ -37,6 +37,12 @@ public abstract class OverlapChecker : MonoBehaviour
     }
 
     public abstract bool HasDetected();
+
+    public bool TargetInRange()
+    {
+        pos = transform.position + transform.rotation * (localOffset * facingVector);
+        return HasDetected();
+    }
 
     public bool Detect()
     {

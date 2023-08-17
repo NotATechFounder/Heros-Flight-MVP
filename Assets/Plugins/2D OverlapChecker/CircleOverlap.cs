@@ -9,7 +9,7 @@ public class CircleOverlap : OverlapChecker
 
     public override bool HasDetected()
     {
-        hitCount = Physics2D.OverlapCircleNonAlloc(pos, size, colliders);
+        hitCount = Physics2D.OverlapCircleNonAlloc(pos, size, colliders, layerMask);
         return hitCount != 0;
     }
 

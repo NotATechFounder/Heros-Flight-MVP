@@ -9,6 +9,8 @@ public class CharacterStatController : MonoBehaviour
 
     [SerializeField] PlayerStatData playerCombatModel;
 
+    public PlayerStatData PlayerStatData => playerCombatModel;
+
     public Action<float, bool> OnHealthModified;
     public Action<float> OnMaxHealthChanged;
 
@@ -22,7 +24,7 @@ public class CharacterStatController : MonoBehaviour
     [field: SerializeField] public float CurrentAgility { get; private set; }
     [field: SerializeField] public float CurrentResilience { get; private set; }
     [field: SerializeField] public float CurrentDodgeChance { get; private set; }
-    [field: SerializeField] public float CurrentAttackRange;
+    [field: SerializeField] public float CurrentAttackRange { get; private set; }
     public float CurrentMagicDamage => playerCombatModel.MagicDamage.GetRandomValue() + runtimeMagicDamage;
     public float CurrentPhysicalDamage  => playerCombatModel.PhysicalDamage.GetRandomValue() + runtimePhysicalDamage;
     [field: SerializeField] public float CurrentCriticalHitChance { get; private set; }
@@ -105,7 +107,6 @@ public class CharacterStatController : MonoBehaviour
         {
             CurrentDodgeChance += increase ? amount : -amount;
         }
-
     }
 
     public void ModifyMagicDamage(float percentageAmount, bool increase)
@@ -128,7 +129,6 @@ public class CharacterStatController : MonoBehaviour
         {
             CurrentCriticalHitChance += increase ? amount : -amount;
         }
-
     }
 
     public void ModifyCriticalHitDamage(float percentageAmount, bool increase)
@@ -146,12 +146,23 @@ public class CharacterStatController : MonoBehaviour
         {
             CurrentDefense += increase ? amount : -amount;
         }
-
     }
 
     public void ModifyAttackSpeed(float percentageAmount, bool increase) // Attack speed need to be smaller to be positive
     {
         CurrentAttackSpeed = StatCalc.ModifyValueByPercentage(playerCombatModel.AttackSpeed, CurrentAttackSpeed, percentageAmount, !increase);
+    }
+
+    public void ModifyAttackRange(float amount, bool increase, bool isPercentage = true)
+    {
+        if (isPercentage)
+        {
+            CurrentAttackRange = StatCalc.ModifyValueByPercentage(playerCombatModel.AttackRange, CurrentAttackRange, amount, increase);
+        }
+        else
+        {
+            CurrentAttackRange += increase ? amount : -amount;
+        }
     }
 
     public float GetHealthPercentage()

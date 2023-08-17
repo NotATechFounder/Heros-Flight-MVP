@@ -10,7 +10,7 @@ public class BoxOverlap : OverlapChecker
 
     public override bool HasDetected()
     {
-        hitCount = Physics2D.OverlapBoxNonAlloc(pos, size, transform.eulerAngles.z, colliders);
+        hitCount = Physics2D.OverlapBoxNonAlloc(pos, size, transform.eulerAngles.z, colliders, layerMask);
         return hitCount != 0;
     }
 
