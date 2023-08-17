@@ -70,7 +70,7 @@ namespace Pelumi.Juicer
 
                     if ((forward && i >= 1.0f) || (!forward && i <= 0.0f))
                     {
-                        if (juicerRuntimeParam.LoopCount == 0 || (juicerRuntimeParam.LoopCount > 0 && loopCount >= juicerRuntimeParam.LoopCount))
+                        if(juicerRuntimeParam.LoopCount == 0 || (juicerRuntimeParam.LoopCount > 0 && loopCount >= juicerRuntimeParam.LoopCount))
                         {
                             juicerRuntimeController.OnCompleted();
                             yield break;

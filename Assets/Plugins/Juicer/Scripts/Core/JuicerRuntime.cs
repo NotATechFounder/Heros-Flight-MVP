@@ -250,7 +250,6 @@ namespace Pelumi.Juicer
         public void OnCompleted()
         {
             _juicerEvent.InvokeOnComplected();
-            _juicerEvent.ResetTimelineEvents();
         }
 
         public void OnCompleteStep()

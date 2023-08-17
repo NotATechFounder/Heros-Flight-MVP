@@ -1,5 +1,3 @@
-using HeroesFlight.System.Character;
-using Pelumi.ObjectPool;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,81 +8,59 @@ public class GodsBenevolence : MonoBehaviour
     [SerializeField] private GodsBenevolenceSO[] godsBenevolenceArray;
 
     [Header("Debug")]
-    [SerializeField] private bool debug;
-    [SerializeField] private GodsBenevolenceSO debugBenevolenceType;
+    [SerializeField] private GodsBenevolenceInfo[] godsBenevolenceInfos;
     [SerializeField] private CharacterStatController characterStatController;
-    [SerializeField] private GodsBenevolenceSO currentBenevolenceSO;
-    [SerializeField] private List<GodsBenevolenceAfterEffectInfo> afterEffectGodsBenevolences = new List<GodsBenevolenceAfterEffectInfo>();
-    [SerializeField] private GameObject benevolenceEffect;
-    [SerializeField] private GodsBenevolenceSocket benevolenceSocket;
 
     public GodsBenevolenceSO[] GodsBenevolenceSOs => godsBenevolenceArray;
-    public GodsBenevolenceSO CurrentBenevolenceSO => currentBenevolenceSO;
-
-    [field: SerializeField] public float CurrentLifeSteal;
+    public GodsBenevolenceInfo[] GodsBenevolenceInfos => godsBenevolenceInfos;
 
     private void Start()
     {
-        if (debug)
-        {
-            Initialize(characterStatController);
-        }
+        Initialize(characterStatController);
     }
 
     public void Initialize(CharacterStatController characterStatController)
     {
         this.characterStatController = characterStatController;
-        benevolenceSocket = characterStatController.GetComponent<GodsBenevolenceSocket>();
+        godsBenevolenceInfos = new GodsBenevolenceInfo[godsBenevolenceArray.Length];
+        for (int i = 0; i < godsBenevolenceArray.Length; i++)
+        {
+            godsBenevolenceInfos[i] = new GodsBenevolenceInfo(godsBenevolenceArray[i]);
+        }
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            ActivateGodsBenevolence(debugBenevolenceType);
+            ActivateGodsBenevolence(GodBenevolenceType.Hermes);
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            DeactivateGodsBenevolence();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            RemoveAfterEffects();
+            DeactivateGodsBenevolence(GodBenevolenceType.Hermes);
         }
     }
 
-    public void ActivateGodsBenevolence(GodsBenevolenceSO godsBenevolence)
+    public void ActivateGodsBenevolence(GodBenevolenceType godBenevolenceType)
     {
-        if (currentBenevolenceSO != null)
-        {
-            return;
-        }
-
-        currentBenevolenceSO = godsBenevolence;
-
-        switch (godsBenevolence.BenevolenceType)
+        GodsBenevolenceInfo godsBenevolenceInfo = GetGodsBenevolenceInfo(godBenevolenceType);
+        godsBenevolenceInfo.AddStack();
+        switch (godBenevolenceType)
         {
             case GodBenevolenceType.Zeus:
 
                 break;
             case GodBenevolenceType.Ares:
-                benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolence.EffectPrefab, benevolenceSocket.TopSocket);
 
-                CurrentLifeSteal += godsBenevolence.GetValue("LifeSteal");
-
-                float damageInc = godsBenevolence.GetValue("DamageInc");
-                damageInc = StatCalc.GetPercentage(characterStatController.PlayerStatData.PhysicalDamage.GetRandomValue(), damageInc);
-                benevolenceEffect.GetComponent<AresSword>().SetUp(characterStatController.GetComponent<CharacterControllerInterface>(), damageInc, OnEnemyKilled);
                 break;
             case GodBenevolenceType.Apollo:
 
                 break;
             case GodBenevolenceType.Hermes:
-                benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolence.EffectPrefab, benevolenceSocket.BottomSocket);
-                characterStatController.ModifyMoveSpeed(godsBenevolence.GetValue("FlySpeedInc"), true);
-                characterStatController.ModifyAttackRange(godsBenevolence.GetValue("AttackRangeInc"), true);
+
+                characterStatController.ModifyMoveSpeed(godsBenevolenceInfo.GetDefaultValue("FlySpeedInc"), true);
+
                 break;
             case GodBenevolenceType.Sekhmet:
 
@@ -96,23 +72,15 @@ public class GodsBenevolence : MonoBehaviour
         }
     }
 
-    public void DeactivateGodsBenevolence()
+    public void DeactivateGodsBenevolence(GodBenevolenceType godBenevolenceType)
     {
-        if (currentBenevolenceSO == null)
-        {
-            return;
-        }
-
-        ObjectPoolManager.ReleaseObject(benevolenceEffect);
-
-        switch (currentBenevolenceSO.BenevolenceType)
+        GodsBenevolenceInfo godsBenevolenceInfo = GetGodsBenevolenceInfo(godBenevolenceType);
+        switch (godBenevolenceType)
         {
             case GodBenevolenceType.Zeus:
 
                 break;
             case GodBenevolenceType.Ares:
-
-                CurrentLifeSteal -= currentBenevolenceSO.GetValue("LifeSteal");
 
                 break;
             case GodBenevolenceType.Apollo:
@@ -120,8 +88,7 @@ public class GodsBenevolence : MonoBehaviour
                 break;
             case GodBenevolenceType.Hermes:
 
-                characterStatController.ModifyMoveSpeed(currentBenevolenceSO.GetValue("FlySpeedInc"), false);
-                characterStatController.ModifyAttackRange(currentBenevolenceSO.GetValue("AttackRangeInc"), false);
+                characterStatController.ModifyMoveSpeed(godsBenevolenceInfo.GetTotalValue("FlySpeedInc"), false);
 
                 break;
             case GodBenevolenceType.Sekhmet:
@@ -132,17 +99,14 @@ public class GodsBenevolence : MonoBehaviour
                 break;
             default: break;
         }
-
-        AddAfterEffects();
-
-        currentBenevolenceSO = null;
+        godsBenevolenceInfo.Reset();
     }
 
-    public GodsBenevolenceAfterEffectInfo AlreadyExists(GodBenevolenceType godBenevolenceType)
+    public GodsBenevolenceSO GetGodsBenevolenceSO(GodBenevolenceType godBenevolenceType)
     {
-        foreach (var benevolence in afterEffectGodsBenevolences)
+        foreach (var benevolence in godsBenevolenceArray)
         {
-            if (benevolence.GodBenevolenceType == godBenevolenceType)
+            if (benevolence.BenevolenceType == godBenevolenceType)
             {
                 return benevolence;
             }
@@ -150,164 +114,67 @@ public class GodsBenevolence : MonoBehaviour
         return null;
     }
 
-    public void AddAfterEffects()
+    public GodsBenevolenceInfo GetGodsBenevolenceInfo(GodBenevolenceType godBenevolenceType)
     {
-        if (currentBenevolenceSO == null)
+        foreach (var benevolence in godsBenevolenceInfos)
         {
-            return;
-        }
-
-        GodsBenevolenceAfterEffectInfo godsBenevolenceAfterEffectInfo = afterEffectGodsBenevolences.Find(x => x.GodBenevolenceType == currentBenevolenceSO.BenevolenceType);
-
-        if (godsBenevolenceAfterEffectInfo == null)
-        {
-            godsBenevolenceAfterEffectInfo = new GodsBenevolenceAfterEffectInfo(currentBenevolenceSO.BenevolenceType, currentBenevolenceSO.AfterEffects);
-            afterEffectGodsBenevolences.Add(godsBenevolenceAfterEffectInfo);
-        }
-        else
-        {
-            godsBenevolenceAfterEffectInfo.IncreaseStack();
-        }
-
-        switch (currentBenevolenceSO.BenevolenceType)
-        {
-            case GodBenevolenceType.Zeus:
-
-                break;
-            case GodBenevolenceType.Ares:
-                characterStatController.ModifyLifeSteal(godsBenevolenceAfterEffectInfo.GetValue("LifeSteal"), true);
-                break;
-            case GodBenevolenceType.Apollo:
-
-                break;
-            case GodBenevolenceType.Hermes:
-
-                characterStatController.ModifyMoveSpeed(godsBenevolenceAfterEffectInfo.GetValue("FlySpeedInc"), true);
-                characterStatController.ModifyAttackRange(godsBenevolenceAfterEffectInfo.GetValue("AttackRangeInc"), true);
-                break;
-            case GodBenevolenceType.Sekhmet:
-
-                break;
-            case GodBenevolenceType.Hotei:
-
-                break;
-            default: break;
-        }
-    }
-
-    public void RemoveAfterEffects()
-    {
-        foreach (GodsBenevolenceAfterEffectInfo benevolenceAfterEffectInfo in afterEffectGodsBenevolences)
-        {
-            switch (benevolenceAfterEffectInfo.GodBenevolenceType)
+            if (benevolence.GodsBenevolenceSO.BenevolenceType == godBenevolenceType)
             {
-                case GodBenevolenceType.Zeus:
-
-                    break;
-                case GodBenevolenceType.Ares:
-                    Debug.Log("LifeSteal: " + benevolenceAfterEffectInfo.GetTotalValue("LifeSteal"));
-                    characterStatController.ModifyLifeSteal(benevolenceAfterEffectInfo.GetTotalValue("LifeSteal"), false);
-                    break;
-                case GodBenevolenceType.Apollo:
-
-                    break;
-                case GodBenevolenceType.Hermes:
-
-                    characterStatController.ModifyMoveSpeed(benevolenceAfterEffectInfo.GetTotalValue("FlySpeedInc"), false);
-                    characterStatController.ModifyAttackRange(benevolenceAfterEffectInfo.GetTotalValue("AttackRangeInc"), false);
-
-                    break;
-                case GodBenevolenceType.Sekhmet:
-
-                    break;
-                case GodBenevolenceType.Hotei:
-
-                    break;
-                default: break;
+                return benevolence;
             }
         }
-        afterEffectGodsBenevolences.Clear();
-    }    
-    
-    public void OnEnemyKilled()
-    {
-        float healthInc = StatCalc.GetPercentage(characterStatController.PlayerStatData.Health, CurrentLifeSteal);
-        characterStatController.ModifyHealth(healthInc, true);
+        return null;
     }
 }
 
 [Serializable]
-public class GodsBenevolenceAfterEffect
+public class GodsBenevolenceInfo
 {
-    [SerializeField] float increasePerStack;
-    [SerializeField] GodsBenevolenceKeyValue keyValue;
-
-    public float IncreasePerStack => increasePerStack;
-    public GodsBenevolenceKeyValue KeyValue => keyValue;
-}
-
-[Serializable]
-public class GodsBenevolenceAfterEffectInfo
-{
+    [SerializeField] private GodsBenevolenceSO godsBenevolenceSO;
     [SerializeField] int stackCount = 0;
-    [SerializeField] GodBenevolenceType godBenevolenceType;
-    [SerializeField] GodsBenevolenceAfterEffect[] afterEffects;
 
+    public GodsBenevolenceSO GodsBenevolenceSO => godsBenevolenceSO;
     public int StackCount => stackCount;
-    public GodsBenevolenceAfterEffect[] AfterEffects => afterEffects;
-    public GodBenevolenceType GodBenevolenceType => godBenevolenceType;
 
-    public GodsBenevolenceAfterEffectInfo(GodBenevolenceType godBenevolenceType, GodsBenevolenceAfterEffect[] afterEffects)
+    public GodsBenevolenceInfo(GodsBenevolenceSO godsBenevolenceSO)
     {
-        this.godBenevolenceType = godBenevolenceType;
-        this.afterEffects = afterEffects;
+        this.godsBenevolenceSO = godsBenevolenceSO;
     }
 
-    public void IncreaseStack()
+    public void AddStack()
     {
         stackCount++;
     }
 
-    public float GetValue(string key)
+    public void RemoveStack()
     {
-        foreach (GodsBenevolenceAfterEffect afterEffect in afterEffects)
-        {
-            if (afterEffect.KeyValue.key == key)
-            {
-                if (stackCount > 0)
-                {
-                    return afterEffect.IncreasePerStack;
-                }
-                return afterEffect.KeyValue.GetValue();
-            }
-        }
-        Debug.LogError("Key not found");
-        return 0;
+        stackCount--;
     }
 
+    public void Reset()
+    {
+        stackCount = 0;
+    }
     public float GetDefaultValue(string key)
     {
-        foreach (GodsBenevolenceAfterEffect afterEffect in afterEffects)
+        foreach (var keyValue in godsBenevolenceSO.BenevolenceKeyValues)
         {
-            if (afterEffect.KeyValue.key == key)
+            if (keyValue.key == key)
             {
-                return afterEffect.KeyValue.GetValue();
+                return keyValue.GetValue();
             }
         }
-        Debug.LogError("Key not found");
         return 0;
     }
-
     public float GetTotalValue(string key)
     {
-        foreach (GodsBenevolenceAfterEffect afterEffect in afterEffects)
+        foreach (var keyValue in godsBenevolenceSO.BenevolenceKeyValues)
         {
-            if (afterEffect.KeyValue.key == key)
+            if (keyValue.key == key)
             {
-                return afterEffect.KeyValue.GetValue() + (afterEffect.IncreasePerStack * stackCount);
+               return keyValue.GetValue() * stackCount;
             }
         }
-        Debug.LogError("Key not found");
         return 0;
     }
 }

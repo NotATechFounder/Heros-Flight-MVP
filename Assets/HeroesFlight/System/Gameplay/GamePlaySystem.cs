@@ -40,8 +40,6 @@ namespace HeroesFlight.System.Gameplay
 
         public HeroProgression HeroProgression { get; private set;}
 
-        public GodsBenevolence GodsBenevolence { get; private set; }
-
         public int CurrentLvlIndex => container.CurrentLvlIndex;
 
         public event Action<float> OnUltimateChargesChange;
@@ -95,8 +93,6 @@ namespace HeroesFlight.System.Gameplay
             CurrencySpawner.Initialize(this);
 
             HeroProgression = scene.GetComponentInChildren<HeroProgression>();
-
-            GodsBenevolence = scene.GetComponentInChildren<GodsBenevolence>();
 
             container.Init();
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
@@ -214,7 +210,6 @@ namespace HeroesFlight.System.Gameplay
             BoosterManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
             CurrencySpawner.SetPlayer(characterController.CharacterTransform);
             HeroProgression.Initialise(characterController.CharacterTransform.GetComponent<CharacterStatController>());
-            GodsBenevolence.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
         }
 
         void CreateMiniboss(SpawnModel currentLvlModel)
@@ -429,8 +424,6 @@ namespace HeroesFlight.System.Gameplay
 
         public void HandleHeroProgression()
         {
-            GodsBenevolence.DeactivateGodsBenevolence();
-
             HeroProgression.AddExp(collectedHeroProgressionSp);
             collectedHeroProgressionSp = 0;
         }

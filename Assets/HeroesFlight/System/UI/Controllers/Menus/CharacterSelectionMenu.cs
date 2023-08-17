@@ -22,24 +22,9 @@ namespace UISystem
         Dictionary<int, CharacterUiViewData> dataCache = new();
         int currentIndex;
 
-        public void SetUnlockedCharacters(List<CharacterType> unlockedCharacters)
+        protected override void Awake()
         {
-            unlockedTypes=unlockedCharacters;
-        }
-        void GenerateCache()
-        {
-            for (int i = 0; i < characters.Length; i++)
-            {
-                dataCache.Add(i, characters[i]);
-            }
-        }
-
-        public override void ResetMenu()
-        {
-        }
-
-        public override void OnCreated()
-        {
+            base.Awake();
             viewController = GetComponentInChildren<UiSpineViewController>();
             GenerateCache();
             unlockedTypes.Add(CharacterType.Tagon);
@@ -58,6 +43,26 @@ namespace UISystem
                 Close();
             });
             currentIndex = 0;
+        }
+
+        public void SetUnlockedCharacters(List<CharacterType> unlockedCharacters)
+        {
+            unlockedTypes=unlockedCharacters;
+        }
+        void GenerateCache()
+        {
+            for (int i = 0; i < characters.Length; i++)
+            {
+                dataCache.Add(i, characters[i]);
+            }
+        }
+
+        public override void ResetMenu()
+        {
+        }
+
+        public override void OnCreated()
+        {
         }
 
         public override void OnOpened()
