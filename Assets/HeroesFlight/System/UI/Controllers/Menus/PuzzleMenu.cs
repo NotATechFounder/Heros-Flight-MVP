@@ -42,6 +42,14 @@ namespace UISystem
             }
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                StartCoroutine(PuzzleSolvedRoutine());
+            }
+        }
+
         public override void OnCreated()
         {
             selectedBenevolence = godsBenevolenceArray[UnityEngine.Random.Range(0, godsBenevolenceArray.Length)];

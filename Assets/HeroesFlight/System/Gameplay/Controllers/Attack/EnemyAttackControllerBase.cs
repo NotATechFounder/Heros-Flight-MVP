@@ -17,6 +17,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected IHealthController health;
         protected float currentDamage;
 
+        public event Action OnHitTarget;
+
         public float Damage => currentDamage;
         public float TimeSinceLastAttack => timeSinceLastAttack;
 
@@ -62,6 +64,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             timeSinceLastAttack = 0;
             aiController.SetAttackState(false);
             target.DealDamage(new DamageModel(Damage,DamageType.NoneCritical));
+            OnHitTarget?.Invoke();
         }
 
         public virtual void AttackTargets()

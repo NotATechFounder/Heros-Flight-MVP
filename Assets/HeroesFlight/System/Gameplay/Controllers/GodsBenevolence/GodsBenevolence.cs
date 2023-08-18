@@ -39,20 +39,20 @@ public class GodsBenevolence : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            ActivateGodsBenevolence(debugBenevolenceType);
-        }
+        //if (Input.GetKeyDown(KeyCode.A))
+        //{
+        //    ActivateGodsBenevolence(debugBenevolenceType);
+        //}
 
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            DeactivateGodsBenevolence();
-        }
+        //if (Input.GetKeyDown(KeyCode.D))
+        //{
+        //    DeactivateGodsBenevolence();
+        //}
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            RemoveAfterEffects();
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    RemoveAfterEffects();
+        //}
     }
 
     public void ActivateGodsBenevolence(GodsBenevolenceSO godsBenevolence)

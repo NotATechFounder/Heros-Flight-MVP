@@ -39,6 +39,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         bool isDisabled;
         float attackDuration = 0;
 
+        public event Action OnHitTarget;
 
         public void Init()
         {
@@ -160,10 +161,21 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                     float damageToDeal = isCritical
                         ? baseDamage * characterController.CharacterStatController.CurrentCriticalHitDamage
                         : baseDamage;
+
                     var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
                     enemy.DealDamage(new DamageModel(damageToDeal, type));
+                    ApplyLifeSteal();
+                    OnHitTarget?.Invoke();
                 }
             }
+        }
+
+        private void ApplyLifeSteal()
+        {
+            if (characterController.CharacterStatController.CurrentLifeSteal <= 0)
+                return;
+            float healthInc = StatCalc.GetPercentage(characterController.CharacterStatController.PlayerStatData.Health, characterController.CharacterStatController.CurrentLifeSteal);
+            characterController.CharacterStatController.ModifyHealth(healthInc, true);
         }
 
         public void ToggleControllerState(bool isEnabled)

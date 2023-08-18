@@ -362,6 +362,9 @@ namespace HeroesFlight.System.Gameplay
         public void StartGameLoop(SpawnModel currentModel)
         {
             ChangeState(GameState.Ongoing);
+          //  Debug.Log(currentModel);
+          //  Debug.Log(currentModel.MiniBosses);
+         //   Debug.Log(cameraController);
             cameraController.SetCameraShakeState(currentModel.MiniBosses.Count > 0);
             characterSystem.SetCharacterControllerState(true);
             GameTimer.Start(3, null,

@@ -12,9 +12,9 @@ namespace HeroesFlight.System.NPC.Model
         [SerializeField] int mobsToSpawn;
         [SerializeField] float timeBetweenWaves = 3f;
         [SerializeField] float timeBetweenMobs = .5f;
-        [SerializeField] List<SpawnModelEntry> trashMobs;
-        [SerializeField] List<SpawnModelEntry> miniBosses;
-        [SerializeField] List<SpawnModelEntry> bosses;
+        [SerializeField] List<SpawnModelEntry> trashMobs = new List<SpawnModelEntry>();
+        [SerializeField] List<SpawnModelEntry> miniBosses = new List<SpawnModelEntry>();
+        [SerializeField] List<SpawnModelEntry> bosses = new List<SpawnModelEntry>();
 
         public int MobsAmount => mobsToSpawn;
         public int WavesAmount => wavesAmount;

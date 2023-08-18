@@ -159,6 +159,7 @@ namespace HeroesFlight.StateStack.State
                         gamePlaySystem.HeroProgression.OnEXPAdded -= uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
                         gamePlaySystem.HeroProgression.OnLevelUp -= uiSystem.UiEventHandler.GameMenu.UpdateExpBarLevelUp;
                         gamePlaySystem.HeroProgression.OnSpChanged -= uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
+                        uiSystem.UiEventHandler.HeroProgressionMenu.ResetMenu();
 
                         uiSystem.UiEventHandler.PuzzleMenu.OnPuzzleSolved -= gamePlaySystem.GodsBenevolence.ActivateGodsBenevolence;
 
