@@ -106,7 +106,6 @@ namespace UISystem
                 if (boosterButton.GetBoosterSO != null)
                 {
                     boosterButton.Disable();
-                    break;
                 }
             }
         }
