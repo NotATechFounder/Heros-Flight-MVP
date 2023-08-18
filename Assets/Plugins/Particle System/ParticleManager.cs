@@ -14,14 +14,14 @@ public class ParticleManager : MonoBehaviour
         instance = this;
     }
 
-    private void Update()
-    {
-        Vector2 mousepos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (Input.GetMouseButtonDown(0))
-        {
-            Spawn("GreenBlood", mousepos);
-        }
-    }
+    // private void Update()
+    // {
+    //     Vector2 mousepos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    //     if (Input.GetMouseButtonDown(0))
+    //     {
+    //         Spawn("GreenBlood", mousepos);
+    //     }
+    // }
 
     public Particle Spawn(string key, Vector3 position, Quaternion rotation)
     {

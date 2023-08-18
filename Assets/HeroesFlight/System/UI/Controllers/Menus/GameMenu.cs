@@ -100,6 +100,15 @@ namespace UISystem
             enemyCountText.text = "0";
             comboCounterText.text = "0";
             levelProgressText.text = "LV.0";
+            
+            foreach (BoosterUI boosterButton in boosterButtons)
+            {
+                if (boosterButton.GetBoosterSO != null)
+                {
+                    boosterButton.Disable();
+                    break;
+                }
+            }
         }
 
         public void UpdateCoinText(float value)
