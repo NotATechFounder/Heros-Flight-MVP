@@ -6,6 +6,8 @@ namespace HeroesFlight.System.Character
 {
     public interface CharacterControllerInterface
     {
+        public event Action<bool> OnFaceDirectionChange;
+
         public Transform CharacterTransform { get; }
         public CharacterSO CharacterSO { get; }
         public CharacterStatController CharacterStatController { get; }

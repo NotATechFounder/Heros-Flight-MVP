@@ -43,7 +43,10 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.OnRestartLvlRequest += HandleLvlRestart;
                     uiSystem.OnReviveCharacterRequest += HandleCharacterRevive;
                     uiSystem.OnSpecialButtonClicked += HandleSpecialButtonCLicked;
-                    uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += HandleAngelsGambitClosed;
+                    //uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += HandleAngelsGambitClosed;
+                    uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += uiSystem.UiEventHandler.PuzzleMenu.Open;
+                    uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += HandleAngelsGambitClosed;
+
                     uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed += ShowLevelPortal;
                     uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += gamePlaySystem.StoreRunReward;
                     gamePlaySystem.OnNextLvlLoadRequest += HandleContinueGameLoop;
@@ -69,16 +72,6 @@ namespace HeroesFlight.StateStack.State
                             case GameState.Ended:
                                 break;
                             case GameState.WaitingPortal:
-
-                                //gamePlaySystem.HandleHeroProgression();
-
-                                //CoroutineUtility.WaitForSeconds(3f, () =>
-                                //{
-                                //    if (!gamePlaySystem.EffectManager.CompletedLevel())
-                                //    {
-                                //        ShowLevelPortal();
-                                //    }
-                                //});
 
                                 CoroutineUtility.Start(WaitingPortalRoutine());
 
@@ -138,7 +131,11 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.OnReturnToMainMenuRequest -= HandleReturnToMainMenu;
                         uiSystem.OnRestartLvlRequest -= HandleLvlRestart;
                         uiSystem.OnReviveCharacterRequest -= HandleCharacterRevive;
-                        uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= HandleAngelsGambitClosed;
+
+                        //uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= HandleAngelsGambitClosed;
+                        uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= uiSystem.UiEventHandler.PuzzleMenu.Open;
+                        uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= HandleAngelsGambitClosed;
+
                         uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed -= ShowLevelPortal;
                         uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= gamePlaySystem.StoreRunReward;
                         gamePlaySystem.OnNextLvlLoadRequest -= HandleContinueGameLoop;
@@ -161,8 +158,10 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -= gamePlaySystem.HeroProgression.ResetSP;
                         gamePlaySystem.HeroProgression.OnEXPAdded -= uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
                         gamePlaySystem.HeroProgression.OnLevelUp -= uiSystem.UiEventHandler.GameMenu.UpdateExpBarLevelUp;
-                        //gamePlaySystem.HeroProgression.OnLevelUp -= uiSystem.UiEventHandler.HeroProgressionMenu.OnLevelUp;
                         gamePlaySystem.HeroProgression.OnSpChanged -= uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
+                        uiSystem.UiEventHandler.HeroProgressionMenu.ResetMenu();
+
+                        uiSystem.UiEventHandler.PuzzleMenu.OnPuzzleSolved -= gamePlaySystem.GodsBenevolence.ActivateGodsBenevolence;
 
                         m_SceneActionsQueue.Start(uiSystem.UiEventHandler.LoadingMenu.UpdateLoadingBar, () =>
                         {
@@ -236,9 +235,9 @@ namespace HeroesFlight.StateStack.State
                             uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed += gamePlaySystem.HeroProgression.ResetSP;
                             gamePlaySystem.HeroProgression.OnEXPAdded += uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
                             gamePlaySystem.HeroProgression.OnLevelUp += uiSystem.UiEventHandler.GameMenu.UpdateExpBarLevelUp;
-                            //  gamePlaySystem.HeroProgression.OnLevelUp += uiSystem.UiEventHandler.HeroProgressionMenu.OnLevelUp;
                             gamePlaySystem.HeroProgression.OnSpChanged += uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
 
+                            uiSystem.UiEventHandler.PuzzleMenu.OnPuzzleSolved += gamePlaySystem.GodsBenevolence.ActivateGodsBenevolence;
                         });
                         uiSystem.UiEventHandler.GameMenu.Open();
                         CoroutineUtility.WaitForSeconds(1f, () =>
