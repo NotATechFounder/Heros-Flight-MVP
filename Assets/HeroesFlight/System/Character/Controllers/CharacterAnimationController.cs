@@ -165,7 +165,6 @@ namespace HeroesFlight.System.Character
                     switch (trackentry.Animation.Name)
                     {
                         case AnimationNames.RegularAttack_Base:
-                            Debug.Log(trackentry.Animation.Name);
                             OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Regular,0));
                             break;
                         case AnimationNames.Ultimate_Base_1:
