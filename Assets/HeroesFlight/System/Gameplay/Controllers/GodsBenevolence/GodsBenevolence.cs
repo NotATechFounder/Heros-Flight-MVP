@@ -75,7 +75,7 @@ public class GodsBenevolence : MonoBehaviour
                 CurrentLifeSteal += godsBenevolence.GetValue("LifeSteal");
 
                 float damageInc = godsBenevolence.GetValue("DamageInc");
-                damageInc = StatCalc.GetPercentage(characterStatController.PlayerStatData.PhysicalDamage.GetRandomValue(), damageInc);
+                damageInc = StatCalc.GetPercentage(characterStatController.CurrentPhysicalDamage, damageInc);
                 benevolenceEffect.GetComponent<AresSword>().SetUp(characterStatController.GetComponent<CharacterControllerInterface>(), damageInc, OnEnemyKilled);
                 break;
             case GodBenevolenceType.Apollo:
