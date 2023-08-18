@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Character.Enum;
 using HeroesFlight.System.Gameplay.Container;
@@ -227,7 +228,6 @@ namespace HeroesFlight.System.Gameplay
             miniBoss.Init();
             activeEnemyHealthControllers.Add(miniBoss);
             OnMinibossSpawned?.Invoke(true);
-            cameraController.SetCameraShakeState(false);
         }
 
         void HandleMinibossHealthChange(DamageModel damageModel)
@@ -321,6 +321,10 @@ namespace HeroesFlight.System.Gameplay
         void HandleEnemyDamaged(DamageModel damageModel)
         {
             UpdateCharacterCombo();
+            if (damageModel.DamageType == DamageType.Critical)
+            {
+                cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Bump,0.2f,0.25f);
+            }
             OnEnemyDamaged?.Invoke(damageModel);
         }
 
@@ -362,10 +366,12 @@ namespace HeroesFlight.System.Gameplay
         public void StartGameLoop(SpawnModel currentModel)
         {
             ChangeState(GameState.Ongoing);
-          //  Debug.Log(currentModel);
-          //  Debug.Log(currentModel.MiniBosses);
-         //   Debug.Log(cameraController);
-            cameraController.SetCameraShakeState(currentModel.MiniBosses.Count > 0);
+            Debug.Log(currentModel.MiniBosses.Count);
+            if (currentModel.MiniBosses.Count > 0)
+            {
+                cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,3f);
+            }
+           
             characterSystem.SetCharacterControllerState(true);
             GameTimer.Start(3, null,
                 () =>
