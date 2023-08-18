@@ -53,7 +53,7 @@ namespace HeroesFlight.StateStack.State
                     if (dataSystem.RewardHandler.RewardPending)
                     {
                        
-                        CoroutineUtility.WaitForSeconds(1f, () =>
+                        CoroutineUtility.WaitForSeconds(.2f, () =>
                         {
                             dataSystem.RewardHandler.ConsumeReward();
                             uiSystem.UiEventHandler.RewardPopup.Open();

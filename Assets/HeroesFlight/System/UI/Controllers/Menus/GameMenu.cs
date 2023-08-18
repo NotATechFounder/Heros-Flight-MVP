@@ -4,7 +4,6 @@ using UnityEngine.UI;
 using System;
 using Pelumi.Juicer;
 using System.Collections;
-using log4net.Core;
 
 namespace UISystem
 {
