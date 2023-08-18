@@ -33,15 +33,6 @@ namespace UISystem
         private JuicerRuntime openEffectBG;
         private JuicerRuntime closeEffectBG;
 
-        private void Start()
-        {
-            if (debug)
-            {
-                OnCreated();
-                Open();
-            }
-        }
-
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -65,6 +56,12 @@ namespace UISystem
 
             countDownTextEffect = countDownText.transform.JuicyScale(1.5f, 0.15f);
             countDownTextEffect.SetEase(animationCurve);
+
+
+            for (int i = 0; i < puzzlePieces.Length; i++)
+            {
+                puzzlePieces[i].OnPuzzlePieceClicked += OnPuzzlePieceClicked;
+            }
         }
 
         public override void OnOpened()
@@ -79,7 +76,6 @@ namespace UISystem
 
             for (int i = 0; i < puzzlePieces.Length; i++)
             {
-                puzzlePieces[i].OnPuzzlePieceClicked += OnPuzzlePieceClicked;
                 puzzlePieces[i].ShuffleRotation();
                 puzzlePieces[i].SetSprite(selectedBenevolence.BenevolencePuzzle[i]);
             }
