@@ -262,7 +262,7 @@ namespace HeroesFlight.System.Gameplay
             BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.currentTransform.position);
             CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.currentTransform.position);
             CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10, iHealthController.currentTransform.position);
-            collectedHeroProgressionSp += 100;
+            collectedHeroProgressionSp += container.HeroProgressionExpEarnedPerKill;
 
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
 
