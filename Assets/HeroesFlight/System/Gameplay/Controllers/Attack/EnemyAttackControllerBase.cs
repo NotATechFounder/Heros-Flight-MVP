@@ -63,7 +63,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             timeSinceLastAttack = 0;
             aiController.SetAttackState(false);
-            target.DealDamage(new DamageModel(Damage,DamageType.NoneCritical));
+            target.DealDamage(new DamageModel(Damage,DamageType.NoneCritical,AttackType.Regular));
             OnHitTarget?.Invoke();
         }
 

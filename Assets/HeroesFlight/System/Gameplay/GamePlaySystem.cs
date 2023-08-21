@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Character.Enum;
+using HeroesFlight.System.Environment;
 using HeroesFlight.System.Gameplay.Container;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
@@ -20,11 +21,13 @@ namespace HeroesFlight.System.Gameplay
 {
     public class GamePlaySystem : GamePlaySystemInterface
     {
-        public GamePlaySystem(IDataSystemInterface dataSystemInterface, CharacterSystemInterface characterSystem, NpcSystemInterface npcSystem)
+        public GamePlaySystem(DataSystemInterface dataSystemInterface, CharacterSystemInterface characterSystem,
+            NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem)
         {
             this.dataSystemInterface = dataSystemInterface;
             this.npcSystem = npcSystem;
             this.characterSystem = characterSystem;
+            this.environmentSystem = environmentSystem;
             npcSystem.OnEnemySpawned += HandleEnemySpawned;
             GameTimer = new CountDownTimer();
         }
@@ -60,7 +63,7 @@ namespace HeroesFlight.System.Gameplay
         public event Action<int> OnCoinsCollected;
         public event Action<BoosterContainer> OnBoosterContainerCreated;
 
-        IDataSystemInterface dataSystemInterface;
+        DataSystemInterface dataSystemInterface;
         List<IHealthController> GetExistingEnemies() => activeEnemyHealthControllers;
         List<IHealthController> activeEnemyHealthControllers = new();
         IHealthController miniBoss;
@@ -69,6 +72,7 @@ namespace HeroesFlight.System.Gameplay
         CharacterAbilityInterface characterAbility;
         CharacterSystemInterface characterSystem;
         CameraControllerInterface cameraController;
+        EnvironmentSystemInterface environmentSystem;
         NpcSystemInterface npcSystem;
         GameplayContainer container;
         GameState currentState;
@@ -158,6 +162,18 @@ namespace HeroesFlight.System.Gameplay
             });
         }
 
+        public void CreateCharacter()
+        {
+            SetupCharacter();
+        }
+
+        public void ReviveCharacter()
+        {
+            characterHealthController.Revive();
+            GameTimer.Resume();
+            ChangeState(GameState.Ongoing);
+        }
+
         bool CheckCurrentModel(out SpawnModel currentLvlModel)
         {
             currentLvlModel = container.GetCurrentLvlModel();
@@ -178,18 +194,6 @@ namespace HeroesFlight.System.Gameplay
             }
 
             npcSystem.SpawnRandomEnemies(currentLvlModel);
-        }
-
-        public void CreateCharacter()
-        {
-            SetupCharacter();
-        }
-
-        public void ReviveCharacter()
-        {
-            characterHealthController.Revive();
-            GameTimer.Resume();
-            ChangeState(GameState.Ongoing);
         }
 
         void SetupCharacter()
@@ -326,6 +330,8 @@ namespace HeroesFlight.System.Gameplay
             {
                 cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,0.1f,0.20f);
             }
+
+            environmentSystem.ParticleManager.Spawn("GreenBlood", damageModel.Target.position);
             OnEnemyDamaged?.Invoke(damageModel);
         }
 

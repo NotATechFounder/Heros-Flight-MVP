@@ -1,5 +1,6 @@
 ﻿using HeroesFlight.Core.Application;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Environment;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Input;
 using HeroesFlight.System.NPC;
@@ -28,11 +29,12 @@ namespace HeroesFlight.Core.Bootstrapper
         {
             m_ServiceLocator = new ServiceLocator();
 
-            IDataSystemInterface dataSystem = new DataSystem();
-            IInputSystem inputSystem = new InputSystem();
+            DataSystemInterface dataSystem = new DataSystem();
+            InputSystemInterface inputSystem = new InputSystem();
+            EnvironmentSystemInterface environmentSystem = new EnvironmentSystem();
             CharacterSystemInterface characterSystem = new CharacterSystem(inputSystem);
             NpcSystemInterface npcSystem = new NpcSystem();
-            GamePlaySystemInterface gamePlaySystem = new GamePlaySystem(dataSystem,characterSystem, npcSystem);
+            GamePlaySystemInterface gamePlaySystem = new GamePlaySystem(dataSystem,characterSystem, npcSystem,environmentSystem);
             IUISystem uiSystem = new UiSystem(dataSystem,gamePlaySystem);
 
             m_ServiceLocator.Register(dataSystem);
@@ -41,6 +43,7 @@ namespace HeroesFlight.Core.Bootstrapper
             m_ServiceLocator.Register(inputSystem);
             m_ServiceLocator.Register(characterSystem);
             m_ServiceLocator.Register(npcSystem);
+            m_ServiceLocator.Register(environmentSystem);
             return m_ServiceLocator;
         }
     }

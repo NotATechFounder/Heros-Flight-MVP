@@ -3,7 +3,7 @@ using System;
 using HeroesFlight.System.FileManager.Rewards;
 using UnityEngine.SceneManagement;
 
-public class DataSystem : IDataSystemInterface
+public class DataSystem : DataSystemInterface
 {
     public DataSystem()
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 namespace HeroesFlight.System.UI
 {
-    public interface IUISystem : ISystemInterface
+    public interface IUISystem : SystemInterface
     {
         event Action OnReturnToMainMenuRequest;
         event Action OnRestartLvlRequest;

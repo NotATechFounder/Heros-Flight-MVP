@@ -13,7 +13,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public override void UseAbility(IHealthController target = null, Action onComplete = null)
         {
             base.UseAbility(target, onComplete);
-            target?.DealDamage(new DamageModel(model.GetMonsterStatData.Damage, DamageType.NoneCritical));
+            target?.DealDamage(new DamageModel(model.GetMonsterStatData.Damage, DamageType.NoneCritical,AttackType.Regular));
         }
     }
 }

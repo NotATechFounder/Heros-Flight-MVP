@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using HeroesFlight.System.FileManager.Rewards;
 using UnityEngine;
 
-public interface IDataSystemInterface : ISystemInterface
+public interface DataSystemInterface : SystemInterface
 {
     public event Action<CurrencySO, bool> OnCurrencyChange;
     RewardsHandlerInterface RewardHandler { get; }

@@ -163,7 +163,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                         : baseDamage;
 
                     var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
-                    enemy.DealDamage(new DamageModel(damageToDeal, type));
+                    enemy.DealDamage(new DamageModel(damageToDeal, type,data.AttackType));
                     ApplyLifeSteal();
                     OnHitTarget?.Invoke();
                 }
