@@ -20,6 +20,7 @@ namespace HeroesFlight.Core.Bootstrapper
         void Awake()
         {
             m_Application = new HeroesFlightApplication();
+            UnityEngine.Application.targetFrameRate = 60;
             m_Application.Start(this);
         }
 

@@ -54,7 +54,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             rigidBody.velocity = Vector2.zero;
             var forceVector = currentTarget.position.x > transform.position.x ? Vector2.left : Vector2.right;
-            rigidBody.AddForce(forceVector *knockbackForce);
+            forceVector.Normalize();
+            rigidBody.AddForce(forceVector *knockbackForce,ForceMode2D.Impulse);
         }
 
         public override Vector2 GetVelocity()

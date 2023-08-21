@@ -41,8 +41,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
             currentTarget = player;
             viewController.Init();
             OnInit();
-            viewController.StartFadeIn(2f, Enable);
+           // viewController.StartFadeIn(2f, Enable);
             DisplayModifiyer(currentCardIcon);
+            Enable();
         }
 
         void Update()

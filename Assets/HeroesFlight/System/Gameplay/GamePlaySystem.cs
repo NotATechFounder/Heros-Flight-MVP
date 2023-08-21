@@ -366,7 +366,6 @@ namespace HeroesFlight.System.Gameplay
         public void StartGameLoop(SpawnModel currentModel)
         {
             ChangeState(GameState.Ongoing);
-            Debug.Log(currentModel.MiniBosses.Count);
             if (currentModel.MiniBosses.Count > 0)
             {
                 cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,3f);
