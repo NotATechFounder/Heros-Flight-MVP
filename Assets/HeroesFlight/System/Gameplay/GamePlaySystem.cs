@@ -321,9 +321,10 @@ namespace HeroesFlight.System.Gameplay
         void HandleEnemyDamaged(DamageModel damageModel)
         {
             UpdateCharacterCombo();
+            cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Bump,0.1f,0.05f);
             if (damageModel.DamageType == DamageType.Critical)
             {
-                cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Bump,0.2f,0.25f);
+                cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,0.1f,0.20f);
             }
             OnEnemyDamaged?.Invoke(damageModel);
         }
