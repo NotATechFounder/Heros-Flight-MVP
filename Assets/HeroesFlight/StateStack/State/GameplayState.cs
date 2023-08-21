@@ -43,8 +43,17 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.OnRestartLvlRequest += HandleLvlRestart;
                     uiSystem.OnReviveCharacterRequest += HandleCharacterRevive;
                     uiSystem.OnSpecialButtonClicked += HandleSpecialButtonCLicked;
+
                     //uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += HandleAngelsGambitClosed;
-                    uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += uiSystem.UiEventHandler.PuzzleMenu.Open;
+                    // uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += uiSystem.UiEventHandler.PuzzleMenu.Open;
+
+
+                    uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += () =>
+                    {
+                        uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation, uiSystem.UiEventHandler.PuzzleMenu.Open,
+                          HandleAngelsGambitClosed);
+                    };
+
                     uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += HandleAngelsGambitClosed;
 
                     uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed += ShowLevelPortal;
@@ -133,7 +142,14 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.OnReviveCharacterRequest -= HandleCharacterRevive;
 
                         //uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= HandleAngelsGambitClosed;
-                        uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= uiSystem.UiEventHandler.PuzzleMenu.Open;
+                        // uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= uiSystem.UiEventHandler.PuzzleMenu.Open;
+
+                        uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= () =>
+                        {
+                            uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation, uiSystem.UiEventHandler.PuzzleMenu.Open,
+                              HandleAngelsGambitClosed);
+                        };
+
                         uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= HandleAngelsGambitClosed;
 
                         uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed -= ShowLevelPortal;
