@@ -25,7 +25,6 @@ namespace UISystem
         [SerializeField] private PuzzlePiece[] puzzlePieces;
 
         [Header("Debug")]
-        [SerializeField] private bool debug = false;
         [SerializeField] private GodsBenevolenceSO selectedBenevolence;
 
         private CountDownTimer countDownTimer;
@@ -37,7 +36,7 @@ namespace UISystem
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                StartCoroutine(PuzzleSolvedRoutine());
+                PuzzleSolved();
             }
         }
 
@@ -66,7 +65,9 @@ namespace UISystem
 
         public override void OnOpened()
         {
-            GodsBenevolenceSO random = null;
+            closeButton.gameObject.SetActive(true);
+
+             GodsBenevolenceSO random = null;
             do
             {
                 random = godsBenevolenceArray[UnityEngine.Random.Range(0, godsBenevolenceArray.Length)];
@@ -127,8 +128,14 @@ namespace UISystem
             }
             if (isCorrectRotation)
             {
-                StartCoroutine(PuzzleSolvedRoutine());
+                PuzzleSolved();
             }
+        }
+
+        public void PuzzleSolved()
+        {
+            closeButton.gameObject.SetActive(false);
+            StartCoroutine(PuzzleSolvedRoutine());
         }
 
         private IEnumerator PuzzleSolvedRoutine()

@@ -70,7 +70,7 @@ namespace UISystem
             buffCardEffect = buffCardButton.transform.JuicyScale(Vector3.one * 1.2f, .5f).SetEase(Ease.EaseOutSine).SetLoop(-1);
             debuffCardEffect = debuffCardButton.transform.JuicyScale(Vector3.one * 1.2f, .5f).SetEase(Ease.EaseOutSine).SetLoop(-1);
 
-            spinCardEffect = cardToReveal.transform.JuicyRotate(Vector3.up * 360, .25f).SetEase(Ease.Linear).SetLoop(5, LoopType.Incremental);
+            spinCardEffect = cardToReveal.transform.JuicyRotate(Vector3.up * 360, .25f).SetEase(Ease.Linear).SetLoop(2, LoopType.Incremental);
             spinCardEffect.SetOnComplected(() => ToggleCardRevealProperties(true));
 
             buffCardButton.onClick.AddListener(() => GenerateRandomCards(AngelCardType.Buff));
