@@ -303,7 +303,7 @@ namespace HeroesFlight.System.Gameplay
             OnCharacterDamaged?.Invoke(damageModel);
         }
 
-        private void HandleCharacterHeal(float arg1, Transform transform)
+         void HandleCharacterHeal(float arg1, Transform transform)
         {
             OnCharacterHeal?.Invoke(arg1, transform);
         }
@@ -325,13 +325,31 @@ namespace HeroesFlight.System.Gameplay
         void HandleEnemyDamaged(DamageModel damageModel)
         {
             UpdateCharacterCombo();
+            var vfxReference = string.Empty;
+            var isCritical = damageModel.DamageType == DamageType.Critical;
+            switch (damageModel.AttackType)
+            {
+                case AttackType.Regular:
+                    vfxReference = isCritical
+                        ? characterSystem.CurrentCharacter.CharacterSO.VFXData.AutoattackCrit
+                        : characterSystem.CurrentCharacter.CharacterSO.VFXData.AutoattackNormal;
+                    break;
+                case AttackType.Ultimate:
+                    vfxReference = isCritical
+                        ? characterSystem.CurrentCharacter.CharacterSO.VFXData.AutoattackCrit
+                        : characterSystem.CurrentCharacter.CharacterSO.VFXData.AutoattackNormal;
+                    break;
+               
+            }
             cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Bump,0.1f,0.05f);
             if (damageModel.DamageType == DamageType.Critical)
             {
                 cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,0.1f,0.20f);
             }
-
-            environmentSystem.ParticleManager.Spawn("GreenBlood", damageModel.Target.position);
+            
+            if(!vfxReference.Equals(string.Empty))
+                environmentSystem.ParticleManager.Spawn(vfxReference, damageModel.Target.position);
+            
             OnEnemyDamaged?.Invoke(damageModel);
         }
 

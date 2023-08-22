@@ -13,6 +13,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         [SerializeField] protected float wanderDistance = 10f;
         [SerializeField] protected float knockbackForce = 10f;
         [SerializeField] protected float agroCooldown = 5f;
+        protected FlashEffect hitEffect;
         protected AiViewController viewController;
         protected AiAnimatorInterface animator;
         protected Collider2D attackCollider;
@@ -38,6 +39,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             attackCollider = GetComponent<Collider2D>();
             animator = GetComponent<AiAnimatorInterface>();
             viewController = GetComponent<AiViewController>();
+            hitEffect = GetComponentInChildren<FlashEffect>();
             currentTarget = player;
             viewController.Init();
             OnInit();
@@ -81,6 +83,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public virtual void ProcessKnockBack()
         {
+           animator.PlayHitAnimation();
+           hitEffect.Flash();
         }
 
         public virtual void Enable()

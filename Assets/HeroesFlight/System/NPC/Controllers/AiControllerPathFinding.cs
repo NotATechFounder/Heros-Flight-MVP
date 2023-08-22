@@ -66,6 +66,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             if (isDisabled)
                 return;
+            
+            if (isInknockback)
+                return;
+            
             setter.target = null;
             if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath))
             {
@@ -76,6 +80,12 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void ProcessKnockBack()
         {
+            animator.PlayHitAnimation(() =>
+            {
+                ai.canMove = true;
+            });
+            hitEffect.Flash();
+            
             if (!useKnockback)
                 return;
 
@@ -106,8 +116,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             yield return new WaitForEndOfFrame();
             rigidBody.AddForce(forceVector*knockbackForce,ForceMode2D.Impulse);
-            yield return new WaitForSeconds(.2f);
-            ai.canMove = true;
+             yield return new WaitForSeconds(.3f);
             isInknockback = false;
             rigidBody.velocity = Vector2.zero;
         }
