@@ -8,10 +8,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
 {
     public class AiControllerPathFinding : AiControllerBase
     {
-        [SerializeField] bool useKnockback = true;
         IAstarAI ai;
         AIDestinationSetter setter;
-        bool isInknockback;
         Coroutine knockBackRoutine;
 
 
@@ -116,7 +114,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             yield return new WaitForEndOfFrame();
             rigidBody.AddForce(forceVector*knockbackForce,ForceMode2D.Impulse);
-             yield return new WaitForSeconds(.3f);
+             yield return new WaitForSeconds(knockbackDuration);
             isInknockback = false;
             rigidBody.velocity = Vector2.zero;
         }

@@ -11,12 +11,17 @@ namespace HeroesFlightProject.System.NPC.Controllers
         [SerializeField] protected SpriteRenderer buffDebuffIcon;
         [SerializeField] protected AiAgentModel m_Model;
         [SerializeField] protected float wanderDistance = 10f;
-        [SerializeField] protected float knockbackForce = 10f;
         [SerializeField] protected float agroCooldown = 5f;
+
+        [Header("Knockback parameters")]
+        [SerializeField] protected bool useKnockback = true;
+        [SerializeField] protected float knockbackDuration = 0.1f;
+        [SerializeField] protected float knockbackForce = 5f;
         protected FlashEffect hitEffect;
         protected AiViewController viewController;
         protected AiAnimatorInterface animator;
         protected Collider2D attackCollider;
+        protected bool isInknockback;
         public event Action OnInitialized;
         public event Action OnDisabled;
         public EnemyType EnemyType => m_Model.EnemyType;
@@ -43,7 +48,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
             currentTarget = player;
             viewController.Init();
             OnInit();
-           // viewController.StartFadeIn(2f, Enable);
+
+            // viewController.StartFadeIn(2f, Enable);
             DisplayModifiyer(currentCardIcon);
             Enable();
         }
@@ -83,8 +89,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public virtual void ProcessKnockBack()
         {
-           animator.PlayHitAnimation();
-           hitEffect.Flash();
+            animator.PlayHitAnimation();
+            hitEffect.Flash();
         }
 
         public virtual void Enable()
@@ -123,18 +129,19 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected bool IsAggravated()
         {
             var distance = Vector2.Distance(CurrentTarget.position, transform.position);
-            return distance <= m_Model.CombatModel.GetMonsterStatData.AgroDistance || timeSinceAggravated< agroCooldown;
+            return distance <= m_Model.CombatModel.GetMonsterStatData.AgroDistance ||
+                timeSinceAggravated < agroCooldown;
         }
 
         protected bool InAttackRange()
         {
-            return Vector2.Distance(CurrentTarget.position, transform.position) 
+            return Vector2.Distance(CurrentTarget.position, transform.position)
                 <= m_Model.CombatModel.GetMonsterStatData.AttackRange;
         }
 
         public void DisplayModifiyer(Sprite sprite)
         {
-            if(sprite == null)
+            if (sprite == null)
             {
                 buffDebuffIcon.enabled = false;
             }
