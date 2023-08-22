@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace HeroesFlight.System.NPC
 {
-    public interface NpcSystemInterface : ISystemInterface
+    public interface NpcSystemInterface : SystemInterface
     {
         event Action<AiControllerBase> OnEnemySpawned;
         void SpawnRandomEnemies(SpawnModel model);

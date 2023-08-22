@@ -12,6 +12,8 @@ public class CharacterSO : ScriptableObject
     [SerializeField] AnimationData aniamtionData;
     [SerializeField] UltimateData ultimateData;
     [SerializeField] AttackData attackData;
+    [Header("References to vfx from asset bank")]
+    [SerializeField] VFXData vfxData;
 
     public string CharacterName => characterName;
     public PlayerStatData GetPlayerStatData => playerStatData;
@@ -20,4 +22,5 @@ public class CharacterSO : ScriptableObject
     public UltimateData UltimateData => ultimateData;
     public AttackData AttackData => attackData;
     public CharacterType CharacterType => characterType;
+    public VFXData VFXData => vfxData;
 }

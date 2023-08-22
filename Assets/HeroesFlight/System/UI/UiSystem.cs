@@ -11,7 +11,7 @@ namespace HeroesFlight.System.UI
 {
     public class UiSystem : IUISystem
     {
-        public UiSystem(IDataSystemInterface dataSystemInterface, GamePlaySystemInterface gamePlaySystem)
+        public UiSystem(DataSystemInterface dataSystemInterface, GamePlaySystemInterface gamePlaySystem)
         {
             dataSystem = dataSystemInterface;
             gameplaySystem = gamePlaySystem;
@@ -51,7 +51,7 @@ namespace HeroesFlight.System.UI
         UiContainer container;
 
         GamePlaySystemInterface gameplaySystem;
-        IDataSystemInterface dataSystem;
+        DataSystemInterface dataSystem;
 
         public void Init(Scene scene = default, Action onComplete = null)
         {

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace HeroesFlight.System.Gameplay
 {
-    public interface GamePlaySystemInterface : ISystemInterface
+    public interface GamePlaySystemInterface : SystemInterface
     {
         event Action<float> OnUltimateChargesChange; 
         event Action<bool> OnMinibossSpawned;

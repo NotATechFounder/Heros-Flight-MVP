@@ -1,5 +1,6 @@
 using System;
 using HeroesFlight.Core.StateStack.Enum;
+using HeroesFlight.System.Environment;
 using HeroesFlight.System.UI;
 using JetBrains.Annotations;
 using StansAssets.Foundation.Patterns;
@@ -30,8 +31,12 @@ namespace HeroesFlight.StateStack.State
                     m_SceneActionsQueue.AddAction(SceneActionType.Load, uiScene);
                     m_SceneActionsQueue.Start(null, () =>
                     {
+                        var loadedScene = m_SceneActionsQueue.GetLoadedScene(uiScene);
                         IUISystem uiSystem = GetService<IUISystem>();
-                        uiSystem.Init(m_SceneActionsQueue.GetLoadedScene(uiScene));
+                        EnvironmentSystemInterface environmentSystem = GetService<EnvironmentSystemInterface>();
+                        Debug.Log("Initing environment system");
+                        environmentSystem.Init(loadedScene);
+                        uiSystem.Init(loadedScene);
                         AppStateStack.State.Set(ApplicationState.MainMenu);
                     });
                     break;

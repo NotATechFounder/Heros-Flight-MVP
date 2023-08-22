@@ -3,7 +3,7 @@ using HeroesFlight.System.Character.Enum;
 
 namespace HeroesFlight.System.Character
 {
-    public interface CharacterSystemInterface : ISystemInterface
+    public interface CharacterSystemInterface : SystemInterface
     {
         CharacterControllerInterface CurrentCharacter { get; }
         CharacterControllerInterface CreateCharacter();

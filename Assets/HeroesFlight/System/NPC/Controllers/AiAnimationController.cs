@@ -9,6 +9,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
     {
         [SerializeField] AnimationReferenceAsset attackAnimation;
         [SerializeField] AnimationReferenceAsset deathAnimation;
+        [SerializeField] AnimationReferenceAsset hitAnimation;
         SkeletonAnimation skeletonAnimation;
         AiControllerInterface aiController;
         int movementTrackIndex = 0;
@@ -60,6 +61,17 @@ namespace HeroesFlightProject.System.NPC.Controllers
             skeletonAnimation.AnimationState.SetEmptyAnimation(dynamicTrackIndex, 0);
             skeletonAnimation.AnimationState.SetEmptyAnimation(aditionalAniamtionTrackIndex, 0);
             CoroutineUtility.WaitForSeconds(deathAnimation.Animation.Duration, () =>
+            {
+                onCompleteAction?.Invoke();
+            });
+        }
+
+        public void PlayHitAnimation(Action onCompleteAction=null)
+        {
+            var turnTrack =  skeletonAnimation.AnimationState.SetAnimation(aditionalAniamtionTrackIndex+1, hitAnimation, false);
+            turnTrack.TimeScale = 2f;
+            skeletonAnimation.AnimationState.AddEmptyAnimation(aditionalAniamtionTrackIndex+1, 0, 0);
+            CoroutineUtility.WaitForSeconds(hitAnimation.Animation.Duration/2f, () =>
             {
                 onCompleteAction?.Invoke();
             });

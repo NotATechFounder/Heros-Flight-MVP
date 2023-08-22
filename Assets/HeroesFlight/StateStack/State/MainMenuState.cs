@@ -29,7 +29,7 @@ namespace HeroesFlight.StateStack.State
                     progressReporter.SetDone();
                     var uiSystem = GetService<IUISystem>();
                     var characterSystem = GetService<CharacterSystemInterface>();
-                    var dataSystem = GetService<IDataSystemInterface>();
+                    var dataSystem = GetService<DataSystemInterface>();
 
                     uiSystem.UiEventHandler.MainMenu.Open();
 

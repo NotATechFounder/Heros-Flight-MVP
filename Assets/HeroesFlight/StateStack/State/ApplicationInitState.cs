@@ -1,10 +1,12 @@
 ﻿using System;
 using HeroesFlight.Core.StateStack.Enum;
+using HeroesFlight.System.Environment;
 using HeroesFlight.System.UI;
 using JetBrains.Annotations;
 using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Patterns;
 using StansAssets.SceneManagement;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace HeroesFlight.StateStack.State
@@ -25,17 +27,19 @@ namespace HeroesFlight.StateStack.State
             {
                 case StackAction.Added:
 
-                    IDataSystemInterface dataSystem = GetService<IDataSystemInterface>();
+                    DataSystemInterface dataSystem = GetService<DataSystemInterface>();
                     dataSystem.Init(SceneManager.GetActiveScene());
-
+                    EnvironmentSystemInterface environmentSystem = GetService<EnvironmentSystemInterface>();
                     progressReporter.SetDone();
                     var uiScene = $"{SceneType.UIScene}";
                     m_SceneActionsQueue.AddAction(SceneActionType.Load, uiScene);
                     m_SceneActionsQueue.Start(null, () =>
                     {
+                        
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(uiScene);
                         CoroutineUtility.WaitForEndOfFrame(() =>
                         {
+                            environmentSystem.Init(loadedScene);
                             GetService<IUISystem>().Init(loadedScene, () =>
                             {
                                 AppStateStack.State.Set(ApplicationState.MainMenu);

@@ -12,7 +12,7 @@ namespace HeroesFlight.System.Character
 {
     public class CharacterSystem : CharacterSystemInterface
     {
-        public CharacterSystem(IInputSystem inputSystem)
+        public CharacterSystem(InputSystemInterface inputSystem)
         {
             inputSystem.OnInput += HandleCharacterInput;
             unlockedCharacters.Add(CharacterType.Tagon);
