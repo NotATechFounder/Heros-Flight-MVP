@@ -149,10 +149,13 @@ namespace HeroesFlight.System.Gameplay
 
         public void UseCharacterSpecial()
         {
+            
             cameraController.SetCameraState(GameCameraType.Skill);
             characterHealthController.SetInvulnerableState(true);
             characterSystem.SetCharacterControllerState(false);
             characterAttackController.ToggleControllerState(false);
+            environmentSystem.ParticleManager.Spawn(characterSystem.CurrentCharacter.CharacterSO.VFXData.UltVfx,
+                characterSystem.CurrentCharacter.CharacterTransform.position,Quaternion.Euler(new Vector3(-90,0,0)));
             characterAbility.UseAbility(null, () =>
             {
                 cameraController.SetCameraState(GameCameraType.Character);
@@ -336,8 +339,8 @@ namespace HeroesFlight.System.Gameplay
                     break;
                 case AttackType.Ultimate:
                     vfxReference = isCritical
-                        ? characterSystem.CurrentCharacter.CharacterSO.VFXData.AutoattackCrit
-                        : characterSystem.CurrentCharacter.CharacterSO.VFXData.AutoattackNormal;
+                        ? characterSystem.CurrentCharacter.CharacterSO.VFXData.UltCrit
+                        : characterSystem.CurrentCharacter.CharacterSO.VFXData.UltNormal;
                     break;
                
             }
