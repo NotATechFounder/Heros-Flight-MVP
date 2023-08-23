@@ -48,6 +48,8 @@ namespace HeroesFlight.System.Gameplay
 
         public int CurrentLvlIndex => container.CurrentLvlIndex;
 
+        public int MaxLvlIndex => container.MaxLvlIndex;
+
         public event Action<float> OnUltimateChargesChange;
         public event Action<bool> OnMinibossSpawned;
         public event Action<float> OnMinibossHealthChange;
@@ -269,7 +271,7 @@ namespace HeroesFlight.System.Gameplay
             BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.currentTransform.position);
             CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.currentTransform.position);
             CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10, iHealthController.currentTransform.position);
-            collectedHeroProgressionSp += 100;
+            collectedHeroProgressionSp += container.HeroProgressionExpEarnedPerKill;
 
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
 
@@ -370,8 +372,12 @@ namespace HeroesFlight.System.Gameplay
                 timeSinceLastStrike -= Time.deltaTime;
                 if (timeSinceLastStrike <= 0)
                 {
-                    characterComboNumber = 0;
-                    OnCharacterComboChanged?.Invoke(characterComboNumber);
+
+                    if (characterComboNumber != 0)
+                    {
+                        characterComboNumber = 0;
+                        OnCharacterComboChanged?.Invoke(characterComboNumber);
+                    }
                 }
 
                 yield return null;

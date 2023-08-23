@@ -34,6 +34,7 @@ namespace HeroesFlight.System.Gameplay
         public HeroProgression HeroProgression { get; }
         public GodsBenevolence GodsBenevolence { get; }
         public int CurrentLvlIndex { get; }
+        public int MaxLvlIndex { get; }
         void StartGameLoop(SpawnModel currentModel);
         void CreateCharacter();
         void ReviveCharacter();

@@ -149,9 +149,9 @@ public class CharacterStatController : MonoBehaviour
         }
     }
 
-    public void ModifyAttackSpeed(float percentageAmount, bool increase) // Attack speed need to be smaller to be positive
+    public void ModifyAttackSpeed(float percentageAmount, bool increase)
     {
-        CurrentAttackSpeed = StatCalc.ModifyValueByPercentage(playerCombatModel.AttackSpeed, CurrentAttackSpeed, percentageAmount, !increase);
+        CurrentAttackSpeed = StatCalc.ModifyValueByPercentage(playerCombatModel.AttackSpeed, CurrentAttackSpeed, percentageAmount, increase);
     }
 
     public void ModifyAttackRange(float amount, bool increase, bool isPercentage = true)

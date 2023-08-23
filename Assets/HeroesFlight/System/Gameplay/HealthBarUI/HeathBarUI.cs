@@ -33,11 +33,9 @@ public class HeathBarUI : MonoBehaviour
 
     public void ChangeValue(float normalisedValue)
     {
-        if (healthBarType == HealthBarType.ToggleVisibilityOnHit)
+        if (healthBarType == HealthBarType.ToggleVisibilityOnHit && !healthBar.gameObject.activeInHierarchy)
         {
             healthBar.gameObject.SetActive(true);
-            if (visibilityCoroutine != null) StopCoroutine(visibilityCoroutine);
-            visibilityCoroutine = StartCoroutine(VisibilityCoroutine());
         }
 
         innerFill.JuicyFillAmount(normalisedValue, 0.5f).Start();

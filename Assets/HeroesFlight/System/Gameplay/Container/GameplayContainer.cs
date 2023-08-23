@@ -11,6 +11,7 @@ namespace HeroesFlight.System.Gameplay.Container
         [SerializeField] GameAreaModel currentModel;
         [SerializeField] LevelPortal portalPrefab;
         [SerializeField] BoosterDropSO mobDrop;
+        [SerializeField] float heroProgressionExpEarnedPerKill = 20f;
 
 
         public event Action OnPlayerEnteredPortal;
@@ -19,7 +20,11 @@ namespace HeroesFlight.System.Gameplay.Container
 
         public bool FinishedLoop => CurrentLvlIndex >= currentModel.Models.Count;
 
+        public int MaxLvlIndex => currentModel.Models.Count;
+
         public BoosterDropSO MobDrop => mobDrop;
+
+        public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
 
         public void Init()
         {

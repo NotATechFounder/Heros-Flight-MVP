@@ -43,9 +43,14 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.OnRestartLvlRequest += HandleLvlRestart;
                     uiSystem.OnReviveCharacterRequest += HandleCharacterRevive;
                     uiSystem.OnSpecialButtonClicked += HandleSpecialButtonCLicked;
+
                     //uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += HandleAngelsGambitClosed;
-                    uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += uiSystem.UiEventHandler.PuzzleMenu.Open;
-                    uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += HandleAngelsGambitClosed;
+                    // uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += uiSystem.UiEventHandler.PuzzleMenu.Open;
+
+
+                    uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += ShowGodBenevolencePrompt;
+
+                    uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += ContinueGameLoop;
 
                     uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed += ShowLevelPortal;
                     uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += gamePlaySystem.StoreRunReward;
@@ -111,7 +116,7 @@ namespace HeroesFlight.StateStack.State
                         });
                     }
 
-                    void HandleAngelsGambitClosed()
+                    void ContinueGameLoop()
                     {
                         CoroutineUtility.WaitForSeconds(0.5f, () =>
                         {
@@ -124,6 +129,12 @@ namespace HeroesFlight.StateStack.State
                         });
                     }
 
+                    void ShowGodBenevolencePrompt()
+                    {
+                        uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation, uiSystem.UiEventHandler.PuzzleMenu.Open,
+                          ContinueGameLoop);
+                    }
+
 
                     void HandleReturnToMainMenu()
                     {
@@ -133,8 +144,11 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.OnReviveCharacterRequest -= HandleCharacterRevive;
 
                         //uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= HandleAngelsGambitClosed;
-                        uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= uiSystem.UiEventHandler.PuzzleMenu.Open;
-                        uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= HandleAngelsGambitClosed;
+                        // uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= uiSystem.UiEventHandler.PuzzleMenu.Open;
+
+                        uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= ShowGodBenevolencePrompt;
+
+                        uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= ContinueGameLoop;
 
                         uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed -= ShowLevelPortal;
                         uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= gamePlaySystem.StoreRunReward;
@@ -197,19 +211,27 @@ namespace HeroesFlight.StateStack.State
                             npcSystem.Reset();
                             characterSystem.ResetCharacter();
                             characterSystem.SetCharacterControllerState(false);
-                            uiSystem.UiEventHandler.AngelGambitMenu.Open();
-                            // if (gamePlaySystem.CurrentLvlIndex % 2 != 0)
-                            // {
-                            //     uiSystem.UiEventHandler.AngelGambitMenu.Open();
-                            // }
-                            // else
-                            // {
-                            //     var data = gamePlaySystem.PreloadLvl();
-                            //     gamePlaySystem.ContinueGameLoop(data);
-                            // }
+
+                            CoroutineUtility.WaitForSeconds(0.5f, () =>
+                            {
+                                if ((gamePlaySystem.CurrentLvlIndex + 1) % 2 == 0) // Open every second lvl
+                                {
+                                    uiSystem.UiEventHandler.AngelGambitMenu.Open();
+                                }
+                                else
+                                {
+                                    if ((gamePlaySystem.CurrentLvlIndex + 1) != gamePlaySystem.MaxLvlIndex) // Open every second lvl
+                                    {
+                                        ShowGodBenevolencePrompt();
+                                    }
+                                    else
+                                    {
+                                        ContinueGameLoop();
+                                    }
+                                }
+                            });
                         });
                     }
-
 
                     uiSystem.UiEventHandler.MainMenu.Close();
                     uiSystem.UiEventHandler.LoadingMenu.Open();
@@ -240,14 +262,12 @@ namespace HeroesFlight.StateStack.State
                             uiSystem.UiEventHandler.PuzzleMenu.OnPuzzleSolved += gamePlaySystem.GodsBenevolence.ActivateGodsBenevolence;
                         });
                         uiSystem.UiEventHandler.GameMenu.Open();
-                        CoroutineUtility.WaitForSeconds(1f, () =>
+                        CoroutineUtility.WaitForSeconds(1f, () => // Run the first time the game is loaded
                         {
                             uiSystem.UiEventHandler.LoadingMenu.Close();
                             gamePlaySystem.CreateCharacter();
-                            uiSystem.UiEventHandler.AngelGambitMenu.Open();
-                            // var data = gamePlaySystem.PreloadLvl();
-                            //
-                            // gamePlaySystem.StartGameLoop(data);
+                            ContinueGameLoop();
+
                         });
                     });
 
