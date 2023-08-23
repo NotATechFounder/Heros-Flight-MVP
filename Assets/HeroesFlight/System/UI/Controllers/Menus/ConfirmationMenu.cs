@@ -6,6 +6,7 @@ using System;
 using UnityEngine.UI;
 using TMPro;
 using Pelumi.Juicer;
+using System.ComponentModel;
 
 namespace UISystem
 {
@@ -20,19 +21,26 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI descriptionText;
 
         [Header("Buttons")]
+        [SerializeField] private Transform container;
         [SerializeField] private AdvanceButton closeButton;
         [SerializeField] private AdvanceButton yesButton;
         [SerializeField] private AdvanceButton noButton;
 
         JuicerRuntime _openEffectBG;
+        JuicerRuntime openEffectContainer;
         JuicerRuntime _closeEffectBG;
 
         public override void OnCreated()
         {
             canvasGroup.alpha = 0;
 
-            _openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
+            _openEffectBG = canvasGroup.JuicyAlpha(1, 0.25f);
             _openEffectBG.SetOnStart(() => canvasGroup.alpha = 0);
+
+
+            openEffectContainer = container.JuicyScale(Vector3.one, 0.5f)
+                                            .SetEase(Ease.EaseInQuint)
+                                            .SetDelay(0.25f);
 
             _closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
             _closeEffectBG.SetOnComplected(CloseMenu);
@@ -59,6 +67,7 @@ namespace UISystem
         public override void OnOpened()
         {
             _openEffectBG.Start();
+            openEffectContainer.Start(() => container.localScale = Vector3.zero);
         }
 
         public override void OnClosed()

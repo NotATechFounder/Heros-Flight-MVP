@@ -27,7 +27,9 @@ namespace UISystem
         [SerializeField] private Image levelProgressFill;
 
         [Header("Combo Counter")]
+        [SerializeField] private ComboFeedback[] comboFeedbacks;
         [SerializeField] private TextMeshProUGUI comboCounterText;
+        [SerializeField] private TextMeshProUGUI comboFeedbackText;
 
         [Header("Boss")]
         [SerializeField] private GroupImageFill bossHealthFill;
@@ -47,6 +49,8 @@ namespace UISystem
         
         JuicerRuntime openEffect;
         JuicerRuntime closeEffect;
+        JuicerRuntime comboCounterEffect;
+        JuicerRuntime comboFeedbackEffect;
         JuicerRuntime specialEffect;
         JuicerRuntime specialIconEffect;
         JuicerRuntime levelProgressEffect;
@@ -63,6 +67,10 @@ namespace UISystem
             closeEffect = canvasGroup.JuicyAlpha(0, 0.5f);
             closeEffect.SetOnStart(() => canvasGroup.alpha = 1);
             closeEffect.SetOnComplected(CloseMenu);
+
+            comboCounterEffect = comboCounterText.transform.JuicyScale(1f, 0.1f);
+
+            comboFeedbackEffect = comboFeedbackText.JuicyText("", 0.15f);
 
             specialEffect = specialAttackButtonFill.JuicyAlpha(0, 0.25f);
             specialEffect.SetEase(Ease.EaseInBounce);
@@ -100,7 +108,8 @@ namespace UISystem
             enemyCountText.text = "0";
             comboCounterText.text = "0";
             levelProgressText.text = "LV.0";
-            
+            comboFeedbackText.text = "";
+
             foreach (BoosterUI boosterButton in boosterButtons)
             {
                 if (boosterButton.GetBoosterSO != null)
@@ -135,7 +144,27 @@ namespace UISystem
 
         public void UpdateComboCounterText(int value)
         {
-            comboCounterText.text = value.ToString();
+            comboCounterEffect.Start(()=> comboCounterText.transform.localScale = Vector3.zero);
+            comboCounterText.text = "x" + value.ToString();
+
+            if (value == 0)
+            {
+                comboFeedbackText.text = "";
+                comboCounterText.text = "";
+            }
+            else
+            {
+                foreach (ComboFeedback comboFeedback in comboFeedbacks)
+                {
+                    if (comboFeedback.threshold == value)
+                    {
+                        comboFeedbackEffect.ChangeDesination(comboFeedback.feedback);
+                        comboFeedbackEffect.Start();
+                        break;
+                    }
+                }
+
+            }
         }
 
         public void UpdateLevelProgressText(int value)
@@ -256,4 +285,11 @@ namespace UISystem
             }
         }
     }
+}
+
+[System.Serializable]
+public class ComboFeedback
+{
+    public string feedback;
+    public int threshold;
 }

@@ -20,6 +20,8 @@ namespace HeroesFlight.System.Gameplay.Container
 
         public bool FinishedLoop => CurrentLvlIndex >= currentModel.Models.Count;
 
+        public int MaxLvlIndex => currentModel.Models.Count;
+
         public BoosterDropSO MobDrop => mobDrop;
 
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;

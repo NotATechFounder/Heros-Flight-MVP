@@ -45,6 +45,8 @@ namespace HeroesFlight.System.Gameplay
 
         public int CurrentLvlIndex => container.CurrentLvlIndex;
 
+        public int MaxLvlIndex => container.MaxLvlIndex;
+
         public event Action<float> OnUltimateChargesChange;
         public event Action<bool> OnMinibossSpawned;
         public event Action<float> OnMinibossHealthChange;
@@ -342,8 +344,12 @@ namespace HeroesFlight.System.Gameplay
                 timeSinceLastStrike -= Time.deltaTime;
                 if (timeSinceLastStrike <= 0)
                 {
-                    characterComboNumber = 0;
-                    OnCharacterComboChanged?.Invoke(characterComboNumber);
+
+                    if (characterComboNumber != 0)
+                    {
+                        characterComboNumber = 0;
+                        OnCharacterComboChanged?.Invoke(characterComboNumber);
+                    }
                 }
 
                 yield return null;
