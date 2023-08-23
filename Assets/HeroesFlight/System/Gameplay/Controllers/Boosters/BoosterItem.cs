@@ -34,6 +34,7 @@ public class BoosterItem : MonoBehaviour
         OnBoosterInteracted = func;
         spriteRenderer.sprite = boosterSO.BoosterSprite;
         ApplyUpWardForce(launchForce);
+        Instantiate(booster.BoosterFlare, transform);
     }
 
     public void ApplyUpWardForce(float force)

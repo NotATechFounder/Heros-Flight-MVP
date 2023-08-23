@@ -16,6 +16,7 @@ public class BoosterSO : ScriptableObject, IHasID
     [SerializeField] private float boosterDuration;
     [SerializeField] private Color boosterColor;
     [SerializeField] private string abreviation;
+    [SerializeField] ParticleSystem boosterFlare;
 
     public Color BoosterColor => boosterColor;
     public string BoosterName => boosterName;
@@ -30,6 +31,7 @@ public class BoosterSO : ScriptableObject, IHasID
     public float BoosterDuration => boosterDuration;
 
     public string Abreviation => abreviation;
+    public ParticleSystem BoosterFlare=>boosterFlare;
 
     public string GetID()
     {
