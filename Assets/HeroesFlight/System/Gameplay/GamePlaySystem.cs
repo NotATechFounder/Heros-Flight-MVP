@@ -71,6 +71,7 @@ namespace HeroesFlight.System.Gameplay
         IHealthController miniBoss;
         IHealthController characterHealthController;
         CharacterAttackController characterAttackController;
+        CharacterVFXController characterVFXController;
         CharacterAbilityInterface characterAbility;
         CharacterSystemInterface characterSystem;
         CameraControllerInterface cameraController;
@@ -126,6 +127,7 @@ namespace HeroesFlight.System.Gameplay
             characterHealthController.OnDeath -= HandleCharacterDeath;
             characterHealthController.OnBeingDamaged -= HandleCharacterDamaged;
             characterHealthController.OnHeal -= HandleCharacterHeal;
+            characterHealthController.OnDodged -= HandleCharacterDodged;
             characterAttackController = null;
             characterHealthController = null;
             characterAbility = null;
@@ -208,7 +210,11 @@ namespace HeroesFlight.System.Gameplay
                 characterController.CharacterTransform.GetComponent<CharacterHealthController>();
             characterAttackController =
                 characterController.CharacterTransform.GetComponent<CharacterAttackController>();
-            characterAbility=characterController.CharacterTransform.GetComponent<AbilityBaseCharacter>();
+
+            characterVFXController = characterController.CharacterTransform.GetComponent<CharacterVFXController>();
+            characterVFXController.Initialize(cameraController.CameraShaker);
+
+            characterAbility =characterController.CharacterTransform.GetComponent<AbilityBaseCharacter>();
             characterAbility.Init(characterController.CharacterSO.AnimationData.UltimateAnimations,
                 characterController.CharacterSO.UltimateData.Charges);
             characterAttackController.Init();
@@ -216,6 +222,7 @@ namespace HeroesFlight.System.Gameplay
             characterHealthController.OnDeath += HandleCharacterDeath;
             characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
             characterHealthController.OnHeal += HandleCharacterHeal;
+            characterHealthController.OnDodged += HandleCharacterDodged;
             characterHealthController.Init();
             characterSystem.SetCharacterControllerState(false);
             cameraController.SetTarget(characterController.CharacterTransform.GetComponentInChildren<CameraTargetController>().transform);
@@ -308,9 +315,14 @@ namespace HeroesFlight.System.Gameplay
             OnCharacterDamaged?.Invoke(damageModel);
         }
 
-         void HandleCharacterHeal(float arg1, Transform transform)
+        void HandleCharacterHeal(float arg1, Transform transform)
         {
             OnCharacterHeal?.Invoke(arg1, transform);
+        }
+
+        private void HandleCharacterDodged()
+        {
+            characterVFXController.TriggerMissEffect();
         }
 
         void HandleCharacterDeath(IHealthController obj)
@@ -475,6 +487,16 @@ namespace HeroesFlight.System.Gameplay
 
             HeroProgression.AddExp(collectedHeroProgressionSp);
             collectedHeroProgressionSp = 0;
+        }
+
+        public void HandleSingleLevelUp()
+        {
+            characterVFXController.TriggerLevelUpEffect();
+        }
+
+        public void HeroProgressionCompleted()
+        {
+            characterVFXController.TriggerLevelUpAfterEffect();
         }
     }
 }

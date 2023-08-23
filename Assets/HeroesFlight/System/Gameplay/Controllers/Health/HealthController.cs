@@ -2,6 +2,7 @@ using System;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -12,6 +13,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected float currentHealth;
         [SerializeField] protected HeathBarUI heathBarUI;
         [SerializeField] protected float defence;
+        [SerializeField] protected float dodgeChance;
         public bool IsImmortal { get; protected set; }
         public Transform currentTransform => transform;
         public CombatTargetType TargetType => targetType;
@@ -21,6 +23,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public event Action<DamageModel> OnBeingDamaged;
         public event Action<IHealthController> OnDeath;
         public event Action<float, Transform> OnHeal;
+        public event Action OnDodged;
+
         public virtual void Init()
         {
             currentHealth = maxHealth;
@@ -34,6 +38,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             
             if(IsDead())
                 return;
+
+            if (DodgeAttack())
+            {
+                OnDodged?.Invoke();
+                return;
+            }
 
             var resultDamage = damage.Amount -
                 StatCalc.GetValueOfPercentage(damage.Amount, defence);
@@ -96,6 +106,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             maxHealth = health;
             heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+        }
+
+        public bool DodgeAttack()
+        {
+            return Random.Range(0, 100) < dodgeChance;
         }
     }
 }

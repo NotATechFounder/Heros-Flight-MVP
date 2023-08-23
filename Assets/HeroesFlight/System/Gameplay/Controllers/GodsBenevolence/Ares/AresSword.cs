@@ -97,7 +97,7 @@ public class AresSword : MonoBehaviour
         {
             if (colliders[i].TryGetComponent( out AiHealthController damageable))
             {
-                damageable.DealDamage(new DamageModel(damage, DamageType.Critical,AttackType.Regular));
+                damageable?.DealDamage(new DamageModel(damage, DamageType.Critical, AttackType.Regular));
                 OnHitEnemy?.Invoke();
             }
         }

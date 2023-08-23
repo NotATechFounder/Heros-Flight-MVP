@@ -1,5 +1,6 @@
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Gameplay.Model;
+using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -61,6 +62,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public override void DealDamage(DamageModel damage)
         {
+            dodgeChance = characterStatController.CurrentDodgeChance;
             defence = characterStatController.CurrentDefense;
             base.DealDamage(damage);
         }

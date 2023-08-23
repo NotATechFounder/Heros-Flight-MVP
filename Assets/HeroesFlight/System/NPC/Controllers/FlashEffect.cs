@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Pelumi.Juicer;
 
 namespace HeroesFlight.System.NPC.Controllers
 {
@@ -28,7 +29,8 @@ namespace HeroesFlight.System.NPC.Controllers
             wait = new WaitForSeconds(interval);
         }
 
-        public void Flash () {
+        public void Flash () 
+        {
             meshRenderer.GetPropertyBlock(mpb);
             StartCoroutine(FlashRoutine());
         }

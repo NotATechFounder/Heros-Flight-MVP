@@ -18,17 +18,19 @@ namespace HeroesFlight.System.Character
 
         void Update()
         {
+            FollowTarget();
+        }
+
+        public void FollowTarget()
+        {
             var velocity = controller.GetVelocity();
             var resultVector = new Vector3(Mathf.Clamp(velocity.x, -offsetBounds.x, offsetBounds.x),
                 Mathf.Clamp(velocity.y, -offsetBounds.y, offsetBounds.y));
 
             var desiredPosition = parent.position + resultVector;
 
-            
+
             transform.position = Vector3.Lerp(transform.position, desiredPosition, speed * Time.deltaTime);
         }
-
-
-       
     }
 }
