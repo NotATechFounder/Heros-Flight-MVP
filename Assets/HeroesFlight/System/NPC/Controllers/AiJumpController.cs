@@ -22,6 +22,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             hitEffect = GetComponentInChildren<FlashEffect>();
             OnInit();
             viewController.StartFadeIn(2f,Enable);
+            wanderDistance = m_Model.WanderingDistance;
             DisplayModifiyer(currentCardIcon);
         }
 

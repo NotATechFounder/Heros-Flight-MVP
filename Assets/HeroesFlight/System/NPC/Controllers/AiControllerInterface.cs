@@ -9,7 +9,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
     {
         EnemyType EnemyType { get; }
         event Action OnInitialized;
-        event Action OnDisabled;
+        event Action<AiControllerInterface> OnDisabled;
         AiAgentModel AgentModel { get; }
         Transform CurrentTarget { get; }
         

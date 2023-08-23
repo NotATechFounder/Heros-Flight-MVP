@@ -23,7 +23,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected Collider2D attackCollider;
         protected bool isInknockback;
         public event Action OnInitialized;
-        public event Action OnDisabled;
+        public event Action<AiControllerInterface> OnDisabled;
         public EnemyType EnemyType => m_Model.EnemyType;
         public AiAgentModel AgentModel => m_Model;
         public Transform CurrentTarget => currentTarget;
@@ -45,6 +45,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             animator = GetComponent<AiAnimatorInterface>();
             viewController = GetComponent<AiViewController>();
             hitEffect = GetComponentInChildren<FlashEffect>();
+            wanderDistance = m_Model.WanderingDistance;
             currentTarget = player;
             viewController.Init();
             OnInit();
@@ -113,7 +114,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
                     gameObject.SetActive(false);
                 }
 
-                OnDisabled?.Invoke();
+                OnDisabled?.Invoke(this);
             });
         }
 

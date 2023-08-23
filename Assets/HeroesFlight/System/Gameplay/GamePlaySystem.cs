@@ -251,10 +251,18 @@ namespace HeroesFlight.System.Gameplay
         void HandleEnemySpawned(AiControllerBase obj)
         {
             var healthController = obj.GetComponent<AiHealthController>();
+            obj.OnDisabled += HandleEnemyDisabled;
             healthController.OnBeingDamaged += HandleEnemyDamaged;
             healthController.OnDeath += HandleEnemyDeath;
             healthController.Init();
             activeEnemyHealthControllers.Add(healthController);
+        }
+
+        void HandleEnemyDisabled(AiControllerInterface obj)
+        {
+            obj.OnDisabled -= HandleEnemyDisabled;
+            var baseComponent = obj as AiControllerBase;
+            environmentSystem.ParticleManager.Spawn("Enemy_Death",baseComponent.transform.position);
         }
 
         void HandleEnemyDeath(IHealthController iHealthController)
@@ -268,6 +276,8 @@ namespace HeroesFlight.System.Gameplay
             enemiesToKill--;
             characterAbility.UpdateAbilityCharges(5);
             OnUltimateChargesChange?.Invoke(characterAbility.CurrentCharge);
+            environmentSystem.ParticleManager.Spawn("Loot_Spawn", iHealthController.currentTransform.position,
+                Quaternion.Euler(new Vector3(-90,0,0)));
             BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.currentTransform.position);
             CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.currentTransform.position);
             CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10, iHealthController.currentTransform.position);
@@ -278,7 +288,11 @@ namespace HeroesFlight.System.Gameplay
             if (enemiesToKill <= 0)
             {
                 GameTimer.Stop();
-                
+                Time.timeScale = 0.2f;
+                CoroutineUtility.WaitForSecondsRealtime(2f, () =>
+                {
+                    Time.timeScale =1f;
+                });
                
                 if (container.FinishedLoop)
                 {
@@ -295,7 +309,7 @@ namespace HeroesFlight.System.Gameplay
 
                     return;
                 }
-
+                
                 ChangeState(GameState.WaitingPortal);
             }
         }
