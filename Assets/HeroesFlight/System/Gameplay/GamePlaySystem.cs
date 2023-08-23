@@ -346,10 +346,14 @@ namespace HeroesFlight.System.Gameplay
                     break;
                
             }
-            cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Bump,0.1f,0.05f);
+          
             if (damageModel.DamageType == DamageType.Critical)
             {
                 cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,0.1f,0.20f);
+            }
+            else
+            {
+                cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Bump,0.1f,0.05f);
             }
             
             if(!vfxReference.Equals(string.Empty))

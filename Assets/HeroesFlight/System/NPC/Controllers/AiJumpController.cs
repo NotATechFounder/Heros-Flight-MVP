@@ -19,6 +19,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             viewController = GetComponent<AiViewController>();
             viewController.Init();
             currentTarget = player;
+            hitEffect = GetComponentInChildren<FlashEffect>();
             OnInit();
             viewController.StartFadeIn(2f,Enable);
             DisplayModifiyer(currentCardIcon);
