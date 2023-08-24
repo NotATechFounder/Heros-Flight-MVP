@@ -14,19 +14,10 @@ public class ParticleManager : MonoBehaviour
         instance = this;
     }
 
-    // private void Update()
-    // {
-    //     Vector2 mousepos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    //     if (Input.GetMouseButtonDown(0))
-    //     {
-    //         Spawn("GreenBlood", mousepos);
-    //     }
-    // }
-
     public Particle Spawn(string key, Vector3 position, Quaternion rotation)
     {
         Particle particlePrefab = particleBank.GetAsset(key);
-        Particle instance = ObjectPoolManager.SpawnObject(particlePrefab, position,rotation);
+        Particle instance = ObjectPoolManager.SpawnObject(particlePrefab, position,rotation,PoolType.Particle);
         return instance;
     }
 
@@ -38,7 +29,7 @@ public class ParticleManager : MonoBehaviour
     public Particle Spawn(string key, Transform targetTransform)
     {
         Particle particlePrefab = particleBank.GetAsset(key);
-        Particle instance = ObjectPoolManager.SpawnObject(particlePrefab, targetTransform);
+        Particle instance = ObjectPoolManager.SpawnObject(particlePrefab, targetTransform, PoolType.Particle);
         return instance;
     }
 }

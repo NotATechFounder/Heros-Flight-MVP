@@ -44,7 +44,9 @@ namespace HeroesFlight.System.Gameplay
         void UseCharacterSpecial();
         void AddGold (int amount);
         void AddExperience(int amount);
+        void HandleSingleLevelUp();
         void HandleHeroProgression();
         public void StoreRunReward();
+        void HeroProgressionCompleted();
     }
 }

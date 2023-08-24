@@ -250,7 +250,7 @@ namespace Pelumi.Juicer
         #endregion
 
         #region Material
-        public static JuicerRuntime JuicyColour(this Material material, Color to, float duration, JuicerRuntimeParam juicerRuntimeParam = null)
+        public static JuicerRuntime JuicyColour(this Material material, Color to, float duration)
         {
             Init();
             JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
@@ -265,11 +265,44 @@ namespace Pelumi.Juicer
             Init();
             JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
             Color color = material.color;
+
             juicerTargetParam.SetCurrentValue(() => material.color);
             juicerTargetParam.Set(color.a, (value) => material.color = new Color(color.r, color.g, color.b, value), to);
             JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
             return juicerRuntime;
         }
+
+        public static JuicerRuntime JuicyFloatProperty(this Material material,string property, float to, float duration)
+        {
+            Init();
+            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
+            juicerTargetParam.SetCurrentValue(() => material.GetFloat(property));
+            juicerTargetParam.Set(material.GetFloat(property), (value) => material.SetFloat(property, value), to);
+            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            return juicerRuntime;
+        }
+
+        public static JuicerRuntime JuicyVectorProperty(this Material material, string property, Vector4 to, float duration)
+        {
+            Init();
+            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
+            juicerTargetParam.SetCurrentValue(() => material.GetVector(property));
+            juicerTargetParam.Set(material.GetVector(property), (value) => material.SetVector(property, value), to);
+            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            return juicerRuntime;
+        }
+
+        public static JuicerRuntime JuicyColourProperty(this Material material, string property, Color to, float duration)
+        {
+            Init();
+            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
+            Color color = material.GetColor(property);
+            juicerTargetParam.SetCurrentValue(() => material.GetColor(property));
+            juicerTargetParam.Set(color, (value) => material.SetColor(property, value), to);
+            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            return juicerRuntime;
+        }
+
         #endregion
 
         #region UI
@@ -373,6 +406,63 @@ namespace Pelumi.Juicer
             JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
             return juicerRuntime;
         }
+        #endregion
+
+        #region Renderer
+        public static JuicerRuntime JuicyFloatProperty(this Renderer renderer, string propertyName, float to, float duration)
+        {
+            Init();
+            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
+            MaterialPropertyBlock materialProperty = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(materialProperty);
+            juicerTargetParam.SetCurrentValue(() => materialProperty.GetFloat(propertyName));
+
+            juicerTargetParam.Set(materialProperty.GetFloat(propertyName), (value) =>
+            {
+                materialProperty.SetFloat(propertyName, value);
+                renderer.SetPropertyBlock(materialProperty);
+            }, to);
+
+            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            return juicerRuntime;
+        }
+
+        public static JuicerRuntime JuicyVectorProperty(this Renderer renderer, string propertyName, Vector4 to, float duration)
+        {
+            Init();
+            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
+            MaterialPropertyBlock materialProperty = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(materialProperty);
+            juicerTargetParam.SetCurrentValue(() => materialProperty.GetVector(propertyName));
+
+            juicerTargetParam.Set(materialProperty.GetVector(propertyName), (value) =>
+            {
+                materialProperty.SetVector(propertyName, value);
+                renderer.SetPropertyBlock(materialProperty);
+            }, to);
+
+            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            return juicerRuntime;
+        }
+
+        public static JuicerRuntime JuicyColorProperty(this Renderer renderer, string propertyName, Color to, float duration)
+        {
+            Init();
+            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
+            MaterialPropertyBlock materialProperty = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(materialProperty);
+            juicerTargetParam.SetCurrentValue(() => materialProperty.GetColor(propertyName));
+
+            juicerTargetParam.Set(materialProperty.GetColor(propertyName), (value) =>
+            {
+                materialProperty.SetColor(propertyName, value);
+                renderer.SetPropertyBlock(materialProperty);
+            }, to);
+
+            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            return juicerRuntime;
+        }
+
         #endregion
     }
 }

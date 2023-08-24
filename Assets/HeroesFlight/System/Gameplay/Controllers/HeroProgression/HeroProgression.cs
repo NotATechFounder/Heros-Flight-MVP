@@ -280,16 +280,6 @@ public class HeroProgression : MonoBehaviour
 
         OnLevelUp?.Invoke(currentLvl, numberOfLevelsGained, currentExp / expToNextLevel);
     }
-
-    private void OldLevelUp()
-    {
-        avaliableSp = spPerLevel;
-        currentUsedSp = avaliableSp;
-        currentLevel++;
-        currentExp -= expToNextLevel;
-        expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
-        OnSpChanged?.Invoke(avaliableSp);
-    }
 }
 
 [Serializable]

@@ -11,11 +11,15 @@ namespace UISystem
     {
      //   public Func<float> GetCoinText;
 
+        public event Action OnSingleLevelUpComplete;
         public event Action OnPauseButtonClicked;
         public event Action OnSpecialAttackButtonClicked;
         public event Action<int> OnLevelUpComplete;
 
-        [Header("Main")]
+        [Header("CountDown")]
+        [SerializeField] private TextMeshProUGUI countDownText;
+
+        [Header("Gameplay")]
         [SerializeField] private TextMeshProUGUI coinText;
         [SerializeField] private TextMeshProUGUI timerText;
         [SerializeField] private TextMeshProUGUI enemyCountText;
@@ -49,6 +53,7 @@ namespace UISystem
         
         JuicerRuntime openEffect;
         JuicerRuntime closeEffect;
+        JuicerRuntime countDownEffect;
         JuicerRuntime comboCounterEffect;
         JuicerRuntime comboFeedbackEffect;
         JuicerRuntime specialEffect;
@@ -68,6 +73,8 @@ namespace UISystem
             closeEffect.SetOnStart(() => canvasGroup.alpha = 1);
             closeEffect.SetOnComplected(CloseMenu);
 
+            countDownEffect = countDownText.transform.JuicyScale(1f, 0.1f);
+
             comboCounterEffect = comboCounterText.transform.JuicyScale(1f, 0.1f);
 
             comboFeedbackEffect = comboFeedbackText.JuicyText("", 0.15f);
@@ -84,6 +91,7 @@ namespace UISystem
             specialAttackButton.onClick.AddListener(SpecialAttackButtonClicked);
 
             levelProgressEffect = levelProgressFill.JuicyFillAmount(1, 1f);
+            levelProgressEffect.SetOnStart(() => OnSingleLevelUpComplete?.Invoke());
 
             ResetMenu();
         }
@@ -117,6 +125,12 @@ namespace UISystem
                     boosterButton.Disable();
                 }
             }
+        }
+
+        public void UpateCountDownText(int value)
+        {
+            countDownEffect.Start(() => countDownText.transform.localScale = Vector3.zero);
+            countDownText.text = value.ToString();
         }
 
         public void UpdateCoinText(float value)
@@ -226,7 +240,7 @@ namespace UISystem
                 yield return new WaitUntilJuicerComplected(levelProgressEffect);
             }
 
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(1f);
             levelProgressPanel.SetActive(false);
             OnLevelUpComplete?.Invoke(currentLevel + numberOfLevelInc);
             isExpComplete = true;
