@@ -455,7 +455,7 @@ namespace HeroesFlight.System.Gameplay
                     () =>
                     {
                         CreateLvL(currentModel);
-                        GameTimer.Start(180, OnGameTimerUpdate,
+                        GameTimer.Start(120, OnGameTimerUpdate,
                             () =>
                             {
                                 if (currentState != GameState.Ongoing)
