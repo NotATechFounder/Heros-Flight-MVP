@@ -77,7 +77,7 @@ public class BoosterItem : MonoBehaviour
         {
             var modifiedTime = Time.time + timeCustomizer;
             spriteRenderer.transform.localPosition = new Vector3(0, Mathf.Sin(modifiedTime*period) * amplitude , 0);
-            particle.localPosition = new Vector3(0, Mathf.Sin(Time.time*period) * amplitude  , 0);
+            particle.localPosition = new Vector3(0, Mathf.Sin(modifiedTime*period) * amplitude  , 0);
             yield return null;
         }
     }
