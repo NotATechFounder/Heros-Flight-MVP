@@ -29,7 +29,6 @@ namespace HeroesFlight.System.Gameplay
             this.characterSystem = characterSystem;
             this.environmentSystem = environmentSystem;
             npcSystem.OnEnemySpawned += HandleEnemySpawned;
-            GameTimer = new CountDownTimer();
         }
 
         public event Action OnNextLvlLoadRequest;
@@ -64,6 +63,9 @@ namespace HeroesFlight.System.Gameplay
         public event Action<BoosterSO, float, Transform> OnBoosterActivated;
         public event Action<int> OnCoinsCollected;
         public event Action<BoosterContainer> OnBoosterContainerCreated;
+        public event Action<int> OnCountDownTimerUpdate;
+        public event Action<float> OnGameTimerUpdate;
+        public event Action OnEnterMiniBossLvl;
 
         DataSystemInterface dataSystemInterface;
         List<IHealthController> GetExistingEnemies() => activeEnemyHealthControllers;
@@ -88,6 +90,7 @@ namespace HeroesFlight.System.Gameplay
         int collectedGold;
         float collectedXp;
         float collectedHeroProgressionSp;
+        float countDownDelay;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -110,6 +113,9 @@ namespace HeroesFlight.System.Gameplay
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
             container.SetStartingIndex(0);
             OnUltimateChargesChange?.Invoke(0);
+
+            GameTimer = new CountDownTimer(container);
+
             OnComplete?.Invoke();
         }
 
@@ -433,25 +439,34 @@ namespace HeroesFlight.System.Gameplay
             if (currentModel.MiniBosses.Count > 0)
             {
                 cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,3f);
+                OnEnterMiniBossLvl?.Invoke();
+                countDownDelay = 2;
             }
-           
-            characterSystem.SetCharacterControllerState(true);
-            GameTimer.Start(3, null,
-                () =>
-                {
-                    CreateLvL(currentModel);
-                    GameTimer.Start(180, null,
-                        () =>
-                        {
-                            if (currentState != GameState.Ongoing)
-                                return;
+            else
+            {
+                countDownDelay = .5f;
+            }
 
-                            ChangeState(GameState.Lost);
-                        }, characterAttackController);
-                }, characterAttackController);
+            characterSystem.SetCharacterControllerState(true);
+
+            CoroutineUtility.WaitForSeconds(countDownDelay, () =>
+            {
+                GameTimer.Start(5, null,
+                    () =>
+                    {
+                        CreateLvL(currentModel);
+                        GameTimer.Start(180, OnGameTimerUpdate,
+                            () =>
+                            {
+                                if (currentState != GameState.Ongoing)
+                                    return;
+
+                                ChangeState(GameState.Lost);
+                            });
+                    }, OnCountDownTimerUpdate);
+            });
         }
       
-
         public SpawnModel PreloadLvl()
         {
             if (!CheckCurrentModel(out var currentLvlModel))

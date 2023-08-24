@@ -15,6 +15,10 @@ namespace HeroesFlight.System.UI
         {
             dataSystem = dataSystemInterface;
             gameplaySystem = gamePlaySystem;
+
+            gameplaySystem.OnCountDownTimerUpdate += UpateCountDownUI;
+            gameplaySystem.OnGameTimerUpdate += UpdateGameTimeUI;
+
             gameplaySystem.OnEnemyDamaged += HandleEnemyDamaged;
             gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
             gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
@@ -23,7 +27,7 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnCharacterComboChanged += UpdateComboUI;
             gameplaySystem.OnMinibossSpawned += HandleMiniboss;
             gameplaySystem.OnMinibossHealthChange += HandleMinibossHealthChange;
-            gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
+            gameplaySystem.OnEnterMiniBossLvl += GameplaySystem_OnEnterMiniBossLvl;
             gameplaySystem.OnBoosterActivated += HandleBoosterActivated;
             gameplaySystem.OnCoinsCollected += HandleCoinChange;
             gameplaySystem.OnUltimateChargesChange += UpdateUltimateButton;
@@ -204,6 +208,11 @@ namespace HeroesFlight.System.UI
             UiEventHandler.GameMenu.UpdateTimerText(timeLeft);
         }
 
+        void UpateCountDownUI(int timeLeft)
+        {
+            UiEventHandler.GameMenu.UpateCountDownText(timeLeft);
+        }
+
         private void OnPlayButtonPressed()
         {
             UiEventHandler.MainMenu.Close();
@@ -287,6 +296,11 @@ namespace HeroesFlight.System.UI
         private void HandleBoosterContainerCreated(BoosterContainer container)
         {
             UiEventHandler.GameMenu.VisualiseBooster(container);
+        }
+
+        private void GameplaySystem_OnEnterMiniBossLvl()
+        {
+            UiEventHandler.GameMenu.ShowMiniBossWarning();
         }
     }
 }

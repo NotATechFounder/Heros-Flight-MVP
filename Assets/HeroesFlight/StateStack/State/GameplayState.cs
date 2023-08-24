@@ -96,9 +96,13 @@ namespace HeroesFlight.StateStack.State
 
                     IEnumerator WaitingPortalRoutine()
                     {
-                       gamePlaySystem.HandleHeroProgression();
+                        uiSystem.UiEventHandler.GameMenu.DisplayLevelMessage("COMPLETED");
 
-                       yield return new WaitUntil(() => uiSystem.UiEventHandler.GameMenu.IsExpComplete && uiSystem.UiEventHandler.HeroProgressionMenu.MenuStatus == UISystem.Menu.Status.Closed);
+                        yield return new WaitForSeconds(2f);
+
+                        gamePlaySystem.HandleHeroProgression();
+
+                        yield return new WaitUntil(() => uiSystem.UiEventHandler.GameMenu.IsExpComplete && uiSystem.UiEventHandler.HeroProgressionMenu.MenuStatus == UISystem.Menu.Status.Closed);
 
                         if (!gamePlaySystem.EffectManager.CompletedLevel())
                         {

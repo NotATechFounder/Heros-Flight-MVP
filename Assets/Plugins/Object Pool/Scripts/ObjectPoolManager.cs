@@ -31,7 +31,7 @@ namespace Pelumi.ObjectPool
             objectPoolDictionary = new Dictionary<string, PoolObjectInfo>();
         }
 
-        public static T SpawnObject<T>(T original, PoolType poolType = PoolType.Any) where T : MonoBehaviour
+        public static T SpawnObject<T>(T original, PoolType poolType = PoolType.Any) where T : Component
         {
             if (SpawnObject(original.gameObject, Vector3.zero, Quaternion.identity, poolType).TryGetComponent(out T t))
             {
@@ -49,7 +49,7 @@ namespace Pelumi.ObjectPool
             return SpawnObject(original, Vector3.zero, Quaternion.identity, poolType);
         }
 
-        public static T SpawnObject<T>(T original, Vector3 position, Quaternion rotation, Transform parent, PoolType poolType = PoolType.Any) where T : MonoBehaviour
+        public static T SpawnObject<T>(T original, Vector3 position, Quaternion rotation, Transform parent, PoolType poolType = PoolType.Any) where T : Component
         {
             if (SpawnObject(original.gameObject, position, rotation, parent, poolType).TryGetComponent(out T t))
             {
@@ -72,7 +72,7 @@ namespace Pelumi.ObjectPool
             return gameObject;
         }
 
-        public static T SpawnObject<T>(T original, Transform parent, PoolType poolType = PoolType.Any) where T : MonoBehaviour
+        public static T SpawnObject<T>(T original, Transform parent, PoolType poolType = PoolType.Any) where T : Component
         {
             if (SpawnObject(original.gameObject, parent.transform.position, parent.transform.rotation, parent, poolType).TryGetComponent(out T t))
             {
@@ -96,7 +96,7 @@ namespace Pelumi.ObjectPool
             return gameObject;
         }
 
-        public static T SpawnObject<T>(T original, Vector3 position, Quaternion rotation, PoolType poolType = PoolType.Any) where T : MonoBehaviour
+        public static T SpawnObject<T>(T original, Vector3 position, Quaternion rotation, PoolType poolType = PoolType.Any) where T : Component
         {
             if (SpawnObject(original.gameObject, position, rotation, poolType).TryGetComponent(out T t))
             {
@@ -129,7 +129,7 @@ namespace Pelumi.ObjectPool
             return gameObject;
         }
 
-        public static void ReleaseObject<T>(T t) where T : MonoBehaviour
+        public static void ReleaseObject<T>(T t) where T : Component
         {
             ReleaseObject(t.gameObject);
         }
