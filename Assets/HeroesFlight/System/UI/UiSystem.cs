@@ -247,7 +247,7 @@ namespace HeroesFlight.System.UI
             var damageText = NumberConverter.ConvertNumberToString((int)damageModel.Amount);
             var spriteAsset = container.GetDamageTextSprite(damageModel.DamageType);
             var size = damageModel.DamageType == DamageType.NoneCritical ? 60 : 100;
-            UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.one, damageText,
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.zero, damageText,
                 spriteAsset,size);
         }
 
@@ -266,14 +266,14 @@ namespace HeroesFlight.System.UI
             var damageString = damageModel.DamageType == DamageType.NoneCritical
                 ? $"{(int)damageModel.Amount}"
                 : $"!!{(int)damageModel.Amount}!!";
-            UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.one, damageString,
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.zero, damageString,
                 Color.red);
         }
 
         void HandleCharacterHeal(float amount, Transform pos)
         {
             var damageString = $"{(int)amount}";
-            UiEventHandler.PopupManager.PopUpTextAtTransfrom(pos, Vector3.one, damageString,
+            UiEventHandler.PopupManager.PopUpTextAtTransfrom(pos, Vector3.zero, damageString,
                 Color.green);
         }
 
@@ -286,7 +286,7 @@ namespace HeroesFlight.System.UI
 
         void PopUpTextAtPos(string info, Vector2 pos, Color color)
         {
-            UiEventHandler.PopupManager.PopUpAtTextPosition(pos, new Vector2(0, 1), info, color);
+            UiEventHandler.PopupManager.PopUpAtTextPosition(pos, Vector3.zero, info, color);
         }
 
         void UpdateComboUI(int count)

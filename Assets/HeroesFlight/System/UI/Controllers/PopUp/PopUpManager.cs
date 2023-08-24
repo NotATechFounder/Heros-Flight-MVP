@@ -31,7 +31,14 @@ public class PopUpManager : MonoBehaviour
         SetPopUpInfo(textPopUp, spawnPosition, randomIntensity, text, color, size: txtSize);
     }
 
-    public void SetPopUpInfo(TextPopUp textPopUp, Vector3 spawnPosition, Vector3 randomIntensity, string text, Color color, float size = 60)
+    public void PopUpTextAtTransfrom(Transform damageModelTarget, Vector3 randomIntensity, string damageText, TMP_SpriteAsset spriteAsset, float size, bool parent = false)
+    {
+        TextPopUp textPopUp = ObjectPoolManager.SpawnObject(popUpPrefab);
+        if (parent) textPopUp.transform.SetParent(damageModelTarget);
+        SetPopUpInfo(textPopUp, damageModelTarget.position, randomIntensity, damageText, spriteAsset, size);
+    }
+
+    private void SetPopUpInfo(TextPopUp textPopUp, Vector3 spawnPosition, Vector3 randomIntensity, string text, Color color, float size = 60)
     {
         Vector2 finalPos = spawnPosition += new Vector3
             (
@@ -42,14 +49,9 @@ public class PopUpManager : MonoBehaviour
         textPopUp.Init(text, color, finalPos, size);
     }
 
-    public void PopUpTextAtTransfrom(Transform damageModelTarget, Vector3 randomIntensity, string damageText, TMP_SpriteAsset spriteAsset,float size, bool parent = false)
-    {
-        TextPopUp textPopUp = ObjectPoolManager.SpawnObject(popUpPrefab);
-        if (parent) textPopUp.transform.SetParent(damageModelTarget);
-        SetPopUpInfo(textPopUp, damageModelTarget.position, randomIntensity, damageText, spriteAsset,size);
-    }
 
-    void SetPopUpInfo(TextPopUp textPopUp, Vector3 spawnPosition, Vector3 randomIntensity, string damageText, TMP_SpriteAsset spriteAsset,float size)
+
+    private void SetPopUpInfo(TextPopUp textPopUp, Vector3 spawnPosition, Vector3 randomIntensity, string damageText, TMP_SpriteAsset spriteAsset,float size)
     {
         Vector2 finalPos = spawnPosition += new Vector3
         (

@@ -46,8 +46,6 @@ namespace HeroesFlight.StateStack.State
 
                     uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete += gamePlaySystem.HandleSingleLevelUp;
 
-                    uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += ShowGodBenevolencePrompt;
-
                     uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += ContinueGameLoop;
 
                     uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed += ShowLevelPortal;
@@ -147,8 +145,6 @@ namespace HeroesFlight.StateStack.State
 
                         uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= gamePlaySystem.HandleSingleLevelUp;   
 
-                        uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= ShowGodBenevolencePrompt;
-
                         uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= ContinueGameLoop;
 
                         uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed -= ShowLevelPortal;
@@ -218,23 +214,28 @@ namespace HeroesFlight.StateStack.State
 
                             CoroutineUtility.WaitForSeconds(0.5f, () =>
                             {
-                                if ((gamePlaySystem.CurrentLvlIndex + 1) % 2 == 0) // Open every second lvl
-                                {
-                                    uiSystem.UiEventHandler.AngelGambitMenu.Open();
-                                }
-                                else
-                                {
-                                    if ((gamePlaySystem.CurrentLvlIndex + 1) != gamePlaySystem.MaxLvlIndex) // Open every second lvl
-                                    {
-                                        ShowGodBenevolencePrompt();
-                                    }
-                                    else
-                                    {
-                                        ContinueGameLoop();
-                                    }
-                                }
+                                CoroutineUtility.Start(ContinueGameLoopRoutine());
                             });
                         });
+                    }
+
+                    IEnumerator ContinueGameLoopRoutine()
+                    {
+                        if ((gamePlaySystem.CurrentLvlIndex + 1) % 2 == 0) // Open every second lvl
+                        {
+                            uiSystem.UiEventHandler.AngelGambitMenu.Open();
+
+                            yield return new WaitUntil(() => uiSystem.UiEventHandler.AngelGambitMenu.MenuStatus == UISystem.Menu.Status.Closed);
+                        }
+
+                        if ((gamePlaySystem.CurrentLvlIndex + 1) != gamePlaySystem.MaxLvlIndex) // Open every second lvl
+                        {
+                            ShowGodBenevolencePrompt();
+                        }
+                        else
+                        {
+                            ContinueGameLoop();
+                        }
                     }
 
                     uiSystem.UiEventHandler.MainMenu.Close();
