@@ -46,7 +46,7 @@ namespace HeroesFlight.StateStack.State
 
                     uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete += gamePlaySystem.HandleSingleLevelUp;
 
-                    //uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += ContinueGameLoop;
+                    uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += ContinueGameLoop;
 
                     //uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed += ShowLevelPortal;
                     uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += gamePlaySystem.StoreRunReward;
@@ -149,7 +149,7 @@ namespace HeroesFlight.StateStack.State
 
                         uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= gamePlaySystem.HandleSingleLevelUp;   
 
-                        //uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= ContinueGameLoop;
+                        uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= ContinueGameLoop;
 
                         //uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed -= ShowLevelPortal;
 

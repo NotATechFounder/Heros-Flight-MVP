@@ -62,6 +62,7 @@ public class BoosterItem : MonoBehaviour
             {
                 isUsed = true;
                 StopCoroutine(floatingRoutine);
+                particle.SetParent(null);
                 ObjectPoolManager.ReleaseObject(particle);
                 ObjectPoolManager.ReleaseObject(this);
             }

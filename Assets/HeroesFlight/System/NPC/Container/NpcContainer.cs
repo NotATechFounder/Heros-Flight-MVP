@@ -75,7 +75,6 @@ namespace HeroesFlight.System.NPC.Container
             for (var i = 0; i < enemiesToSpawn; i++)
             {
                 var targetEntry = PickRandomTrashMob(spawnModel.TrashMobs);
-                Debug.Log(targetEntry.Prefab.name);
                 var targetPoints = spanwPointsCache[targetEntry.Prefab.AgentModel.EnemySpawmType];
                 var rngPoint = Random.Range(0, targetPoints.Count);
                 AiControllerBase resultEnemy = Instantiate(targetEntry.Prefab,
