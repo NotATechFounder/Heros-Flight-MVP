@@ -2,6 +2,7 @@ using Pelumi.ObjectPool;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using StansAssets.Foundation.Async;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -26,7 +27,9 @@ public class BoosterItem : MonoBehaviour
     private void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
-        timeCustomizer=Random.Range(-10, 10);
+        timeCustomizer=Random.Range(-5, 5);
+        var rng = Random.Range(0, 0.1f);
+        amplitude += rng;
     }
 
     private void Start()
@@ -44,8 +47,7 @@ public class BoosterItem : MonoBehaviour
 
         particle = ObjectPoolManager.SpawnObject(booster.BoosterFlare, transform).transform;
         floatingRoutine = StartCoroutine(FloatingRoutine());
-        var rng = Random.Range(0, 0.2f);
-        amplitude += rng;
+       
     }
 
     public void ApplyUpWardForce(float force)
@@ -62,8 +64,8 @@ public class BoosterItem : MonoBehaviour
             {
                 isUsed = true;
                 StopCoroutine(floatingRoutine);
-                particle.SetParent(null);
                 ObjectPoolManager.ReleaseObject(particle);
+                particle = null;
                 ObjectPoolManager.ReleaseObject(this);
             }
         }
@@ -77,6 +79,37 @@ public class BoosterItem : MonoBehaviour
             spriteRenderer.transform.localPosition = new Vector3(0, Mathf.Sin(modifiedTime*period) * amplitude , 0);
             particle.localPosition = new Vector3(0, Mathf.Sin(modifiedTime*period) * amplitude  , 0);
             yield return null;
+        }
+    }
+
+    void OnDisable()
+    {
+        if (particle != null)
+        {
+            StopCoroutine(floatingRoutine);
+            try
+            {
+                CoroutineUtility.WaitForEndOfFrame(() =>
+                {
+                    try
+                    {
+                        ObjectPoolManager.ReleaseObject(particle);
+                        particle = null;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+               
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            
+           
         }
     }
 }
