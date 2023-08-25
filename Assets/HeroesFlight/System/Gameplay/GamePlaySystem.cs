@@ -379,7 +379,7 @@ namespace HeroesFlight.System.Gameplay
             }
             else
             {
-                cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Bump,0.1f,0.05f);
+                cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Bump,0.1f,0.1f);
             }
             
             if(!vfxReference.Equals(string.Empty))
