@@ -79,7 +79,7 @@ namespace UISystem
 
             comboCounterEffect = comboCounterText.transform.JuicyScale(1f, 0.1f);
 
-            comboFeedbackEffect = comboFeedbackText.JuicyText("", 0.15f);
+            comboFeedbackEffect = comboFeedbackText.transform.JuicyScale(1, 0.15f);
 
             specialEffect = specialAttackButtonFill.JuicyAlpha(0, 0.25f);
             specialEffect.SetEase(Ease.EaseInBounce);
@@ -191,8 +191,8 @@ namespace UISystem
                 {
                     if (comboFeedback.threshold == value)
                     {
-                        comboFeedbackEffect.ChangeDesination(comboFeedback.feedback);
-                        comboFeedbackEffect.Start();
+                        comboFeedbackEffect.Start(() => comboFeedbackText.transform.localScale = Vector3.zero);
+                        comboFeedbackText.text = comboFeedback.feedback;
                         break;
                     }
                 }

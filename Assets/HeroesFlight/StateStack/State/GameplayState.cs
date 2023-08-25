@@ -46,9 +46,9 @@ namespace HeroesFlight.StateStack.State
 
                     uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete += gamePlaySystem.HandleSingleLevelUp;
 
-                    uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += ContinueGameLoop;
+                    //uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += ContinueGameLoop;
 
-                    uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed += ShowLevelPortal;
+                    //uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed += ShowLevelPortal;
                     uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += gamePlaySystem.StoreRunReward;
                     gamePlaySystem.OnNextLvlLoadRequest += HandleContinueGameLoop;
                     gamePlaySystem.OnGameStateChange += HandleGameStateChanged;
@@ -102,10 +102,14 @@ namespace HeroesFlight.StateStack.State
 
                         yield return new WaitUntil(() => uiSystem.UiEventHandler.GameMenu.IsExpComplete && uiSystem.UiEventHandler.HeroProgressionMenu.MenuStatus == UISystem.Menu.Status.Closed);
 
-                        if (!gamePlaySystem.EffectManager.CompletedLevel())
+                        yield return new WaitForSeconds(1f);
+
+                        if (gamePlaySystem.EffectManager.CompletedLevel())
                         {
-                            ShowLevelPortal();
+                            yield return new WaitUntil(() =>  uiSystem.UiEventHandler.AngelPermanetCardMenu.MenuStatus == UISystem.Menu.Status.Closed);
                         }
+
+                        ShowLevelPortal();
                     }
 
                     void ShowLevelPortal()
@@ -145,9 +149,10 @@ namespace HeroesFlight.StateStack.State
 
                         uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= gamePlaySystem.HandleSingleLevelUp;   
 
-                        uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= ContinueGameLoop;
+                        //uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= ContinueGameLoop;
 
-                        uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed -= ShowLevelPortal;
+                        //uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed -= ShowLevelPortal;
+
                         uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= gamePlaySystem.StoreRunReward;
                         gamePlaySystem.OnNextLvlLoadRequest -= HandleContinueGameLoop;
                         gamePlaySystem.OnGameStateChange -= HandleGameStateChanged;
