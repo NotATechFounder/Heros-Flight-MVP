@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System;
 using Pelumi.Juicer;
 using System.Collections;
+using StansAssets.Foundation.Async;
 
 namespace UISystem
 {
@@ -17,6 +18,7 @@ namespace UISystem
         public event Action<int> OnLevelUpComplete;
 
         [Header("CountDown")]
+        [SerializeField] private GameObject countDownPanel;
         [SerializeField] private TextMeshProUGUI countDownText;
 
         [Header("Gameplay")]
@@ -41,7 +43,7 @@ namespace UISystem
         [SerializeField] Canvas bossCanvas;
 
         [Header("Warning")]
-        [SerializeField] private RectTransform warningPanel;
+        [SerializeField] private GameObject warningPanel;
 
         [Header("Special Attack")]
         [SerializeField] private AdvanceButton specialAttackButton;
@@ -77,7 +79,7 @@ namespace UISystem
 
             comboCounterEffect = comboCounterText.transform.JuicyScale(1f, 0.1f);
 
-            comboFeedbackEffect = comboFeedbackText.JuicyText("", 0.15f);
+            comboFeedbackEffect = comboFeedbackText.transform.JuicyScale(1, 0.15f);
 
             specialEffect = specialAttackButtonFill.JuicyAlpha(0, 0.25f);
             specialEffect.SetEase(Ease.EaseInBounce);
@@ -91,7 +93,6 @@ namespace UISystem
             specialAttackButton.onClick.AddListener(SpecialAttackButtonClicked);
 
             levelProgressEffect = levelProgressFill.JuicyFillAmount(1, 1f);
-            levelProgressEffect.SetOnStart(() => OnSingleLevelUpComplete?.Invoke());
 
             ResetMenu();
         }
@@ -130,7 +131,25 @@ namespace UISystem
         public void UpateCountDownText(int value)
         {
             countDownEffect.Start(() => countDownText.transform.localScale = Vector3.zero);
-            countDownText.text = value.ToString();
+
+            countDownPanel.gameObject.SetActive(value > 0);
+
+            if (Mathf.CeilToInt(value) == 1)
+            {
+                countDownText.text = "Start!";
+            }
+            else
+            {
+                countDownText.text = Mathf.CeilToInt(value - 1).ToString();
+            }
+        }
+
+        public void DisplayLevelMessage(string message, float duration = 1.5f)
+        {
+            countDownEffect.Start(() => countDownText.transform.localScale = Vector3.zero);
+            countDownPanel.gameObject.SetActive(true);
+            countDownText.text = message;
+            CoroutineUtility.WaitForSeconds(duration, () => countDownPanel.gameObject.SetActive(false));
         }
 
         public void UpdateCoinText(float value)
@@ -172,8 +191,8 @@ namespace UISystem
                 {
                     if (comboFeedback.threshold == value)
                     {
-                        comboFeedbackEffect.ChangeDesination(comboFeedback.feedback);
-                        comboFeedbackEffect.Start();
+                        comboFeedbackEffect.Start(() => comboFeedbackText.transform.localScale = Vector3.zero);
+                        comboFeedbackText.text = comboFeedback.feedback;
                         break;
                     }
                 }
@@ -220,6 +239,7 @@ namespace UISystem
 
             for (int i = 0; i < numberOfLevelInc; i++)
             {
+                OnSingleLevelUpComplete?.Invoke();
                 levelProgressEffect.ChangeDesination(1f);
                 levelProgressEffect.Start();
 
@@ -249,6 +269,13 @@ namespace UISystem
         public void UpdateBossHealthFill(float value)
         {
             bossHealthFill.SetValue(value);
+        }
+
+        public void ShowMiniBossWarning()
+        {
+            warningPanel.SetActive(true);
+
+            CoroutineUtility.WaitForSeconds(1.5f, () => warningPanel.SetActive(false));
         }
 
         public void ToggleBossHpBar(bool isEnabled)

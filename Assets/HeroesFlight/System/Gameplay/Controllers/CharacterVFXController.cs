@@ -21,7 +21,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public void Initialize(CameraShakerInterface cameraShakerInterface)
         {
             this.cameraShakerInterface = cameraShakerInterface;
-            levelUpBuildEffect.gameObject.SetActive(false);
         }
 
         public void TriggerLevelUpEffect()
@@ -32,10 +31,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         IEnumerator LevelUpEffect()
         {
             cameraShakerInterface.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble, .9f, 0.10f);
-            levelUpBuildEffect.gameObject.SetActive(true);
+            levelUpBuildEffect.Play();
             yield return new WaitForSeconds(1f);
             cameraShakerInterface.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion, .1f, 0.20f);
-            levelUpBuildEffect.gameObject.SetActive(false);
+            levelUpBuildEffect.Stop();
             levelUpEffect.Play();
         }
 

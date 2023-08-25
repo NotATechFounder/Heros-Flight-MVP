@@ -3,11 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JuicyMove : MonoBehaviour
+public class JuicyScale : MonoBehaviour
 {
     [SerializeField] private float duration = 1f;
-    [SerializeField] private RectTransform start;
-    [SerializeField] private RectTransform target;
+    [SerializeField] private Vector3 endSacle;
     [SerializeField] private Ease easeType = Ease.Linear;
     [SerializeField] LoopType loopType = LoopType.Yoyo;
     [SerializeField] private int loopCount = 0;
@@ -16,8 +15,7 @@ public class JuicyMove : MonoBehaviour
 
     private void Awake()
     {
-        transform.position = start.position;
-        moveEffect = transform.JuicyMove(target.position, duration);
+        moveEffect = transform.JuicyScale(endSacle, duration);
         moveEffect.SetEase(easeType);
         moveEffect.SetLoop(loopCount, loopType);
     }
@@ -45,11 +43,5 @@ public class JuicyMove : MonoBehaviour
     public void StopJuicy()
     {
         moveEffect.Stop();
-    }
-
-    [ContextMenu("Test")]
-    public void Test()
-    {
-        Debug.Log(transform.position);
     }
 }

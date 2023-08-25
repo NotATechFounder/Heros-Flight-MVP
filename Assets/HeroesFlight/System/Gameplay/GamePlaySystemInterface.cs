@@ -8,6 +8,9 @@ namespace HeroesFlight.System.Gameplay
 {
     public interface GamePlaySystemInterface : SystemInterface
     {
+        event Action<int> OnCountDownTimerUpdate;
+        event Action<float> OnGameTimerUpdate;
+
         event Action<float> OnUltimateChargesChange; 
         event Action<bool> OnMinibossSpawned;
         event Action<float> OnMinibossHealthChange; 
@@ -20,7 +23,7 @@ namespace HeroesFlight.System.Gameplay
         event Action<int> OnCharacterComboChanged; 
         event Action<GameState> OnGameStateChange;
         public event Action OnNextLvlLoadRequest;
-
+        event Action OnEnterMiniBossLvl;
         public event Action<BoosterSO, float, Transform> OnBoosterActivated;
 
         public event Action<int> OnCoinsCollected;

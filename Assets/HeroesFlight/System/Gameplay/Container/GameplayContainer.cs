@@ -1,6 +1,7 @@
 using System;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Model;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -29,6 +30,7 @@ namespace HeroesFlight.System.Gameplay.Container
         public void Init()
         {
             portal = Instantiate(portalPrefab, currentModel.PortalSpawnPosition, Quaternion.identity);
+            portal.gameObject.SetActive(false);
             portal.OnPlayerEntered += HandlePlayerTriggerPortal;
             currentModel.Init();
         }

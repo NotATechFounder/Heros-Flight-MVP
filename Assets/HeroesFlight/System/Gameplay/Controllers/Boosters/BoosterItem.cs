@@ -1,3 +1,4 @@
+using Pelumi.ObjectPool;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ public class BoosterItem : MonoBehaviour
         spriteRenderer.sprite = boosterSO.BoosterSprite;
         ApplyUpWardForce(launchForce);
 
-        particle = Instantiate(booster.BoosterFlare, transform).transform;
+        particle = ObjectPoolManager.SpawnObject(booster.BoosterFlare, transform).transform;
         floatingRoutine = StartCoroutine(FloatingRoutine());
         var rng = Random.Range(0, 0.2f);
         amplitude += rng;
@@ -60,15 +61,11 @@ public class BoosterItem : MonoBehaviour
             if (OnBoosterInteracted.Invoke(this))
             {
                 isUsed = true;
-                Destroy(gameObject);
                 StopCoroutine(floatingRoutine);
+                ObjectPoolManager.ReleaseObject(particle);
+                ObjectPoolManager.ReleaseObject(this);
             }
         }
-    }
-
-    private void OnDestroy()
-    {
-        triggerObserver.OnEnter -= OnEnter;
     }
 
     IEnumerator FloatingRoutine()

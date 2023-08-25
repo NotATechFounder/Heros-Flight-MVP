@@ -46,10 +46,9 @@ public class TextPopUp : MonoBehaviour
 
     public void Effect()
     {
-        transform.localScale = Vector3.zero;
         textMeshPro.color = new Color(textMeshPro.color.r, textMeshPro.color.g, textMeshPro.color.b, 1);
         moveEffect.ChangeDesination(transform.position + Vector3.up * moveLenght);
-        scaleEffect.Start();
+        scaleEffect.Start(() => transform.localScale = Vector3.zero);
     }
 
     public void Init(string damageText, TMP_SpriteAsset spriteAsset, Vector2 finalPos,float size)
