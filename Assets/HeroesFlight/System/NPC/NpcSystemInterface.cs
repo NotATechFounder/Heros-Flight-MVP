@@ -8,8 +8,8 @@ namespace HeroesFlight.System.NPC
     public interface NpcSystemInterface : SystemInterface
     {
         event Action<AiControllerBase> OnEnemySpawned;
-        void SpawnRandomEnemies(SpawnModel model);
-        AiControllerBase SpawnMiniBoss(SpawnModel currentLvlModel, Action onComplete = null);
+        void SetSpawnModel(Level level);
+        AiControllerBase SpawnMiniBoss(Level level, Action onComplete = null);
         void InjectPlayer(Transform player);
     }
 }

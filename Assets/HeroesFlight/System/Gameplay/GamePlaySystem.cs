@@ -187,9 +187,20 @@ namespace HeroesFlight.System.Gameplay
             ChangeState(GameState.Ongoing);
         }
 
+        bool CheckLevel(out Level currentLevel)
+        {
+            currentLevel = container.GetLevel();
+            if (currentLevel == null)
+            {
+                ChangeState(GameState.Won);
+                return false;
+            }
+            return true;
+        }
+
         bool CheckCurrentModel(out SpawnModel currentLvlModel)
         {
-            currentLvlModel = container.GetCurrentLvlModel();
+            currentLvlModel = /*container.GetLevelModel();*/ null; // TODO Urgent
             if (currentLvlModel == null)
             {
                 ChangeState(GameState.Won);
@@ -199,14 +210,14 @@ namespace HeroesFlight.System.Gameplay
             return true;
         }
 
-        void CreateLvL(SpawnModel currentLvlModel)
+        void CreateLvL(Level currentLvl)
         {
-            if (currentLvlModel.MiniBosses.Count > 0)
+            if (currentLvl.Waves[CurrentLvlIndex].AvaliableMiniBosses.Count > 0) // TODO modify CurrentLvlIndex to currentWaveIndex
             {
-                CreateMiniboss(currentLvlModel);
+                CreateMiniboss(currentLvl);
             }
 
-            npcSystem.SpawnRandomEnemies(currentLvlModel);
+            npcSystem.SetSpawnModel(currentLvl);
         }
 
         void SetupCharacter()
@@ -240,7 +251,7 @@ namespace HeroesFlight.System.Gameplay
             GodsBenevolence.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
         }
 
-        void CreateMiniboss(SpawnModel currentLvlModel)
+        void CreateMiniboss(Level currentLvlModel)
         {
             var miniboss = npcSystem.SpawnMiniBoss(currentLvlModel);
             miniBoss = miniboss.GetComponent<IHealthController>();
@@ -433,10 +444,10 @@ namespace HeroesFlight.System.Gameplay
             OnNextLvlLoadRequest?.Invoke();
         }
 
-        public void StartGameLoop(SpawnModel currentModel)
+        public void StartGameLoop(Level currentModel)
         {
             ChangeState(GameState.Ongoing);
-            if (currentModel.MiniBosses.Count > 0)
+            if (currentModel.HasBoss)
             {
                 cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,3f);
                 OnEnterMiniBossLvl?.Invoke();
@@ -466,19 +477,18 @@ namespace HeroesFlight.System.Gameplay
                     }, OnCountDownTimerUpdate);
             });
         }
-      
-        public SpawnModel PreloadLvl()
+
+        public Level PreloadLvl() // TODO : fix this
         {
-            if (!CheckCurrentModel(out var currentLvlModel))
+            if (!CheckLevel(out Level currentLvlModel))
             {
                 Debug.LogError("Current lvl loop model has 0 lvls");
                 return null;
             }
 
-
-            enemiesToKill = currentLvlModel.MiniBosses.Count == 0
-                ? currentLvlModel.MobsAmount
-                : currentLvlModel.MobsAmount + 1;
+            enemiesToKill = currentLvlModel.HasBoss
+                ? currentLvlModel.TotalMobsToSpawn
+                : currentLvlModel.TotalMobsToSpawn + 1;
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
             OnCharacterComboChanged?.Invoke(characterComboNumber);
             combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());

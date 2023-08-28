@@ -25,14 +25,14 @@ namespace HeroesFlight.System.NPC
 
         public event Action<AiControllerBase> OnEnemySpawned;
       
-        public void SpawnRandomEnemies(SpawnModel model)
+        public void SetSpawnModel(Level level)
         {
-            container.SpawnEnemies(model,OnEnemySpawned);
+            container.SpawnEnemies(level,OnEnemySpawned);
         }
 
-        public AiControllerBase SpawnMiniBoss(SpawnModel currentLvlModel, Action onComplete = null)
+        public AiControllerBase SpawnMiniBoss(Level level, Action onComplete = null)
         {
-             return container.SpawnMiniBoss(currentLvlModel);
+             return container.SpawnMiniBoss(level);
         }
 
         public void InjectPlayer(Transform player)

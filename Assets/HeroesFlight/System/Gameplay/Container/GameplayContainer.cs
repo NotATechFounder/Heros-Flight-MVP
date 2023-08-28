@@ -17,9 +17,9 @@ namespace HeroesFlight.System.Gameplay.Container
         LevelPortal portal;
         public int CurrentLvlIndex { get; private set; }
 
-        public bool FinishedLoop => CurrentLvlIndex >= currentModel.Models.Count;
+        public bool FinishedLoop => CurrentLvlIndex >= currentModel.SpawnModel.Levels.Length;
 
-        public int MaxLvlIndex => currentModel.Models.Count;
+        public int MaxLvlIndex => currentModel.SpawnModel.Levels.Length;
 
         public BoosterDropSO MobDrop => mobDrop;
 
@@ -30,7 +30,6 @@ namespace HeroesFlight.System.Gameplay.Container
             portal = Instantiate(portalPrefab, currentModel.PortalSpawnPosition, Quaternion.identity);
             portal.gameObject.SetActive(false);
             portal.OnPlayerEntered += HandlePlayerTriggerPortal;
-            currentModel.Init();
         }
 
         public void SetStartingIndex(int startingIndex)
@@ -44,15 +43,15 @@ namespace HeroesFlight.System.Gameplay.Container
             portal.Disable();
         }
 
-        public SpawnModel GetCurrentLvlModel()
+        public Level GetLevel()
         {
-            if (CurrentLvlIndex >= currentModel.Models.Count)
+            if (CurrentLvlIndex >= currentModel.SpawnModel.Levels.Length)
                 return null;
 
             Debug.LogError($"Returning model with index {CurrentLvlIndex}");
-            var model = currentModel.Models[CurrentLvlIndex];
+            Level level = currentModel.SpawnModel.Levels[CurrentLvlIndex];
             CurrentLvlIndex++;
-            return model;
+            return level;
         }
 
         public void EnablePortal()

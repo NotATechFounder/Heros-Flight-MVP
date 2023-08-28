@@ -128,8 +128,7 @@ namespace HeroesFlight.StateStack.State
                             npcSystem.Reset();
                             characterSystem.ResetCharacter();
                             characterSystem.SetCharacterControllerState(false);
-                            var data = gamePlaySystem.PreloadLvl();
-                            gamePlaySystem.StartGameLoop(data);
+                            gamePlaySystem.StartGameLoop(gamePlaySystem.PreloadLvl());
                         });
                     }
 
