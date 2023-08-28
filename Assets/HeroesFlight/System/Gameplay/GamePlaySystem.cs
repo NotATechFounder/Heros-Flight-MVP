@@ -129,7 +129,7 @@ namespace HeroesFlight.System.Gameplay
 
         void ResetPlayerSubscriptions()
         {
-            characterAttackController.SetCallback(null);
+           
             characterHealthController.OnDeath -= HandleCharacterDeath;
             characterHealthController.OnBeingDamaged -= HandleCharacterDamaged;
             characterHealthController.OnHeal -= HandleCharacterHeal;
@@ -224,7 +224,7 @@ namespace HeroesFlight.System.Gameplay
             characterAbility.Init(characterController.CharacterSO.AnimationData.UltimateAnimations,
                 characterController.CharacterSO.UltimateData.Charges);
             characterAttackController.Init();
-            characterAttackController.SetCallback(GetExistingEnemies);
+          
             characterHealthController.OnDeath += HandleCharacterDeath;
             characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
             characterHealthController.OnHeal += HandleCharacterHeal;

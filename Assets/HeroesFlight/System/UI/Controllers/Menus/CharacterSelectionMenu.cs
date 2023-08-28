@@ -14,8 +14,8 @@ namespace UISystem
         [SerializeField] AdvanceButton previousButton;
         [SerializeField] AdvanceButton nextButton;
         [SerializeField] AdvanceButton selectButton;
-        [Header("Lock image")
-        ][SerializeField] Image lockImage;
+        [Header("Lock image")]
+        [SerializeField] Image lockImage;
         public CharacterType selectedType { get; private set; }
         UiSpineViewController viewController;
         List<CharacterType> unlockedTypes = new();

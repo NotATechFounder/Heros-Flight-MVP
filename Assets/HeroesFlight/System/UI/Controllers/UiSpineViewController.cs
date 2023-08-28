@@ -38,7 +38,7 @@ namespace UISystem
             Skin resultCombinedSkin = new Skin("character-combined");
 
             resultCombinedSkin.AddSkin(m_CharacterSkin);
-            AddEquipmentSkinsTo(resultCombinedSkin);
+            //AddEquipmentSkinsTo(resultCombinedSkin);
 
             skeleton.SetSkin(resultCombinedSkin);
             skeleton.SetSlotsToSetupPose();
@@ -67,12 +67,12 @@ namespace UISystem
             // could be cached once in Start() instead of searching for the same skin
             // every time. For demonstration purposes we keep it simple here.
             m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_BaseSkinReference));
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_LipsSkinReference));
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_EyeLashesSkinReference));
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_EyesSkinReference));
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_HairSkinReference));
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_LipsSkinReference));
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_WingsSkinReference));
+            // m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_LipsSkinReference));
+            // m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_EyeLashesSkinReference));
+            // m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_EyesSkinReference));
+            // m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_HairSkinReference));
+            // m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_LipsSkinReference));
+            // m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_WingsSkinReference));
         }
 
        
@@ -83,18 +83,19 @@ namespace UISystem
             var viewData = data.CharacterData.GetAppearanceData;
             m_SkeletonAnimation.skeletonDataAsset = data.Skeleton;
             m_SkeletonAnimation.Initialize(true);
-            m_BaseSkinReference = viewData.BaseSkin;
-            m_EyeLashesSkinReference = viewData.EyesSkinReference;
-            m_HairSkinReference = viewData.HairSkinReference;
-            m_EyesSkinReference = viewData.EyesSkinReference;
-            m_LipsSkinReference = viewData.LipsSkinReference;
-            m_ClothesSkinReference = viewData.ClothesSkinReference;
-            m_PantsSkinReference = viewData.PantsSkinReference;
-            m_WingsSkinReference = viewData.WingsSkinReference;
-            m_HatSkinReference = viewData.HatSkinReference;
-            m_WeaponSkinReference = viewData.WeaponSkinReference;
+            m_BaseSkinReference = viewData.FullSkin;
+            // m_EyeLashesSkinReference = viewData.EyesSkinReference;
+            // m_HairSkinReference = viewData.HairSkinReference;
+            // m_EyesSkinReference = viewData.EyesSkinReference;
+            // m_LipsSkinReference = viewData.LipsSkinReference;
+            // m_ClothesSkinReference = viewData.ClothesSkinReference;
+            // m_PantsSkinReference = viewData.PantsSkinReference;
+            // m_WingsSkinReference = viewData.WingsSkinReference;
+            // m_HatSkinReference = viewData.HatSkinReference;
+            // m_WeaponSkinReference = viewData.WeaponSkinReference;
             UpdateCharacterSkin();
             UpdateCombinedSkin();
+            m_SkeletonAnimation.AnimationState.SetAnimation(0,data.CharacterData.AnimationData.IdleAniamtion.Animation,  true);
         }
     }
 }
