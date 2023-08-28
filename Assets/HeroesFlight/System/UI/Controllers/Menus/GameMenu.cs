@@ -17,6 +17,9 @@ namespace UISystem
         public event Action OnSpecialAttackButtonClicked;
         public event Action<int> OnLevelUpComplete;
 
+        private Action OnEndTransitionHalfComplete;
+        private Action OnEndTransitionComplete;
+
         [Header("CountDown")]
         [SerializeField] private GameObject countDownPanel;
         [SerializeField] private TextMeshProUGUI countDownText;
@@ -40,7 +43,7 @@ namespace UISystem
         [Header("Boss")]
         [SerializeField] private GroupImageFill bossHealthFill;
 
-        [SerializeField] Canvas bossCanvas;
+        [SerializeField] GameObject bossCanvas;
 
         [Header("Warning")]
         [SerializeField] private GameObject warningPanel;
@@ -52,6 +55,11 @@ namespace UISystem
 
         [Header("Boosters")]
         [SerializeField] private BoosterUI[] boosterButtons;
+
+        [Header("Transition")]
+        [SerializeField] private AnimationCurve transitionCurve;
+        [SerializeField] private GameObject transitionPanel;
+        [SerializeField] private CanvasGroup transitionCanvasGroup;
         
         JuicerRuntime openEffect;
         JuicerRuntime closeEffect;
@@ -61,6 +69,7 @@ namespace UISystem
         JuicerRuntime specialEffect;
         JuicerRuntime specialIconEffect;
         JuicerRuntime levelProgressEffect;
+        JuicerRuntime transitionEffect;
 
         private bool isExpComplete;
 
@@ -93,6 +102,16 @@ namespace UISystem
             specialAttackButton.onClick.AddListener(SpecialAttackButtonClicked);
 
             levelProgressEffect = levelProgressFill.JuicyFillAmount(1, 1f);
+
+            transitionEffect = transitionCanvasGroup.JuicyAlpha(1, 2f);
+            transitionEffect.SetEase(transitionCurve);
+            transitionEffect.SetOnStart(() => transitionPanel.gameObject.SetActive(true));
+            transitionEffect.AddTimeEvent(0.5f, () => OnEndTransitionHalfComplete?.Invoke());
+            transitionEffect.SetOnComplected(() =>
+            {
+                OnEndTransitionComplete?.Invoke();
+                transitionPanel.gameObject.SetActive(false);
+            });
 
             ResetMenu();
         }
@@ -280,7 +299,7 @@ namespace UISystem
 
         public void ToggleBossHpBar(bool isEnabled)
         {
-            bossCanvas.enabled=isEnabled;
+            bossCanvas.SetActive(isEnabled);
         }
 
         public void FillSpecial(float normalisedValue)
@@ -312,6 +331,13 @@ namespace UISystem
             specialAttackButtonFill.fillAmount = 0;
             specialIconEffect.Start();
             OnSpecialAttackButtonClicked?.Invoke();
+        }
+
+        public void ShowTransition(Action OntransitionHalf, Action OnEndTransition = null)
+        {
+            OnEndTransitionHalfComplete = OntransitionHalf;
+            OnEndTransitionComplete = OnEndTransition;
+            transitionEffect.Start(()=> transitionCanvasGroup.alpha = 0);
         }
 
         public void VisualiseBooster(BoosterContainer boosterContainer)

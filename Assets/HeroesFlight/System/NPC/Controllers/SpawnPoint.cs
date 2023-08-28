@@ -7,22 +7,43 @@ namespace HeroesFlight.System.NPC.Controllers
 {
     public class SpawnPoint : MonoBehaviour, ISpawnPointInterface
     {
-        [FormerlySerializedAs("enemyType")]
-        [SerializeField]
-        EnemySpawmType m_EnemySpawmType;
+        [SerializeField] SpawnType spawnType;
 
-        public EnemySpawmType TargetEnemySpawmType => m_EnemySpawmType;
+        [Header("To Hide")]
+        [SerializeField] bool isOccupied;
+
+        public SpawnType SpawnType => spawnType;
 
         public Vector2 GetSpawnPosition()
         {
             return transform.position;
         }
 
-
         void OnDrawGizmos()
         {
 #if UNITY_EDITOR
-            var gizmosColor = m_EnemySpawmType == EnemySpawmType.Flying ? Color.red : Color.green;
+            Color gizmosColor = Color.green;
+
+            switch (spawnType)
+            {
+                case SpawnType.GroundMob:
+                    gizmosColor = Color.red;
+                    break;
+                case SpawnType.FlyingMob:
+                    gizmosColor = Color.yellow;
+                    break;
+                case SpawnType.Crystal:
+                    gizmosColor = Color.magenta;
+                    break;
+                case SpawnType.Player:
+                    gizmosColor = Color.blue;
+                    break;
+                case SpawnType.Portal:
+                    gizmosColor = Color.cyan;
+                    break;
+                default: break;
+            }
+
             Gizmos.color=gizmosColor;
             Gizmos.DrawSphere(transform.position,0.2f);
 #endif

@@ -5,7 +5,7 @@ namespace HeroesFlight.System.NPC.Controllers
 {
     public interface ISpawnPointInterface
     {
-        EnemySpawmType TargetEnemySpawmType { get; }
+        SpawnType SpawnType { get; }
         Vector2 GetSpawnPosition();
     }
 }

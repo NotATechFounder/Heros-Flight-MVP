@@ -122,7 +122,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         Vector2 GetRandomPosition2D()
         {
             var point = Random.insideUnitCircle * wanderDistance;
-            if (m_Model.EnemySpawmType == EnemySpawmType.Ground)
+            if (m_Model.EnemySpawmType == SpawnType.GroundMob)
                 point += (Vector2)ai.position;
 
             return point;

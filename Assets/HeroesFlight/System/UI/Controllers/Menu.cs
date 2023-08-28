@@ -51,7 +51,7 @@ namespace UISystem
 
             foreach (Canvas canvas in canvas)
             {
-                if (canvas != null)
+                if (canvas != null && canvas.sortingOrder < viewPriority)
                     canvas.sortingOrder = viewPriority;
             }
         }

@@ -8,7 +8,6 @@ namespace HeroesFlight.System.Gameplay.Container
     public class GameplayContainer : MonoBehaviour
     {
         [SerializeField] GameAreaModel currentModel;
-        [SerializeField] LevelPortal portalPrefab;
         [SerializeField] BoosterDropSO mobDrop;
         [SerializeField] float heroProgressionExpEarnedPerKill = 20f;
 
@@ -27,7 +26,7 @@ namespace HeroesFlight.System.Gameplay.Container
 
         public void Init()
         {
-            portal = Instantiate(portalPrefab, currentModel.PortalSpawnPosition, Quaternion.identity);
+            portal = Instantiate(currentModel.PortalPrefab, currentModel.PortalSpawnPosition, Quaternion.identity);
             portal.gameObject.SetActive(false);
             portal.OnPlayerEntered += HandlePlayerTriggerPortal;
         }

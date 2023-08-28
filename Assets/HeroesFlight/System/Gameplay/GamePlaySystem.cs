@@ -91,6 +91,8 @@ namespace HeroesFlight.System.Gameplay
         float collectedXp;
         float collectedHeroProgressionSp;
         float countDownDelay;
+        LevelEnvironment currentLevelEnvironment;
+        Level currentLevel;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -198,25 +200,8 @@ namespace HeroesFlight.System.Gameplay
             return true;
         }
 
-        bool CheckCurrentModel(out SpawnModel currentLvlModel)
-        {
-            currentLvlModel = /*container.GetLevelModel();*/ null; // TODO Urgent
-            if (currentLvlModel == null)
-            {
-                ChangeState(GameState.Won);
-                return false;
-            }
-
-            return true;
-        }
-
         void CreateLvL(Level currentLvl)
         {
-            if (currentLvl.Waves[CurrentLvlIndex].AvaliableMiniBosses.Count > 0) // TODO modify CurrentLvlIndex to currentWaveIndex
-            {
-                CreateMiniboss(currentLvl);
-            }
-
             npcSystem.SetSpawnModel(currentLvl);
         }
 
@@ -251,18 +236,6 @@ namespace HeroesFlight.System.Gameplay
             GodsBenevolence.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
         }
 
-        void CreateMiniboss(Level currentLvlModel)
-        {
-            var miniboss = npcSystem.SpawnMiniBoss(currentLvlModel);
-            miniBoss = miniboss.GetComponent<IHealthController>();
-            miniBoss.OnBeingDamaged += HandleEnemyDamaged;
-            miniBoss.OnBeingDamaged += HandleMinibossHealthChange;
-            miniBoss.OnDeath += HandleEnemyDeath;
-            miniBoss.Init();
-            activeEnemyHealthControllers.Add(miniBoss);
-            OnMinibossSpawned?.Invoke(true);
-        }
-
         void HandleMinibossHealthChange(DamageModel damageModel)
         {
             OnMinibossHealthChange?.Invoke(miniBoss.CurrentHealthProportion);
@@ -275,11 +248,26 @@ namespace HeroesFlight.System.Gameplay
         void HandleEnemySpawned(AiControllerBase obj)
         {
             var healthController = obj.GetComponent<AiHealthController>();
-            obj.OnDisabled += HandleEnemyDisabled;
-            healthController.OnBeingDamaged += HandleEnemyDamaged;
-            healthController.OnDeath += HandleEnemyDeath;
-            healthController.Init();
-            activeEnemyHealthControllers.Add(healthController);
+
+            if (obj.EnemyType == HeroesFlightProject.System.NPC.Enum.EnemyType.MiniBoss)
+            {
+                miniBoss = obj.GetComponent<IHealthController>();
+                miniBoss.OnBeingDamaged += HandleEnemyDamaged;
+                miniBoss.OnBeingDamaged += HandleMinibossHealthChange;
+                miniBoss.OnDeath += HandleEnemyDeath;
+                miniBoss.Init();
+                activeEnemyHealthControllers.Add(miniBoss);
+                OnMinibossSpawned?.Invoke(true);
+            }
+            else
+            {
+      
+                obj.OnDisabled += HandleEnemyDisabled;
+                healthController.OnBeingDamaged += HandleEnemyDamaged;
+                healthController.OnDeath += HandleEnemyDeath;
+                healthController.Init();
+                activeEnemyHealthControllers.Add(healthController);
+            }
         }
 
         void HandleEnemyDisabled(AiControllerInterface obj)
@@ -444,10 +432,15 @@ namespace HeroesFlight.System.Gameplay
             OnNextLvlLoadRequest?.Invoke();
         }
 
-        public void StartGameLoop(Level currentModel)
+        public void StartGameLoop()
         {
+            enemiesToKill = currentLevel.MiniHasBoss ? currentLevel.TotalMobsToSpawn + 1 : currentLevel.TotalMobsToSpawn;
+            OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
+            OnCharacterComboChanged?.Invoke(characterComboNumber);
+            combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());
+
             ChangeState(GameState.Ongoing);
-            if (currentModel.HasBoss)
+            if (currentLevel.MiniHasBoss)
             {
                 cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,3f);
                 OnEnterMiniBossLvl?.Invoke();
@@ -465,7 +458,7 @@ namespace HeroesFlight.System.Gameplay
                 GameTimer.Start(5, null,
                     () =>
                     {
-                        CreateLvL(currentModel);
+                        CreateLvL(currentLevel);
                         GameTimer.Start(120, OnGameTimerUpdate,
                             () =>
                             {
@@ -478,21 +471,24 @@ namespace HeroesFlight.System.Gameplay
             });
         }
 
-        public Level PreloadLvl() // TODO : fix this
+        public Level PreloadLvl()
         {
-            if (!CheckLevel(out Level currentLvlModel))
+            if (!CheckLevel(out Level currentLvl))
             {
                 Debug.LogError("Current lvl loop model has 0 lvls");
                 return null;
             }
+            currentLevel = currentLvl;
+            SetUpLevelEnvironment();
+            return currentLvl;
+        }
 
-            enemiesToKill = currentLvlModel.HasBoss
-                ? currentLvlModel.TotalMobsToSpawn
-                : currentLvlModel.TotalMobsToSpawn + 1;
-            OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
-            OnCharacterComboChanged?.Invoke(characterComboNumber);
-            combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());
-            return currentLvlModel;
+        public void SetUpLevelEnvironment()
+        {
+            if (currentLevelEnvironment != null) GameObject.DestroyImmediate(currentLevelEnvironment.gameObject);
+            currentLevelEnvironment = GameObject.Instantiate(currentLevel.LevelPrefab).GetComponent<LevelEnvironment>();
+            cameraController.SetConfiner(currentLevelEnvironment.BoundsCollider);
+            npcSystem.NpcContainer.SetSpawnPoints(currentLevelEnvironment.SpawnPointsCache);
         }
 
         private void HandleBoosterActivated(BoosterSO sO, float arg2, Transform transform)

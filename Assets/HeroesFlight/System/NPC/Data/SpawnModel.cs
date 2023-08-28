@@ -36,6 +36,19 @@ namespace HeroesFlight.System.NPC.Model
             }
         }
 
+        public bool MiniHasBoss
+        {
+            get
+            {
+                foreach (var wave in waves)
+                {
+                    if (wave.AvaliableMiniBosses.Count > 0)
+                        return true;
+                }
+                return false;
+            }
+        }
+
         public bool HasBoss
         {
             get
