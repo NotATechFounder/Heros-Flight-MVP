@@ -25,7 +25,7 @@ namespace HeroesFlight.System.Character
         public void Init(AnimationData data)
         {
             aniamtionData = data;
-            m_SkeletonAnimation = GetComponent<SkeletonAnimation>();
+            m_SkeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
             m_SkeletonAnimation.AnimationState.Event += HandleTrackEvent;
             CreateAnimationCache();
             m_WasFacingLeft = true;
@@ -159,43 +159,24 @@ namespace HeroesFlight.System.Character
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
+            Debug.Log($"{e.Data.Name} with {e.String} and {e.Int}");
             switch (e.Data.Name)
             {
-                case "Dealing damg":
-                    switch (trackentry.Animation.Name)
+                case AnimationEventNames.Damage:
+                    switch (e.String)
                     {
-                        case AnimationNames.RegularAttack_Base:
+                        case AnimationEventValues.NormalAttack:
                             OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Regular,0));
+                            AudioManager.PlaySoundEffect("Attack Sound");
                             break;
-                        case AnimationNames.Ultimate_Base_1:
-                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate,1));
-                            break;
-                        case AnimationNames.Ultimate_Base_2:
-                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate,2));
-                            break;
-                        case AnimationNames.Ultimate_Base_3:
-                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate,3));
-                            break;
-                        case AnimationNames.Ultimate_Base_4:
-                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate,4));
-                            break;
-                        case AnimationNames.Regular_Attack_Spear:
-                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Regular,0));
-                            break;
-                        case AnimationNames.Ultimate_Spear:
+                        case AnimationEventValues.UltimateAttack:
                             OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate,0));
+                            AudioManager.PlaySoundEffect("Attack Sound");
                             break;
-                        
-                        
+                       
                     }
                    
                     break;
-                case "start_sound":
-                    AudioManager.PlaySoundEffect("Attack Sound");
-                    break;
-                // case "Attack Ultimate":
-                //     OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate,0));
-                //     break;
             }
         }
     }
