@@ -176,6 +176,12 @@ namespace HeroesFlight.System.Character
                     }
 
                     break;
+                case AnimationEventNames.Sounds:
+                    Debug.Log(e.String);
+                    break;
+                case AnimationEventNames.VFX:
+                    Debug.Log("VFX");
+                    break;
             }
         }
     }

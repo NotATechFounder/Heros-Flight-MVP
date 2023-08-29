@@ -36,10 +36,6 @@ namespace HeroesFlight.System.Character
             m_SkeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
             Skeleton skeleton = m_SkeletonAnimation.Skeleton;
             SkeletonData skeletonData = skeleton.Data;
-            foreach (var VARIABLE in skeletonData.Skins)
-            {
-                Debug.Log(VARIABLE.Name);
-            }
             // UpdateCharacterSkin(false);
             // UpdateCombinedSkin();
         }

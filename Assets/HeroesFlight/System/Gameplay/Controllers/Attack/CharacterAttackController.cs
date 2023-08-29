@@ -30,7 +30,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         AttackData attackData;
       
         float m_TimeSinceLastAttack = 0;
-        float attackPointOffset = 1f;
+        Vector2 attackPointOffset ;
 
         Vector2 attackPoint;
        
@@ -51,9 +51,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             ultimateData = characterController.CharacterSO.UltimateData;
             attackData = characterController.CharacterSO.AttackData;
             enemiesToHitPerAttack = attackData.EnemiesPerAttack;
-            attackPointOffset = attackData.AttackPositionOffset;
+            attackPointOffset = reguarAttackOverlap.Offset;
             m_TimeSinceLastAttack = playerStatData.AttackSpeed;
-            attackPoint = transform.position + Vector3.up + Vector3.left * attackPointOffset;
+            attackPoint = (Vector2)transform.position +  (  new Vector2(-1.5f,1) * attackPointOffset);
             visualController.Init(playerStatData.AttackRange);
             visualController.SetPosition(attackPoint);
             isDisabled = false;
@@ -75,10 +75,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             m_TimeSinceLastAttack += Time.deltaTime;
 
+          
             attackPoint = characterController.IsFacingLeft
-                ? transform.position + Vector3.up + Vector3.left * attackPointOffset
-                : transform.position + Vector3.up + Vector3.right * attackPointOffset;
-
+                ?  new Vector2(-1.5f,1) * attackPointOffset
+                :  new Vector2(1.5f,1) * attackPointOffset;
             visualController.SetPosition(attackPoint);
             var direction = characterController.IsFacingLeft ? OverlapChecker.Direction.Left : OverlapChecker.Direction.Right;
             reguarAttackOverlap.SetDirection(direction);
@@ -99,25 +99,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 ResetAttack();
             }
             
-            // if (isDisabled)
-            // {
-            //     foundedEnemies.Clear();
-            // }
-            // else
-            // {
-            //     attackZoneFilter.FilterEnemies(attackPoint, characterController.IsFacingLeft,
-            //         enemiesRetriveCallback?.Invoke(), ref foundedEnemies,
-            //         new AttackAnimationEvent(AttackType.Regular, 0));
-            // }
-            //
-            // if (foundedEnemies.Count > 0)
-            // {
-            //     AttackTargets();
-            // }
-            // else
-            // {
-            //     ResetAttack();
-            // }
+           
         }
 
 
@@ -176,42 +158,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             visualController.DisableVisuals(isDisabled);
         }
 
-        void OnDrawGizmos()
-        {
-            if (playerStatData == null || characterController == null)
-                return;
-            var checkPosition = characterController.IsFacingLeft
-                ? transform.position + Vector3.up + Vector3.left * attackPointOffset
-                : transform.position + Vector3.up + Vector3.right * attackPointOffset;
-            Gizmos.DrawWireSphere(checkPosition, playerStatData.AttackRange);
-
-            var ultimatePosition = characterController.IsFacingLeft
-                ? checkPosition + (Vector3.left * ultimateData.OffsetMultiplier)
-                : checkPosition + (Vector3.right * ultimateData.OffsetMultiplier);
-            switch (characterController.CharacterSO.CharacterType)
-            {
-                case CharacterType.Tagon:
-                    Gizmos.DrawWireSphere(ultimatePosition, playerStatData.AttackRange * ultimateData.RangeMultiplier);
-                    break;
-                case CharacterType.Lancer:
-                    float totalFOV = 45.0f;
-                    float rayRange =Vector2.Distance(transform.position,attackPoint)+ playerStatData.AttackRange * ultimateData.RangeMultiplier;
-                    float halfFOV = totalFOV / 2.0f;
-                    Quaternion leftRayRotation = Quaternion.AngleAxis( -halfFOV, Vector3.forward );
-                    Quaternion rightRayRotation = Quaternion.AngleAxis( halfFOV, Vector3.forward );
-                    Vector3 facingvector = characterController.IsFacingLeft ? Vector3.left : Vector3.right;
-                    Vector3 leftRayDirection = leftRayRotation * facingvector;
-                    Vector3 rightRayDirection = rightRayRotation * facingvector;
-                    Gizmos.DrawRay(  transform.position + Vector3.up, leftRayDirection * rayRange );
-                    Gizmos.DrawRay(  transform.position + Vector3.up, rightRayDirection * rayRange );
-                    Gizmos.DrawWireSphere(attackPoint, playerStatData.AttackRange * ultimateData.RangeMultiplier);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-          
-        }
-
+       
         void DealUltDamage(int hits, Collider2D[] colliders)
         {
             var baseDamage = Damage * ultimateData.DamageMultiplier;
@@ -281,5 +228,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 }
             }
         }
+        
+     
     }
 }
