@@ -49,6 +49,8 @@ namespace HeroesFlight.System.Gameplay
 
         public int MaxLvlIndex => container.MaxLvlIndex;
 
+        public Vector2 GetPlayerSpawnPosition => currentLevelEnvironment.GetSpawnpoint(HeroesFlightProject.System.NPC.Enum.SpawnType.Player).GetSpawnPosition();
+
         public event Action<float> OnUltimateChargesChange;
         public event Action<bool> OnMinibossSpawned;
         public event Action<float> OnMinibossHealthChange;
@@ -156,7 +158,7 @@ namespace HeroesFlight.System.Gameplay
 
         public void EnablePortal()
         {
-            container.EnablePortal();
+            container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(HeroesFlightProject.System.NPC.Enum.SpawnType.Portal).GetSpawnPosition());
         }
 
         public void UseCharacterSpecial()
@@ -207,7 +209,7 @@ namespace HeroesFlight.System.Gameplay
 
         void SetupCharacter()
         {
-            var characterController = characterSystem.CreateCharacter();
+            var characterController = characterSystem.CreateCharacter(GetPlayerSpawnPosition);
             characterHealthController =
                 characterController.CharacterTransform.GetComponent<CharacterHealthController>();
             characterAttackController =
@@ -489,6 +491,7 @@ namespace HeroesFlight.System.Gameplay
             currentLevelEnvironment = GameObject.Instantiate(currentLevel.LevelPrefab).GetComponent<LevelEnvironment>();
             cameraController.SetConfiner(currentLevelEnvironment.BoundsCollider);
             npcSystem.NpcContainer.SetSpawnPoints(currentLevelEnvironment.SpawnPointsCache);
+            container.DisablePortal();
         }
 
         private void HandleBoosterActivated(BoosterSO sO, float arg2, Transform transform)

@@ -8,6 +8,8 @@ namespace HeroesFlight.System.Gameplay
 {
     public interface GamePlaySystemInterface : SystemInterface
     {
+        Vector2 GetPlayerSpawnPosition { get; }
+
         event Action<int> OnCountDownTimerUpdate;
         event Action<float> OnGameTimerUpdate;
 

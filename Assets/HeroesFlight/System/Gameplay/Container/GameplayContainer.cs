@@ -9,11 +9,11 @@ namespace HeroesFlight.System.Gameplay.Container
     {
         [SerializeField] GameAreaModel currentModel;
         [SerializeField] BoosterDropSO mobDrop;
-        [SerializeField] float heroProgressionExpEarnedPerKill = 20f;
-
 
         public event Action OnPlayerEnteredPortal;
         LevelPortal portal;
+        private Level currentLevel;
+
         public int CurrentLvlIndex { get; private set; }
 
         public bool FinishedLoop => CurrentLvlIndex >= currentModel.SpawnModel.Levels.Length;
@@ -22,11 +22,11 @@ namespace HeroesFlight.System.Gameplay.Container
 
         public BoosterDropSO MobDrop => mobDrop;
 
-        public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
+        public float HeroProgressionExpEarnedPerKill => currentModel.HeroProgressionExpEarnedPerKill;
 
         public void Init()
         {
-            portal = Instantiate(currentModel.PortalPrefab, currentModel.PortalSpawnPosition, Quaternion.identity);
+            portal = Instantiate(currentModel.PortalPrefab, transform.position, Quaternion.identity);
             portal.gameObject.SetActive(false);
             portal.OnPlayerEntered += HandlePlayerTriggerPortal;
         }
@@ -39,7 +39,6 @@ namespace HeroesFlight.System.Gameplay.Container
         void HandlePlayerTriggerPortal()
         {
             OnPlayerEnteredPortal?.Invoke();
-            portal.Disable();
         }
 
         public Level GetLevel()
@@ -48,14 +47,19 @@ namespace HeroesFlight.System.Gameplay.Container
                 return null;
 
             Debug.LogError($"Returning model with index {CurrentLvlIndex}");
-            Level level = currentModel.SpawnModel.Levels[CurrentLvlIndex];
+            currentLevel = currentModel.SpawnModel.Levels[CurrentLvlIndex];
             CurrentLvlIndex++;
-            return level;
+            return currentLevel;
         }
 
-        public void EnablePortal()
+        public void EnablePortal(Vector2 position)
         {
-            portal.Enable();
+            portal.Enable(position);
+        }
+
+        public void DisablePortal()
+        {
+            portal.Disable();
         }
     }
 }

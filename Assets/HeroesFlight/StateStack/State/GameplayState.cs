@@ -112,7 +112,7 @@ namespace HeroesFlight.StateStack.State
                         {
                             gamePlaySystem.ResetLogic();
                             npcSystem.Reset();
-                            characterSystem.ResetCharacter();
+                            characterSystem.ResetCharacter(gamePlaySystem.GetPlayerSpawnPosition);
                             characterSystem.SetCharacterControllerState(false);
                             gamePlaySystem.StartGameLoop();
                         });
@@ -201,9 +201,11 @@ namespace HeroesFlight.StateStack.State
                             {
                                 gamePlaySystem.ResetLogic();
                                 npcSystem.Reset();
-                                characterSystem.ResetCharacter();
-                                characterSystem.SetCharacterControllerState(false);
+
                                 gamePlaySystem.PreloadLvl();
+
+                                characterSystem.ResetCharacter(gamePlaySystem.GetPlayerSpawnPosition);
+                                characterSystem.SetCharacterControllerState(false);
                             }, 
                             ()=>
                             {
@@ -270,10 +272,10 @@ namespace HeroesFlight.StateStack.State
                             uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level transition
                             {
                                 uiSystem.UiEventHandler.LoadingMenu.Close();
-                                gamePlaySystem.CreateCharacter();
                                 gamePlaySystem.PreloadLvl();
-           
-                            },ContinueGameLoop);          
+                                gamePlaySystem.CreateCharacter();                             
+                            }
+                            ,ContinueGameLoop);          
                         });
                     });
 

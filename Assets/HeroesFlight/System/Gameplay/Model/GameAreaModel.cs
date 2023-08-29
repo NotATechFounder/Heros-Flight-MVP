@@ -10,7 +10,6 @@ namespace HeroesFlight.System.Gameplay.Model
     public class GameAreaModel : ScriptableObject
     {
         [SerializeField] private string areaName;
-        [SerializeField] Vector2 portalPosition;
         [SerializeField] float heroProgressionExpEarnedPerKill = 20f;
         [SerializeField] LevelPortal portalPrefab;
         [SerializeField] private SpawnModel spawnModel;
@@ -18,7 +17,6 @@ namespace HeroesFlight.System.Gameplay.Model
         public string AreaName => areaName;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
         public SpawnModel SpawnModel => spawnModel;
-        public Vector2 PortalSpawnPosition => portalPosition;
         public LevelPortal PortalPrefab => portalPrefab;
     }
 }

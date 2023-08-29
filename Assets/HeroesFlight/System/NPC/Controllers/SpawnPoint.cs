@@ -32,8 +32,8 @@ namespace HeroesFlight.System.NPC.Controllers
                 case SpawnType.FlyingMob:
                     gizmosColor = Color.yellow;
                     break;
-                case SpawnType.Crystal:
-                    gizmosColor = Color.magenta;
+                case SpawnType.Crystal: 
+                    gizmosColor = Color.white;
                     break;
                 case SpawnType.Player:
                     gizmosColor = Color.blue;

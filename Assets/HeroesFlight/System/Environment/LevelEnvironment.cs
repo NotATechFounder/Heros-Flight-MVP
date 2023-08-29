@@ -28,4 +28,9 @@ public class LevelEnvironment : MonoBehaviour
             spawnPointsCache[spawnPoint.SpawnType].Add(spawnPoint);
         }
     }
+
+    public ISpawnPointInterface GetSpawnpoint(SpawnType spawnType)
+    {
+        return spawnPointsCache[spawnType][Random.Range(0, spawnPointsCache[spawnType].Count)];
+    }
 }
