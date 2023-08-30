@@ -74,7 +74,7 @@ namespace HeroesFlight.System.Gameplay
         List<IHealthController> activeEnemyHealthControllers = new();
         IHealthController miniBoss;
         IHealthController characterHealthController;
-        CharacterAttackController characterAttackController;
+        BaseCharacterAttackController characterAttackController;
         CharacterVFXController characterVFXController;
         CharacterAbilityInterface characterAbility;
         CharacterSystemInterface characterSystem;
@@ -213,7 +213,7 @@ namespace HeroesFlight.System.Gameplay
             characterHealthController =
                 characterController.CharacterTransform.GetComponent<CharacterHealthController>();
             characterAttackController =
-                characterController.CharacterTransform.GetComponent<CharacterAttackController>();
+                characterController.CharacterTransform.GetComponent<BaseCharacterAttackController>();
 
             characterVFXController = characterController.CharacterTransform.GetComponent<CharacterVFXController>();
             characterVFXController.Initialize(cameraController.CameraShaker);
@@ -290,11 +290,11 @@ namespace HeroesFlight.System.Gameplay
             enemiesToKill--;
             characterAbility.UpdateAbilityCharges(5);
             OnUltimateChargesChange?.Invoke(characterAbility.CurrentCharge);
-            environmentSystem.ParticleManager.Spawn("Loot_Spawn", iHealthController.currentTransform.position,
+            environmentSystem.ParticleManager.Spawn("Loot_Spawn", iHealthController.HealthTransform.position,
                 Quaternion.Euler(new Vector3(-90,0,0)));
-            BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.currentTransform.position);
-            CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.currentTransform.position);
-            CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10, iHealthController.currentTransform.position);
+            BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.HealthTransform.position);
+            CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.HealthTransform.position);
+            CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10, iHealthController.HealthTransform.position);
             collectedHeroProgressionSp += container.HeroProgressionExpEarnedPerKill;
 
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
