@@ -75,7 +75,7 @@ namespace HeroesFlight.System.NPC.Container
             for (var i = 0; i < enemiesToSpawn; i++)
             {
                 var targetEntry = PickRandomTrashMob(spawnModel.TrashMobs);
-                var targetPoints = spanwPointsCache[targetEntry.Prefab.AgentModel.EnemySpawmType];
+                var targetPoints = spanwPointsCache[targetEntry.Prefab.AgentModel.EnemySpawnType];
                 var rngPoint = Random.Range(0, targetPoints.Count);
                 AiControllerBase resultEnemy = Instantiate(targetEntry.Prefab,
                     targetPoints.ElementAt(rngPoint).GetSpawnPosition()
@@ -118,7 +118,7 @@ namespace HeroesFlight.System.NPC.Container
         {
             var rng = Random.Range(0, currentLvlModel.MiniBosses.Count);
             var targetEntry = currentLvlModel.MiniBosses[rng];
-            var targetPoints = spanwPointsCache[targetEntry.Prefab.AgentModel.EnemySpawmType];
+            var targetPoints = spanwPointsCache[targetEntry.Prefab.AgentModel.EnemySpawnType];
             var rngPoint = Random.Range(0, targetPoints.Count);
             AiControllerBase resultEnemy = Instantiate(targetEntry.Prefab,
                 targetPoints.ElementAt(rngPoint).GetSpawnPosition()

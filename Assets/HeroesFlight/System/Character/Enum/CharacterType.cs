@@ -6,6 +6,7 @@ namespace HeroesFlight.System.Character.Enum
     public enum CharacterType
     {
         Tagon,
-        Lancer
+        Lancer,
+        Storm
     }
 }

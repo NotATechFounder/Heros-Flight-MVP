@@ -1,4 +1,3 @@
-using HeroesFlight.Common;
 using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -9,12 +8,12 @@ namespace HeroesFlightProject.System.NPC.Data
     public class AiAgentModel : ScriptableObject
     {
         [SerializeField] EnemyType enemyType;
-        [SerializeField] EnemySpawmType enemySpawmType;
+        [FormerlySerializedAs("enemySpawmType")][SerializeField] EnemySpawmType m_EnemySpawnType;
         [SerializeField] float wanderingDistance;
         [SerializeField] AiAgentCombatModel m_CombatModel;
 
         public EnemyType EnemyType => enemyType;
-        public EnemySpawmType EnemySpawmType => enemySpawmType;
+        public EnemySpawmType EnemySpawnType => m_EnemySpawnType;
         public float WanderingDistance => wanderingDistance;
         public AiAgentCombatModel CombatModel => m_CombatModel;
     }
