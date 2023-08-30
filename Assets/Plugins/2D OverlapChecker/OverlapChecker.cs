@@ -21,6 +21,7 @@ public abstract class OverlapChecker : MonoBehaviour
     protected Vector2 pos;
 
     public Vector2 Offset => localOffset;
+    
 
 
     private void Start()
@@ -58,6 +59,11 @@ public abstract class OverlapChecker : MonoBehaviour
         return false;
     }
 
+    public virtual float GetSizeX()
+    {
+        return 0;
+    }
+
     private Vector2 GetFacingVector(Direction direction)
     {
         switch (direction)
@@ -75,4 +81,5 @@ public abstract class OverlapChecker : MonoBehaviour
     {
         facingVector = GetFacingVector(_direction);
     }
+    
 }

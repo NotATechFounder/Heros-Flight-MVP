@@ -180,7 +180,7 @@ namespace HeroesFlight.System.Character
                     Debug.Log(e.String);
                     break;
                 case AnimationEventNames.VFX:
-                    Debug.Log("VFX");
+                    Debug.Log(e.String);
                     break;
             }
         }

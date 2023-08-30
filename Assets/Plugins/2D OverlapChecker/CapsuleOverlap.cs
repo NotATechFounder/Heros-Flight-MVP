@@ -18,7 +18,10 @@ namespace Plugins._2D_OverlapChecker
             return hitCount != 0;
         }
 
-        
+        public override float GetSizeX()
+        {
+            return size.x;
+        }
 
         protected override void OnDrawGizmos()
         {
