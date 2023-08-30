@@ -1,4 +1,3 @@
-using HeroesFlight.Common;
 using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
 using UnityEngine.Serialization;

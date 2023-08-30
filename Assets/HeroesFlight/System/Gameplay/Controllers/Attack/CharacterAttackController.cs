@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using HeroesFlight.Common;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Character.Enum;
@@ -15,6 +14,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class CharacterAttackController : MonoBehaviour, IAttackControllerInterface
     {
         [SerializeField] int enemiesToHitPerAttack = 4;
+        [SerializeField] OverlapChecker reguarAttackOverlap;
+        [SerializeField] OverlapChecker ultAttackOverlap;
         public float Damage => characterController.CharacterStatController.CurrentPhysicalDamage;
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
@@ -27,15 +28,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         PlayerStatData playerStatData = null;
         UltimateData ultimateData;
         AttackData attackData;
-        AttackZoneEnemiesFilterInterface attackZoneFilter;
+      
         float m_TimeSinceLastAttack = 0;
-        float attackPointOffset = 1f;
+        Vector2 attackPointOffset ;
 
         Vector2 attackPoint;
-
-        Func<List<IHealthController>> enemiesRetriveCallback;
-        List<IHealthController> foundedEnemies = new();
-        List<IHealthController> enemiesToAttack = new();
+       
         bool isDisabled;
         float attackDuration = 0;
 
@@ -53,20 +51,19 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             ultimateData = characterController.CharacterSO.UltimateData;
             attackData = characterController.CharacterSO.AttackData;
             enemiesToHitPerAttack = attackData.EnemiesPerAttack;
-            attackPointOffset = attackData.AttackPositionOffset;
+            attackPointOffset = reguarAttackOverlap.Offset;
             m_TimeSinceLastAttack = playerStatData.AttackSpeed;
-            attackPoint = transform.position + Vector3.up + Vector3.left * attackPointOffset;
-            visualController.Init(playerStatData.AttackRange);
+            attackPoint = (Vector2)transform.position +  (  new Vector2(-1.5f,1) * attackPointOffset);
+            visualController.Init(reguarAttackOverlap.GetSizeX());
             visualController.SetPosition(attackPoint);
             isDisabled = false;
             attackDuration = characterController.CharacterSO.AnimationData.AttackAnimation.Animation.Duration;
-            attackZoneFilter = new AttackZoneFilter(characterController.CharacterSO,transform);
+            reguarAttackOverlap.OnDetect += DealNormalDamage;
+            ultAttackOverlap.OnDetect += DealUltDamage;
+           
         }
 
-        public void SetCallback(Func<List<IHealthController>> enemiesCallback)
-        {
-            enemiesRetriveCallback = enemiesCallback;
-        }
+      
 
         void Update()
         {
@@ -78,30 +75,22 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             m_TimeSinceLastAttack += Time.deltaTime;
 
+          
             attackPoint = characterController.IsFacingLeft
-                ? transform.position + Vector3.up + Vector3.left * attackPointOffset
-                : transform.position + Vector3.up + Vector3.right * attackPointOffset;
-
+                ?  new Vector2(-1f,1) * attackPointOffset
+                :  new Vector2(1f,1) * attackPointOffset;
             visualController.SetPosition(attackPoint);
-
+            var direction = characterController.IsFacingLeft ? OverlapChecker.Direction.Left : OverlapChecker.Direction.Right;
+            reguarAttackOverlap.SetDirection(direction);
+            ultAttackOverlap.SetDirection(direction);
             ProcessAttackLogic();
         }
 
 
         void ProcessAttackLogic()
         {
-            if (isDisabled)
-            {
-                foundedEnemies.Clear();
-            }
-            else
-            {
-                attackZoneFilter.FilterEnemies(attackPoint, characterController.IsFacingLeft,
-                    enemiesRetriveCallback?.Invoke(), ref foundedEnemies,
-                    new AttackAnimationEvent(AttackType.Regular, 0));
-            }
 
-            if (foundedEnemies.Count > 0)
+            if (reguarAttackOverlap.TargetInRange())
             {
                 AttackTargets();
             }
@@ -109,6 +98,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 ResetAttack();
             }
+            
+           
         }
 
 
@@ -139,35 +130,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             var data = animationEvent as AttackAnimationEvent;
 
-            attackZoneFilter.FilterEnemies(attackPoint, characterController.IsFacingLeft,
-                enemiesRetriveCallback?.Invoke(), ref enemiesToAttack, data);
+            // attackZoneFilter.FilterEnemies(attackPoint, characterController.IsFacingLeft,
+            //     enemiesRetriveCallback?.Invoke(), ref enemiesToAttack, data);
 
-            int maxEnemiesToHit =
-                data.AttackType == AttackType.Regular ? enemiesToHitPerAttack : ultimateData.EnemiesPerAttack;
-            var baseDamage = data.AttackType == AttackType.Regular ? Damage : Damage * ultimateData.DamageMultiplier;
-            if (enemiesToAttack.Count > 0)
+            if (data.AttackType == AttackType.Regular)
             {
-                var enemiesAttacked = 0;
-                foreach (var enemy in enemiesToAttack)
-                {
-                    // if (enemiesAttacked >= maxEnemiesToHit)
-                    //     break;
-
-                    enemiesAttacked++;
-
-                    float criticalChance = characterController.CharacterStatController.CurrentCriticalHitChance;
-                    bool isCritical = Random.Range(0, 100) <= criticalChance;
-
-                    float damageToDeal = isCritical
-                        ? baseDamage * characterController.CharacterStatController.CurrentCriticalHitDamage
-                        : baseDamage;
-
-                    var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
-                    enemy.DealDamage(new DamageModel(damageToDeal, type,data.AttackType));
-                    ApplyLifeSteal();
-                    OnHitTarget?.Invoke();
-                }
+                reguarAttackOverlap.Detect();
             }
+            else
+            {
+                ultAttackOverlap.Detect();
+            }
+           
         }
 
         private void ApplyLifeSteal()
@@ -184,40 +158,77 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             visualController.DisableVisuals(isDisabled);
         }
 
-        void OnDrawGizmos()
+       
+        void DealUltDamage(int hits, Collider2D[] colliders)
         {
-            if (playerStatData == null || characterController == null)
-                return;
-            var checkPosition = characterController.IsFacingLeft
-                ? transform.position + Vector3.up + Vector3.left * attackPointOffset
-                : transform.position + Vector3.up + Vector3.right * attackPointOffset;
-            Gizmos.DrawWireSphere(checkPosition, playerStatData.AttackRange);
-
-            var ultimatePosition = characterController.IsFacingLeft
-                ? checkPosition + (Vector3.left * ultimateData.OffsetMultiplier)
-                : checkPosition + (Vector3.right * ultimateData.OffsetMultiplier);
-            switch (characterController.CharacterSO.CharacterType)
+            var baseDamage = Damage * ultimateData.DamageMultiplier;
+            for (int i = 0; i < hits; i++)
             {
-                case CharacterType.Tagon:
-                    Gizmos.DrawWireSphere(ultimatePosition, playerStatData.AttackRange * ultimateData.RangeMultiplier);
-                    break;
-                case CharacterType.Lancer:
-                    float totalFOV = 45.0f;
-                    float rayRange =Vector2.Distance(transform.position,attackPoint)+ playerStatData.AttackRange * ultimateData.RangeMultiplier;
-                    float halfFOV = totalFOV / 2.0f;
-                    Quaternion leftRayRotation = Quaternion.AngleAxis( -halfFOV, Vector3.forward );
-                    Quaternion rightRayRotation = Quaternion.AngleAxis( halfFOV, Vector3.forward );
-                    Vector3 facingvector = characterController.IsFacingLeft ? Vector3.left : Vector3.right;
-                    Vector3 leftRayDirection = leftRayRotation * facingvector;
-                    Vector3 rightRayDirection = rightRayRotation * facingvector;
-                    Gizmos.DrawRay(  transform.position + Vector3.up, leftRayDirection * rayRange );
-                    Gizmos.DrawRay(  transform.position + Vector3.up, rightRayDirection * rayRange );
-                    Gizmos.DrawWireSphere(attackPoint, playerStatData.AttackRange * ultimateData.RangeMultiplier);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                if (colliders[i].TryGetComponent<IHealthController>(out var health))
+                {
+                    float criticalChance = characterController.CharacterStatController.CurrentCriticalHitChance;
+                    bool isCritical = Random.Range(0, 100) <= criticalChance;
+
+                    float damageToDeal = isCritical
+                        ? baseDamage * characterController.CharacterStatController.CurrentCriticalHitDamage
+                        : baseDamage;
+
+                    var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
+                    health.DealDamage(new DamageModel(damageToDeal, type,AttackType.Ultimate));
+                    ApplyLifeSteal();
+                    OnHitTarget?.Invoke();
+                }
             }
-          
+            // int maxEnemiesToHit =
+            //     data.AttackType == AttackType.Regular ? enemiesToHitPerAttack : ultimateData.EnemiesPerAttack;
+           
+            // if (enemiesToAttack.Count > 0)
+            // {
+            //     var enemiesAttacked = 0;
+            //     foreach (var enemy in enemiesToAttack)
+            //     {
+            //         // if (enemiesAttacked >= maxEnemiesToHit)
+            //         //     break;
+            //
+            //         enemiesAttacked++;
+            //
+            //         float criticalChance = characterController.CharacterStatController.CurrentCriticalHitChance;
+            //         bool isCritical = Random.Range(0, 100) <= criticalChance;
+            //
+            //         float damageToDeal = isCritical
+            //             ? baseDamage * characterController.CharacterStatController.CurrentCriticalHitDamage
+            //             : baseDamage;
+            //
+            //         var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
+            //         enemy.DealDamage(new DamageModel(damageToDeal, type,data.AttackType));
+            //         ApplyLifeSteal();
+            //         OnHitTarget?.Invoke();
+            //     }
+            // }
         }
+
+        void DealNormalDamage(int hits, Collider2D[] colliders)
+        {
+            var baseDamage = Damage ;
+            for (int i = 0; i < hits; i++)
+            {
+                if (colliders[i].TryGetComponent<IHealthController>(out var health))
+                {
+                    float criticalChance = characterController.CharacterStatController.CurrentCriticalHitChance;
+                    bool isCritical = Random.Range(0, 100) <= criticalChance;
+
+                    float damageToDeal = isCritical
+                        ? baseDamage * characterController.CharacterStatController.CurrentCriticalHitDamage
+                        : baseDamage;
+
+                    var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
+                    health.DealDamage(new DamageModel(damageToDeal, type,AttackType.Regular));
+                    ApplyLifeSteal();
+                    OnHitTarget?.Invoke();
+                }
+            }
+        }
+        
+     
     }
 }

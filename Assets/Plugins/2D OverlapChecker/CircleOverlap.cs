@@ -13,6 +13,11 @@ public class CircleOverlap : OverlapChecker
         return hitCount != 0;
     }
 
+    public override float GetSizeX()
+    {
+        return size;
+    }
+
     protected override void OnDrawGizmos()
     {
         Gizmos.color = color;

@@ -20,6 +20,10 @@ public abstract class OverlapChecker : MonoBehaviour
     protected Vector2 facingVector = Vector2.one;
     protected Vector2 pos;
 
+    public Vector2 Offset => localOffset;
+    
+
+
     private void Start()
     {
         colliders = new Collider2D[maxHit];
@@ -30,7 +34,7 @@ public abstract class OverlapChecker : MonoBehaviour
         this.color = color;
     }
 
-    public void SetDirection(Direction direction)
+    public virtual void SetDirection(Direction direction)
     {
         _direction = direction;
         facingVector = GetFacingVector(_direction);
@@ -55,6 +59,11 @@ public abstract class OverlapChecker : MonoBehaviour
         return false;
     }
 
+    public virtual float GetSizeX()
+    {
+        return 0;
+    }
+
     private Vector2 GetFacingVector(Direction direction)
     {
         switch (direction)
@@ -72,4 +81,5 @@ public abstract class OverlapChecker : MonoBehaviour
     {
         facingVector = GetFacingVector(_direction);
     }
+    
 }

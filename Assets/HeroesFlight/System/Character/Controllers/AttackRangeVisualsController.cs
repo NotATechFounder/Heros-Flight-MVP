@@ -8,21 +8,39 @@ namespace HeroesFlight.System.Character
         [SerializeField] Canvas visualsCanvas;
         RectTransform rectTransform;
         Transform canvasTransform;
+        float realSizeX;
+        Vector2 canvasSize;
 
-        public void Init(float attackRange)
+        public void Init(float damageZoneSizeX)
         {
             rectTransform = visualsCanvas.GetComponent<RectTransform>();
-            rectTransform.sizeDelta = new Vector2(attackRange*1.3f, attackRange*1.3f);
+
+            //rectTransform.sizeDelta = new Vector2(attackRange*1.3f, attackRange*1.3f);
+            canvasSize = rectTransform.sizeDelta;
             canvasTransform = visualsCanvas.transform;
+            realSizeX = damageZoneSizeX;
         }
 
         public void SetPosition(Vector2 position)
         {
-            canvasTransform.position = position;
+            canvasTransform.localPosition = CalculateVisualFinalPosition(position);
         }
 
         public void DisableVisuals(bool isDisabled) => visualsCanvas.enabled = !isDisabled;
-       
-    
+
+        Vector2 CalculateVisualFinalPosition(Vector2 currentPosition)
+        {
+            var position = currentPosition;
+            if (currentPosition.x < 0)
+            {
+                position.x = currentPosition.x - realSizeX / 2 + canvasSize.x / 2;
+            }
+            else
+            {
+                position.x = currentPosition.x + realSizeX / 2 - canvasSize.x / 2;
+            }
+
+            return position;
+        }
     }
 }
