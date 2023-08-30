@@ -8,7 +8,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         CameraShakerInterface CameraShaker { get; }
         void SetTarget(Transform target);
         void SetCameraState(GameCameraType newState);
-
-        
+        void SetConfiner(PolygonCollider2D collider2D);
     }
 }

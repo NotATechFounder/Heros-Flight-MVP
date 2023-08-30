@@ -15,80 +15,81 @@ namespace HeroesFlight.System.NPC.Container
 {
     public class NpcContainer : MonoBehaviour
     {
-        int spawnAmount;
+        public Action OnLevelEnded;
+
         GameObject player;
 
         List<AiControllerBase> spawnedEnemies = new();
-        Dictionary<EnemySpawmType, List<ISpawnPointInterface>> spanwPointsCache = new();
+        Dictionary<SpawnType, List<ISpawnPointInterface>> spawnPointsCache = new();
         MonsterStatController monsterStatController;
         Coroutine spawningWaveRoutine;
         Coroutine spawningRoutine;
         WaitForSeconds timeBetweenEnemySpawn;
         WaitForSeconds timeBeweenWaves;
 
+        private bool spawningEnded = false;
+
         public void Init()
         {
-            GenerateCache();
-        }
-
-        public void SpawnEnemies(SpawnModel model, Action<AiControllerBase> OnOnEnemySpawned)
-        {
-            spawningRoutine = StartCoroutine(SpawnEnemiesRoutine(model, OnOnEnemySpawned));
-        }
-
-        void GenerateCache()
-        {
-            var spawnPoints = FindObjectsByType<SpawnPoint>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            foreach (var point in spawnPoints)
-            {
-                if (spanwPointsCache.TryGetValue(point.TargetEnemySpawmType, out var list))
-                {
-                    list.Add(point);
-                }
-                else
-                {
-                    spanwPointsCache.Add(point.TargetEnemySpawmType, new List<ISpawnPointInterface>() { point });
-                }
-            }
-
             // To be removed
             monsterStatController = FindObjectOfType<MonsterStatController>();
         }
 
-        IEnumerator SpawnEnemiesRoutine(SpawnModel model, Action<AiControllerBase> OnOnEnemySpawned)
+        public void SetSpawnPoints(Dictionary<SpawnType, List<ISpawnPointInterface>>  valuePairs)
         {
-            timeBetweenEnemySpawn = new WaitForSeconds(model.TimeBetweenMobs);
-            timeBeweenWaves = new WaitForSeconds(model.TimeBetweenWaves);
-            spawnAmount = model.MobsAmount;
-            var amountToSpawnPerWave = model.MobsAmount / model.WavesAmount;
-            while (spawnAmount > 0)
+            spawnPointsCache = valuePairs;
+        }
+
+        public void SpawnEnemies(Level level, Action<AiControllerBase> OnOnEnemySpawned)
+        {
+            spawningEnded = false;
+            spawningRoutine = StartCoroutine(SpawnNewLevelRoutine(level, OnOnEnemySpawned));
+        }
+
+        IEnumerator SpawnNewLevelRoutine(Level currentLevel, Action<AiControllerBase> OnOnEnemySpawned)
+        {
+            timeBeweenWaves = new WaitForSeconds(currentLevel.TimeBetweenWaves);
+
+            while (!spawningEnded)
             {
-                yield return spawningWaveRoutine =
-                    StartCoroutine(SpawnWave(model, amountToSpawnPerWave, OnOnEnemySpawned));
-                spawnAmount -= amountToSpawnPerWave;
-                yield return timeBeweenWaves;
+                foreach (Wave wave in currentLevel.Waves)
+                {
+                    timeBetweenEnemySpawn = new WaitForSeconds(wave.TimeBetweenMobs);
+                    yield return spawningWaveRoutine = StartCoroutine(NewSpawnWave(wave, wave.TotalMobsToSpawn, OnOnEnemySpawned));
+                    yield return timeBeweenWaves;
+                }
+                OnLevelEnded?.Invoke();
+                spawningEnded = true;
             }
         }
 
-        IEnumerator SpawnWave(SpawnModel spawnModel, int enemiesToSpawn, Action<AiControllerBase> OnOnEnemySpawned)
+        IEnumerator NewSpawnWave(Wave wave, int enemiesToSpawn, Action<AiControllerBase> OnOnEnemySpawned)
         {
+            if (wave.AvaliableMiniBosses.Count > 0)
+            {
+                yield return timeBetweenEnemySpawn;
+                OnOnEnemySpawned?.Invoke(SpawnMiniBoss(wave));
+            }
+
             for (var i = 0; i < enemiesToSpawn; i++)
             {
-                var targetEntry = PickRandomTrashMob(spawnModel.TrashMobs);
-                var targetPoints = spanwPointsCache[targetEntry.Prefab.AgentModel.EnemySpawnType];
-                var rngPoint = Random.Range(0, targetPoints.Count);
-                AiControllerBase resultEnemy = Instantiate(targetEntry.Prefab,
-                    targetPoints.ElementAt(rngPoint).GetSpawnPosition()
-                    , Quaternion.identity);
-                resultEnemy.transform.parent = transform;
-                resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier,
-                    monsterStatController.CurrentCardIcon);
-                spawnedEnemies.Add(resultEnemy);
-                OnOnEnemySpawned?.Invoke(resultEnemy);
+                SpawnModelEntry spawnModelEntry = PickRandomTrashMob(wave.AvaliableTrashMobs);
+                SpawnSingleEnemy(spawnModelEntry, OnOnEnemySpawned);
                 yield return timeBetweenEnemySpawn;
             }
 
             yield return true;
+        }
+
+        public void SpawnSingleEnemy(SpawnModelEntry spawnModelEntry, Action<AiControllerBase> OnOnEnemySpawned)
+        {
+            var targetPoints = spawnPointsCache[spawnModelEntry.Prefab.AgentModel.EnemySpawmType];
+            var rngPoint = Random.Range(0, targetPoints.Count);
+            AiControllerBase resultEnemy = Instantiate(spawnModelEntry.Prefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition(), Quaternion.identity);
+            resultEnemy.transform.parent = transform;
+            resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier, monsterStatController.CurrentCardIcon);
+            spawnedEnemies.Add(resultEnemy);
+            OnOnEnemySpawned?.Invoke(resultEnemy);
         }
 
         SpawnModelEntry PickRandomTrashMob(List<SpawnModelEntry> spawnModel)
@@ -114,11 +115,11 @@ namespace HeroesFlight.System.NPC.Container
             return spawnModel[0];
         }
 
-        public AiControllerBase SpawnMiniBoss(SpawnModel currentLvlModel)
+        public AiControllerBase SpawnMiniBoss(Wave currentWave)
         {
-            var rng = Random.Range(0, currentLvlModel.MiniBosses.Count);
-            var targetEntry = currentLvlModel.MiniBosses[rng];
-            var targetPoints = spanwPointsCache[targetEntry.Prefab.AgentModel.EnemySpawnType];
+            var rng = Random.Range(0, currentWave.AvaliableMiniBosses.Count);
+            var targetEntry = currentWave.AvaliableMiniBosses[rng];
+            var targetPoints = spawnPointsCache[targetEntry.Prefab.AgentModel.EnemySpawmType];
             var rngPoint = Random.Range(0, targetPoints.Count);
             AiControllerBase resultEnemy = Instantiate(targetEntry.Prefab,
                 targetPoints.ElementAt(rngPoint).GetSpawnPosition()
@@ -142,7 +143,7 @@ namespace HeroesFlight.System.NPC.Container
             }
 
             spawnedEnemies.Clear();
-            spawnAmount = 0;
+
             if (spawningWaveRoutine != null)
             {
                 StopCoroutine(spawningWaveRoutine);

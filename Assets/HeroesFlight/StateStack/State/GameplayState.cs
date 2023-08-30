@@ -73,23 +73,9 @@ namespace HeroesFlight.StateStack.State
                             case GameState.Ended:
                                 break;
                             case GameState.WaitingPortal:
-
                                 CoroutineUtility.Start(WaitingPortalRoutine());
-
                                 break;
                         }
-
-                        // if (gamePlaySystem.CurrentLvlIndex % 2 == 0)
-                        // {
-                        //     CoroutineUtility.WaitForSeconds(1f, () =>
-                        //     {
-                        //         gamePlaySystem.EffectManager.CompletedLevel();
-                        //     });
-                        // }
-                        // else
-                        // {
-                        //     ShowLevelPortal();
-                        // }
                     }
 
                     IEnumerator WaitingPortalRoutine()
@@ -126,10 +112,9 @@ namespace HeroesFlight.StateStack.State
                         {
                             gamePlaySystem.ResetLogic();
                             npcSystem.Reset();
-                            characterSystem.ResetCharacter();
+                            characterSystem.ResetCharacter(gamePlaySystem.GetPlayerSpawnPosition);
                             characterSystem.SetCharacterControllerState(false);
-                            var data = gamePlaySystem.PreloadLvl();
-                            gamePlaySystem.StartGameLoop(data);
+                            gamePlaySystem.StartGameLoop();
                         });
                     }
 
@@ -199,7 +184,7 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.UiEventHandler.ReviveMenu.Close();
                         uiSystem.UiEventHandler.AngelPermanetCardMenu.ResetMenu();
                         gamePlaySystem.CreateCharacter();
-                        gamePlaySystem.StartGameLoop(gamePlaySystem.PreloadLvl());
+                        gamePlaySystem.StartGameLoop();
                     }
 
                     void HandleCharacterRevive()
@@ -212,12 +197,17 @@ namespace HeroesFlight.StateStack.State
                     {
                         CoroutineUtility.WaitForSeconds(0.5f, () =>
                         {
-                            gamePlaySystem.ResetLogic();
-                            npcSystem.Reset();
-                            characterSystem.ResetCharacter();
-                            characterSystem.SetCharacterControllerState(false);
+                            uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level to level transition
+                            {
+                                gamePlaySystem.ResetLogic();
+                                npcSystem.Reset();
 
-                            CoroutineUtility.WaitForSeconds(0.5f, () =>
+                                gamePlaySystem.PreloadLvl();
+
+                                characterSystem.ResetCharacter(gamePlaySystem.GetPlayerSpawnPosition);
+                                characterSystem.SetCharacterControllerState(false);
+                            }, 
+                            ()=>
                             {
                                 CoroutineUtility.Start(ContinueGameLoopRoutine());
                             });
@@ -226,14 +216,16 @@ namespace HeroesFlight.StateStack.State
 
                     IEnumerator ContinueGameLoopRoutine()
                     {
-                        if ((gamePlaySystem.CurrentLvlIndex + 1) % 2 == 0) // Open every second lvl
+                        yield return new WaitForSeconds(0.5f);
+
+                        if (gamePlaySystem.CurrentLvlIndex % 2 == 0) // Open every second lvl
                         {
                             uiSystem.UiEventHandler.AngelGambitMenu.Open();
 
                             yield return new WaitUntil(() => uiSystem.UiEventHandler.AngelGambitMenu.MenuStatus == UISystem.Menu.Status.Closed);
                         }
 
-                        if ((gamePlaySystem.CurrentLvlIndex + 1) != gamePlaySystem.MaxLvlIndex) // Open every second lvl
+                        if (gamePlaySystem.CurrentLvlIndex  != gamePlaySystem.MaxLvlIndex) // Open every second lvl
                         {
                             ShowGodBenevolencePrompt();
                         }
@@ -277,10 +269,13 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.UiEventHandler.GameMenu.Open();
                         CoroutineUtility.WaitForSeconds(1f, () => // Run the first time the game is loaded
                         {
-                            uiSystem.UiEventHandler.LoadingMenu.Close();
-                            gamePlaySystem.CreateCharacter();
-                            ContinueGameLoop();
-
+                            uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level transition
+                            {
+                                uiSystem.UiEventHandler.LoadingMenu.Close();
+                                gamePlaySystem.PreloadLvl();
+                                gamePlaySystem.CreateCharacter();                             
+                            }
+                            ,ContinueGameLoop);          
                         });
                     });
 

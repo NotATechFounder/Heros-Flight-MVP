@@ -38,9 +38,9 @@ namespace HeroesFlight.System.Character
             container.Reset();
         }
 
-        public CharacterControllerInterface CreateCharacter()
+        public CharacterControllerInterface CreateCharacter(Vector2 position)
         {
-            characterController = container.CreateCharacter(targetCharacterType);
+            characterController = container.CreateCharacter(targetCharacterType, position);
             return characterController;
         }
 
@@ -54,9 +54,9 @@ namespace HeroesFlight.System.Character
             container.SetCharacterControllerState(isEnabled);
         }
 
-        public void ResetCharacter()
+        public void ResetCharacter(Vector2 position)
         {
-            container.ResetCharacter();
+            container.ResetCharacter(position);
         }
 
         public void UpdateUnlockedClasses(CharacterType typeToUnlock)

@@ -1,17 +1,15 @@
 using System.Collections.Generic;
 using HeroesFlight.System.Character.Enum;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 
 namespace HeroesFlight.System.Character.Container
 {
     public class CharacterContainer : MonoBehaviour
     {
-        [SerializeField] Vector2 spawnPoint;
         [SerializeField] List<CharacterSimpleController> characterPrefabs = new();
         CharacterControllerInterface currentCharacter;
 
-        public CharacterControllerInterface CreateCharacter(CharacterType targetCharacterType)
+        public CharacterControllerInterface CreateCharacter(CharacterType targetCharacterType, Vector2 position)
         {
             CharacterSimpleController characterPrefab = null;
             foreach (var controller in characterPrefabs)
@@ -29,7 +27,7 @@ namespace HeroesFlight.System.Character.Container
                 return null;
             }
 
-            currentCharacter = Instantiate(characterPrefab, spawnPoint, Quaternion.identity);
+            currentCharacter = Instantiate(characterPrefab, position, Quaternion.identity);
             currentCharacter.Init();
             return currentCharacter;
         }
@@ -45,9 +43,9 @@ namespace HeroesFlight.System.Character.Container
             currentCharacter = null;
         }
 
-        public void ResetCharacter()
+        public void ResetCharacter(Vector2 position)
         {
-            currentCharacter.CharacterTransform.GetComponent<Rigidbody2D>().MovePosition(spawnPoint);
+            currentCharacter.CharacterTransform.GetComponent<Rigidbody2D>().MovePosition(position);
         }
     }
 }

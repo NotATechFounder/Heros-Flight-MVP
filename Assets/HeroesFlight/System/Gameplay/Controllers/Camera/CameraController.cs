@@ -9,7 +9,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class CameraController : MonoBehaviour,CameraControllerInterface
     {
         [Header("General references")]
-        [SerializeField] Collider2D boundsCollider;
+        [SerializeField] PolygonCollider2D boundsCollider;
         [SerializeField] CinemachineVirtualCamera characterCamera;
         [SerializeField] CinemachineVirtualCamera skillCamera;
 
@@ -22,16 +22,17 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         CinemachineImpulseListener listener;
         CameraUiHook hook;
-       
-   
+        CinemachineConfiner2D characterCameraconfiner;
+        CinemachineConfiner2D skillCameraconfiner;
+
+
         void Awake()
         {
-            characterCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = boundsCollider;
-            skillCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = boundsCollider;
+            characterCameraconfiner = characterCamera.GetComponent<CinemachineConfiner2D>();
+            skillCameraconfiner = skillCamera.GetComponent<CinemachineConfiner2D>();
             listener = characterCamera.GetComponent<CinemachineImpulseListener>();
             hook = FindObjectOfType<CameraUiHook>();
             CameraShaker = new CinemachineCameraShaker(bumpSource,explosionSource,rumbleSource,recoilSource,genericSource,listener);
-
         }
 
       
@@ -54,6 +55,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             skillCamera.LookAt = target;
         }
 
+        public void SetConfiner(PolygonCollider2D collider2D)
+        {
+            characterCameraconfiner.m_BoundingShape2D = collider2D;
+            skillCameraconfiner.m_BoundingShape2D = collider2D;
+        }
+
         public void SetCameraState(GameCameraType newType)
         {
             switch (newType)
@@ -67,11 +74,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                
             }
         }
-
-      
-
-        
-
+         
         public void UpdateCharacterCameraFOW(float newValue)
         {
             characterCamera.m_Lens.OrthographicSize = newValue;
@@ -80,7 +83,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public void UpdateSkillCameraFOW(float newValue)
         {
             skillCamera.m_Lens.OrthographicSize = newValue;
-        }
-        
+        }    
     }
 }

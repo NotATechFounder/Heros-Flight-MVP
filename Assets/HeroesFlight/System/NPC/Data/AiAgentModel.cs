@@ -8,12 +8,12 @@ namespace HeroesFlightProject.System.NPC.Data
     public class AiAgentModel : ScriptableObject
     {
         [SerializeField] EnemyType enemyType;
-        [FormerlySerializedAs("enemySpawmType")][SerializeField] EnemySpawmType m_EnemySpawnType;
+        [SerializeField] SpawnType enemySpawmType;
         [SerializeField] float wanderingDistance;
         [SerializeField] AiAgentCombatModel m_CombatModel;
 
         public EnemyType EnemyType => enemyType;
-        public EnemySpawmType EnemySpawnType => m_EnemySpawnType;
+        public SpawnType EnemySpawmType => enemySpawmType;
         public float WanderingDistance => wanderingDistance;
         public AiAgentCombatModel CombatModel => m_CombatModel;
     }

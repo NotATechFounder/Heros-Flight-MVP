@@ -8,6 +8,8 @@ namespace HeroesFlight.System.Gameplay
 {
     public interface GamePlaySystemInterface : SystemInterface
     {
+        Vector2 GetPlayerSpawnPosition { get; }
+
         event Action<int> OnCountDownTimerUpdate;
         event Action<float> OnGameTimerUpdate;
 
@@ -38,10 +40,10 @@ namespace HeroesFlight.System.Gameplay
         public GodsBenevolence GodsBenevolence { get; }
         public int CurrentLvlIndex { get; }
         public int MaxLvlIndex { get; }
-        void StartGameLoop(SpawnModel currentModel);
+        void StartGameLoop();
         void CreateCharacter();
         void ReviveCharacter();
-        SpawnModel PreloadLvl();
+        Level PreloadLvl();
         void ResetLogic();
         void EnablePortal();
         void UseCharacterSpecial();
