@@ -16,6 +16,8 @@ public class StatSO : ScriptableObject
             statCurve.UpdateCurve();
         }
     }
+
+    public int GetCurrentValue(int level) => statCurve.GetCurrentValue(level);
 }
 
 [Serializable]

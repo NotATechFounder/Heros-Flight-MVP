@@ -13,14 +13,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
         Coroutine knockBackRoutine;
 
 
-        public override void Init(Transform player, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
+        public override void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
             setter = GetComponent<AIDestinationSetter>();
             attackCollider = GetComponent<Collider2D>();
             ai = GetComponent<IAstarAI>();
             ai.canMove = false;
             ai.maxSpeed = m_Model.CombatModel.GetMonsterStatData.MoveSpeed;
-            base.Init(player, monsterStatModifier, currentCardIcon);
+            base.Init(player, health, damage, monsterStatModifier, currentCardIcon);
         }
 
         public override void Enable()

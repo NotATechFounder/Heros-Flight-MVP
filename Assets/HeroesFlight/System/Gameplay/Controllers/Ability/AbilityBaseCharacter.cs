@@ -22,7 +22,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public bool ReadyToUse=> currentCharges >= targetCharges;
 
-        public virtual void UseAbility(IHealthController target = null, Action onComplete = null)
+        public virtual void UseAbility(float damage, IHealthController target = null, Action onComplete = null)
         {
             currentCharges = 0;
             animator.PlayAnimationSequence(targetAnimations.ToList(), () =>

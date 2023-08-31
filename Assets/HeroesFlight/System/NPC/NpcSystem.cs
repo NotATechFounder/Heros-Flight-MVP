@@ -28,9 +28,9 @@ namespace HeroesFlight.System.NPC
 
         public event Action<AiControllerBase> OnEnemySpawned;
       
-        public void SetSpawnModel(Level level)
+        public void SetSpawnModel(Level level, int levelIndex)
         {
-            container.SpawnEnemies(level,OnEnemySpawned);
+            container.SpawnEnemies(level, levelIndex,OnEnemySpawned);
         }
 
         public void InjectPlayer(Transform player)

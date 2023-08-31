@@ -26,8 +26,9 @@ namespace HeroesFlight.System.NPC.Container
         Coroutine spawningRoutine;
         WaitForSeconds timeBetweenEnemySpawn;
         WaitForSeconds timeBeweenWaves;
-
         private bool spawningEnded = false;
+        private MobDifficultyHolder mobDifficulty;
+        private int levelIndex;
 
         public void Init()
         {
@@ -35,15 +36,21 @@ namespace HeroesFlight.System.NPC.Container
             monsterStatController = FindObjectOfType<MonsterStatController>();
         }
 
+        public void SetMobDifficultyHolder (MobDifficultyHolder mobDifficulty)
+        {
+            this.mobDifficulty = mobDifficulty;
+        }
+
         public void SetSpawnPoints(Dictionary<SpawnType, List<ISpawnPointInterface>>  valuePairs)
         {
             spawnPointsCache = valuePairs;
         }
 
-        public void SpawnEnemies(Level level, Action<AiControllerBase> OnOnEnemySpawned)
+        public void SpawnEnemies(Level level, int levelIndex, Action<AiControllerBase> OnOnEnemySpawned)
         {
             if (level.Waves.Length == 0) return;
             spawningEnded = false;
+            this.levelIndex = levelIndex;
             spawningRoutine = StartCoroutine(SpawnNewLevelRoutine(level, OnOnEnemySpawned));
         }
 
@@ -93,11 +100,13 @@ namespace HeroesFlight.System.NPC.Container
 
             if(resultEnemy.EnemyType == EnemyType.MiniBoss)
             {
-                resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier, null);
+                resultEnemy.Init(player.transform,mobDifficulty.GetHealth(levelIndex, resultEnemy.EnemyType), mobDifficulty.GetDamage(levelIndex, resultEnemy.EnemyType), 
+                    monsterStatController.GetMonsterStatModifier, null);
             }
             else
             {
-                resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier, monsterStatController.CurrentCardIcon);
+                resultEnemy.Init(player.transform, mobDifficulty.GetHealth(levelIndex, resultEnemy.EnemyType), mobDifficulty.GetDamage(levelIndex, resultEnemy.EnemyType),
+                    monsterStatController.GetMonsterStatModifier, monsterStatController.CurrentCardIcon);
             }
 
             spawnedEnemies.Add(resultEnemy);
@@ -152,4 +161,34 @@ namespace HeroesFlight.System.NPC.Container
             }
         }
     }
+}
+
+[Serializable]
+public class MobDifficultyHolder
+{
+    [SerializeField] MobDifficulty[] mobDifficulties;
+
+    public MobDifficulty[] GetMobDifficulties => mobDifficulties;
+
+    public int GetHealth(int level, EnemyType enemyType)
+    {
+       return mobDifficulties.FirstOrDefault(x => x.EnemyType == enemyType).HealthStat.GetCurrentValue(level);
+    }
+
+    public int GetDamage(int level, EnemyType enemyType)
+    {
+        return mobDifficulties.FirstOrDefault(x => x.EnemyType == enemyType).DamageStat.GetCurrentValue(level);
+    }
+}
+
+[Serializable]
+public class MobDifficulty
+{
+    [SerializeField] EnemyType enemyType;
+    [SerializeField] StatSO healthStat;
+    [SerializeField] StatSO damageStat;
+
+    public EnemyType EnemyType => enemyType;
+    public StatSO HealthStat => healthStat;
+    public StatSO DamageStat => damageStat;
 }

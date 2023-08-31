@@ -28,6 +28,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public AiAgentModel AgentModel => m_Model;
         public Transform CurrentTarget => currentTarget;
 
+        public int GetHealth => currentHealth;
+
+        public float GetDamage => currentDamage;
+
         protected Rigidbody2D rigidBody;
         protected Transform currentTarget;
         protected bool isDisabled;
@@ -37,7 +41,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
         Vector2 wanderPosition;
         float timeSinceAggravated = Mathf.Infinity;
 
-        public virtual void Init(Transform player, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
+        private int currentHealth;
+        private float currentDamage;
+
+        public virtual void Init(Transform player,int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
             statModifier = EnemyType == EnemyType.MiniBoss ? new MonsterStatModifier() : monsterStatModifier;
             rigidBody = GetComponent<Rigidbody2D>();
@@ -48,6 +55,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
             wanderDistance = m_Model.WanderingDistance;
             currentTarget = player;
             viewController.Init();
+
+            currentHealth = Mathf.RoundToInt(statModifier.CalculateAttack(health));
+            currentDamage = statModifier.CalculateAttack(damage);
+
             OnInit();
 
             // viewController.StartFadeIn(2f, Enable);
