@@ -75,7 +75,6 @@ namespace HeroesFlight.System.Gameplay
         IHealthController miniBoss;
         IHealthController characterHealthController;
         BaseCharacterAttackController characterAttackController;
-        CharacterAttackController characterAttackController;
         CharacterStatController characterStatController;
         CharacterVFXController characterVFXController;
         CharacterAbilityInterface characterAbility;
