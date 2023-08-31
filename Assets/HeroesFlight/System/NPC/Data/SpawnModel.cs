@@ -15,10 +15,12 @@ namespace HeroesFlight.System.NPC.Model
     [Serializable]
     public class Level
     {
+        [SerializeField] private LevelType levelType = LevelType.Combat;
         [SerializeField] private GameObject levelPrefab;
         [SerializeField] private float timeBetweenWaves = 3f;
         [SerializeField] private Wave[] waves;
 
+        public LevelType LevelType => levelType;
         public GameObject LevelPrefab => levelPrefab;
         public float TimeBetweenWaves => timeBetweenWaves;
         public Wave[] Waves => waves;
@@ -77,5 +79,11 @@ namespace HeroesFlight.System.NPC.Model
         public List<SpawnModelEntry> AvaliableTrashMobs => avaliableTrashMobs;
         public List<SpawnModelEntry> AvaliableMiniBosses => avaliableMiniBosses;
         public List<SpawnModelEntry> AvaliableBosses => avaliableBosses;
+    }
+
+    public enum LevelType
+    {
+        Combat,
+        Intermission,
     }
 }

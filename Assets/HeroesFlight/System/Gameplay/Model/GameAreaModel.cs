@@ -12,10 +12,12 @@ namespace HeroesFlight.System.Gameplay.Model
         [SerializeField] private string areaName;
         [SerializeField] float heroProgressionExpEarnedPerKill = 20f;
         [SerializeField] LevelPortal portalPrefab;
+        [SerializeField] Level angelsGambitLevel;
         [SerializeField] private SpawnModel spawnModel;
 
         public string AreaName => areaName;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
+        public Level AngelsGambitLevel => angelsGambitLevel;
         public SpawnModel SpawnModel => spawnModel;
         public LevelPortal PortalPrefab => portalPrefab;
     }

@@ -82,6 +82,8 @@ public class CountDownTimer
             return;
         
         owner.StopCoroutine(timerRoutine);
+        onTimeTick?.Invoke(0);
+        OnTimeTickInt?.Invoke(0);
         timerRoutine = null;
     }
 }

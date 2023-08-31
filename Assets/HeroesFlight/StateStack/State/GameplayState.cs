@@ -145,6 +145,8 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.UiEventHandler.GameMenu.Close();
                         m_SceneActionsQueue.AddAction(SceneActionType.Unload, gameScene);
                         gamePlaySystem.Reset();
+
+                        gamePlaySystem.EffectManager.OnTrigger -= uiSystem.UiEventHandler.AngelGambitMenu.Open;
                         gamePlaySystem.EffectManager.OnPermanetCard -= uiSystem.UiEventHandler.AngelPermanetCardMenu
                             .AcivateCardPermanetEffect;
                         uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= gamePlaySystem.EffectManager.Exists;
@@ -197,19 +199,28 @@ namespace HeroesFlight.StateStack.State
                     {
                         CoroutineUtility.WaitForSeconds(0.5f, () =>
                         {
+                            System.NPC.Model.Level newLevel = null;
                             uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level to level transition
                             {
                                 gamePlaySystem.ResetLogic();
                                 npcSystem.Reset();
 
-                                gamePlaySystem.PreloadLvl();
+                                newLevel = gamePlaySystem.PreloadLvl();
 
                                 characterSystem.ResetCharacter(gamePlaySystem.GetPlayerSpawnPosition);
                                 characterSystem.SetCharacterControllerState(false);
                             }, 
                             ()=>
                             {
-                                CoroutineUtility.Start(ContinueGameLoopRoutine());
+                                if (newLevel.LevelType == System.NPC.Model.LevelType.Combat)
+                                {
+                                    CoroutineUtility.Start(ContinueGameLoopRoutine());
+                                }
+                                else
+                                {
+                                    characterSystem.SetCharacterControllerState(true);
+                                }
+
                             });
                         });
                     }
@@ -218,12 +229,12 @@ namespace HeroesFlight.StateStack.State
                     {
                         yield return new WaitForSeconds(0.5f);
 
-                        if (gamePlaySystem.CurrentLvlIndex % 2 == 0) // Open every second lvl
-                        {
-                            uiSystem.UiEventHandler.AngelGambitMenu.Open();
+                        //if (gamePlaySystem.CurrentLvlIndex % 2 == 0) // Open every second lvl
+                        //{
+                        //    uiSystem.UiEventHandler.AngelGambitMenu.Open();
 
-                            yield return new WaitUntil(() => uiSystem.UiEventHandler.AngelGambitMenu.MenuStatus == UISystem.Menu.Status.Closed);
-                        }
+                        //    yield return new WaitUntil(() => uiSystem.UiEventHandler.AngelGambitMenu.MenuStatus == UISystem.Menu.Status.Closed);
+                        //}
 
                         if (gamePlaySystem.CurrentLvlIndex  != gamePlaySystem.MaxLvlIndex) // Open every second lvl
                         {
@@ -247,6 +258,7 @@ namespace HeroesFlight.StateStack.State
                         npcSystem.Init(loadedScene);
                         gamePlaySystem.Init(loadedScene, () =>
                         {
+                            gamePlaySystem.EffectManager.OnTrigger += uiSystem.UiEventHandler.AngelGambitMenu.Open;
                             gamePlaySystem.EffectManager.OnPermanetCard += uiSystem.UiEventHandler.AngelPermanetCardMenu
                                 .AcivateCardPermanetEffect;
                             uiSystem.UiEventHandler.AngelGambitMenu.CardExit += gamePlaySystem.EffectManager.Exists;
