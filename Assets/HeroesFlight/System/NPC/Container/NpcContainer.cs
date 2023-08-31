@@ -42,6 +42,7 @@ namespace HeroesFlight.System.NPC.Container
 
         public void SpawnEnemies(Level level, Action<AiControllerBase> OnOnEnemySpawned)
         {
+            if (level.Waves.Length == 0) return;
             spawningEnded = false;
             spawningRoutine = StartCoroutine(SpawnNewLevelRoutine(level, OnOnEnemySpawned));
         }

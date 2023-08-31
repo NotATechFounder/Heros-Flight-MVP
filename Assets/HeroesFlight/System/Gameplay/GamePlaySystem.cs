@@ -436,41 +436,59 @@ namespace HeroesFlight.System.Gameplay
 
         public void StartGameLoop()
         {
-            enemiesToKill = currentLevel.MiniHasBoss ? currentLevel.TotalMobsToSpawn + 1 : currentLevel.TotalMobsToSpawn;
-            OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
-            OnCharacterComboChanged?.Invoke(characterComboNumber);
-            combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());
+            //TODO  modify here for  angels gambit
 
-            ChangeState(GameState.Ongoing);
-            if (currentLevel.MiniHasBoss)
+            switch (currentLevel.LevelType)
             {
-                cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,3f);
-                OnEnterMiniBossLvl?.Invoke();
-                countDownDelay = 2;
-            }
-            else
-            {
-                countDownDelay = .5f;
-            }
+                case LevelType.Combat:
 
-            characterSystem.SetCharacterControllerState(true);
+                    enemiesToKill = currentLevel.MiniHasBoss ? currentLevel.TotalMobsToSpawn + 1 : currentLevel.TotalMobsToSpawn;
+                    OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
+                    OnCharacterComboChanged?.Invoke(characterComboNumber);
+                    combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());
 
-            CoroutineUtility.WaitForSeconds(countDownDelay, () =>
-            {
-                GameTimer.Start(5, null,
-                    () =>
+                    ChangeState(GameState.Ongoing);
+                    if (currentLevel.MiniHasBoss)
                     {
-                        CreateLvL(currentLevel);
-                        GameTimer.Start(120, OnGameTimerUpdate,
+                        cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble, 3f);
+                        OnEnterMiniBossLvl?.Invoke();
+                        countDownDelay = 2;
+                    }
+                    else
+                    {
+                        countDownDelay = .5f;
+                    }
+
+                    characterSystem.SetCharacterControllerState(true);
+
+                    CoroutineUtility.WaitForSeconds(countDownDelay, () =>
+                    {
+                        GameTimer.Start(5, null,
                             () =>
                             {
-                                if (currentState != GameState.Ongoing)
-                                    return;
+                                CreateLvL(currentLevel);
+                                GameTimer.Start(120, OnGameTimerUpdate,
+                                    () =>
+                                    {
+                                        if (currentState != GameState.Ongoing)
+                                            return;
 
-                                ChangeState(GameState.Lost);
-                            });
-                    }, OnCountDownTimerUpdate);
-            });
+                                        ChangeState(GameState.Lost);
+                                    });
+                            }, OnCountDownTimerUpdate);
+                    });
+
+                    break;
+                case LevelType.Intermission:
+                    characterSystem.SetCharacterControllerState(true);
+                    break;
+            }
+
+        }
+
+        private void TriggerAngelsGambit()
+        {
+            EffectManager.TriggerAngelsGambit();
         }
 
         public Level PreloadLvl()
@@ -491,7 +509,17 @@ namespace HeroesFlight.System.Gameplay
             currentLevelEnvironment = GameObject.Instantiate(currentLevel.LevelPrefab).GetComponent<LevelEnvironment>();
             cameraController.SetConfiner(currentLevelEnvironment.BoundsCollider);
             npcSystem.NpcContainer.SetSpawnPoints(currentLevelEnvironment.SpawnPointsCache);
-            container.DisablePortal();
+
+            switch (currentLevel.LevelType)
+            {
+                case LevelType.Combat:
+                    container.DisablePortal();
+                    break;
+                case LevelType.Intermission:
+                    currentLevelEnvironment.InteractiveNPC.OnInteract = TriggerAngelsGambit;
+                    container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(HeroesFlightProject.System.NPC.Enum.SpawnType.Portal).GetSpawnPosition());
+                    break;
+            }
         }
 
         private void HandleBoosterActivated(BoosterSO sO, float arg2, Transform transform)

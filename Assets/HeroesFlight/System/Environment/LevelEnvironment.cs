@@ -8,12 +8,15 @@ public class LevelEnvironment : MonoBehaviour
 {
     [SerializeField] PolygonCollider2D boundsCollider;
     [SerializeField] Transform spawnpointHolder;
+    [SerializeField] InteractiveNPC interactiveNPC;
     Dictionary<SpawnType, List<ISpawnPointInterface>> spawnPointsCache = new();
     SpawnPoint[] spawnPoints;
 
     public PolygonCollider2D BoundsCollider => boundsCollider;
 
     public Dictionary<SpawnType, List<ISpawnPointInterface>> SpawnPointsCache => spawnPointsCache;
+
+    public InteractiveNPC InteractiveNPC => interactiveNPC;
 
     private void Awake()
     {
