@@ -208,7 +208,7 @@ namespace HeroesFlight.System.Gameplay
 
         void CreateLvL(Level currentLvl)
         {
-            npcSystem.SetSpawnModel(currentLvl, CurrentLvlIndex - 1);
+            npcSystem.SetSpawnModel(currentLvl, CurrentLvlIndex);
         }
 
         void SetupCharacter()

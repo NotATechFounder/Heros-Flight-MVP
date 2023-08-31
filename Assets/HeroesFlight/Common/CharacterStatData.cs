@@ -21,10 +21,7 @@ public class MonsterStatData : CharacterStatData
 {
     [Header("Monster Combat")]
     [SerializeField] float agroDistance;
-    [SerializeField] float damage = 2;
-
     public float AgroDistance => agroDistance;
-    public float Damage => damage;
 }
 
 [Serializable]

@@ -23,6 +23,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
             OnInit();
             viewController.StartFadeIn(2f,Enable);
             wanderDistance = m_Model.WanderingDistance;
+            currentHealth = Mathf.RoundToInt(statModifier.CalculateAttack(health));
+            currentDamage = statModifier.CalculateAttack(damage);
             DisplayModifiyer(currentCardIcon);
         }
 

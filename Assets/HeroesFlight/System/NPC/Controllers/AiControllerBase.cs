@@ -41,8 +41,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
         Vector2 wanderPosition;
         float timeSinceAggravated = Mathf.Infinity;
 
-        private int currentHealth;
-        private float currentDamage;
+        protected int currentHealth;
+        protected float currentDamage;
 
         public virtual void Init(Transform player,int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
