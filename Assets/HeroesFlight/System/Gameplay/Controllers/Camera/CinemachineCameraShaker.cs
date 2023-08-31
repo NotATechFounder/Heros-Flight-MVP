@@ -83,7 +83,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void ResetShakeState(CinemachineImpulseDefinition.ImpulseShapes shake, float duration)
         {
             shakesState[shake] = true;
-            CoroutineUtility.WaitForSecondsRealtime(duration, () =>
+            CoroutineUtility.WaitForSecondsRealtime(.5f, () =>
             {
                 shakesState[shake] = false;
             });

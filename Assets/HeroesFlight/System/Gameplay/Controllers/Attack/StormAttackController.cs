@@ -14,7 +14,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             base.Init();
             chainLightningAbility = GetComponent<ChainLightningAbility>();
-            chainLightningAbility.OnDealingDamage += ApplyLifeSteal;
+            chainLightningAbility.OnDealingDamage += HandleDamageFromAbility;
         }
 
         protected override void DealNormalDamage(int hits, Collider2D[] colliders)
@@ -38,6 +38,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                     break;
                 }
             }
+        }
+
+        void HandleDamageFromAbility(Transform target)
+        {
+            ApplyLifeSteal();
         }
     }
 }
