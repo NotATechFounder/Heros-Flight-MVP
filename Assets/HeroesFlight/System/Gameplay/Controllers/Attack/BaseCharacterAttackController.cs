@@ -1,7 +1,6 @@
 using System;
 using HeroesFlight.Common;
 using HeroesFlight.System.Character;
-using HeroesFlight.System.Character.Enum;
 using HeroesFlight.System.Gameplay.Data.Animation;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
@@ -11,23 +10,23 @@ using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class CharacterAttackController : MonoBehaviour, IAttackControllerInterface
+    public class BaseCharacterAttackController : MonoBehaviour, IAttackControllerInterface
     {
         [SerializeField] int enemiesToHitPerAttack = 4;
-        [SerializeField] OverlapChecker reguarAttackOverlap;
-        [SerializeField] OverlapChecker ultAttackOverlap;
+        [SerializeField] protected OverlapChecker reguarAttackOverlap;
+        [SerializeField] protected OverlapChecker ultAttackOverlap;
         public float Damage => characterController.CharacterStatController.CurrentPhysicalDamage;
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
 
-        CharacterControllerInterface characterController;
-        CharacterAnimationControllerInterface m_CharacterAnimationController;
-        AttackRangeVisualsController visualController;
-        AttackControllerState m_State;
-        CharacterStatController statController;
-        PlayerStatData playerStatData = null;
-        UltimateData ultimateData;
-        AttackData attackData;
+        protected CharacterControllerInterface characterController;
+        protected CharacterAnimationControllerInterface m_CharacterAnimationController;
+        protected AttackRangeVisualsController visualController;
+        protected AttackControllerState m_State;
+        protected CharacterStatController statController;
+        protected PlayerStatData playerStatData = null;
+        protected UltimateData ultimateData;
+        protected AttackData attackData;
       
         float m_TimeSinceLastAttack = 0;
         Vector2 attackPointOffset ;
@@ -39,7 +38,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public event Action OnHitTarget;
 
-        public void Init()
+        public virtual void Init()
         {
             characterController = GetComponent<CharacterControllerInterface>();
             visualController = GetComponent<AttackRangeVisualsController>();
@@ -130,8 +129,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             var data = animationEvent as AttackAnimationEvent;
 
-            // attackZoneFilter.FilterEnemies(attackPoint, characterController.IsFacingLeft,
-            //     enemiesRetriveCallback?.Invoke(), ref enemiesToAttack, data);
+            
 
             if (data.AttackType == AttackType.Regular)
             {
@@ -144,7 +142,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
            
         }
 
-        private void ApplyLifeSteal()
+        protected void ApplyLifeSteal()
         {
             if (characterController.CharacterStatController.CurrentLifeSteal <= 0)
                 return;
@@ -159,7 +157,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
        
-        void DealUltDamage(int hits, Collider2D[] colliders)
+        protected virtual void DealUltDamage(int hits, Collider2D[] colliders)
         {
             var baseDamage = Damage * ultimateData.DamageMultiplier;
             for (int i = 0; i < hits; i++)
@@ -179,35 +177,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                     OnHitTarget?.Invoke();
                 }
             }
-            // int maxEnemiesToHit =
-            //     data.AttackType == AttackType.Regular ? enemiesToHitPerAttack : ultimateData.EnemiesPerAttack;
            
-            // if (enemiesToAttack.Count > 0)
-            // {
-            //     var enemiesAttacked = 0;
-            //     foreach (var enemy in enemiesToAttack)
-            //     {
-            //         // if (enemiesAttacked >= maxEnemiesToHit)
-            //         //     break;
-            //
-            //         enemiesAttacked++;
-            //
-            //         float criticalChance = characterController.CharacterStatController.CurrentCriticalHitChance;
-            //         bool isCritical = Random.Range(0, 100) <= criticalChance;
-            //
-            //         float damageToDeal = isCritical
-            //             ? baseDamage * characterController.CharacterStatController.CurrentCriticalHitDamage
-            //             : baseDamage;
-            //
-            //         var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
-            //         enemy.DealDamage(new DamageModel(damageToDeal, type,data.AttackType));
-            //         ApplyLifeSteal();
-            //         OnHitTarget?.Invoke();
-            //     }
-            // }
         }
 
-        void DealNormalDamage(int hits, Collider2D[] colliders)
+        protected virtual void DealNormalDamage(int hits, Collider2D[] colliders)
         {
             var baseDamage = Damage ;
             for (int i = 0; i < hits; i++)

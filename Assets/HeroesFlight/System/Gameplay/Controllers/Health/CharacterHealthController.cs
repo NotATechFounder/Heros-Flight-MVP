@@ -7,7 +7,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class CharacterHealthController : HealthController
     {
         CharacterControllerInterface controller;
-        CharacterAttackController attackController;
+        BaseCharacterAttackController attackController;
         CharacterAnimationControllerInterface animator;
         CharacterStatController characterStatController;
 
@@ -19,7 +19,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public override void Init()
         {
             controller = GetComponent<CharacterControllerInterface>();
-            attackController = GetComponent<CharacterAttackController>();
+            attackController = GetComponent<BaseCharacterAttackController>();
             animator = GetComponent<CharacterAnimationControllerInterface>();
             animator.PlayIdleAnimation();
             animator = GetComponent<CharacterAnimationController>();

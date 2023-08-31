@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cinemachine;
 using HeroesFlightProject.System.Gameplay.Controllers.ShakeProfile;
+using StansAssets.Foundation.Async;
 using UnityEngine;
 
 
@@ -15,6 +16,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             impulseSources.Add(CinemachineImpulseDefinition.ImpulseShapes.Explosion, explosionSource);
             impulseSources.Add(CinemachineImpulseDefinition.ImpulseShapes.Rumble, rumbleSource);
             impulseSources.Add(CinemachineImpulseDefinition.ImpulseShapes.Recoil, recoilSource);
+           
+            shakesState.Add(CinemachineImpulseDefinition.ImpulseShapes.Bump, false);
+            shakesState.Add(CinemachineImpulseDefinition.ImpulseShapes.Explosion, false);
+            shakesState.Add(CinemachineImpulseDefinition.ImpulseShapes.Rumble, false);
+            shakesState.Add(CinemachineImpulseDefinition.ImpulseShapes.Recoil, false);
             source = genericSource;
             impulseListener = listener;
         }
@@ -24,22 +30,34 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         CinemachineImpulseSource source;
         CinemachineImpulseListener impulseListener;
+        Dictionary<CinemachineImpulseDefinition.ImpulseShapes, bool> shakesState = new();
+      
         public void ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes shape, float duration = 0.1f,
             float force = 1f,
             Vector2 velocity = default)
         {
-            if (impulseSources.TryGetValue(shape, out var source))
+            if (shakesState.TryGetValue(shape, out var isShaking))
             {
-                source.m_ImpulseDefinition.m_ImpulseDuration = duration;
-                if (velocity.Equals(Vector2.zero))
+                if (isShaking)
+                    return;
+
+                ResetShakeState(shape,duration);
+                if (impulseSources.TryGetValue(shape, out var source))
                 {
-                    source.GenerateImpulseWithForce(force);
-                }
-                else
-                {
-                    source.GenerateImpulseWithVelocity(velocity);
+                    source.m_ImpulseDefinition.m_ImpulseDuration = duration;
+                    if (velocity.Equals(Vector2.zero))
+                    {
+                        source.GenerateImpulseWithForce(force);
+                    }
+                    else
+                    {
+                        source.GenerateImpulseWithVelocity(velocity);
+                    }
                 }
             }
+            
+            
+           
         }
 
         public void ShakeCamera(ScreenShakeProfile profile)
@@ -59,6 +77,16 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             impulseListener.m_ReactionSettings.m_FrequencyGain = profile.listenerFrequency;
             impulseListener.m_ReactionSettings.m_Duration = profile.listenerDuration;
 
+        }
+
+
+        void ResetShakeState(CinemachineImpulseDefinition.ImpulseShapes shake, float duration)
+        {
+            shakesState[shake] = true;
+            CoroutineUtility.WaitForSecondsRealtime(.5f, () =>
+            {
+                shakesState[shake] = false;
+            });
         }
     }
 }

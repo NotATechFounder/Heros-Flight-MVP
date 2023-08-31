@@ -54,7 +54,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             foreach (var controller in enemies)
             {
-                if (Vector2.Distance(controller.currentTransform.position, attackPoint) <=
+                if (Vector2.Distance(controller.HealthTransform.position, attackPoint) <=
                     characterData.GetPlayerStatData.AttackRange)
                 {
                     enemiesToUpdate.Add(controller);
@@ -69,7 +69,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             foreach (var controller in enemies)
             {
-                if (Vector2.Distance(controller.currentTransform.position, attackPoint) >
+                if (Vector2.Distance(controller.HealthTransform.position, attackPoint) >
                     characterData.GetPlayerStatData.AttackRange * characterData.UltimateData.RangeMultiplier)
                 {
                     continue;
@@ -77,7 +77,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
 
                 var checkPosition = new Vector2(characterTransform.position.x, attackPoint.y);
-                var angle = Vector2.Angle(checkPosition, controller.currentTransform.position);
+                var angle = Vector2.Angle(checkPosition, controller.HealthTransform.position);
                 var inAngle = angle <= 45f;
 
                 if (inAngle)
@@ -97,7 +97,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 : attackPoint + Vector2.right * characterData.UltimateData.OffsetMultiplier;
             foreach (var controller in enemies)
             {
-                if (Vector2.Distance(controller.currentTransform.position, offsetPosition) <=
+                if (Vector2.Distance(controller.HealthTransform.position, offsetPosition) <=
                     characterData.GetPlayerStatData.AttackRange * characterData.UltimateData.RangeMultiplier)
                 {
                     enemiesToUpdate.Add(controller);

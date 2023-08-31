@@ -71,11 +71,6 @@ namespace HeroesFlight.System.Character
         void PlayAttackAnimation(float speedMultiplier)
         {
             var track = m_SkeletonAnimation.AnimationState.GetCurrent(1);
-            if (track != null)
-            {
-                Debug.Log($"trying to trigger attac animation  track is {track.Animation.Name}");     
-            }
-           
             if (track == null || track.Animation.Name.Equals("<empty>"))
             {
                 var turnTrack =
