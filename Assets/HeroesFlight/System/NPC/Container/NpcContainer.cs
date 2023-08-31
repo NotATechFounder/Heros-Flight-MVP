@@ -185,10 +185,10 @@ public class MobDifficultyHolder
 public class MobDifficulty
 {
     [SerializeField] EnemyType enemyType;
-    [SerializeField] StatSO healthStat;
-    [SerializeField] StatSO damageStat;
+    [SerializeField] CustomAnimationCurve healthStat;
+    [SerializeField] CustomAnimationCurve damageStat;
 
     public EnemyType EnemyType => enemyType;
-    public StatSO HealthStat => healthStat;
-    public StatSO DamageStat => damageStat;
+    public CustomAnimationCurve HealthStat => healthStat;
+    public CustomAnimationCurve DamageStat => damageStat;
 }

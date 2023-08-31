@@ -25,10 +25,10 @@ public class CustomAnimationCurve
 {
     public AnimationCurve animationCurve;
     public CurveType curveType;
-    public int minLevel;
-    public int minValue;
-    public int maxLevel;
-    public int maxValue;
+    public float minLevel;
+    public float minValue;
+    public float maxLevel;
+    public float maxValue;
 
     public void UpdateCurveValues()
     {
