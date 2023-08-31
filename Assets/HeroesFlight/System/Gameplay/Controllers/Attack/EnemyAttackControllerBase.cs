@@ -33,7 +33,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             timeBetweenAttacks = aiController.GetMonsterStatModifier().CalculateAttackSpeed(aiController.AgentModel.CombatModel.GetMonsterStatData.AttackSpeed);
             attackRange = aiController.AgentModel.CombatModel.GetMonsterStatData.AttackRange;
             aiController.SetAttackState(true);
-            currentDamage = aiController.GetMonsterStatModifier().CalculateAttack(aiController.AgentModel.CombatModel.GetMonsterStatData.Damage);
+            currentDamage = aiController.GetDamage;
         }
 
         void HandleDeath(IHealthController obj)

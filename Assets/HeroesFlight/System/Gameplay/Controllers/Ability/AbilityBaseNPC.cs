@@ -31,7 +31,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public virtual bool ReadyToUse => timeSincelastUse <= 0;
         
 
-        public virtual void UseAbility(IHealthController target = null,Action onComplete=null)
+        public virtual void UseAbility(float damage, IHealthController target = null, Action onComplete = null)
         {
             if (targetAnimation != null)
             {
