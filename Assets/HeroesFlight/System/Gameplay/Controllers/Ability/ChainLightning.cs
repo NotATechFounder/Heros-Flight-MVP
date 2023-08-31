@@ -4,39 +4,37 @@ using System.Linq;
 using HeroesFlight.System.Gameplay.Model;
 using StansAssets.Foundation.Async;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class ChainLightning
     {
-        public ChainLightning(int jumpsLeft, float maxRange, IHealthController initialTarget, float timeBetweenJumps,
+        public ChainLightning() { }
+        public ChainLightning(int jumpsLeft, float maxRange, float timeBetweenJumps,
             LayerMask targetMask)
         {
-            this.jumpsLeft = jumpsLeft;
+            maxJumps = jumpsLeft-1;
             range = maxRange;
-            currentTarget = initialTarget;
             timeBetweenBounces = timeBetweenJumps;
             mask = targetMask;
             colliders = new Collider2D[10];
         }
 
-        int jumpsLeft;
-
+        int maxJumps;
         float range;
-        float timeBetweenBounces = .3f;
-
+        float timeBetweenBounces ;
+        int jumpsLeft;
         DamageModel damageModel;
-
         IHealthController currentTarget;
-
-        List<IHealthController> hitedTargets = new List<IHealthController>();
+        List<IHealthController> hitedTargets = new();
         Collider2D[] colliders;
         LayerMask mask;
 
-        public void Start(DamageModel damage)
+        public void Start(IHealthController targetHealthController, DamageModel damage)
         {
             damageModel = damage;
+            jumpsLeft = maxJumps;
+            currentTarget = targetHealthController;
             CoroutineUtility.Start(StartBounce());
         }
 
@@ -73,6 +71,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                     break;
                 }
             }
+        }
+
+        public void Reset()
+        {
+            jumpsLeft = 0;
+            hitedTargets.Clear();
         }
     }
 }

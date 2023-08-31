@@ -17,6 +17,7 @@ namespace HeroesFlight.System.Character
             inputSystem.OnInput += HandleCharacterInput;
             unlockedCharacters.Add(CharacterType.Tagon);
             unlockedCharacters.Add(CharacterType.Lancer);
+            unlockedCharacters.Add(CharacterType.Storm);
         }
 
         public CharacterControllerInterface CurrentCharacter => characterController;

@@ -288,8 +288,6 @@ namespace HeroesFlight.System.Gameplay
             iHealthController.OnDeath -= HandleEnemyDeath;
             activeEnemyHealthControllers.Remove(iHealthController);
             enemiesToKill--;
-            characterAbility.UpdateAbilityCharges(5);
-            OnUltimateChargesChange?.Invoke(characterAbility.CurrentCharge);
             environmentSystem.ParticleManager.Spawn("Loot_Spawn", iHealthController.HealthTransform.position,
                 Quaternion.Euler(new Vector3(-90,0,0)));
             BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.HealthTransform.position);
@@ -371,6 +369,8 @@ namespace HeroesFlight.System.Gameplay
                     vfxReference = isCritical
                         ? characterSystem.CurrentCharacter.CharacterSO.VFXData.AutoattackCrit
                         : characterSystem.CurrentCharacter.CharacterSO.VFXData.AutoattackNormal;
+                    characterAbility.UpdateAbilityCharges(5);
+                    OnUltimateChargesChange?.Invoke(characterAbility.CurrentCharge);
                     break;
                 case AttackType.Ultimate:
                     vfxReference = isCritical
@@ -392,6 +392,7 @@ namespace HeroesFlight.System.Gameplay
             if(!vfxReference.Equals(string.Empty))
                 environmentSystem.ParticleManager.Spawn(vfxReference, damageModel.Target.position);
             
+           
             OnEnemyDamaged?.Invoke(damageModel);
         }
 
