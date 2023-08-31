@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Character.Enum;
 using HeroesFlight.System.Gameplay.Data.Animation;
 using HeroesFlight.System.Gameplay.Enum;

@@ -1,25 +1,35 @@
+using System.Collections.Generic;
+using System.Linq;
+using HeroesFlight.System.FileManager.Model;
+using NotImplementedException = System.NotImplementedException;
 
 namespace HeroesFlight.System.FileManager.Rewards
 {
-    public class RewardsHandler :  RewardsHandlerInterface
+    public class RewardsHandler : RewardsHandlerInterface
     {
-        public bool RewardPending { get; private set; }
-        bool rewardGranted;
-        public void GrantReward()
+        List<RewardModel> pendingRewards = new List<RewardModel>();
+
+        public bool RewardPending => pendingRewards.Count > 0;
+
+        public void GrantReward(RewardModel rewardModel)
         {
-            
-            if (rewardGranted)
+            if (!pendingRewards.Contains(rewardModel))
             {
-                return;
+                pendingRewards.Add(rewardModel);
             }
-            
-            RewardPending = true;
         }
 
-        public void ConsumeReward()
+        public void ConsumeReward(RewardModel model)
         {
-            RewardPending = false;
-            rewardGranted = true;
+            if (pendingRewards.Contains(model))
+            {
+                pendingRewards.Remove(model);
+            }
+        }
+
+        public List<RewardModel> GetPendingRewards()
+        {
+            return pendingRewards;
         }
     }
 }

@@ -4,8 +4,9 @@ namespace HeroesFlight.System.Gameplay.Enum
     {
         Ongoing,
         Won,
-        Lost,
+        Died,
         Ended,
-        WaitingPortal
+        WaitingPortal,
+        TimeEnded
     }
 }

@@ -2,6 +2,7 @@ using HeroesFlight.System;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.FileManager.Rewards;
 using UnityEngine;
 
@@ -21,7 +22,10 @@ public interface DataSystemInterface : SystemInterface
 
     public void SaveCurrencies();
 
-  
+    List<CharacterType> GetUnlockedHeroes();
+
+    void UnlockHero(CharacterType type);
+
 
 
 }
