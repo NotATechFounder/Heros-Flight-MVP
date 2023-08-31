@@ -100,12 +100,12 @@ public class GameAreaModelEditor : Editor
 
             EditorGUILayout.BeginVertical(GUI.skin.box);
             EditorGUILayout.LabelField("Health", EditorStyles.boldLabel);
-            DrawData(healthStat);
+            DrawData(healthStat, i);
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.BeginVertical(GUI.skin.box);
             EditorGUILayout.LabelField("Damage", EditorStyles.boldLabel);
-            DrawData(damageStat);
+            DrawData(damageStat, i);
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.EndVertical();
@@ -116,7 +116,7 @@ public class GameAreaModelEditor : Editor
         EditorGUILayout.EndVertical();
     }
 
-    public void DrawData(SerializedProperty customAnimationCurveProperty)
+    public void DrawData(SerializedProperty customAnimationCurveProperty, int index)
     {
         SerializedProperty animationCurveProperty = customAnimationCurveProperty.FindPropertyRelative("animationCurve");
         SerializedProperty curveTypeProperty = customAnimationCurveProperty.FindPropertyRelative("curveType");
@@ -168,6 +168,28 @@ public class GameAreaModelEditor : Editor
                 UpdateCurve(animationCurveProperty, (CurveType)curveTypeProperty.enumValueIndex, minLevelProperty, minValueProperty, maxLevelProperty, maxValueProperty);
             });
         }
+
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Refresh Values"))
+        {
+            UpdateValues(animationCurveProperty, minLevelProperty, minValueProperty, maxLevelProperty, maxValueProperty);
+        }
+
+        if (GUILayout.Button("Refresh Curve"))
+        {
+            UpdateCurve(animationCurveProperty, (CurveType)curveTypeProperty.enumValueIndex, minLevelProperty, minValueProperty, maxLevelProperty, maxValueProperty);
+        }
+
+        if (GUILayout.Button("Reset"))
+        {
+            animationCurveProperty.animationCurveValue = new AnimationCurve();
+            curveTypeProperty.enumValueIndex = (int)CurveType.Custom;
+            minLevelProperty.floatValue = 0;
+            minValueProperty.floatValue = 0;
+            maxLevelProperty.floatValue = 0;
+            maxValueProperty.floatValue = 0;
+        }
+        EditorGUILayout.EndHorizontal();
     }
 
     public void HandleChangeCheck(SerializedProperty serializedProperty, Action OnChange = null, bool includeChildren = false)
