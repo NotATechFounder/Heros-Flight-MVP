@@ -68,13 +68,14 @@ namespace HeroesFlight.System.NPC.Container
         {
             if (wave.AvaliableMiniBosses.Count > 0)
             {
+                SpawnModelEntry targetEntry = PickRandomMob(wave.AvaliableMiniBosses);
+                SpawnSingleEnemy(targetEntry, OnOnEnemySpawned);
                 yield return timeBetweenEnemySpawn;
-                OnOnEnemySpawned?.Invoke(SpawnMiniBoss(wave));
             }
 
             for (var i = 0; i < enemiesToSpawn; i++)
             {
-                SpawnModelEntry spawnModelEntry = PickRandomTrashMob(wave.AvaliableTrashMobs);
+                SpawnModelEntry spawnModelEntry = PickRandomMob(wave.AvaliableTrashMobs);
                 SpawnSingleEnemy(spawnModelEntry, OnOnEnemySpawned);
                 yield return timeBetweenEnemySpawn;
             }
@@ -84,16 +85,26 @@ namespace HeroesFlight.System.NPC.Container
 
         public void SpawnSingleEnemy(SpawnModelEntry spawnModelEntry, Action<AiControllerBase> OnOnEnemySpawned)
         {
-            var targetPoints = spawnPointsCache[spawnModelEntry.Prefab.AgentModel.EnemySpawmType];
+            List<ISpawnPointInterface> targetPoints = spawnPointsCache[spawnModelEntry.Prefab.AgentModel.EnemySpawmType];
+
             var rngPoint = Random.Range(0, targetPoints.Count);
             AiControllerBase resultEnemy = Instantiate(spawnModelEntry.Prefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition(), Quaternion.identity);
             resultEnemy.transform.parent = transform;
-            resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier, monsterStatController.CurrentCardIcon);
+
+            if(resultEnemy.EnemyType == EnemyType.MiniBoss)
+            {
+                resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier, null);
+            }
+            else
+            {
+                resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier, monsterStatController.CurrentCardIcon);
+            }
+
             spawnedEnemies.Add(resultEnemy);
             OnOnEnemySpawned?.Invoke(resultEnemy);
         }
 
-        SpawnModelEntry PickRandomTrashMob(List<SpawnModelEntry> spawnModel)
+        SpawnModelEntry PickRandomMob(List<SpawnModelEntry> spawnModel)
         {
             float totalChance = 0;
             foreach (var t in spawnModel)
@@ -114,21 +125,6 @@ namespace HeroesFlight.System.NPC.Container
 
 
             return spawnModel[0];
-        }
-
-        public AiControllerBase SpawnMiniBoss(Wave currentWave)
-        {
-            var rng = Random.Range(0, currentWave.AvaliableMiniBosses.Count);
-            var targetEntry = currentWave.AvaliableMiniBosses[rng];
-            var targetPoints = spawnPointsCache[targetEntry.Prefab.AgentModel.EnemySpawmType];
-            var rngPoint = Random.Range(0, targetPoints.Count);
-            AiControllerBase resultEnemy = Instantiate(targetEntry.Prefab,
-                targetPoints.ElementAt(rngPoint).GetSpawnPosition()
-                , Quaternion.identity);
-            resultEnemy.transform.parent = transform;
-            spawnedEnemies.Add(resultEnemy);
-            resultEnemy.Init(player.transform, monsterStatController.GetMonsterStatModifier, null);
-            return resultEnemy;
         }
 
         public void InjectPlayer(Transform playerTransform)

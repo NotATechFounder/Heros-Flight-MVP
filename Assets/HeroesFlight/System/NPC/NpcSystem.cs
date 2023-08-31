@@ -33,11 +33,6 @@ namespace HeroesFlight.System.NPC
             container.SpawnEnemies(level,OnEnemySpawned);
         }
 
-        public AiControllerBase SpawnMiniBoss(Wave level, Action onComplete = null)
-        {
-             return container.SpawnMiniBoss(level);
-        }
-
         public void InjectPlayer(Transform player)
         {
             container.InjectPlayer(player);
