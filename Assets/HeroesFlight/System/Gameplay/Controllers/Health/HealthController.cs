@@ -1,15 +1,17 @@
-using System;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Gameplay.Model;
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class HealthController : MonoBehaviour, IHealthController
     {
+        [SerializeField] protected bool autoInit;
         [SerializeField] CombatTargetType targetType;
-        protected float maxHealth;
+        [SerializeField] protected float maxHealth;
         [SerializeField] protected float currentHealth;
         [SerializeField] protected HeathBarUI heathBarUI;
         [SerializeField] protected float defence;
@@ -24,6 +26,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public event Action<IHealthController> OnDeath;
         public event Action<float, Transform> OnHeal;
         public event Action OnDodged;
+
+        private void OnEnable()
+        {
+            if (autoInit) Init();
+        }
 
         public virtual void Init()
         {

@@ -8,11 +8,12 @@ using UnityEngine.UIElements;
 
 public class BoosterSpawner : MonoBehaviour
 {
+    public Func<BoosterSO, bool> ActivateBooster;
+
     [SerializeField] private BoosterDatabase boosterDatabase;
     [SerializeField] private BoosterItem boosterItemPrefab;
     [SerializeField] private float attackDropDelay = 30f;
 
-    [SerializeField] private BoosterManager boosterManager;
     [SerializeField] private List<BoosterItem> spawnedBoosterItem;
     [SerializeField] private bool pauseAttackBooster;
 
@@ -53,7 +54,13 @@ public class BoosterSpawner : MonoBehaviour
 
     private bool OnBoosterItemInteracted(BoosterItem item)
     {
-        if(boosterManager.ActivateBooster(item.BoosterSO))
+        if (ActivateBooster == null)
+        {
+            Debug.LogError("No Booster Activator");
+            return false;
+        }
+
+        if (ActivateBooster(item.BoosterSO))
         {
             if (item.BoosterSO.BoosterEffectType == BoosterEffectType.Attack)
             {
@@ -69,7 +76,7 @@ public class BoosterSpawner : MonoBehaviour
     {
         foreach (var boosterItem in spawnedBoosterItem)
         {
-            ObjectPoolManager.ReleaseObject(boosterItem);
+            boosterItem.Release();
         }
         spawnedBoosterItem.Clear();
     }

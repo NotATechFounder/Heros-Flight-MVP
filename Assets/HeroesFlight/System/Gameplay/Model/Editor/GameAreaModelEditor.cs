@@ -13,6 +13,7 @@ public class GameAreaModelEditor : Editor
     SerializedProperty areaNameProperty;
     SerializedProperty heroProgressionExpEarnedPerKillProperty;
     SerializedProperty portalPrefabProperty;
+    SerializedProperty crystalPrefabProperty;
     SerializedProperty angelsGambitLevelProperty;
     SerializedProperty spawnModelProperty;
     SerializedProperty mobDifficultyProperty;
@@ -25,6 +26,7 @@ public class GameAreaModelEditor : Editor
         areaNameProperty = serializedObject.FindProperty("areaName");
         heroProgressionExpEarnedPerKillProperty = serializedObject.FindProperty("heroProgressionExpEarnedPerKill");
         portalPrefabProperty = serializedObject.FindProperty("portalPrefab");
+        crystalPrefabProperty = serializedObject.FindProperty("crystalPrefab");
         angelsGambitLevelProperty = serializedObject.FindProperty("angelsGambitLevel");
         spawnModelProperty = serializedObject.FindProperty("spawnModel");
         mobDifficultyProperty = serializedObject.FindProperty("mobDifficulty");
@@ -43,6 +45,7 @@ public class GameAreaModelEditor : Editor
         EditorGUILayout.PropertyField(areaNameProperty);
         EditorGUILayout.PropertyField(heroProgressionExpEarnedPerKillProperty);
         EditorGUILayout.PropertyField(portalPrefabProperty);
+        EditorGUILayout.PropertyField(crystalPrefabProperty);
         EditorGUILayout.PropertyField(angelsGambitLevelProperty);
         EditorGUILayout.PropertyField(spawnModelProperty);
 

@@ -1,5 +1,6 @@
 using HeroesFlight.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
+using Pelumi.ObjectPool;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,5 +36,14 @@ public class LevelEnvironment : MonoBehaviour
     public ISpawnPointInterface GetSpawnpoint(SpawnType spawnType)
     {
         return spawnPointsCache[spawnType][Random.Range(0, spawnPointsCache[spawnType].Count)];
+    }
+
+    public List<ISpawnPointInterface> GetSpawnpoints(SpawnType spawnType)
+    {
+        if (!spawnPointsCache.ContainsKey(spawnType))
+        {
+          return  new();
+        }
+        return spawnPointsCache[spawnType];
     }
 }
