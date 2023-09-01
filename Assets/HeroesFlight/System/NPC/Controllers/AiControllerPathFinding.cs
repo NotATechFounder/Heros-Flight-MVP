@@ -67,8 +67,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
             
             if (isInknockback)
                 return;
-            
-            setter.target = null;
+            if(setter.target!=null)
+                setter.target = null;
             if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath))
             {
                 ai.destination = GetRandomPosition2D();
@@ -123,8 +123,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             var point = Random.insideUnitCircle * wanderDistance;
             if (m_Model.EnemySpawmType == SpawnType.GroundMob)
-                point += (Vector2)ai.position;
-
+                point.y = 0;
+            point += (Vector2)ai.position;
             return point;
         }
     }

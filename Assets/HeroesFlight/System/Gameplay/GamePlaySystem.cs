@@ -208,9 +208,10 @@ namespace HeroesFlight.System.Gameplay
             ChangeState(GameState.Ongoing);
         }
 
-        bool CheckLevel(out Level currentLevel)
+        bool CheckLevel(ref Level currentLevel)
         {
             currentLevel = container.GetLevel();
+            Debug.Log(currentLevel==null);
             if (currentLevel == null)
             {
                 ChangeState(GameState.Won);
@@ -510,14 +511,15 @@ namespace HeroesFlight.System.Gameplay
 
         public Level PreloadLvl()
         {
-            if (!CheckLevel(out Level currentLvl))
+            if (!CheckLevel(ref currentLevel))
             {
                 Debug.LogError("Current lvl loop model has 0 lvls");
                 return null;
             }
-            currentLevel = currentLvl;
+            
+            Debug.Log(currentLevel==null);
             SetUpLevelEnvironment();
-            return currentLvl;
+            return currentLevel;
         }
 
         public void SetUpLevelEnvironment()

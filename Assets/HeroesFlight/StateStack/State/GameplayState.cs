@@ -80,7 +80,7 @@ namespace HeroesFlight.StateStack.State
                                 HandleGameLoopFinish();
                                 break;
                             case GameState.Died:
-                                HandleGameLoopFinish();
+                               uiSystem.UiEventHandler.ReviveMenu.Open();
                                 break;
                             case GameState.Ended:
                                 break;
@@ -163,7 +163,37 @@ namespace HeroesFlight.StateStack.State
                             uiSystem.UiEventHandler.PuzzleMenu.Open,
                             ContinueGameLoop);
                     }
+                    
+                    void HandleGameLoopFinish()
+                    {
+                        if (dataSystem.RewardHandler.RewardPending)
+                        {
+                            var pendingRewards = dataSystem.RewardHandler.GetPendingRewards();
+                            var rewardsToConsume = new List<RewardModel>();
 
+                            if (pendingRewards.TryGetValue(RewardType.Hero, out var rewards))
+                            {
+                                foreach (var reward in rewards)
+                                {
+                                    if (reward.RewardType == RewardType.Hero)
+                                    {
+                                        var heroReward = reward as HeroRewardModel;
+                                        rewardsToConsume.Add(reward);
+                                        uiSystem.UiEventHandler.SummaryMenu.AddRewardEntry(
+                                            $"Unlocked new Hero - {heroReward.HeroType}");
+                                    }
+                                }
+                            }
+
+
+                            foreach (var reward in rewardsToConsume)
+                            {
+                                dataSystem.RewardHandler.ConsumeReward(reward);
+                            }
+                        }
+
+                        uiSystem.UiEventHandler.SummaryMenu.Open();
+                    }
                     void HandleReturnToMainMenu()
                     {
                         uiSystem.UiEventHandler.PauseMenu.OnQuitButtonClicked -= HandleReturnToMainMenu;
@@ -255,12 +285,13 @@ namespace HeroesFlight.StateStack.State
                                     npcSystem.Reset();
 
                                     newLevel = gamePlaySystem.PreloadLvl();
-
+                                    Debug.Log(newLevel==null);
                                     characterSystem.ResetCharacter(gamePlaySystem.GetPlayerSpawnPosition);
                                     characterSystem.SetCharacterControllerState(false);
                                 },
                                 () =>
                                 {
+                                    Debug.Log(newLevel==null);
                                     if (newLevel.LevelType == System.NPC.Model.LevelType.Combat)
                                     {
                                         CoroutineUtility.Start(ContinueGameLoopRoutine());
