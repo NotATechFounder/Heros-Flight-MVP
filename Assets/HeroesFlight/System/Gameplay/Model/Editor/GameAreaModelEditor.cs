@@ -1,11 +1,10 @@
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.NPC.Enum;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using static System.Security.Cryptography.ECCurve;
+
 
 [CustomEditor(typeof(GameAreaModel))]
 public class GameAreaModelEditor : Editor
