@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.FileManager.Enum;
+using HeroesFlight.System.FileManager.Model;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.NPC;
@@ -39,6 +43,7 @@ namespace HeroesFlight.StateStack.State
                     var npcSystem = GetService<NpcSystemInterface>();
                     var gameScene = $"{SceneType.GameScene}";
                     var characterSystem = GetService<CharacterSystemInterface>();
+                    var dataSystem = GetService<DataSystemInterface>();
                     uiSystem.OnReturnToMainMenuRequest += HandleReturnToMainMenu;
                     uiSystem.OnRestartLvlRequest += HandleLvlRestart;
                     uiSystem.OnReviveCharacterRequest += HandleCharacterRevive;
@@ -49,6 +54,8 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += ContinueGameLoop;
 
                     uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += gamePlaySystem.StoreRunReward;
+                    uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
+                    uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
                     gamePlaySystem.OnNextLvlLoadRequest += HandleContinueGameLoop;
                     gamePlaySystem.OnGameStateChange += HandleGameStateChanged;
 
@@ -56,7 +63,7 @@ namespace HeroesFlight.StateStack.State
                     {
                         gamePlaySystem.UseCharacterSpecial();
                     }
-                    
+
                     void HandleGameStateChanged(GameState newState)
                     {
                         switch (newState)
@@ -64,15 +71,45 @@ namespace HeroesFlight.StateStack.State
                             case GameState.Ongoing:
                                 break;
                             case GameState.Won:
-                                uiSystem.UiEventHandler.SummaryMenu.Open();
+
+                                dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
+                                    CharacterType.Storm));
+                                dataSystem.UnlockHero(CharacterType.Storm);
+                                Debug.Log("Granting STORM");
+
+                                HandleGameLoopFinish();
                                 break;
-                            case GameState.Lost:
-                                uiSystem.UiEventHandler.ReviveMenu.Open();
+                            case GameState.Died:
+                                HandleGameLoopFinish();
                                 break;
                             case GameState.Ended:
                                 break;
                             case GameState.WaitingPortal:
+
+                                Debug.Log(gamePlaySystem.CurrentLvlIndex);
+                                if (gamePlaySystem.CurrentLvlIndex == 3)
+                                {
+                                    dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
+                                        CharacterType.Lancer));
+                                    dataSystem.UnlockHero(CharacterType.Lancer);
+                                    Debug.Log("Granting LANCER");
+                                }
+
+                                // if (gamePlaySystem.CurrentLvlIndex == 7)
+                                // {
+                                //     dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
+                                //         CharacterType.Storm));
+                                //     dataSystem.UnlockHero(CharacterType.Storm);
+                                //     Debug.Log("Granting STORM");
+                                // }
+
+
                                 CoroutineUtility.Start(WaitingPortalRoutine());
+                                break;
+
+                            case GameState.TimeEnded:
+                                uiSystem.UiEventHandler.GameMenu.DisplayLevelMessage("TIME ENDED");
+                                CoroutineUtility.WaitForSeconds(1f, HandleGameLoopFinish);
                                 break;
                         }
                     }
@@ -85,13 +122,17 @@ namespace HeroesFlight.StateStack.State
 
                         gamePlaySystem.HandleHeroProgression();
 
-                        yield return new WaitUntil(() => uiSystem.UiEventHandler.GameMenu.IsExpComplete && uiSystem.UiEventHandler.HeroProgressionMenu.MenuStatus == UISystem.Menu.Status.Closed);
+                        yield return new WaitUntil(() =>
+                            uiSystem.UiEventHandler.GameMenu.IsExpComplete &&
+                            uiSystem.UiEventHandler.HeroProgressionMenu.MenuStatus == UISystem.Menu.Status.Closed);
 
                         yield return new WaitForSeconds(1f);
 
                         if (gamePlaySystem.EffectManager.CompletedLevel())
                         {
-                            yield return new WaitUntil(() =>  uiSystem.UiEventHandler.AngelPermanetCardMenu.MenuStatus == UISystem.Menu.Status.Closed);
+                            yield return new WaitUntil(() =>
+                                uiSystem.UiEventHandler.AngelPermanetCardMenu.MenuStatus ==
+                                UISystem.Menu.Status.Closed);
                         }
 
                         ShowLevelPortal();
@@ -118,10 +159,10 @@ namespace HeroesFlight.StateStack.State
 
                     void ShowGodBenevolencePrompt()
                     {
-                        uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation, uiSystem.UiEventHandler.PuzzleMenu.Open,
-                          ContinueGameLoop);
+                        uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
+                            uiSystem.UiEventHandler.PuzzleMenu.Open,
+                            ContinueGameLoop);
                     }
-
 
                     void HandleReturnToMainMenu()
                     {
@@ -130,11 +171,15 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.OnRestartLvlRequest -= HandleLvlRestart;
                         uiSystem.OnReviveCharacterRequest -= HandleCharacterRevive;
 
-                        uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= gamePlaySystem.HandleSingleLevelUp;   
+                        uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= gamePlaySystem.HandleSingleLevelUp;
 
                         uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= ContinueGameLoop;
 
                         uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= gamePlaySystem.StoreRunReward;
+
+                        uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked -= HandleGameLoopFinish;
+                        uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted -= HandleGameLoopFinish;
+
                         gamePlaySystem.OnNextLvlLoadRequest -= HandleContinueGameLoop;
                         gamePlaySystem.OnGameStateChange -= HandleGameStateChanged;
                         uiSystem.UiEventHandler.LoadingMenu.Open();
@@ -149,20 +194,29 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
                         uiSystem.UiEventHandler.AngelPermanetCardMenu.ResetMenu();
 
-                        uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent -= gamePlaySystem.HeroProgression.DecrementAttributeSP;
-                        uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent -= gamePlaySystem.HeroProgression.IncrementAttributeSP;
-                        uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -= () => gamePlaySystem.HeroProgression.HeroProgressionAttributeInfos;
-                        uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -= gamePlaySystem.HeroProgression.Confirm;
-                        uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -= gamePlaySystem.HeroProgression.ResetSP;
-                        uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -= gamePlaySystem.HeroProgressionCompleted;
+                        uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent -=
+                            gamePlaySystem.HeroProgression.DecrementAttributeSP;
+                        uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent -=
+                            gamePlaySystem.HeroProgression.IncrementAttributeSP;
+                        uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -= () =>
+                            gamePlaySystem.HeroProgression.HeroProgressionAttributeInfos;
+                        uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=
+                            gamePlaySystem.HeroProgression.Confirm;
+                        uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -=
+                            gamePlaySystem.HeroProgression.ResetSP;
+                        uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=
+                            gamePlaySystem.HeroProgressionCompleted;
 
                         gamePlaySystem.HeroProgression.OnEXPAdded -= uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
-                        gamePlaySystem.HeroProgression.OnLevelUp -= uiSystem.UiEventHandler.GameMenu.UpdateExpBarLevelUp;
-                        gamePlaySystem.HeroProgression.OnSpChanged -= uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
+                        gamePlaySystem.HeroProgression.OnLevelUp -=
+                            uiSystem.UiEventHandler.GameMenu.UpdateExpBarLevelUp;
+                        gamePlaySystem.HeroProgression.OnSpChanged -=
+                            uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
                         uiSystem.UiEventHandler.HeroProgressionMenu.ResetMenu();
 
 
-                        uiSystem.UiEventHandler.PuzzleMenu.OnPuzzleSolved -= gamePlaySystem.GodsBenevolence.ActivateGodsBenevolence;
+                        uiSystem.UiEventHandler.PuzzleMenu.OnPuzzleSolved -=
+                            gamePlaySystem.GodsBenevolence.ActivateGodsBenevolence;
 
                         m_SceneActionsQueue.Start(uiSystem.UiEventHandler.LoadingMenu.UpdateLoadingBar, () =>
                         {
@@ -196,27 +250,26 @@ namespace HeroesFlight.StateStack.State
                         {
                             System.NPC.Model.Level newLevel = null;
                             uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level to level transition
-                            {
-                                gamePlaySystem.ResetLogic();
-                                npcSystem.Reset();
-
-                                newLevel = gamePlaySystem.PreloadLvl();
-
-                                characterSystem.ResetCharacter(gamePlaySystem.GetPlayerSpawnPosition);
-                                characterSystem.SetCharacterControllerState(false);
-                            }, 
-                            ()=>
-                            {
-                                if (newLevel.LevelType == System.NPC.Model.LevelType.Combat)
                                 {
-                                    CoroutineUtility.Start(ContinueGameLoopRoutine());
-                                }
-                                else
-                                {
-                                    characterSystem.SetCharacterControllerState(true);
-                                }
+                                    gamePlaySystem.ResetLogic();
+                                    npcSystem.Reset();
 
-                            });
+                                    newLevel = gamePlaySystem.PreloadLvl();
+
+                                    characterSystem.ResetCharacter(gamePlaySystem.GetPlayerSpawnPosition);
+                                    characterSystem.SetCharacterControllerState(false);
+                                },
+                                () =>
+                                {
+                                    if (newLevel.LevelType == System.NPC.Model.LevelType.Combat)
+                                    {
+                                        CoroutineUtility.Start(ContinueGameLoopRoutine());
+                                    }
+                                    else
+                                    {
+                                        characterSystem.SetCharacterControllerState(true);
+                                    }
+                                });
                         });
                     }
 
@@ -247,7 +300,8 @@ namespace HeroesFlight.StateStack.State
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(gameScene);
                         SceneManager.SetActiveScene(loadedScene);
                         characterSystem.Init(loadedScene);
-                        characterSystem.SetCurrentCharacterType(uiSystem.UiEventHandler.CharacterSelectionMenu.selectedType);
+                        characterSystem.SetCurrentCharacterType(uiSystem.UiEventHandler.CharacterSelectionMenu
+                            .selectedType);
                         npcSystem.Init(loadedScene);
                         gamePlaySystem.Init(loadedScene, () =>
                         {
@@ -257,19 +311,28 @@ namespace HeroesFlight.StateStack.State
                             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += gamePlaySystem.EffectManager.AddAngelCardSO;
                             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
 
-                            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes += () => gamePlaySystem.HeroProgression.HeroProgressionAttributeInfos;
-                            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent += gamePlaySystem.HeroProgression.DecrementAttributeSP;
-                            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent += gamePlaySystem.HeroProgression.IncrementAttributeSP;
-                            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed += gamePlaySystem.HeroProgression.Confirm;
-                            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed += gamePlaySystem.HeroProgression.ResetSP;
-                            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed += gamePlaySystem.HeroProgressionCompleted;
+                            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes += () =>
+                                gamePlaySystem.HeroProgression.HeroProgressionAttributeInfos;
+                            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent +=
+                                gamePlaySystem.HeroProgression.DecrementAttributeSP;
+                            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent +=
+                                gamePlaySystem.HeroProgression.IncrementAttributeSP;
+                            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=
+                                gamePlaySystem.HeroProgression.Confirm;
+                            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed +=
+                                gamePlaySystem.HeroProgression.ResetSP;
+                            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=
+                                gamePlaySystem.HeroProgressionCompleted;
 
                             gamePlaySystem.HeroProgression.OnEXPAdded += uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
-                            gamePlaySystem.HeroProgression.OnLevelUp += uiSystem.UiEventHandler.GameMenu.UpdateExpBarLevelUp;
-                            gamePlaySystem.HeroProgression.OnSpChanged += uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
-        
+                            gamePlaySystem.HeroProgression.OnLevelUp +=
+                                uiSystem.UiEventHandler.GameMenu.UpdateExpBarLevelUp;
+                            gamePlaySystem.HeroProgression.OnSpChanged +=
+                                uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
 
-                           uiSystem.UiEventHandler.PuzzleMenu.OnPuzzleSolved += gamePlaySystem.GodsBenevolence.ActivateGodsBenevolence;
+
+                            uiSystem.UiEventHandler.PuzzleMenu.OnPuzzleSolved +=
+                                gamePlaySystem.GodsBenevolence.ActivateGodsBenevolence;
                         });
                         uiSystem.UiEventHandler.GameMenu.Open();
                         CoroutineUtility.WaitForSeconds(1f, () => // Run the first time the game is loaded
@@ -297,7 +360,5 @@ namespace HeroesFlight.StateStack.State
                     throw new ArgumentOutOfRangeException(nameof(evt.Action), evt.Action, null);
             }
         }
-
-       
     }
 }

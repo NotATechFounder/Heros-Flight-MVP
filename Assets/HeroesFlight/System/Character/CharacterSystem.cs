@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Character.Container;
 using HeroesFlight.System.Character.Enum;
 using HeroesFlight.System.Input;
@@ -15,9 +16,7 @@ namespace HeroesFlight.System.Character
         public CharacterSystem(InputSystemInterface inputSystem)
         {
             inputSystem.OnInput += HandleCharacterInput;
-            unlockedCharacters.Add(CharacterType.Tagon);
-            unlockedCharacters.Add(CharacterType.Lancer);
-            unlockedCharacters.Add(CharacterType.Storm);
+            
         }
 
         public CharacterControllerInterface CurrentCharacter => characterController;
@@ -25,7 +24,7 @@ namespace HeroesFlight.System.Character
         CharacterControllerInterface characterController;
         CharacterContainer container;
         CharacterType targetCharacterType;
-        List<CharacterType> unlockedCharacters = new();
+       
 
 
         public void Init(Scene scene = default, Action OnComplete = null)
@@ -60,21 +59,7 @@ namespace HeroesFlight.System.Character
             container.ResetCharacter(position);
         }
 
-        public void UpdateUnlockedClasses(CharacterType typeToUnlock)
-        {
-            if (unlockedCharacters.Contains(typeToUnlock))
-            {
-                Debug.Log("ALready unlocked");
-                return;
-            }
-
-            unlockedCharacters.Add(typeToUnlock);
-        }
-
-        public List<CharacterType> GetUnlockedClasses()
-        {
-            return unlockedCharacters;
-        }
+      
 
 
         void HandleCharacterInput(InputModel obj)

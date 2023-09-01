@@ -124,14 +124,14 @@ namespace HeroesFlight.System.UI
                     OnReviveCharacterRequest?.Invoke();
                     return true;
                 };
-                UiEventHandler.ReviveMenu.OnCloseButtonClicked += () =>
-                {
-                    UiEventHandler.SummaryMenu.Open();
-                };
-                UiEventHandler.ReviveMenu.OnCountDownCompleted += () =>
-                {
-                    UiEventHandler.SummaryMenu.Open();
-                };
+                // UiEventHandler.ReviveMenu.OnCloseButtonClicked += () =>
+                // {
+                //     UiEventHandler.SummaryMenu.Open();
+                // };
+                // UiEventHandler.ReviveMenu.OnCountDownCompleted += () =>
+                // {
+                //     UiEventHandler.SummaryMenu.Open();
+                // };
 
                 UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
                 {

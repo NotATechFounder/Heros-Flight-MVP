@@ -1,6 +1,6 @@
 using System;
 
-namespace HeroesFlight.System.Character.Enum
+namespace HeroesFlight.Common.Enum
 {
     [Serializable]
     public enum CharacterType

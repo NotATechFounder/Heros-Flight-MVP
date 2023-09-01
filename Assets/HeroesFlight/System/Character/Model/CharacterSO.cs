@@ -1,5 +1,5 @@
 using HeroesFlight.Common;
-using HeroesFlight.System.Character.Enum;
+using HeroesFlight.Common.Enum;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Character", menuName = "Character", order = 0)]

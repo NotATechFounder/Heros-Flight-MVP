@@ -2,9 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Character.Enum;
 using HeroesFlight.System.Environment;
+using HeroesFlight.System.FileManager.Enum;
+using HeroesFlight.System.FileManager.Model;
 using HeroesFlight.System.Gameplay.Container;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
@@ -326,9 +329,8 @@ namespace HeroesFlight.System.Gameplay
                     characterAttackController.ToggleControllerState(false);
                     characterSystem.SetCharacterControllerState(false);
                     //Temp rewarding player with unlock here
-                    dataSystemInterface.RewardHandler.GrantReward();
-                    characterSystem.UpdateUnlockedClasses(CharacterType.Lancer);
-                   
+                    dataSystemInterface.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,CharacterType.Lancer));
+                  
                     CoroutineUtility.WaitForSeconds(1f, () =>
                     {
                         ChangeState(GameState.Won);
@@ -369,7 +371,7 @@ namespace HeroesFlight.System.Gameplay
             // GameTimer.Pause();
             CoroutineUtility.WaitForSeconds(1f, () =>
             {
-                ChangeState(GameState.Lost);
+                ChangeState(GameState.Died);
             });
         }
 
@@ -487,7 +489,7 @@ namespace HeroesFlight.System.Gameplay
                                         if (currentState != GameState.Ongoing)
                                             return;
 
-                                        ChangeState(GameState.Lost);
+                                        ChangeState(GameState.TimeEnded);
                                     });
                             }, OnCountDownTimerUpdate);
                     });
