@@ -298,16 +298,21 @@ namespace HeroesFlight.StateStack.State
                         {
                             var pendingRewards = dataSystem.RewardHandler.GetPendingRewards();
                             var rewardsToConsume = new List<RewardModel>();
-                            foreach (var reward in pendingRewards)
+
+                            if (pendingRewards.TryGetValue(RewardType.Hero, out var rewards))
                             {
-                                if (reward.RewardType == RewardType.Hero)
+                                foreach (var reward in rewards)
                                 {
-                                    var heroReward = reward as HeroRewardModel;
-                                    rewardsToConsume.Add(reward);
-                                    uiSystem.UiEventHandler.SummaryMenu.AddRewardEntry(
-                                        $"Unlocked new Hero - {heroReward.HeroType}");
+                                    if (reward.RewardType == RewardType.Hero)
+                                    {
+                                        var heroReward = reward as HeroRewardModel;
+                                        rewardsToConsume.Add(reward);
+                                        uiSystem.UiEventHandler.SummaryMenu.AddRewardEntry(
+                                            $"Unlocked new Hero - {heroReward.HeroType}");
+                                    }
                                 }
                             }
+                           
 
                             foreach (var reward in rewardsToConsume)
                             {

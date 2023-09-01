@@ -44,7 +44,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             gameObject.SetActive(true);
         }
 
-        void OnCollisionEnter2D(Collision2D col)
+
+        void OnTriggerEnter2D(Collider2D col)
         {
             if (col.gameObject.TryGetComponent<IHealthController>(out var healthController))
             {
@@ -53,7 +54,5 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 gameObject.SetActive(false);
             }
         }
-
-      
     }
 }
