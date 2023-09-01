@@ -1,11 +1,18 @@
+using System;
+using StansAssets.Foundation.Patterns;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class EnemyProjectileAttackController : EnemyAttackControllerBase
     {
         [SerializeField] ProjectileControllerBase projectilePrefab;
+        [SerializeField] int projectileCount = 3;
+        [SerializeField] float spreadValue = 1f;
 
+       
 
         protected override void Update()
         {
@@ -35,10 +42,28 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             aiController.SetAttackState(false);
             animator.StartAttackAnimation(() =>
             {
-                var projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-                projectile.SetupProjectile(Damage, aiController.CurrentTarget,
-                    aiController.CurrentTarget.position - transform.position);
+              
+                for (int i = 0; i < projectileCount; i++)
+                {
+                   
+                    Vector2 direction = aiController.CurrentTarget.position - transform.position;
+                    var rng=new Vector2(Random.Range(-spreadValue,spreadValue), Random.Range(-spreadValue,spreadValue));
+                    var final = direction + rng;
+
+                    var projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+                    projectile.OnEnded += ResetProjectile;
+                    projectile.SetupProjectile(Damage, aiController.CurrentTarget,
+                        final );
+                }
+               
             });
+        }
+
+        void ResetProjectile(ProjecttileControllerInterface obj)
+        {
+            var projectile = obj as ProjectileControllerBase;
+            projectile.OnEnded -= ResetProjectile;
+            projectile.gameObject.SetActive(false);
         }
     }
 }

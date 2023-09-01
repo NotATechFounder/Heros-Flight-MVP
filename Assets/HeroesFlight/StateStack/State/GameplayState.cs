@@ -72,6 +72,12 @@ namespace HeroesFlight.StateStack.State
                             case GameState.Ongoing:
                                 break;
                             case GameState.Won:
+
+                                dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
+                                    CharacterType.Storm));
+                                dataSystem.UnlockHero(CharacterType.Storm);
+                                Debug.Log("Granting STORM");
+
                                 HandleGameLoopFinish();
                                 break;
                             case GameState.Died:
@@ -82,7 +88,7 @@ namespace HeroesFlight.StateStack.State
                             case GameState.WaitingPortal:
 
                                 Debug.Log(gamePlaySystem.CurrentLvlIndex);
-                                if (gamePlaySystem.CurrentLvlIndex == 1)
+                                if (gamePlaySystem.CurrentLvlIndex == 3)
                                 {
                                     dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
                                         CharacterType.Lancer));
@@ -90,17 +96,18 @@ namespace HeroesFlight.StateStack.State
                                     Debug.Log("Granting LANCER");
                                 }
 
-                                if (gamePlaySystem.CurrentLvlIndex == 1)
-                                {
-                                    dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
-                                        CharacterType.Storm));
-                                    dataSystem.UnlockHero(CharacterType.Storm);
-                                    Debug.Log("Granting STORM");
-                                }
+                                // if (gamePlaySystem.CurrentLvlIndex == 7)
+                                // {
+                                //     dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
+                                //         CharacterType.Storm));
+                                //     dataSystem.UnlockHero(CharacterType.Storm);
+                                //     Debug.Log("Granting STORM");
+                                // }
+
 
                                 CoroutineUtility.Start(WaitingPortalRoutine());
                                 break;
-                            
+
                             case GameState.TimeEnded:
                                 uiSystem.UiEventHandler.GameMenu.DisplayLevelMessage("TIME ENDED");
                                 CoroutineUtility.WaitForSeconds(1f, HandleGameLoopFinish);
@@ -312,7 +319,7 @@ namespace HeroesFlight.StateStack.State
                                     }
                                 }
                             }
-                           
+
 
                             foreach (var reward in rewardsToConsume)
                             {

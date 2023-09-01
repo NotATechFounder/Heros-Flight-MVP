@@ -5,7 +5,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public interface ProjecttileControllerInterface
     {
-        event Action OnEnded;
+        event Action<ProjecttileControllerInterface> OnEnded;
 
         void SetupProjectile(float targetDamage,Transform currentTarget,Vector2 targetDirection);
     }
