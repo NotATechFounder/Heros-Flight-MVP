@@ -28,7 +28,6 @@ namespace HeroesFlight.StateStack.State
                     Debug.Log(ApplicationState);
                     progressReporter.SetDone();
                     var uiSystem = GetService<IUISystem>();
-                    var characterSystem = GetService<CharacterSystemInterface>();
                     var dataSystem = GetService<DataSystemInterface>();
 
                     uiSystem.UiEventHandler.MainMenu.Open();
@@ -43,23 +42,14 @@ namespace HeroesFlight.StateStack.State
 
                     void HandleCharacterSelectionRequest()
                     {
-                        uiSystem.UiEventHandler.CharacterSelectionMenu.SetUnlockedCharacters(characterSystem.GetUnlockedClasses());
+                        uiSystem.UiEventHandler.CharacterSelectionMenu.SetUnlockedCharacters(dataSystem.GetUnlockedHeroes());
                         uiSystem.UiEventHandler.CharacterSelectionMenu.Open();
                     }
                     
                     uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed += HandleGameStartRequest;
                     uiSystem.UiEventHandler.MainMenu.OnCharacterSelectButtonPressed +=
                         HandleCharacterSelectionRequest;
-                    if (dataSystem.RewardHandler.RewardPending)
-                    {
-                       
-                        CoroutineUtility.WaitForSeconds(.2f, () =>
-                        {
-                            dataSystem.RewardHandler.ConsumeReward();
-                            uiSystem.UiEventHandler.RewardPopup.Open();
-                        });
-                       
-                    }
+                   
                     
                     break;
                 case StackAction.Paused:

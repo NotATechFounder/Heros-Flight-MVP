@@ -10,14 +10,17 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] float lifeTime;
         [SerializeField] float speed;
         Transform view;
-        public event Action OnEnded;
+        public event Action<ProjecttileControllerInterface> OnEnded;
         Vector2 currentDirection = default;
         float damage;
         float currentLifetime;
-
+        bool disabled;
 
         void Update()
         {
+            if (disabled)
+                return;
+            
             currentLifetime += Time.deltaTime;
             if (currentLifetime >= lifeTime)
             {
@@ -29,31 +32,33 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void DisableProjectile()
         {
-            OnEnded?.Invoke();
-            Destroy(this.gameObject);
+            disabled = true;
+            OnEnded?.Invoke(this);
+            Debug.Log("disabling projectile");
+         
         }
 
         public void SetupProjectile(float targetDamage, Transform currentTarget, Vector2 targetDirection)
         {
             currentDirection = targetDirection;
+            currentLifetime = 0;
             damage = targetDamage;
             view = transform.GetChild(0);
             var angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
             var targetRotation = Quaternion.AngleAxis(angle, view.forward);
             view.rotation = targetRotation;
+            disabled = false;
             gameObject.SetActive(true);
         }
 
-        void OnCollisionEnter2D(Collision2D col)
+
+        void OnTriggerEnter2D(Collider2D col)
         {
             if (col.gameObject.TryGetComponent<IHealthController>(out var healthController))
             {
                 healthController.DealDamage(new DamageModel(damage,DamageType.NoneCritical,AttackType.Regular));
-                OnEnded?.Invoke();
-                gameObject.SetActive(false);
+                DisableProjectile();
             }
         }
-
-      
     }
 }
