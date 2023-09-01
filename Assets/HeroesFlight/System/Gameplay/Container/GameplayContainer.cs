@@ -24,6 +24,8 @@ namespace HeroesFlight.System.Gameplay.Container
 
         public float HeroProgressionExpEarnedPerKill => currentModel.HeroProgressionExpEarnedPerKill;
 
+        public GameAreaModel CurrentModel => currentModel;
+
         public void Init()
         {
             portal = Instantiate(currentModel.PortalPrefab, transform.position, Quaternion.identity);

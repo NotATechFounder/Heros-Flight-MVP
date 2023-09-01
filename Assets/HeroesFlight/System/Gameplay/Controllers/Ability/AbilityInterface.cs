@@ -5,6 +5,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public interface AbilityInterface
     {
         bool ReadyToUse { get; }
-        void UseAbility(IHealthController target=null,Action onComplete=null);
+        void UseAbility(float damage, IHealthController target = null, Action onComplete = null);
     }
 }

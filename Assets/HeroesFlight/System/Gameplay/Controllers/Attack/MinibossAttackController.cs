@@ -49,7 +49,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (possibleAbilities.Count > 0)
             {
-                abilities[possibleAbilities.ElementAt(Random.Range(0,possibleAbilities.Count-1))].UseAbility(target);
+                abilities[possibleAbilities.ElementAt(Random.Range(0,possibleAbilities.Count-1))].UseAbility(aiController.GetDamage, target);
             }
         }
     }

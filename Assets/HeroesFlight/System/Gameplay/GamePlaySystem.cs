@@ -78,6 +78,7 @@ namespace HeroesFlight.System.Gameplay
         IHealthController miniBoss;
         IHealthController characterHealthController;
         BaseCharacterAttackController characterAttackController;
+        CharacterStatController characterStatController;
         CharacterVFXController characterVFXController;
         CharacterAbilityInterface characterAbility;
         CharacterSystemInterface characterSystem;
@@ -119,6 +120,9 @@ namespace HeroesFlight.System.Gameplay
             container.Init();
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
             container.SetStartingIndex(0);
+
+            npcSystem.NpcContainer.SetMobDifficultyHolder(container.CurrentModel.MobDifficulty);
+
             OnUltimateChargesChange?.Invoke(0);
 
             GameTimer = new CountDownTimer(container);
@@ -165,15 +169,15 @@ namespace HeroesFlight.System.Gameplay
         }
 
         public void UseCharacterSpecial()
-        {
-            
+        {          
             cameraController.SetCameraState(GameCameraType.Skill);
             characterHealthController.SetInvulnerableState(true);
             characterSystem.SetCharacterControllerState(false);
             characterAttackController.ToggleControllerState(false);
             environmentSystem.ParticleManager.Spawn(characterSystem.CurrentCharacter.CharacterSO.VFXData.UltVfx,
                 characterSystem.CurrentCharacter.CharacterTransform.position,Quaternion.Euler(new Vector3(-90,0,0)));
-            characterAbility.UseAbility(null, () =>
+            characterAbility.UseAbility(characterStatController.CurrentPhysicalDamage * characterSystem.CurrentCharacter.CharacterSO.UltimateData.DamageMultiplier,
+                null, () =>
             {
                 cameraController.SetCameraState(GameCameraType.Character);
                 characterSystem.SetCharacterControllerState(true);
@@ -207,7 +211,7 @@ namespace HeroesFlight.System.Gameplay
 
         void CreateLvL(Level currentLvl)
         {
-            npcSystem.SetSpawnModel(currentLvl);
+            npcSystem.SetSpawnModel(currentLvl, CurrentLvlIndex);
         }
 
         void SetupCharacter()
@@ -234,11 +238,13 @@ namespace HeroesFlight.System.Gameplay
             characterSystem.SetCharacterControllerState(false);
             cameraController.SetTarget(characterController.CharacterTransform.GetComponentInChildren<CameraTargetController>().transform);
             npcSystem.InjectPlayer(characterController.CharacterTransform);
-            EffectManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
-            BoosterManager.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
+
+            characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
+            EffectManager.Initialize(characterStatController);
+            BoosterManager.Initialize(characterStatController);
             CurrencySpawner.SetPlayer(characterController.CharacterTransform);
-            HeroProgression.Initialise(characterController.CharacterTransform.GetComponent<CharacterStatController>());
-            GodsBenevolence.Initialize(characterController.CharacterTransform.GetComponent<CharacterStatController>());
+            HeroProgression.Initialise(characterStatController);
+            GodsBenevolence.Initialize(characterStatController);
         }
 
         void HandleMinibossHealthChange(DamageModel damageModel)

@@ -8,7 +8,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         AiMoverInterface mover;
 
 
-        public override void Init(Transform player, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
+        public override void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
             statModifier = monsterStatModifier;
             mover = GetComponent<AiMoverInterface>();
@@ -23,6 +23,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
             OnInit();
             viewController.StartFadeIn(2f,Enable);
             wanderDistance = m_Model.WanderingDistance;
+            currentHealth = Mathf.RoundToInt(statModifier.CalculateAttack(health));
+            currentDamage = statModifier.CalculateAttack(damage);
             DisplayModifiyer(currentCardIcon);
         }
 

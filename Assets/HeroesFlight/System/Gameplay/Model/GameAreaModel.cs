@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HeroesFlight.System.NPC.Data;
 using HeroesFlight.System.NPC.Model;
+using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
 
 namespace HeroesFlight.System.Gameplay.Model
@@ -14,11 +15,13 @@ namespace HeroesFlight.System.Gameplay.Model
         [SerializeField] LevelPortal portalPrefab;
         [SerializeField] Level angelsGambitLevel;
         [SerializeField] private SpawnModel spawnModel;
+        [SerializeField] private MobDifficultyHolder mobDifficulty;
 
         public string AreaName => areaName;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
         public Level AngelsGambitLevel => angelsGambitLevel;
         public SpawnModel SpawnModel => spawnModel;
         public LevelPortal PortalPrefab => portalPrefab;
+        public MobDifficultyHolder MobDifficulty => mobDifficulty;
     }
 }
