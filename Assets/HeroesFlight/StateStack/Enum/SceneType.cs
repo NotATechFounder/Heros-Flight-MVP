@@ -5,6 +5,7 @@
         Default,
         GameScene,
         BonusScene,
-        UIScene
+        UIScene,
+        EnvironmentScene,
     }
 }

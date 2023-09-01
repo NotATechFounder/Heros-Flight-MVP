@@ -42,7 +42,7 @@ namespace HeroesFlight.StateStack.State
                             environmentSystem.Init(loadedScene);
                             GetService<IUISystem>().Init(loadedScene, () =>
                             {
-                                AppStateStack.State.Set(ApplicationState.MainMenu);
+                                AppStateStack.State.Set(ApplicationState.EnvironmentInitialization);
                             });
                         });
                        

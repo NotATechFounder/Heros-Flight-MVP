@@ -9,9 +9,11 @@ using HeroesFlight.System.Gameplay.Container;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC;
+using HeroesFlight.System.NPC.Controllers;
 using HeroesFlight.System.NPC.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
+using Pelumi.ObjectPool;
 using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
@@ -36,10 +38,6 @@ namespace HeroesFlight.System.Gameplay
         public AngelEffectManager EffectManager { get; private set; }
 
         public BoosterManager BoosterManager { get; private set; }
-
-        public BoosterSpawner BoosterSpawner { get; private set; }
-
-        public CurrencySpawner CurrencySpawner { get; private set; }
 
         public HeroProgression HeroProgression { get; private set;}
 
@@ -103,12 +101,8 @@ namespace HeroesFlight.System.Gameplay
             EffectManager = scene.GetComponentInChildren<AngelEffectManager>();
             container = scene.GetComponentInChildren<GameplayContainer>();
             BoosterManager = scene.GetComponentInChildren<BoosterManager>();
-            BoosterSpawner = scene.GetComponentInChildren<BoosterSpawner>();
             BoosterManager.OnBoosterActivated += HandleBoosterActivated;
             BoosterManager.OnBoosterContainerCreated += HandleBoosterWithDurationActivated;
-
-            CurrencySpawner = scene.GetComponentInChildren<CurrencySpawner>();
-            CurrencySpawner.Initialize(this);
 
             HeroProgression = scene.GetComponentInChildren<HeroProgression>();
 
@@ -123,6 +117,10 @@ namespace HeroesFlight.System.Gameplay
             OnUltimateChargesChange?.Invoke(0);
 
             GameTimer = new CountDownTimer(container);
+
+            environmentSystem.CurrencySpawner.OnCollected = HandleCurrencyCollected;
+
+            environmentSystem.BoosterSpawner.ActivateBooster = BoosterManager.ActivateBooster;
 
             OnComplete?.Invoke();
         }
@@ -150,7 +148,7 @@ namespace HeroesFlight.System.Gameplay
         public void ResetLogic()
         {
             activeEnemyHealthControllers.Clear();
-            BoosterSpawner.ClearAllBoosters(); 
+            environmentSystem.BoosterSpawner.ClearAllBoosters(); 
             // EffectManager.ResetAngelEffects();
             enemiesToKill = 0;
             GameTimer.Stop();
@@ -239,7 +237,7 @@ namespace HeroesFlight.System.Gameplay
             characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
             EffectManager.Initialize(characterStatController);
             BoosterManager.Initialize(characterStatController);
-            CurrencySpawner.SetPlayer(characterController.CharacterTransform);
+            environmentSystem.CurrencySpawner.SetPlayer(characterController.CharacterTransform);
             HeroProgression.Initialise(characterStatController);
             GodsBenevolence.Initialize(characterStatController);
         }
@@ -296,9 +294,8 @@ namespace HeroesFlight.System.Gameplay
             enemiesToKill--;
             environmentSystem.ParticleManager.Spawn("Loot_Spawn", iHealthController.HealthTransform.position,
                 Quaternion.Euler(new Vector3(-90,0,0)));
-            BoosterSpawner.SpawnBoostLoot(container.MobDrop, iHealthController.HealthTransform.position);
-            CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.HealthTransform.position);
-            CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10, iHealthController.HealthTransform.position);
+            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10, iHealthController.HealthTransform.position);
+            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10, iHealthController.HealthTransform.position);
             collectedHeroProgressionSp += container.HeroProgressionExpEarnedPerKill;
 
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
@@ -443,8 +440,6 @@ namespace HeroesFlight.System.Gameplay
 
         public void StartGameLoop()
         {
-            //TODO  modify here for  angels gambit
-
             switch (currentLevel.LevelType)
             {
                 case LevelType.Combat:
@@ -495,6 +490,7 @@ namespace HeroesFlight.System.Gameplay
 
         private void TriggerAngelsGambit()
         {
+            characterSystem.SetCharacterControllerState(false);
             EffectManager.TriggerAngelsGambit();
         }
 
@@ -514,9 +510,17 @@ namespace HeroesFlight.System.Gameplay
         {
             if (currentLevelEnvironment != null) GameObject.DestroyImmediate(currentLevelEnvironment.gameObject);
             currentLevelEnvironment = GameObject.Instantiate(currentLevel.LevelPrefab).GetComponent<LevelEnvironment>();
+
+            foreach (var spawnPoint in currentLevelEnvironment.GetSpawnpoints(HeroesFlightProject.System.NPC.Enum.SpawnType.Crystal))
+            {
+                Crystal crystal =  ObjectPoolManager.SpawnObject(container.CurrentModel.CrystalPrefab, spawnPoint.GetSpawnPosition(), Quaternion.identity);
+                IHealthController healthController = crystal.GetComponent<IHealthController>();
+                healthController.OnBeingDamaged += HandleCrystalDamaged;
+                healthController.OnDeath += OnCrystalDestroyed;
+            }
+
             cameraController.SetConfiner(currentLevelEnvironment.BoundsCollider);
             npcSystem.NpcContainer.SetSpawnPoints(currentLevelEnvironment.SpawnPointsCache);
-
             switch (currentLevel.LevelType)
             {
                 case LevelType.Combat:
@@ -527,6 +531,26 @@ namespace HeroesFlight.System.Gameplay
                     container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(HeroesFlightProject.System.NPC.Enum.SpawnType.Portal).GetSpawnPosition());
                     break;
             }
+        }
+
+        private void HandleCrystalDamaged(DamageModel model)
+        {
+            Crystal crystal = model.Target.GetComponent<Crystal>();
+            crystal.OnHit();
+            HandleEnemyDamaged(model);
+        }
+
+        private void OnCrystalDestroyed(IHealthController healthController)
+        {
+            healthController.OnBeingDamaged -= HandleCrystalDamaged;
+            healthController.OnDeath -= OnCrystalDestroyed;
+            Crystal crystal = healthController.HealthTransform.GetComponent<Crystal>();
+            environmentSystem.BoosterSpawner.SpawnBoostLoot(crystal.BoosterDropSO, crystal.transform.position);
+            for (int i = 0; i < crystal.GoldInBatch; i++)
+            {
+                environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, crystal.GoldAmount, crystal.transform.position);
+            }
+            ObjectPoolManager.ReleaseObject(crystal);
         }
 
         private void HandleBoosterActivated(BoosterSO sO, float arg2, Transform transform)
@@ -574,6 +598,19 @@ namespace HeroesFlight.System.Gameplay
         public void HeroProgressionCompleted()
         {
             characterVFXController.TriggerLevelUpAfterEffect();
+        }
+
+        private void HandleCurrencyCollected(string key, int amount)
+        {
+            switch (key)
+            {
+                case CurrencyKeys.Gold:
+                    AddGold(amount);
+                    break;
+                case CurrencyKeys.Experience:
+                    AddExperience(amount);
+                    break;
+            }
         }
     }
 }

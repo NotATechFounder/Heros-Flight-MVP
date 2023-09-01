@@ -48,7 +48,6 @@ namespace HeroesFlight.StateStack.State
 
                     uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += ContinueGameLoop;
 
-                    //uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed += ShowLevelPortal;
                     uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += gamePlaySystem.StoreRunReward;
                     gamePlaySystem.OnNextLvlLoadRequest += HandleContinueGameLoop;
                     gamePlaySystem.OnGameStateChange += HandleGameStateChanged;
@@ -136,8 +135,6 @@ namespace HeroesFlight.StateStack.State
 
                         uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= ContinueGameLoop;
 
-                        //uiSystem.UiEventHandler.AngelPermanetCardMenu.OnMenuClosed -= ShowLevelPortal;
-
                         uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= gamePlaySystem.StoreRunReward;
                         gamePlaySystem.OnNextLvlLoadRequest -= HandleContinueGameLoop;
                         gamePlaySystem.OnGameStateChange -= HandleGameStateChanged;
@@ -147,11 +144,10 @@ namespace HeroesFlight.StateStack.State
                         gamePlaySystem.Reset();
 
                         gamePlaySystem.EffectManager.OnTrigger -= uiSystem.UiEventHandler.AngelGambitMenu.Open;
-                        gamePlaySystem.EffectManager.OnPermanetCard -= uiSystem.UiEventHandler.AngelPermanetCardMenu
-                            .AcivateCardPermanetEffect;
+                        gamePlaySystem.EffectManager.OnPermanetCard -= uiSystem.UiEventHandler.AngelPermanetCardMenu .AcivateCardPermanetEffect;
                         uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= gamePlaySystem.EffectManager.Exists;
-                        uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -=
-                            gamePlaySystem.EffectManager.AddAngelCardSO;
+                        uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -=  gamePlaySystem.EffectManager.AddAngelCardSO;
+                        uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
                         uiSystem.UiEventHandler.AngelPermanetCardMenu.ResetMenu();
 
                         uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent -= gamePlaySystem.HeroProgression.DecrementAttributeSP;
@@ -229,13 +225,6 @@ namespace HeroesFlight.StateStack.State
                     {
                         yield return new WaitForSeconds(0.5f);
 
-                        //if (gamePlaySystem.CurrentLvlIndex % 2 == 0) // Open every second lvl
-                        //{
-                        //    uiSystem.UiEventHandler.AngelGambitMenu.Open();
-
-                        //    yield return new WaitUntil(() => uiSystem.UiEventHandler.AngelGambitMenu.MenuStatus == UISystem.Menu.Status.Closed);
-                        //}
-
                         if (gamePlaySystem.CurrentLvlIndex  != gamePlaySystem.MaxLvlIndex) // Open every second lvl
                         {
                             ShowGodBenevolencePrompt();
@@ -244,6 +233,11 @@ namespace HeroesFlight.StateStack.State
                         {
                             ContinueGameLoop();
                         }
+                    }
+
+                    void EnableMovement()
+                    {
+                        characterSystem.SetCharacterControllerState(true);
                     }
 
                     uiSystem.UiEventHandler.MainMenu.Close();
@@ -259,10 +253,10 @@ namespace HeroesFlight.StateStack.State
                         gamePlaySystem.Init(loadedScene, () =>
                         {
                             gamePlaySystem.EffectManager.OnTrigger += uiSystem.UiEventHandler.AngelGambitMenu.Open;
-                            gamePlaySystem.EffectManager.OnPermanetCard += uiSystem.UiEventHandler.AngelPermanetCardMenu
-                                .AcivateCardPermanetEffect;
+                            gamePlaySystem.EffectManager.OnPermanetCard += uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
                             uiSystem.UiEventHandler.AngelGambitMenu.CardExit += gamePlaySystem.EffectManager.Exists;
                             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += gamePlaySystem.EffectManager.AddAngelCardSO;
+                            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
 
                             uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes += () => gamePlaySystem.HeroProgression.HeroProgressionAttributeInfos;
                             uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent += gamePlaySystem.HeroProgression.DecrementAttributeSP;

@@ -46,8 +46,7 @@ public class BoosterItem : MonoBehaviour
         ApplyUpWardForce(launchForce);
 
         particle = ObjectPoolManager.SpawnObject(booster.BoosterFlare, transform).transform;
-        floatingRoutine = StartCoroutine(FloatingRoutine());
-       
+        floatingRoutine = StartCoroutine(FloatingRoutine());     
     }
 
     public void ApplyUpWardForce(float force)
@@ -62,11 +61,7 @@ public class BoosterItem : MonoBehaviour
         {
             if (OnBoosterInteracted.Invoke(this))
             {
-                isUsed = true;
-                StopCoroutine(floatingRoutine);
-                ObjectPoolManager.ReleaseObject(particle);
-                particle = null;
-                ObjectPoolManager.ReleaseObject(this);
+                Release();
             }
         }
     }
@@ -82,34 +77,12 @@ public class BoosterItem : MonoBehaviour
         }
     }
 
-    void OnDisable()
+    public void Release()
     {
-        if (particle != null)
-        {
-            StopCoroutine(floatingRoutine);
-            try
-            {
-                CoroutineUtility.WaitForEndOfFrame(() =>
-                {
-                    try
-                    {
-                        ObjectPoolManager.ReleaseObject(particle);
-                        particle = null;
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                        throw;
-                    }
-               
-                });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            
-           
-        }
+        isUsed = true;
+        StopCoroutine(floatingRoutine);
+        ObjectPoolManager.ReleaseObject(particle);
+        particle = null;
+        ObjectPoolManager.ReleaseObject(this);
     }
 }

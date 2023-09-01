@@ -37,3 +37,21 @@ public class KeyValue
         return Value;
     }
 }
+
+[System.Serializable]
+public struct RangeValue
+{
+    public float min;
+    public float max;
+
+    public RangeValue(float min, float max)
+    {
+        this.min = min;
+        this.max = max;
+    }
+
+    public float GetRandomValue()
+    {
+        return UnityEngine.Random.Range(min, max);
+    }
+}

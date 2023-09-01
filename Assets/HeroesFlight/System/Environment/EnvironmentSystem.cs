@@ -10,14 +10,21 @@ namespace HeroesFlight.System.Environment
         public void Init(Scene scene = default, Action onComplete = null)
         {
             ParticleManager = scene.GetComponent<ParticleManager>();
-            Debug.Log(ParticleManager == null);
+            BoosterSpawner = scene.GetComponent<BoosterSpawner>();
+            CurrencySpawner = scene.GetComponent<CurrencySpawner>();
         }
 
         public ParticleManager ParticleManager { get; private set; }
 
+        public BoosterSpawner BoosterSpawner { get; private set; }
+
+        public CurrencySpawner CurrencySpawner { get; private set; }
+
         public void Reset()
         {
             ParticleManager = null;
+            BoosterSpawner = null;
+            CurrencySpawner = null;
         }
     }
 }

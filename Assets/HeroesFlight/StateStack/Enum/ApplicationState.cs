@@ -5,6 +5,7 @@
         Initialization,
         UiInitialization,
         MainMenu,
-        Gameplay
+        Gameplay,
+        EnvironmentInitialization,
     }
 }

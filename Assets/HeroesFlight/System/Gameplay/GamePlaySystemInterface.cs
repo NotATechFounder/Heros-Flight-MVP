@@ -30,12 +30,9 @@ namespace HeroesFlight.System.Gameplay
 
         public event Action<int> OnCoinsCollected;
         public event Action<BoosterContainer> OnBoosterContainerCreated;
-        public CurrencySpawner CurrencySpawner { get; }
-
         public CountDownTimer GameTimer { get; }
         public AngelEffectManager EffectManager { get; }
         public BoosterManager BoosterManager { get; }
-        public BoosterSpawner BoosterSpawner { get; }
         public HeroProgression HeroProgression { get; }
         public GodsBenevolence GodsBenevolence { get; }
         public int CurrentLvlIndex { get; }
