@@ -12,7 +12,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] int projectileCount = 3;
         [SerializeField] float spreadValue = 1f;
 
-       
 
         protected override void Update()
         {
@@ -42,20 +41,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             aiController.SetAttackState(false);
             animator.StartAttackAnimation(() =>
             {
-              
                 for (int i = 0; i < projectileCount; i++)
                 {
-                   
                     Vector2 direction = aiController.CurrentTarget.position - transform.position;
-                    var rng=new Vector2(Random.Range(-spreadValue,spreadValue), Random.Range(-spreadValue,spreadValue));
+                    var rng = new Vector2(Random.Range(-spreadValue, spreadValue),
+                        Random.Range(-spreadValue, spreadValue));
                     var final = direction + rng;
 
                     var projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
                     projectile.OnEnded += ResetProjectile;
                     projectile.SetupProjectile(Damage, aiController.CurrentTarget,
-                        final );
+                        final);
                 }
-               
             });
         }
 
@@ -63,7 +60,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             var projectile = obj as ProjectileControllerBase;
             projectile.OnEnded -= ResetProjectile;
-            projectile.gameObject.SetActive(false);
+            Destroy(projectile.gameObject);
         }
     }
 }

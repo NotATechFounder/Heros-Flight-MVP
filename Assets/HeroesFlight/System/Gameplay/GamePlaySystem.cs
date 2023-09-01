@@ -179,7 +179,10 @@ namespace HeroesFlight.System.Gameplay
         }
 
         public void UseCharacterSpecial()
-        {          
+        {
+            if (characterHealthController.IsDead())
+                return;
+            
             cameraController.SetCameraState(GameCameraType.Skill);
             characterHealthController.SetInvulnerableState(true);
             characterSystem.SetCharacterControllerState(false);
@@ -301,9 +304,6 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleEnemyDeath(IHealthController iHealthController)
         {
-            if (currentState != GameState.Ongoing)
-                return;
-
             iHealthController.OnBeingDamaged -= HandleEnemyDamaged;
             iHealthController.OnDeath -= HandleEnemyDeath;
             activeEnemyHealthControllers.Remove(iHealthController);
@@ -315,6 +315,8 @@ namespace HeroesFlight.System.Gameplay
             collectedHeroProgressionSp += container.HeroProgressionExpEarnedPerKill;
 
             OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
+            if (currentState != GameState.Ongoing)
+                return;
 
             if (enemiesToKill <= 0)
             {
@@ -367,7 +369,7 @@ namespace HeroesFlight.System.Gameplay
             Debug.LogError($"character died and game state is {currentState}");
             if (currentState != GameState.Ongoing)
                 return;
-
+            characterAttackController.GetComponent<CharacterAnimationController>().StopUltSequence();
             //freezes engine?  
             // GameTimer.Pause();
             CoroutineUtility.WaitForSeconds(1f, () =>

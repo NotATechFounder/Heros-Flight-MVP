@@ -179,5 +179,10 @@ namespace HeroesFlight.System.Character
                     break;
             }
         }
+
+        public void StopUltSequence()
+        {
+            m_SkeletonAnimation.AnimationState.SetEmptyAnimation(2, 0f);
+        }
     }
 }
