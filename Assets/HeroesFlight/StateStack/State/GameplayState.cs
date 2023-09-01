@@ -109,7 +109,6 @@ namespace HeroesFlight.StateStack.State
                     {
                         CoroutineUtility.WaitForSeconds(0.5f, () =>
                         {
-                            gamePlaySystem.ResetLogic();
                             npcSystem.Reset();
                             characterSystem.ResetCharacter(gamePlaySystem.GetPlayerSpawnPosition);
                             characterSystem.SetCharacterControllerState(false);
@@ -278,6 +277,7 @@ namespace HeroesFlight.StateStack.State
                             uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level transition
                             {
                                 uiSystem.UiEventHandler.LoadingMenu.Close();
+                                gamePlaySystem.ResetLogic();
                                 gamePlaySystem.PreloadLvl();
                                 gamePlaySystem.CreateCharacter();                             
                             }

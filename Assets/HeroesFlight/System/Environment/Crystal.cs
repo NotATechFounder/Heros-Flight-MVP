@@ -1,4 +1,5 @@
 using HeroesFlight.System.Environment;
+using Pelumi.Juicer;
 using Pelumi.ObjectPool;
 using System;
 using System.Collections;
@@ -11,6 +12,8 @@ public class Crystal : MonoBehaviour
     public Action OnDestroyed;
 
     [SerializeField] BoosterDropSO boosterDropSO;
+    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] AnimationCurve hitEffectCurve;
 
     [Header("Gold")]
     [SerializeField] RangeValue goldRange;
@@ -23,6 +26,8 @@ public class Crystal : MonoBehaviour
 
     public void OnHit()
     {
-
+        spriteRenderer.material.JuicyFloatProperty("_HitEffectBlend", 1f, 0.25f)
+            .SetEase(hitEffectCurve)
+            .Start();
     }
 }

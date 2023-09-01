@@ -33,16 +33,6 @@ public class LevelEnvironment : MonoBehaviour
         }
     }
 
-    public List<GameObject> SpawnCrystals(GameObject cyrtsalPrefab)
-    {
-        List<GameObject> spawnedCrystals = new List<GameObject>();
-        foreach (ISpawnPointInterface spawnPoint in spawnPointsCache[SpawnType.Crystal])
-        {
-            spawnedCrystals.Add(ObjectPoolManager.SpawnObject(cyrtsalPrefab, spawnPoint.GetSpawnPosition(), Quaternion.identity));
-        }
-        return spawnedCrystals;
-    }
-
     public ISpawnPointInterface GetSpawnpoint(SpawnType spawnType)
     {
         return spawnPointsCache[spawnType][Random.Range(0, spawnPointsCache[spawnType].Count)];
@@ -50,6 +40,10 @@ public class LevelEnvironment : MonoBehaviour
 
     public List<ISpawnPointInterface> GetSpawnpoints(SpawnType spawnType)
     {
+        if (!spawnPointsCache.ContainsKey(spawnType))
+        {
+          return  new();
+        }
         return spawnPointsCache[spawnType];
     }
 }

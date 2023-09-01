@@ -94,6 +94,7 @@ namespace HeroesFlight.System.Gameplay
         float countDownDelay;
         LevelEnvironment currentLevelEnvironment;
         Level currentLevel;
+        List<Crystal> crystals = new List<Crystal>();
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -134,8 +135,7 @@ namespace HeroesFlight.System.Gameplay
 
 
         void ResetPlayerSubscriptions()
-        {
-           
+        {    
             characterHealthController.OnDeath -= HandleCharacterDeath;
             characterHealthController.OnBeingDamaged -= HandleCharacterDamaged;
             characterHealthController.OnHeal -= HandleCharacterHeal;
@@ -147,7 +147,19 @@ namespace HeroesFlight.System.Gameplay
 
         public void ResetLogic()
         {
+            Debug.Log("Resetting logic");
+
             activeEnemyHealthControllers.Clear();
+
+            foreach (var crystal in crystals)
+            {
+                IHealthController healthController = crystal.GetComponent<IHealthController>();
+                healthController.OnBeingDamaged -= HandleCrystalDamaged;
+                healthController.OnDeath -= OnCrystalDestroyed;
+                ObjectPoolManager.ReleaseObject(crystal);
+            }
+            crystals.Clear();
+
             environmentSystem.BoosterSpawner.ClearAllBoosters(); 
             // EffectManager.ResetAngelEffects();
             enemiesToKill = 0;
@@ -517,6 +529,7 @@ namespace HeroesFlight.System.Gameplay
                 IHealthController healthController = crystal.GetComponent<IHealthController>();
                 healthController.OnBeingDamaged += HandleCrystalDamaged;
                 healthController.OnDeath += OnCrystalDestroyed;
+                crystals.Add(crystal);
             }
 
             cameraController.SetConfiner(currentLevelEnvironment.BoundsCollider);
@@ -550,6 +563,7 @@ namespace HeroesFlight.System.Gameplay
             {
                 environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, crystal.GoldAmount, crystal.transform.position);
             }
+            crystals.Remove(crystal);
             ObjectPoolManager.ReleaseObject(crystal);
         }
 
