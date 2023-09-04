@@ -1,7 +1,5 @@
-using System;
-using StansAssets.Foundation.Patterns;
+using HeroesFlight.Common.Animation;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -55,6 +53,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 }
             });
         }
+
+        protected override void HandleAnimationEvents(AttackAnimationEvent obj) { }
 
         void ResetProjectile(ProjecttileControllerInterface obj)
         {

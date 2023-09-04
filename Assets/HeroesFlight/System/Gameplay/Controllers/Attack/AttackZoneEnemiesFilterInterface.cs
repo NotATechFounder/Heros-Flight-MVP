@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using HeroesFlight.System.Gameplay.Data.Animation;
+using HeroesFlight.Common.Animation;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers

@@ -7,6 +7,7 @@ using Pelumi.ObjectPool;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.Common.Enum;
 using UnityEngine;
 
 public class AresSword : MonoBehaviour

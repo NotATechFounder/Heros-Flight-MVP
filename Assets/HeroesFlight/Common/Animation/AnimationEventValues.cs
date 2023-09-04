@@ -1,4 +1,4 @@
-namespace HeroesFlight.System.Gameplay.Data.Animation
+namespace HeroesFlight.Common.Animation
 {
     public class AnimationEventValues
     {

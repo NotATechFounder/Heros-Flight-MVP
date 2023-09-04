@@ -1,7 +1,8 @@
 using System;
 using HeroesFlight.Common;
+using HeroesFlight.Common.Animation;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Character;
-using HeroesFlight.System.Gameplay.Data.Animation;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;

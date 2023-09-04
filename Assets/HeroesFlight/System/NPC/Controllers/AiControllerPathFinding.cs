@@ -78,7 +78,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void ProcessKnockBack()
         {
-            animator.PlayHitAnimation(() =>
+            animator.PlayHitAnimation(interraptAttackOnDamage,() =>
             {
                 ai.canMove = true;
             });

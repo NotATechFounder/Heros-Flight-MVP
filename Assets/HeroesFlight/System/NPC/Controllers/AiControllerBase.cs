@@ -17,6 +17,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         [SerializeField] protected bool useKnockback = true;
         [SerializeField] protected float knockbackDuration = 0.1f;
         [SerializeField] protected float knockbackForce = 5f;
+        [SerializeField] protected bool interraptAttackOnDamage = true;
         protected FlashEffect hitEffect;
         protected AiViewController viewController;
         protected AiAnimatorInterface animator;
@@ -101,7 +102,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public virtual void ProcessKnockBack()
         {
-            animator.PlayHitAnimation();
+            animator.PlayHitAnimation(interraptAttackOnDamage);
             hitEffect.Flash();
         }
 

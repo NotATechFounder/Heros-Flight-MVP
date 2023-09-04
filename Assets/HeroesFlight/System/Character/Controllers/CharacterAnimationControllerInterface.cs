@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using HeroesFlight.Common;
+using HeroesFlight.Common.Animation;
 using HeroesFlight.System.Character.Enum;
-using HeroesFlight.System.Gameplay.Data.Animation;
 using Spine.Unity;
 
 namespace HeroesFlight.System.Character
