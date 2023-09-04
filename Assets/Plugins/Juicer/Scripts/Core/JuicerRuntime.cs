@@ -68,6 +68,12 @@ namespace Pelumi.Juicer
             return this;
         }
 
+        public JuicerRuntime ChangeDuration(float newDuration)
+        {
+            _juicerRuntimeController.SetDuration(newDuration);
+            return this;
+        }
+
         public JuicerRuntime ChangeDesination<T>(T destination)
         {
             _juicerTargetParam.SetDestination(destination);
