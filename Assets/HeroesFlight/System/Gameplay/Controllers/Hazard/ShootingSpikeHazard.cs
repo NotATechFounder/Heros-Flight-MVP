@@ -18,11 +18,6 @@ public class ShootingSpikeHazard : EnironmentHazard
         StartCoroutine(Runtime());
     }
 
-    public override void Enable()
-    {
-  
-    }
-
     public override void Trigger()
     {
         isTriggered = true;
@@ -34,10 +29,6 @@ public class ShootingSpikeHazard : EnironmentHazard
         }, warningLineDuration,warningLineWidth);
     }
 
-    public override void Disable()
-    {
-
-    }
 
     public IEnumerator Runtime()
     {

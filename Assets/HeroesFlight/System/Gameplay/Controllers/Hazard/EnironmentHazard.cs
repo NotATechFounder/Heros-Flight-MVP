@@ -12,10 +12,6 @@ public abstract class EnironmentHazard : MonoBehaviour
 
     public abstract void Trigger();
 
-    public abstract void Enable();
-
-    public abstract void Disable();
-
     protected virtual IEnumerator ActivateCooldown()
     {
         isInCooldown = true;
