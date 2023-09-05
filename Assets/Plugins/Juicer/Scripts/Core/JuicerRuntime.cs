@@ -68,6 +68,12 @@ namespace Pelumi.Juicer
             return this;
         }
 
+        public JuicerRuntime ChangeDuration(float newDuration)
+        {
+            _juicerRuntimeController.SetDuration(newDuration);
+            return this;
+        }
+
         public JuicerRuntime ChangeDesination<T>(T destination)
         {
             _juicerTargetParam.SetDestination(destination);
@@ -77,6 +83,12 @@ namespace Pelumi.Juicer
         public JuicerRuntime SetDelay(float delay)
         {
             _juicerRuntimeController.SetStartDelay(delay);
+            return this;
+        }
+
+        public JuicerRuntime SetStepDelay(float delay)
+        {
+            _juicerRuntimeController.SetStepDelay(delay);
             return this;
         }
 
@@ -208,6 +220,7 @@ namespace Pelumi.Juicer
         protected float _duration;
         private bool _isPaused;
         private bool _isCompletedStep;
+        private float _stepDelay;
         private JuicerRuntimeEvent _juicerEvent = new JuicerRuntimeEvent();
 
         public JuicerRuntimeEvent JuicerEvent => _juicerEvent;
@@ -215,6 +228,7 @@ namespace Pelumi.Juicer
         public float Duration => _duration;
         public bool IsPaused => _isPaused;
         public bool IsCompletedStep => _isCompletedStep;
+        public float StepDelay => _stepDelay;
 
         public JuicerRuntimeController (float duration)
         {
@@ -234,6 +248,11 @@ namespace Pelumi.Juicer
         public void SetIsPaused(bool isPaused)
         {
             _isPaused = isPaused;
+        }
+
+        public void SetStepDelay(float stepDelay)
+        {
+            _stepDelay = stepDelay;
         }
 
         public void Process(float timeline)

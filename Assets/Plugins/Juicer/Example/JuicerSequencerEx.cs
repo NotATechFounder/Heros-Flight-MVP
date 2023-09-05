@@ -24,7 +24,7 @@ public class JuicerSequencerEx : MonoBehaviour
         foreach (Transform item in path)
         {
             jucierSequencer.Append(pathMover.JuicyLocalMove(item.position, duration));
-            jucierSequencer.Append( pathMover.GetComponent<MeshRenderer>().material.JuicyColour(Random.ColorHSV(), duration));
+            jucierSequencer.Append( pathMover.GetComponent<MeshRenderer>().material.JuicyMatColour(Random.ColorHSV(), duration));
             jucierSequencer.Delay(1f);
         }
 

@@ -250,7 +250,7 @@ namespace Pelumi.Juicer
         #endregion
 
         #region Material
-        public static JuicerRuntime JuicyColour(this Material material, Color to, float duration)
+        public static JuicerRuntime JuicyMatColour(this Material material, Color to, float duration)
         {
             Init();
             JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
@@ -272,7 +272,7 @@ namespace Pelumi.Juicer
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyFloatProperty(this Material material,string property, float to, float duration)
+        public static JuicerRuntime JuicyFloatProperty(this Material material, string property, float to, float duration)
         {
             Init();
             JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
@@ -457,6 +457,40 @@ namespace Pelumi.Juicer
             {
                 materialProperty.SetColor(propertyName, value);
                 renderer.SetPropertyBlock(materialProperty);
+            }, to);
+
+            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            return juicerRuntime;
+        }
+
+        #endregion
+
+        #region LineRenderer
+
+        public static JuicerRuntime JuicyWidth(this LineRenderer lineRenderer, float to, float duration)
+        {
+            Init();
+            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
+            juicerTargetParam.SetCurrentValue(() => lineRenderer.widthMultiplier);
+            juicerTargetParam.Set(lineRenderer.widthMultiplier, (value) => lineRenderer.widthMultiplier = value, to);
+            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            return juicerRuntime;
+        }
+
+        public static JuicerRuntime JuicyOpacity(this LineRenderer lineRenderer, float to, float duration)
+        {
+            Init();
+            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
+            MaterialPropertyBlock materialProperty = new MaterialPropertyBlock();
+            lineRenderer.GetPropertyBlock(materialProperty);
+            juicerTargetParam.SetCurrentValue(() => materialProperty.GetColor("_TintColor").a);
+
+            juicerTargetParam.Set(materialProperty.GetColor("_TintColor").a, (value) =>
+            {
+                Color color = materialProperty.GetColor("_TintColor");
+                color.a = value;
+                materialProperty.SetColor("_TintColor", color);
+                lineRenderer.SetPropertyBlock(materialProperty);
             }, to);
 
             JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
