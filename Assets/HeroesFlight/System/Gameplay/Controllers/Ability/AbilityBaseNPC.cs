@@ -10,6 +10,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         [SerializeField] AnimationReferenceAsset targetAnimation;
         [SerializeField] float coolDown;
+        [SerializeField] bool stopOnUse = true;
         AiAnimatorInterface animator;
         float timeSincelastUse;
         void Awake()
@@ -28,6 +29,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
+        public bool StopMovementOnUse => stopOnUse;
         public virtual bool ReadyToUse => timeSincelastUse <= 0;
         
 

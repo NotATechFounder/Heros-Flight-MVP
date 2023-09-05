@@ -171,5 +171,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             timeSinceAggravated = 0;
         }
+
+        public virtual void SetMovementState(bool canMove)
+        {
+            animator.SetMovementAnimation(canMove);
+        }
     }
 }

@@ -11,6 +11,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
 {
     public class AiAnimationController : MonoBehaviour, AiAnimatorInterface
     {
+        [SerializeField] AnimationReferenceAsset idleAnimation;
+        [SerializeField] AnimationReferenceAsset moveAniamtion;
         [SerializeField] AnimationReferenceAsset attackAnimation;
         [SerializeField] AnimationReferenceAsset deathAnimation;
         [SerializeField] AnimationReferenceAsset hitAnimation;
@@ -42,6 +44,19 @@ namespace HeroesFlightProject.System.NPC.Controllers
             skeletonAnimation.Skeleton.ScaleX = velocity.x >= 0 ? 1f : -1f;
         }
 
+
+        public void SetMovementAnimation(bool isMoving)
+        {
+            var targetTrack = isMoving ? moveAniamtion : idleAnimation;
+            var currentTrack = skeletonAnimation.AnimationState.GetCurrent(movementTrackIndex);
+            if (currentTrack == null)
+                return;
+            
+            if ( currentTrack.Animation.Name.Equals(targetTrack.Animation.Name) || currentTrack.Animation.Name.Equals(deathAnimation.Animation.Name))
+                return;
+            
+            skeletonAnimation.AnimationState.SetAnimation(movementTrackIndex, targetTrack, true);
+        }
 
         public void StartAttackAnimation(Action onCompleteAction)
         {

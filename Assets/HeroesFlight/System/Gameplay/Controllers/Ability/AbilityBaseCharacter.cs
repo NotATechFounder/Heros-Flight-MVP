@@ -9,6 +9,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class AbilityBaseCharacter : MonoBehaviour,CharacterAbilityInterface
     {
+        [SerializeField] bool stopOnUse;
         protected AnimationReferenceAsset[] targetAnimations;
         protected  CharacterAnimationControllerInterface animator;
         int targetCharges = 0;
@@ -20,6 +21,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
+        public bool StopMovementOnUse => stopOnUse;
         public bool ReadyToUse=> currentCharges >= targetCharges;
 
         public virtual void UseAbility(float damage, IHealthController target = null, Action onComplete = null)

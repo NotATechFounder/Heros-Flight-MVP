@@ -5,6 +5,7 @@ using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -78,7 +79,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected virtual void DealDamage(int i, Collider2D[] collider2Ds)
         {
             Debug.Log("detected player");
-            target.DealDamage(new DamageModel(Damage, DamageType.NoneCritical, AttackType.Regular));
+            var baseDamage = Damage;
+            
+            float criticalChance = aiController.AgentModel.AiData.CriticalHitChance;
+            bool isCritical = Random.Range(0, 100) <= criticalChance;
+
+            float damageToDeal = isCritical
+                ? baseDamage * aiController.AgentModel.AiData.CriticalHitChance
+                : baseDamage;
+
+            var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
+            var damageModel = new DamageModel(damageToDeal, type, AttackType.Regular);
+            target.DealDamage(damageModel);
             aiController.SetAttackState(false);
             OnHitTarget?.Invoke();
         }
