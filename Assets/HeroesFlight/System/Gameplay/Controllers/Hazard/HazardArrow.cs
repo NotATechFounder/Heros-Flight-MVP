@@ -54,10 +54,8 @@ public class HazardArrow : MonoBehaviour
     {
         if (disabled) return;
 
-        if (detectLayer == (detectLayer | (1 << col.gameObject.layer)))
+        if (IsInLayerMask( col.gameObject.layer))
         {
-            Debug.Log(col.name);
-
             if (col.TryGetComponent(out IHealthController healthController))
             {
                 float damage = StatCalc.GetValueOfPercentage(healthPercentage, healthController.CurrentHealth);
@@ -66,5 +64,10 @@ public class HazardArrow : MonoBehaviour
 
             DisableProjectile();
         }
+    }
+
+    public bool IsInLayerMask(int layer)
+    {
+        return detectLayer == (detectLayer | (1 << layer));
     }
 }

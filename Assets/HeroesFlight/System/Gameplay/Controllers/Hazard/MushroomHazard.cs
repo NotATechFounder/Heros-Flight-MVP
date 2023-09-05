@@ -55,7 +55,6 @@ public class MushroomHazard : EnironmentHazard
     private float poisonDamageTimer;
     private bool isEffectActive;
 
-
     private void Start()
     {
         detectorObserver.OnEnter += OnEnterDetectZone;
