@@ -150,8 +150,6 @@ namespace HeroesFlight.System.Gameplay
 
         public void ResetLogic()
         {
-            Debug.Log("Resetting logic");
-
             activeEnemyHealthControllers.Clear();
 
             foreach (var crystal in crystals)
@@ -517,8 +515,7 @@ namespace HeroesFlight.System.Gameplay
                 Debug.LogError("Current lvl loop model has 0 lvls");
                 return null;
             }
-            
-            Debug.Log(currentLevel==null);
+
             SetUpLevelEnvironment();
             return currentLevel;
         }

@@ -108,7 +108,6 @@ namespace UISystem
             transitionEffect.SetOnStart(() => transitionPanel.gameObject.SetActive(true));
             transitionEffect.AddTimeEvent(0.5f, () =>
             {
-                Debug.Log(" transitionEffect Half Complete");
                 OnEndTransitionHalfComplete?.Invoke();
             });
             transitionEffect.SetOnComplected(() =>
