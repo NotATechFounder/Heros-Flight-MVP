@@ -5,7 +5,6 @@ using System;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Linq;
-using System.Text;
 
 namespace Pelumi.Juicer
 {
@@ -36,9 +35,15 @@ namespace Pelumi.Juicer
         ReplaceText
     }
 
+    public enum ShakeRandomnessMode
+    {
+        Full,
+        Harmonic
+    }
+
     public static class JuicerCore
     {
-        public static IEnumerator Do<T>(T startingValue, Action<T> valueToModify, T destination, JuicerRuntimeParam juicerRuntimeParam, JuicerRuntimeController juicerRuntimeController, bool forwardDir = true)
+        public static IEnumerator Do<T>(T startingValue, JuicerSetter<T> valueToModify, T destination, JuicerRuntimeParam juicerRuntimeParam, JuicerRuntimeController juicerRuntimeController)
         {
             float currentDelay = juicerRuntimeController.StartDelay;
 
@@ -52,18 +57,22 @@ namespace Pelumi.Juicer
 
             float i = 0.0f;
             float rate = 1.0f / juicerRuntimeController.Duration;
-            bool forward = forwardDir; // Flag to indicate the animation direction
+            bool forward = true; // Flag to indicate the animation direction
             int loopCount = 0;
 
             T previousDestination = destination;
 
             while (true)
             {
-
                 if (!juicerRuntimeController.IsPaused)
                 {
                     float timeScale = juicerRuntimeParam.TimeMode == TimeMode.Unscaled ? Time.unscaledDeltaTime : Time.deltaTime;
                     i += forward ? timeScale * rate : -timeScale * rate; // Increment or decrement based on direction
+
+                    if (juicerRuntimeController.Target.Equals(null)) // Check if the target is destroyed
+                    {
+                        yield break;
+                    }
 
                     valueToModify.Invoke(GetValue(startingValue, destination, juicerRuntimeParam, i));
 
@@ -71,7 +80,7 @@ namespace Pelumi.Juicer
 
                     if ((forward && i >= 1.0f) || (!forward && i <= 0.0f))
                     {
-                        if (juicerRuntimeParam.LoopCount == 0 || (juicerRuntimeParam.LoopCount > 0 && loopCount >= juicerRuntimeParam.LoopCount))
+                        if(juicerRuntimeParam.LoopCount == 0 || (juicerRuntimeParam.LoopCount > 0 && loopCount >= juicerRuntimeParam.LoopCount))
                         {
                             juicerRuntimeController.OnCompleted();
                             yield break;
@@ -82,11 +91,9 @@ namespace Pelumi.Juicer
                             juicerRuntimeController.OnCompleteStep();
 
                             currentDelay = juicerRuntimeController.StepDelay;
-
-                            while (currentDelay > 0.0f)
+                            while (currentDelay > 0)
                             {
-                                if (!juicerRuntimeController.IsPaused)
-                                    currentDelay -= juicerRuntimeParam.TimeMode == TimeMode.Unscaled ? Time.unscaledDeltaTime : Time.deltaTime;
+                                if (!juicerRuntimeController.IsPaused) currentDelay -= juicerRuntimeParam.TimeMode == TimeMode.Unscaled ? Time.unscaledDeltaTime : Time.deltaTime;
                                 yield return null;
                             }
 
@@ -105,6 +112,7 @@ namespace Pelumi.Juicer
                                     break;
 
                                 case LoopType.Incremental:
+
                                     previousDestination = destination;
                                     destination = AddValue( destination , SubtractValue(destination, startingValue));
                                     startingValue = previousDestination;
@@ -124,51 +132,23 @@ namespace Pelumi.Juicer
         {
             switch (startingValue)
             {
-                case float floatValue:
-                    return (T)(object)(Mathf.Lerp(floatValue, (float)(object)destination, GetEaseValue(juicerRuntimeParam, i)));
+                case float floatValue when destination is float destFloatValue:
+                    return (T)(object)Mathf.Lerp(floatValue, destFloatValue, GetEaseValue(juicerRuntimeParam, i));
 
-                case Vector3 vectorValue:
-                    return (T)(object)Vector3.Lerp(vectorValue, (Vector3)(object)destination, GetEaseValue(juicerRuntimeParam, i));
+                case Vector3 vectorValue when destination is Vector3 destVectorValue:
+                    return (T)(object)Vector3.Lerp(vectorValue, destVectorValue, GetEaseValue(juicerRuntimeParam, i));
 
-                case Quaternion quaternionValue:
-                    return (T)(object)Quaternion.Lerp(quaternionValue, (Quaternion)(object)destination, GetEaseValue(juicerRuntimeParam, i));
+                case Quaternion quaternionValue when destination is Quaternion destQuaternionValue:
+                    return (T)(object)Quaternion.Lerp(quaternionValue, destQuaternionValue, GetEaseValue(juicerRuntimeParam, i));
 
-                case Color colorValue:
-                    return (T)(object)Color.Lerp(colorValue, (Color)(object)destination, GetEaseValue(juicerRuntimeParam, i));
+                case Color colorValue when destination is Color destColorValue:
+                    return (T)(object)Color.Lerp(colorValue, destColorValue, GetEaseValue(juicerRuntimeParam, i));
 
-                case Vector4 vectorValue:
-                    return (T)(object)Vector4.Lerp(vectorValue, (Vector4)(object)destination, GetEaseValue(juicerRuntimeParam, i));
+                case Vector4 vectorValue when destination is Vector4 destVectorValue:
+                    return (T)(object)Vector4.Lerp(vectorValue, destVectorValue, GetEaseValue(juicerRuntimeParam, i));
 
-                case string stringValue:
-                        return (T)(object)StringLerp(stringValue, (string)(object)destination, juicerRuntimeParam, i);
-
-                default:
-                    Debug.LogError("Type not supported");
-                    return default(T);
-            }
-        }
-
-        public static T ConvertToType<T>( T value)
-        {
-            switch (value)
-            {
-                case float floatValue:
-                    return (T)(object)(float)(object)0;
-
-                case Vector3 vectorValue:
-                    return (T)(object)(Vector3)(object)Vector3.zero;
-
-                case Quaternion quaternionValue:
-                    return (T)(object)(Quaternion)(object)Quaternion.identity;
-
-                case Color colorValue:
-                    return (T)(object)(Color)(object)value;
-
-                case Vector4 vectorValue:
-                    return (T)(object)(Vector4)(object)Vector4.zero ;
-
-                case string stringValue:
-                    return (T)(object)(string)(object)"";
+                case string stringValue when destination is string destStringValue:
+                        return (T)(object)StringLerp(stringValue, destStringValue, juicerRuntimeParam, i);
 
                 default:
                     Debug.LogError("Type not supported");
@@ -180,28 +160,28 @@ namespace Pelumi.Juicer
         {
             switch (first)
             {
-                case float floatValue:
-                    return (T)(object)(floatValue + (float)(object)second);
+                case float floatValue when second is float secondFloatValue:
+                    return (T)(object)(floatValue + secondFloatValue);
 
-                case Vector3 vectorValue:
+                case Vector3 vectorValue when second is Vector3 secondVectorValue:
                     //object secondVectorValue = (object)second;
                     //if (secondVectorValue == null)
                     //{
                     //    secondVectorValue = Vector3.zero;
                     //}
 
-                    return (T)(object)(vectorValue + (Vector3)(object)second);
+                    return (T)(object)(vectorValue + secondVectorValue);
 
-                case Quaternion quaternionValue:
-                    return (T)(object)AddQuaternion(quaternionValue, (Quaternion)(object)second);
+                case Quaternion quaternionValue when second is Quaternion secondQuaternionValue:
+                    return (T)(object)AddQuaternion(quaternionValue, secondQuaternionValue);
 
-                case Color colorValue:
-                    return (T)(object)(colorValue + (Color)(object)second);
+                case Color colorValue when second is Color secondColorValue:
+                    return (T)(object)(colorValue + secondColorValue);
 
-                case Vector4 vectorValue:
-                    return (T)(object)(vectorValue + (Vector4)(object)second);
+                case Vector4 vectorValue when second is Vector4 secondVector4Value:
+                    return (T)(object)(vectorValue + secondVector4Value);
 
-                case string stringValue:
+                case string stringValue when second is string secondStringValue:
                     return (T)(object)(stringValue);
 
                 default:
@@ -214,20 +194,20 @@ namespace Pelumi.Juicer
         {
             switch (first)
             {
-                case float floatValue:
-                    return (T)(object)(floatValue - (float)(object)second);
+                case float floatValue when second is float secondFloatValue:
+                    return (T)(object)(floatValue - secondFloatValue);
 
-                case Vector3 vectorValue:
-                    return (T)(object)(vectorValue - (Vector3)(object)second);
+                case Vector3 vectorValue when second is Vector3 secondVectorValue:
+                    return (T)(object)(vectorValue - secondVectorValue);
 
-                case Quaternion quaternionValue:
-                    return (T)(object)SubtractQuaternion(quaternionValue , (Quaternion)(object)second);
+                case Quaternion quaternionValue when second is Quaternion secondQuaternionValue:
+                    return (T)(object)SubtractQuaternion(quaternionValue , secondQuaternionValue);
 
-                case Color colorValue:
-                    return (T)(object)(colorValue - (Color)(object)second);
+                case Color colorValue when second is Color secondColorValue:
+                    return (T)(object)(colorValue - secondColorValue);
 
-                case Vector4 vectorValue:
-                    return (T)(object)(vectorValue - (Vector4)(object)second);
+                case Vector4 vectorValue when second is Vector4 secondVector4Value:
+                    return (T)(object)(vectorValue - secondVector4Value);
 
                 case string stringValue:
                     return (T)(object)(stringValue);
@@ -295,18 +275,6 @@ namespace Pelumi.Juicer
             }
         }
 
-        public static T ConvertToTarget<T>(this object _target)
-        {
-            if (_target is T convertedTarget)
-            {
-                Debug.Log(convertedTarget.ToString());
-                return convertedTarget;
-            }
-
-            // Handle other conversion cases if needed
-            throw new InvalidCastException($"Cannot convert {_target.GetType().Name} to {typeof(T).Name}");
-        }
-
         public static float TextToFloat(this string text)
         {
             if (float.TryParse(text, out float result))
@@ -332,6 +300,71 @@ namespace Pelumi.Juicer
             );
             return result;
         }
+
+        public static IEnumerator Shake(Vector3 original, JuicerSetter<Vector3> valueToModify, float duration, Vector3 strength, int vibrato, float randomness, bool fadeOut, ShakeRandomnessMode randomnessMode)
+        {
+            Vector3 originalPosition = original;
+            Vector3 startPosition = original;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < duration)
+            {
+                float timeMultiplier = Mathf.Pow(elapsedTime / duration, 2f); // Gradually reduce the vibration strength over time
+                Vector3 randomOffset = Vector3.zero;
+
+                if (randomnessMode == ShakeRandomnessMode.Full)
+                {
+                    randomOffset = new Vector3(
+                        UnityEngine.Random.Range(-strength.x, strength.x),
+                        UnityEngine.Random.Range(-strength.y, strength.y),
+                        UnityEngine.Random.Range(-strength.z, strength.z)
+                    );
+                }
+                else if (randomnessMode == ShakeRandomnessMode.Harmonic)
+                {
+                    float randomAngle = UnityEngine.Random.Range(0f, Mathf.PI * 2f);
+                    float randomMagnitude = UnityEngine.Random.Range(0f, Mathf.Clamp01(randomness / 180f)) * strength.magnitude;
+
+                    randomOffset = new Vector3(
+                        Mathf.Cos(randomAngle) * randomMagnitude,
+                        Mathf.Sin(randomAngle) * randomMagnitude,
+                        Mathf.Cos(randomAngle) * randomMagnitude
+                    );
+                }
+
+                Vector3 vibratoOffset = Vector3.zero;
+                if (vibrato > 0)
+                {
+                    float vibratoTime = elapsedTime * vibrato;
+                    vibratoOffset = new Vector3(
+                        Mathf.Sin(vibratoTime) * timeMultiplier * strength.x,
+                        Mathf.Sin(vibratoTime) * timeMultiplier * strength.y,
+                        Mathf.Sin(vibratoTime) * timeMultiplier * strength.z
+                    );
+                }
+
+                valueToModify?.Invoke(originalPosition + randomOffset + vibratoOffset);
+
+                elapsedTime += Time.deltaTime;
+
+                yield return null;
+            }
+
+            if (fadeOut)
+            {
+                while (elapsedTime > 0f)
+                {
+                    float fadeAmount = Mathf.Clamp01(elapsedTime / duration);
+
+                    valueToModify?.Invoke(Vector3.Lerp(originalPosition, startPosition, fadeAmount));
+
+                    elapsedTime -= Time.deltaTime;
+                    yield return null;
+                }
+            }
+
+            valueToModify?.Invoke(originalPosition);
+        }
     }
 
     public class CoroutineHandle : IEnumerator
@@ -339,7 +372,7 @@ namespace Pelumi.Juicer
         public event Action<CoroutineHandle> OnCompleted;
         public bool IsDone { get; private set; }
 
-        public Coroutine Coroutine;
+        public Coroutine Coroutine { get; private set; }
         public object Current {get;}
         public bool MoveNext() => !IsDone;
         public void Reset() { }
@@ -360,7 +393,7 @@ namespace Pelumi.Juicer
     public class WaitUntilJuicerComplected : CustomYieldInstruction
     {
         private JuicerRuntime _juicerRuntime;
-        public override bool keepWaiting => !_juicerRuntime.IsFinished();
+        public override bool keepWaiting => !_juicerRuntime.IsFinished;
 
         public WaitUntilJuicerComplected(JuicerRuntime juicerRuntime)
         {
@@ -371,7 +404,7 @@ namespace Pelumi.Juicer
     public class WaitUntilJuicerComplectedOrStep : CustomYieldInstruction
     {
         private JuicerRuntime _juicerRuntime;
-        public override bool keepWaiting => !_juicerRuntime.IsFinished() && !_juicerRuntime.IsComplectedRound();
+        public override bool keepWaiting => !_juicerRuntime.IsFinished && !_juicerRuntime.IsComplectedRound();
 
         public WaitUntilJuicerComplectedOrStep(JuicerRuntime juicerRuntime)
         {

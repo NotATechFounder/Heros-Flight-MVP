@@ -285,13 +285,11 @@ namespace HeroesFlight.StateStack.State
                                     npcSystem.Reset();
 
                                     newLevel = gamePlaySystem.PreloadLvl();
-                                    Debug.Log(newLevel==null);
                                     characterSystem.ResetCharacter(gamePlaySystem.GetPlayerSpawnPosition);
                                     characterSystem.SetCharacterControllerState(false);
                                 },
                                 () =>
                                 {
-                                    Debug.Log(newLevel==null);
                                     if (newLevel.LevelType == System.NPC.Model.LevelType.Combat)
                                     {
                                         CoroutineUtility.Start(ContinueGameLoopRoutine());

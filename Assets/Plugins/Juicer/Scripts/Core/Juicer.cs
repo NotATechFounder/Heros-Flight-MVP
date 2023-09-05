@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -32,7 +33,6 @@ namespace Pelumi.Juicer
 
         public static void StopCoroutine(CoroutineHandle coroutineHandle)
         {
-            if (JuicerController == null) return;
             Init();
             JuicerController.StopCoroutine(coroutineHandle.Coroutine);
         }
@@ -41,425 +41,422 @@ namespace Pelumi.Juicer
         {
             return new CoroutineHandle(owner, coroutine);
         }
+
+        private static IEnumerator  RunActionAfterInstruction(YieldInstruction instruction, JuicerCallBack action)
+        {
+            yield return instruction;
+            action.Invoke();
+        }
+
+        private static IEnumerator RunActionAfterInstruction(CustomYieldInstruction instruction, JuicerCallBack action)
+        {
+            yield return instruction;
+            action.Invoke();
+        }
         #endregion
 
         #region Generic
-        public static JuicerRuntime To(float start, Action<float> setter, float end, float duration)
+        public static JuicerRuntimeCore<float> To<T>(T target, float start, JuicerSetter<float> setter, float end, float duration)
         {
             Init();
-
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => start);
-            juicerTargetParam.Set(start, setter, end);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (target ,() => start,  setter,  end, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime To(Vector3 start, Action<Vector3> setter, Vector3 end, float duration)
+        public static JuicerRuntimeCore<Vector3> To<T>(T target, Vector3 start, JuicerSetter<Vector3> setter, Vector3 end, float duration)
         {
             Init();
-
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => start);
-            juicerTargetParam.Set(start, setter, end);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Vector3> juicerRuntime = new JuicerRuntimeCore<Vector3>
+            (target, () => start, setter, end,duration);
             return juicerRuntime;
+        }
+
+        public static Coroutine WaitForSeconds(float duration, JuicerCallBack OnComplete)
+        {
+            Init();
+            return JuicerController.StartCoroutine(RunActionAfterInstruction(new WaitForSeconds(duration), OnComplete));
+        }
+
+        public static Coroutine WaitForEndOfFrame(JuicerCallBack OnComplete)
+        {
+            Init();
+            return JuicerController.StartCoroutine(RunActionAfterInstruction(new WaitForEndOfFrame(), OnComplete));
+        }
+
+        public static Coroutine WaitForFixedUpdate(JuicerCallBack OnComplete)
+        {
+            Init();
+            return JuicerController.StartCoroutine(RunActionAfterInstruction(new WaitForFixedUpdate(), OnComplete));
+        }
+
+        public static Coroutine WaitForCustomYieldInstruction(CustomYieldInstruction instruction, JuicerCallBack OnComplete)
+        {
+            Init();
+            return JuicerController.StartCoroutine(RunActionAfterInstruction(instruction, OnComplete));
         }
         #endregion
 
         #region Transform - Scale
-        public static JuicerRuntime JuicyScale(this Transform transform, Vector3 to, float duration)
+        public static JuicerRuntimeCore<Vector3> JuicyScale(this Transform transform, Vector3 to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.localScale);
-            juicerTargetParam.Set(transform.localScale, (value) => transform.localScale = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+
+            JuicerRuntimeCore<Vector3> juicerRuntime = new JuicerRuntimeCore<Vector3>
+            (transform,
+                () => transform.localScale,
+                (value) =>
+                {
+                    transform.localScale = value;
+                },
+                to, duration
+            );
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyScale(this Transform transform, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyScale(this Transform transform, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.localScale.x);
-            juicerTargetParam.Set(transform.localScale.x, (value) => transform.localScale = new Vector3(value, value, value), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (transform,
+                () => transform.localScale.x,
+                (value) => transform.localScale = new Vector3(to, to, to),
+                to, duration
+            );
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyScaleX(this Transform transform, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyScaleX(this Transform transform, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.localScale.x);
-            juicerTargetParam.Set(transform.localScale.x, (value) => transform.localScale = new Vector3(value, transform.localScale.y, transform.localScale.z), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (transform,
+                () => transform.localScale.x,
+                (value) => transform.localScale = new Vector3(value, transform.localScale.y, transform.localScale.z),
+                to, duration
+            );
+            
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyScaleY(this Transform transform, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyScaleY(this Transform transform, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.localScale.y);
-            juicerTargetParam.Set(transform.localScale.y, (value) => transform.localScale = new Vector3(transform.localScale.x, value, transform.localScale.z), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (transform, () => transform.localScale.y, (value) => transform.localScale = new Vector3(transform.localScale.x, value, transform.localScale.z),to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyScaleZ(this Transform transform, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyScaleZ(this Transform transform, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.localScale.z);
-            juicerTargetParam.Set(transform.localScale.z, (value) => transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, value), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (transform, () => transform.localScale.z, (value) => transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, value), to, duration);
             return juicerRuntime;
         }
+
+        public static CoroutineHandle JuicyShakeScale(this Transform transform, float duration, Vector3 strength, int vibrato = 10, float randomness = 90f, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
+        {
+            Init();
+            return StartCoroutine(JuicerCore.Shake(transform.localScale, (value) => transform.localScale = value, duration, strength, vibrato, randomness, fadeOut, randomnessMode));
+        }
+
         #endregion
 
         #region Transform - World Position
-        public static JuicerRuntime JuicyMove(this Transform transform, Vector3 to, float duration)
+        public static JuicerRuntimeCore<Vector3> JuicyMove(this Transform transform, Vector3 to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.position);
-            juicerTargetParam.Set(transform.position, (value) => transform.position = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Vector3> juicerRuntime = new JuicerRuntimeCore<Vector3>
+            (transform, () => transform.position, (value) => transform.position = value,to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyMoveX(this Transform transform, float to, float duration, JuicerRuntimeParam juicerRuntimeParam = null)
+        public static JuicerRuntimeCore<float> JuicyMoveX(this Transform transform, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.position.x);
-            juicerTargetParam.Set(transform.position.x, (value) => transform.position = new Vector3(value, transform.position.y, transform.position.z), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (transform, () => transform.position.x, (value) => transform.position = new Vector3(value, transform.position.y, transform.position.z), to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyMoveY(this Transform transform, float to, float duration, JuicerRuntimeParam juicerRuntimeParam = null)
+        public static JuicerRuntimeCore<float> JuicyMoveY(this Transform transform, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.position.y);
-            juicerTargetParam.Set(transform.position.y, (value) => transform.position = new Vector3(transform.position.x, value, transform.position.z), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (transform, () => transform.position.y, (value) => transform.position = new Vector3(transform.position.x, value, transform.position.z), to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyMoveZ(this Transform transform, float to, float duration, JuicerRuntimeParam juicerRuntimeParam = null)
+        public static JuicerRuntimeCore<float> JuicyMoveZ(this Transform transform, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.position.z);
-            juicerTargetParam.Set(transform.position.z, (value) => transform.position = new Vector3(transform.position.x, transform.position.y, value), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (transform, () => transform.position.z, (value) => transform.position = new Vector3(transform.position.x, transform.position.y, value), to, duration);
             return juicerRuntime;
         }
 
-        #endregion
+#endregion
 
         #region Transform - Local Position
 
-        public static JuicerRuntime JuicyLocalMove(this Transform transform, Vector3 to, float duration)
+        public static JuicerRuntimeCore<Vector3> JuicyLocalMove(this Transform transform, Vector3 to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.position);
-            juicerTargetParam.Set(transform.localPosition, (value) => transform.localPosition = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Vector3> juicerRuntime = new JuicerRuntimeCore<Vector3>
+            (transform, () => transform.localPosition, (value) => transform.localPosition = value, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyLocalMoveX(this Transform transform, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyLocalMoveX(this Transform transform, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.localPosition);
-            juicerTargetParam.Set(transform.localPosition.x, (value) => transform.localPosition = new Vector3(value, transform.localPosition.y, transform.localPosition.z), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (transform, () => transform.localPosition.x, (value) => transform.localPosition = new Vector3(value, transform.localPosition.y, transform.localPosition.z), to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyLocalMoveY(this Transform transform, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyLocalMoveY(this Transform transform, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.localPosition.y);
-            juicerTargetParam.Set(transform.localPosition.y, (value) => transform.localPosition = new Vector3(transform.localPosition.x, value, transform.localPosition.z), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (transform, () => transform.localPosition.y, (value) => transform.localPosition = new Vector3(transform.localPosition.x, value, transform.localPosition.z), to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyLocalMoveZ(this Transform transform, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyLocalMoveZ(this Transform transform, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.localPosition.z);
-            juicerTargetParam.Set(transform.localPosition.z, (value) => transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, value), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (transform, () => transform.localPosition.z, (value) => transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, value), to, duration);
             return juicerRuntime;
+        }
+
+        public static CoroutineHandle JuicyShakePosition(this Transform transform, float duration, Vector3 strength, int vibrato = 10, float randomness = 90f, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
+        {
+            Init();
+            return StartCoroutine(JuicerCore.Shake(transform.localPosition, (value) => transform.localPosition = value, duration, strength, vibrato, randomness, fadeOut, randomnessMode));
         }
         #endregion
 
         #region Transform - World Rotation
-        public static JuicerRuntime JuicyRotate(this Transform transform, Vector3 to, float duration)
+        public static JuicerRuntimeCore<Vector3> JuicyRotate(this Transform transform, Vector3 to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.eulerAngles);
-            juicerTargetParam.Set(transform.eulerAngles, (value) => transform.eulerAngles = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Vector3> juicerRuntime = new JuicerRuntimeCore<Vector3>
+            (transform, () => transform.eulerAngles, (value) => transform.eulerAngles = value, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyRotateQuaternion(this Transform transform, Quaternion to, float duration)
+        public static JuicerRuntimeCore<Quaternion> JuicyRotateQuaternion(this Transform transform, Quaternion to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.rotation);
-            juicerTargetParam.Set(transform.rotation, (value) => transform.rotation = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Quaternion> juicerRuntime = new JuicerRuntimeCore<Quaternion>
+            (transform, () => transform.rotation, (value) => transform.rotation = value, to, duration);
             return juicerRuntime;
         }
         #endregion
 
         #region Transform - Local Rotation
-        public static JuicerRuntime JuicyLocalRotate(this Transform transform, Vector3 to, float duration)
+        public static JuicerRuntimeCore<Vector3> JuicyLocalRotate(this Transform transform, Vector3 to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.localEulerAngles);
-            juicerTargetParam.Set(transform.localEulerAngles, (value) => transform.localEulerAngles = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Vector3> juicerRuntime = new JuicerRuntimeCore<Vector3>
+            (transform, () => transform.localEulerAngles, (value) => transform.localEulerAngles = value, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyLocalRotateQuaternion(this Transform transform, Quaternion to, float duration)
+        public static JuicerRuntimeCore<Quaternion> JuicyLocalRotateQuaternion(this Transform transform, Quaternion to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => transform.localRotation);
-            juicerTargetParam.Set(transform.localRotation, (value) => transform.localRotation = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Quaternion> juicerRuntime = new JuicerRuntimeCore<Quaternion>
+            (transform, () => transform.localRotation, (value) => transform.localRotation = value, to, duration);
             return juicerRuntime;
+        }
+
+        public static CoroutineHandle JuicyShakeRotation(this Transform transform, float duration, Vector3 strength, int vibrato = 10, float randomness = 90f, bool fadeOut = true, ShakeRandomnessMode randomnessMode = ShakeRandomnessMode.Full)
+        {
+            Init();
+            return StartCoroutine(JuicerCore.Shake(transform.localEulerAngles, (value) => transform.rotation = Quaternion.Euler(value), duration, strength, vibrato, randomness, fadeOut, randomnessMode));
         }
         #endregion
 
         #region Material
-        public static JuicerRuntime JuicyMatColour(this Material material, Color to, float duration)
+        public static JuicerRuntimeCore<Color> JuicyColour(this Material material, Color to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => material.color);
-            juicerTargetParam.Set(material.color, (value) => material.color = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Color> juicerRuntime = new JuicerRuntimeCore<Color>
+            (material, () => material.color, (value) => material.color = value, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyAlpha(this Material material, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyAlpha(this Material material, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            Color color = material.color;
-
-            juicerTargetParam.SetCurrentValue(() => material.color);
-            juicerTargetParam.Set(color.a, (value) => material.color = new Color(color.r, color.g, color.b, value), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (material, () => material.color.a, (value) => material.color = new Color(material.color.r, material.color.g, material.color.b, value), to, duration);
             return juicerRuntime;
         }
 
         public static JuicerRuntime JuicyFloatProperty(this Material material, string property, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => material.GetFloat(property));
-            juicerTargetParam.Set(material.GetFloat(property), (value) => material.SetFloat(property, value), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+                (material ,() => material.GetFloat(property), (value) => material.SetFloat(property, value), to, duration);
             return juicerRuntime;
         }
 
         public static JuicerRuntime JuicyVectorProperty(this Material material, string property, Vector4 to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => material.GetVector(property));
-            juicerTargetParam.Set(material.GetVector(property), (value) => material.SetVector(property, value), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Vector4> juicerRuntime = new JuicerRuntimeCore<Vector4>
+                (material, () => material.GetVector(property), (value) => material.SetVector(property, value), to, duration);
             return juicerRuntime;
         }
 
         public static JuicerRuntime JuicyColourProperty(this Material material, string property, Color to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            Color color = material.GetColor(property);
-            juicerTargetParam.SetCurrentValue(() => material.GetColor(property));
-            juicerTargetParam.Set(color, (value) => material.SetColor(property, value), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Color> juicerRuntime = new JuicerRuntimeCore<Color>
+                (material, () => material.GetColor(property), (value) => material.SetColor(property, value), to, duration);
+
             return juicerRuntime;
         }
-
         #endregion
 
         #region UI
-        public static JuicerRuntime JuicyAlpha(this CanvasGroup canvasGroup, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyAlpha(this CanvasGroup canvasGroup, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => canvasGroup.alpha);
-            juicerTargetParam.Set(canvasGroup.alpha, (value) => canvasGroup.alpha = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (canvasGroup, () => canvasGroup.alpha, (value) => canvasGroup.alpha = value, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyFillAmount(this Image image, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyFillAmount(this Image image, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => image.fillAmount);
-            juicerTargetParam.Set(image.fillAmount, (value) => image.fillAmount = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (image, () => image.fillAmount, (value) => image.fillAmount = value, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyColour(this Image image, Color to, float duration)
+        public static JuicerRuntimeCore<Color> JuicyColour(this Image image, Color to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => image.color);
-            juicerTargetParam.Set(image.color, (value) => image.color = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Color> juicerRuntime = new JuicerRuntimeCore<Color>
+            (image, () => image.color, (value) => image.color = value, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyColour(this TMP_Text textMeshPro, Color to, float duration)
+        public static JuicerRuntimeCore<Color> JuicyColour(this TMP_Text textMeshPro, Color to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => textMeshPro.color);
-            juicerTargetParam.Set(textMeshPro.color, (value) => textMeshPro.color = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Color> juicerRuntime = new JuicerRuntimeCore<Color>
+            (textMeshPro, () => textMeshPro.color, (value) => textMeshPro.color = value, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyAlpha(this TMP_Text textMeshPro, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyAlpha(this TMP_Text textMeshPro, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => textMeshPro.color.a);
-            juicerTargetParam.Set(textMeshPro.color.a, (value) => textMeshPro.color = new Color(textMeshPro.color.r, textMeshPro.color.g, textMeshPro.color.b, value), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (textMeshPro, () => textMeshPro.color.a, (value) => textMeshPro.color = new Color(textMeshPro.color.r, textMeshPro.color.g, textMeshPro.color.b, value), to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyAlpha(this Image image, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyAlpha(this Image image, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => image.color.a);
-            juicerTargetParam.Set(image.color.a, (value) => image.color = new Color(image.color.r, image.color.g, image.color.b, value), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (image, () => image.color.a, (value) => image.color = new Color(image.color.r, image.color.g, image.color.b, value), to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyText(this TMP_Text textMeshPro, string to, float duration)
+        public static JuicerRuntimeCore<string> JuicyText(this TMP_Text textMeshPro, string to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => textMeshPro.text);
-            juicerTargetParam.Set(textMeshPro.text, (value) => textMeshPro.text = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<string> juicerRuntime = new JuicerRuntimeCore<string>
+            (textMeshPro, () => textMeshPro.text, (value) => textMeshPro.text = value, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyTextNumber(this TMP_Text textMeshPro, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyTextNumber(this TMP_Text textMeshPro, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            float.TryParse(textMeshPro.text, out float currentAmount);
-            juicerTargetParam.SetCurrentValue(() => textMeshPro.text.TextToFloat());
-            juicerTargetParam.Set(currentAmount, (value) => textMeshPro.text = value.ToString("F0"), to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (textMeshPro, () => float.Parse(textMeshPro.text), (value) => textMeshPro.text = value.ToString(), to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyScroll(this ScrollRect scrollRect, Vector3 to, float duration)
+        public static JuicerRuntimeCore<Vector3> JuicyScroll(this ScrollRect scrollRect, Vector3 to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => scrollRect.content.localPosition);
-            juicerTargetParam.Set(scrollRect.content.localPosition, (value) => scrollRect.content.localPosition = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Vector3> juicerRuntime = new JuicerRuntimeCore<Vector3>
+            (scrollRect, () => scrollRect.normalizedPosition, (value) => scrollRect.normalizedPosition = value, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyValue(this Slider slider, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyValue(this Slider slider, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => slider.value);
-            juicerTargetParam.Set(slider.value, (value) => slider.value = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+            (slider, () => slider.value, (value) => slider.value = value, to, duration);
             return juicerRuntime;
         }
         #endregion
 
         #region Renderer
-        public static JuicerRuntime JuicyFloatProperty(this Renderer renderer, string propertyName, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyFloatProperty(this Renderer renderer, string propertyName, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
             MaterialPropertyBlock materialProperty = new MaterialPropertyBlock();
-            renderer.GetPropertyBlock(materialProperty);
-            juicerTargetParam.SetCurrentValue(() => materialProperty.GetFloat(propertyName));
-
-            juicerTargetParam.Set(materialProperty.GetFloat(propertyName), (value) =>
-            {
-                materialProperty.SetFloat(propertyName, value);
-                renderer.SetPropertyBlock(materialProperty);
-            }, to);
-
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+                (renderer, () =>
+                {
+                    renderer.GetPropertyBlock(materialProperty);
+                    return materialProperty.GetFloat(propertyName);
+                }, (value) =>
+                {
+                    materialProperty.SetFloat(propertyName, value);
+                    renderer.SetPropertyBlock(materialProperty);
+                }, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyVectorProperty(this Renderer renderer, string propertyName, Vector4 to, float duration)
+        public static JuicerRuntimeCore<Vector4> JuicyVectorProperty(this Renderer renderer, string propertyName, Vector4 to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
             MaterialPropertyBlock materialProperty = new MaterialPropertyBlock();
-            renderer.GetPropertyBlock(materialProperty);
-            juicerTargetParam.SetCurrentValue(() => materialProperty.GetVector(propertyName));
-
-            juicerTargetParam.Set(materialProperty.GetVector(propertyName), (value) =>
-            {
-                materialProperty.SetVector(propertyName, value);
-                renderer.SetPropertyBlock(materialProperty);
-            }, to);
-
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Vector4> juicerRuntime = new JuicerRuntimeCore<Vector4>
+                (renderer, () =>
+                {
+                    renderer.GetPropertyBlock(materialProperty);
+                    return materialProperty.GetVector(propertyName);
+                }, (value) =>
+                {
+                    materialProperty.SetVector(propertyName, value);
+                    renderer.SetPropertyBlock(materialProperty);
+                }, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyColorProperty(this Renderer renderer, string propertyName, Color to, float duration)
+        public static JuicerRuntimeCore<Color> JuicyColorProperty(this Renderer renderer, string propertyName, Color to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
             MaterialPropertyBlock materialProperty = new MaterialPropertyBlock();
-            renderer.GetPropertyBlock(materialProperty);
-            juicerTargetParam.SetCurrentValue(() => materialProperty.GetColor(propertyName));
-
-            juicerTargetParam.Set(materialProperty.GetColor(propertyName), (value) =>
-            {
-                materialProperty.SetColor(propertyName, value);
-                renderer.SetPropertyBlock(materialProperty);
-            }, to);
-
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<Color> juicerRuntime = new JuicerRuntimeCore<Color>
+                (renderer, () =>
+                {
+                    renderer.GetPropertyBlock(materialProperty);
+                    return materialProperty.GetColor(propertyName);
+                }, (value) =>
+                {
+                    materialProperty.SetColor(propertyName, value);
+                    renderer.SetPropertyBlock(materialProperty);
+                }, to, duration);
             return juicerRuntime;
         }
 
@@ -467,36 +464,29 @@ namespace Pelumi.Juicer
 
         #region LineRenderer
 
-        public static JuicerRuntime JuicyWidth(this LineRenderer lineRenderer, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyWidth(this LineRenderer lineRenderer, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            juicerTargetParam.SetCurrentValue(() => lineRenderer.widthMultiplier);
-            juicerTargetParam.Set(lineRenderer.widthMultiplier, (value) => lineRenderer.widthMultiplier = value, to);
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+                (lineRenderer, () => lineRenderer.widthMultiplier, (value) => lineRenderer.widthMultiplier = value, to, duration);
             return juicerRuntime;
         }
 
-        public static JuicerRuntime JuicyOpacity(this LineRenderer lineRenderer, float to, float duration)
+        public static JuicerRuntimeCore<float> JuicyStartWidth(this LineRenderer lineRenderer, float to, float duration)
         {
             Init();
-            JuicerTargetParam juicerTargetParam = new JuicerTargetParam();
-            MaterialPropertyBlock materialProperty = new MaterialPropertyBlock();
-            lineRenderer.GetPropertyBlock(materialProperty);
-            juicerTargetParam.SetCurrentValue(() => materialProperty.GetColor("_TintColor").a);
-
-            juicerTargetParam.Set(materialProperty.GetColor("_TintColor").a, (value) =>
-            {
-                Color color = materialProperty.GetColor("_TintColor");
-                color.a = value;
-                materialProperty.SetColor("_TintColor", color);
-                lineRenderer.SetPropertyBlock(materialProperty);
-            }, to);
-
-            JuicerRuntime juicerRuntime = new JuicerRuntime(duration, juicerTargetParam);
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+                (lineRenderer, () => lineRenderer.startWidth, (value) => lineRenderer.startWidth = value, to, duration);
             return juicerRuntime;
         }
 
+        public static JuicerRuntimeCore<float> JuicyEndWidth(this LineRenderer lineRenderer, float to, float duration)
+        {
+            Init();
+            JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
+                (lineRenderer, () => lineRenderer.endWidth, (value) => lineRenderer.endWidth = value, to, duration);
+            return juicerRuntime;
+        }
         #endregion
     }
 }

@@ -594,6 +594,7 @@ namespace HeroesFlight.System.Gameplay
             dataSystemInterface.AddCurency(CurrencyKeys.Experience, collectedXp);
             collectedGold = 0;
             collectedXp = 0;
+            collectedHeroProgressionSp = 0;
         }
 
         private void HandleBoosterWithDurationActivated(BoosterContainer container)

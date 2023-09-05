@@ -20,7 +20,7 @@ public class WarningLine : MonoBehaviour
 
     private Vector2 emitterEnd;
 
-    JuicerRuntime warmUpEffect;
+    JuicerRuntimeCore<float> warmUpEffect;
     JuicerRuntime colorEffect;
     JuicerRuntime triggerEffect;
 
@@ -36,7 +36,7 @@ public class WarningLine : MonoBehaviour
             triggerEffect.Start();
         });
 
-        colorEffect = lineRenderer.material.JuicyMatColour(endColor, 1f);
+        colorEffect = lineRenderer.material.JuicyColour(endColor, 1f);
 
         triggerEffect = lineRenderer.JuicyWidth(0, 1);
         triggerEffect.SetOnComplected(() =>
@@ -56,7 +56,7 @@ public class WarningLine : MonoBehaviour
         onCompleted = OnFinishedEvent;
         colorEffect.ChangeDuration(duration);
         warmUpEffect.ChangeDuration(duration);
-        warmUpEffect.ChangeDesination(width);
+        warmUpEffect.ChangeDestination(width);
         triggerEffect.ChangeDuration(.15f);
         lineRenderer.enabled = true;
         colorEffect.Start(() => lineRenderer.material.color = startColor);

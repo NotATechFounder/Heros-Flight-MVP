@@ -68,7 +68,7 @@ namespace UISystem
         JuicerRuntime comboFeedbackEffect;
         JuicerRuntime specialEffect;
         JuicerRuntime specialIconEffect;
-        JuicerRuntime levelProgressEffect;
+        JuicerRuntimeCore<float> levelProgressEffect;
         JuicerRuntime transitionEffect;
 
         private bool isExpComplete;
@@ -106,7 +106,11 @@ namespace UISystem
             transitionEffect = transitionCanvasGroup.JuicyAlpha(1, 2f);
             transitionEffect.SetEase(transitionCurve);
             transitionEffect.SetOnStart(() => transitionPanel.gameObject.SetActive(true));
-            transitionEffect.AddTimeEvent(0.5f, () => OnEndTransitionHalfComplete?.Invoke());
+            transitionEffect.AddTimeEvent(0.5f, () =>
+            {
+                Debug.Log(" transitionEffect Half Complete");
+                OnEndTransitionHalfComplete?.Invoke();
+            });
             transitionEffect.SetOnComplected(() =>
             {
                 OnEndTransitionComplete?.Invoke();
@@ -235,7 +239,7 @@ namespace UISystem
             levelProgressPanel.SetActive(true);
             yield return new WaitForSeconds(0.5f);
 
-            levelProgressEffect.ChangeDesination(value);
+            levelProgressEffect.ChangeDestination(value);
             levelProgressEffect.Start();
             yield return new WaitUntilJuicerComplected(levelProgressEffect);
 
@@ -259,7 +263,7 @@ namespace UISystem
             for (int i = 0; i < numberOfLevelInc; i++)
             {
                 OnSingleLevelUpComplete?.Invoke();
-                levelProgressEffect.ChangeDesination(1f);
+                levelProgressEffect.ChangeDestination(1f);
                 levelProgressEffect.Start();
 
                 yield return new WaitUntilJuicerComplected(levelProgressEffect);
@@ -274,7 +278,7 @@ namespace UISystem
 
             if (value > 0)
             {
-                levelProgressEffect.ChangeDesination(value);
+                levelProgressEffect.ChangeDestination(value);
                 levelProgressEffect.Start();
                 yield return new WaitUntilJuicerComplected(levelProgressEffect);
             }

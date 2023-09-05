@@ -24,7 +24,7 @@ public class PermanetCardUI : MonoBehaviour
 
     JuicerRuntime openEffectBG;
     JuicerRuntime tierEffect;
-    JuicerRuntime statEffect;
+    JuicerRuntimeCore<string> statEffect;
 
     private void Awake()
     {
@@ -35,8 +35,8 @@ public class PermanetCardUI : MonoBehaviour
             .SetEase(Ease.Linear)
             .SetOnComplected(() => tierText.text = "Tier " + ((int)angelCard.tier + 1));
 
-        statEffect = cardEffectText.JuicyText("", 0.5f)
-            .SetTextAnimationMode(TextAnimationMode.ClearOldText)
+        statEffect = cardEffectText.JuicyText("", 0.5f);
+        statEffect.SetTextAnimationMode(TextAnimationMode.ClearOldText)
             .SetOnStart(() => cardEffectText.color = Color.green)
             .SetOnComplected(() => cardEffectText.color = Color.white)
             .SetDelay(0.25f);
@@ -75,7 +75,8 @@ public class PermanetCardUI : MonoBehaviour
         else
         {
             tierEffect.Start(() => tierText.transform.localScale = Vector2.zero);
-            statEffect.Start(() => statEffect.ChangeDesination(effectText.ToString()));
+            statEffect.StartNewDestination(effectText.ToString());
+           // statEffect.Start(() => statEffect.ChangeDestination(effectText.ToString()));
         }
     }
 

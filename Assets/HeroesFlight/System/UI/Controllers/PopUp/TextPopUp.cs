@@ -12,7 +12,7 @@ public class TextPopUp : MonoBehaviour
     [SerializeField] private float fadeDuration;
     [SerializeField] private float moveLenght;
     [SerializeField] private JuicerRuntime scaleEffect;
-    [SerializeField] private JuicerRuntime moveEffect;
+    [SerializeField] private JuicerRuntimeCore<Vector3> moveEffect;
     [SerializeField] private JuicerRuntime fadeEffect;
 
     private void Awake()
@@ -47,7 +47,7 @@ public class TextPopUp : MonoBehaviour
     public void Effect()
     {
         textMeshPro.color = new Color(textMeshPro.color.r, textMeshPro.color.g, textMeshPro.color.b, 1);
-        moveEffect.ChangeDesination(transform.position + Vector3.up * moveLenght);
+        moveEffect.ChangeDestination(transform.position + Vector3.up * moveLenght);
         scaleEffect.Start(() => transform.localScale = Vector3.zero);
     }
 
