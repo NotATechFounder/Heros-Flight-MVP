@@ -10,8 +10,6 @@ public abstract class EnironmentHazard : MonoBehaviour
 
     protected bool isInCooldown;
 
-    public abstract void Trigger();
-
     protected virtual IEnumerator ActivateCooldown()
     {
         isInCooldown = true;

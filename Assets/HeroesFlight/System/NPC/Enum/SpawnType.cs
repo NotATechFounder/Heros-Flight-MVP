@@ -6,6 +6,7 @@ namespace HeroesFlightProject.System.NPC.Enum
         FlyingMob,
         Crystal,
         Player,
-        Portal
+        Portal,
+        MiniBoss,
     }
 }

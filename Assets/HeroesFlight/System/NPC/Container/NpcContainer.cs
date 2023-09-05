@@ -94,6 +94,12 @@ namespace HeroesFlight.System.NPC.Container
         {
             List<ISpawnPointInterface> targetPoints = spawnPointsCache[spawnModelEntry.Prefab.AgentModel.EnemySpawmType];
 
+            if (targetPoints == null || targetPoints.Count == 0)
+            {
+                Debug.LogError("No spawn points for " + spawnModelEntry.Prefab.name);
+                return;
+            }
+
             var rngPoint = Random.Range(0, targetPoints.Count);
             AiControllerBase resultEnemy = Instantiate(spawnModelEntry.Prefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition(), Quaternion.identity);
             resultEnemy.transform.parent = transform;

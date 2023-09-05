@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class WarningLine : MonoBehaviour
 {
+    public enum WarningLineType
+    {
+        Stationary,
+        Moving
+    }
+
     [Header("WarningLine")]
-    [SerializeField] private bool calculateLengthEveryTime;
+    [SerializeField] private WarningLineType warningLineType;
     [SerializeField] private float length;
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private LayerMask detectLayer;
@@ -44,10 +50,10 @@ public class WarningLine : MonoBehaviour
 
     public void Trigger(Action OnFinishedEvent = null, float duration = 1f, float width = 0.5f)
     {
-        if (calculateLengthEveryTime)
+        if (warningLineType == WarningLineType.Moving)
             GetEmitterPoints();
 
-         onCompleted = OnFinishedEvent;
+        onCompleted = OnFinishedEvent;
         colorEffect.ChangeDuration(duration);
         warmUpEffect.ChangeDuration(duration);
         warmUpEffect.ChangeDesination(width);

@@ -18,7 +18,7 @@ public class ShootingSpikeHazard : EnironmentHazard
         StartCoroutine(Runtime());
     }
 
-    public override void Trigger()
+    private void Trigger()
     {
         isTriggered = true;
         warningLine.Trigger(() =>
