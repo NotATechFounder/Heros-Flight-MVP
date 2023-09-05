@@ -10,13 +10,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
     {
         [SerializeField] protected SpriteRenderer buffDebuffIcon;
         [SerializeField] protected AiAgentModel m_Model;
-        [SerializeField] protected float wanderDistance = 10f;
-        [SerializeField] protected float agroCooldown = 5f;
-
-        [Header("Knockback parameters")]
-        [SerializeField] protected bool useKnockback = true;
-        [SerializeField] protected float knockbackDuration = 0.1f;
-        [SerializeField] protected float knockbackForce = 5f;
+      
         protected FlashEffect hitEffect;
         protected AiViewController viewController;
         protected AiAnimatorInterface animator;
@@ -52,7 +46,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
             animator = GetComponent<AiAnimatorInterface>();
             viewController = GetComponent<AiViewController>();
             hitEffect = GetComponentInChildren<FlashEffect>();
-            wanderDistance = m_Model.WanderingDistance;
             currentTarget = player;
             viewController.Init();
 
@@ -101,7 +94,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public virtual void ProcessKnockBack()
         {
-            animator.PlayHitAnimation();
+            animator.PlayHitAnimation(m_Model.AttacksInteruptable);
             hitEffect.Flash();
         }
 
@@ -141,14 +134,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected bool IsAggravated()
         {
             var distance = Vector2.Distance(CurrentTarget.position, transform.position);
-            return distance <= m_Model.CombatModel.GetMonsterStatData.AgroDistance ||
-                timeSinceAggravated < agroCooldown;
+            return distance <= m_Model.AgroDistance ||
+                timeSinceAggravated < m_Model.AgroDuration;
         }
 
         protected bool InAttackRange()
         {
             return Vector2.Distance(CurrentTarget.position, transform.position)
-                <= m_Model.CombatModel.GetMonsterStatData.AttackRange;
+                <= m_Model.AiData.AttackRange;
         }
 
         public void DisplayModifiyer(Sprite sprite)

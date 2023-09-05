@@ -1,3 +1,4 @@
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using UnityEngine;
 

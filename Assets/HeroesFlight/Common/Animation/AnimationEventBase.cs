@@ -1,6 +1,8 @@
-using HeroesFlight.System.Gameplay.Enum;
 
-namespace HeroesFlight.System.Gameplay.Data.Animation
+
+using HeroesFlight.Common.Enum;
+
+namespace HeroesFlight.Common.Animation
 {
     public class AnimationEventBase : AnimationEventInterface
     {

@@ -9,5 +9,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             if (col.gameObject.CompareTag("Player"))
                 InitAttack();
         }
+
+      
     }
 }

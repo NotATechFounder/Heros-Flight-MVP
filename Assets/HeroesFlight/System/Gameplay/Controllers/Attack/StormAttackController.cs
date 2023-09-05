@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;

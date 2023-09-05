@@ -1,4 +1,4 @@
-namespace HeroesFlight.System.Gameplay.Enum
+namespace HeroesFlight.Common.Enum
 {
     public enum AttackType
     {

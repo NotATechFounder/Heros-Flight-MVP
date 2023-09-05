@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using HeroesFlight.Common;
+using HeroesFlight.Common.Animation;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Character.Enum;
-using HeroesFlight.System.Gameplay.Data.Animation;
-using HeroesFlight.System.Gameplay.Enum;
 using Spine;
 using Spine.Unity;
 using StansAssets.Foundation.Async;

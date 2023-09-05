@@ -1,4 +1,6 @@
 using System;
+using HeroesFlight.Common.Animation;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.NPC.Controllers;
@@ -16,6 +18,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected AiAnimatorInterface animator;
         protected IHealthController health;
         protected float currentDamage;
+        protected OverlapChecker damageZone;
 
         public event Action OnHitTarget;
 
@@ -26,12 +29,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             aiController = GetComponent<AiControllerBase>();
             animator = GetComponent<AiAnimatorInterface>();
+            damageZone = GetComponentInChildren<OverlapChecker>();
+            if (damageZone != null)
+                damageZone.OnDetect += DealDamage;
+            
+            animator.OnAnimationEvent += HandleAnimationEvents;
             health = GetComponent<IHealthController>();
             health.OnDeath += HandleDeath;
             target = aiController.CurrentTarget.GetComponent<IHealthController>();
             timeSinceLastAttack = 0;
-            timeBetweenAttacks = aiController.GetMonsterStatModifier().CalculateAttackSpeed(aiController.AgentModel.CombatModel.GetMonsterStatData.AttackSpeed);
-            attackRange = aiController.AgentModel.CombatModel.GetMonsterStatData.AttackRange;
+            timeBetweenAttacks = aiController.GetMonsterStatModifier()
+                .CalculateAttackSpeed(aiController.AgentModel.AiData.AttackSpeed);
+            attackRange = aiController.AgentModel.AiData.AttackRange;
             aiController.SetAttackState(true);
             currentDamage = aiController.GetDamage;
         }
@@ -45,7 +54,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (health.IsDead())
                 return;
-            
+
             if (target.IsDead())
             {
                 aiController.SetAttackState(false);
@@ -61,9 +70,16 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected virtual void InitAttack()
         {
+            Debug.Log("STARTING ATTACK");
             timeSinceLastAttack = 0;
+            animator.StartAttackAnimation(null);
+        }
+
+        protected virtual void DealDamage(int i, Collider2D[] collider2Ds)
+        {
+            Debug.Log("detected player");
+            target.DealDamage(new DamageModel(Damage, DamageType.NoneCritical, AttackType.Regular));
             aiController.SetAttackState(false);
-            target.DealDamage(new DamageModel(Damage,DamageType.NoneCritical,AttackType.Regular));
             OnHitTarget?.Invoke();
         }
 
@@ -75,8 +91,17 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
-        public void Init() { }
+        public void Init()
+        {
+        }
 
-        public virtual void ToggleControllerState(bool isEnabled) { }
+        public virtual void ToggleControllerState(bool isEnabled)
+        {
+        }
+
+        protected virtual void HandleAnimationEvents(AttackAnimationEvent obj)
+        {
+            damageZone.Detect();
+        }
     }
 }

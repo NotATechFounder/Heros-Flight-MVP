@@ -19,9 +19,7 @@ public class CharacterStatData
 [Serializable]
 public class MonsterStatData : CharacterStatData
 {
-    [Header("Monster Combat")]
-    [SerializeField] float agroDistance;
-    public float AgroDistance => agroDistance;
+   
 }
 
 [Serializable]
