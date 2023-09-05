@@ -46,7 +46,7 @@ public class MushroomEffect : MonoBehaviour
                 if (collider2D.TryGetComponent(out IHealthController healthController))
                 {
                     float damage = StatCalc.GetValueOfPercentage(effectPercentage, healthController.CurrentHealth);
-                    healthController.DealDamage(new DamageModel(damage, DamageType.NoneCritical, AttackType.Regular));
+                 //   healthController.DealDamage(new DamageModel(damage, DamageType.NoneCritical, AttackType.Regular));
                 }
                 break;
             case MushroomType.Damage:
