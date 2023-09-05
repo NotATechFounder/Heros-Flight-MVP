@@ -18,14 +18,6 @@ public class MushroomHazard : EnironmentHazard
         Both,
     }
 
-    [Header("Visual and Animation Settings")]
-    [SerializeField] public const string idleHidingAnimationName = "1_idle_hiding";
-    [SerializeField] public const string idleToShowAnimationName = "2_idle_to_show";
-    [SerializeField] public const string idleWaitingAnimationName = "3_idle_waiting";
-    [SerializeField] public const string idleTohideAnimationName = "8_to_hide";
-    [SerializeField] SkeletonAnimation skeletonAnimation;
-    [SerializeField] private ParticleSystem fartingEffect;
-
     [Header("Farting Mushroom Settings")]
     [SerializeField] private FartingMushroomType fartingMushroomType;
     [SerializeField] private Trigger2DObserver detectorObserver;
@@ -36,6 +28,25 @@ public class MushroomHazard : EnironmentHazard
     [SerializeField] private float healthPercentageDecrease;
     [SerializeField] private float poisonDuration;
     [SerializeField] private float poisonDamageInterval;
+
+    [Header("Animation and Viusal Settings")]
+    [SerializeField] public const string idleHidingAnimationName = "1_idle_hiding";
+    [SerializeField] public const string idleToShowAnimationName = "2_idle_to_show";
+    [SerializeField] public const string idleWaitingAnimationName = "3_idle_waiting";
+    [SerializeField] public const string idleTohideAnimationName = "8_to_hide";
+    [SpineSkin] [SerializeField] string pinkSkinReference;
+    [SpineSkin] [SerializeField] string purpleSkinReference;
+    [SerializeField] SkeletonAnimation skeletonAnimation;
+
+    [Header("Damage Effect Settings")]
+    [SerializeField] private Color damageEffectColor;
+
+    [Header("Slow Effect Settings")]
+    [SerializeField] private Color SlowEffectColor;
+
+    [Header("Particle Effect Settings")]
+    [SerializeField] private ParticleSystem mainfartingParticle;
+    [SerializeField] private ParticleSystem subfartingParticle;
 
     [Header("Slow Settings")]
     [SerializeField] private float slowPercentageDecrease;
@@ -56,7 +67,54 @@ public class MushroomHazard : EnironmentHazard
 
         skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
 
+        SetCharacterSkin();
+
+        SetAllParticleColor();
+
         ToggleMushroomEffect(false);
+    }
+
+    public void SetCharacterSkin()
+    {
+        switch (fartingMushroomType)
+        {
+            case FartingMushroomType.Damage:
+                skeletonAnimation.Skeleton.SetSkin(pinkSkinReference);
+                break;
+            case FartingMushroomType.Slow:
+                skeletonAnimation.Skeleton.SetSkin(purpleSkinReference);
+                break;
+            case FartingMushroomType.Both:
+                skeletonAnimation.Skeleton.SetSkin(pinkSkinReference);
+                break;
+            default:  break;
+        }
+    }
+
+    public void SetAllParticleColor()
+    {
+        switch (fartingMushroomType)
+        {
+            case FartingMushroomType.Damage:
+                SetParticleColor(mainfartingParticle, damageEffectColor);
+                SetParticleColor(subfartingParticle, damageEffectColor);
+                break;
+            case FartingMushroomType.Slow:
+                SetParticleColor(mainfartingParticle, SlowEffectColor);
+                SetParticleColor(subfartingParticle, SlowEffectColor);
+                break;
+            case FartingMushroomType.Both:
+                SetParticleColor(mainfartingParticle, damageEffectColor);
+                SetParticleColor(subfartingParticle, SlowEffectColor);
+                break;
+            default: break;
+        }
+    }
+
+    public void SetParticleColor(ParticleSystem particle, Color startColor)
+    {
+        var main = particle.main;
+        main.startColor = startColor;
     }
 
     private void AnimationState_Complete(TrackEntry trackEntry)
@@ -90,11 +148,11 @@ public class MushroomHazard : EnironmentHazard
         effectArea.SetActive(state);
         if (state)
         {
-            fartingEffect.Play();
+            mainfartingParticle.Play();
         }
         else
         {
-            fartingEffect.Stop();
+            mainfartingParticle.Stop();
         }
 
         if (state)  StartCoroutine(Runtime());
