@@ -22,7 +22,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
             hitEffect = GetComponentInChildren<FlashEffect>();
             OnInit();
             //viewController.StartFadeIn(2f,Enable);
-            wanderDistance = m_Model.WanderingDistance;
             currentHealth = Mathf.RoundToInt(statModifier.CalculateAttack(health));
             currentDamage = statModifier.CalculateAttack(damage);
             DisplayModifiyer(currentCardIcon);
@@ -61,7 +60,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             rigidBody.velocity = Vector2.zero;
             var forceVector = currentTarget.position.x > transform.position.x ? Vector2.left : Vector2.right;
             forceVector.Normalize();
-            rigidBody.AddForce(forceVector *knockbackForce,ForceMode2D.Impulse);
+            rigidBody.AddForce(forceVector *m_Model.KnockBackForce,ForceMode2D.Impulse);
         }
 
         public override Vector2 GetVelocity()

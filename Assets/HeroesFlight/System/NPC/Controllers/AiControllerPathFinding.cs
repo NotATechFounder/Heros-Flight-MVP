@@ -19,7 +19,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             attackCollider = GetComponent<Collider2D>();
             ai = GetComponent<IAstarAI>();
             ai.canMove = false;
-            ai.maxSpeed = m_Model.CombatModel.GetMonsterStatData.MoveSpeed;
+            ai.maxSpeed =m_Model.AiData.MoveSpeed;
             base.Init(player, health, damage, monsterStatModifier, currentCardIcon);
         }
 
@@ -78,13 +78,13 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void ProcessKnockBack()
         {
-            animator.PlayHitAnimation(interraptAttackOnDamage,() =>
+            animator.PlayHitAnimation(m_Model.AttacksInteruptable,() =>
             {
                 ai.canMove = true;
             });
             hitEffect.Flash();
             
-            if (!useKnockback)
+            if (!m_Model.UseKnockBack)
                 return;
 
             if (isInknockback)
@@ -113,15 +113,15 @@ namespace HeroesFlightProject.System.NPC.Controllers
         IEnumerator KnockBackRoutine(Vector2 forceVector)
         {
             yield return new WaitForEndOfFrame();
-            rigidBody.AddForce(forceVector*knockbackForce,ForceMode2D.Impulse);
-             yield return new WaitForSeconds(knockbackDuration);
+            rigidBody.AddForce(forceVector*m_Model.KnockBackForce,ForceMode2D.Impulse);
+             yield return new WaitForSeconds(m_Model.KnockBackDuration);
             isInknockback = false;
             rigidBody.velocity = Vector2.zero;
         }
 
         Vector2 GetRandomPosition2D()
         {
-            var point = Random.insideUnitCircle * wanderDistance;
+            var point = Random.insideUnitCircle * m_Model.WanderingDistance;
             if (m_Model.EnemySpawmType == SpawnType.GroundMob)
                 point.y = 0;
             point += (Vector2)ai.position;
