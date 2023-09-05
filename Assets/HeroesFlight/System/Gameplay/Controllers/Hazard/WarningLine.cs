@@ -87,4 +87,11 @@ public class WarningLine : MonoBehaviour
         //}
         //lineRenderer.SetPosition(1, transform.position + (-transform.up * length));
     }
+
+    private void OnDisable()
+    {
+        warmUpEffect.Stop();
+        colorEffect.Stop();
+        triggerEffect.Stop();
+    }
 }

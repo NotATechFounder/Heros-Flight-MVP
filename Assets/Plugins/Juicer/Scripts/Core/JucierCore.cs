@@ -59,6 +59,7 @@ namespace Pelumi.Juicer
 
             while (true)
             {
+
                 if (!juicerRuntimeController.IsPaused)
                 {
                     float timeScale = juicerRuntimeParam.TimeMode == TimeMode.Unscaled ? Time.unscaledDeltaTime : Time.deltaTime;
@@ -79,6 +80,15 @@ namespace Pelumi.Juicer
                         {
                             loopCount++;
                             juicerRuntimeController.OnCompleteStep();
+
+                            currentDelay = juicerRuntimeController.StepDelay;
+
+                            while (currentDelay > 0.0f)
+                            {
+                                if (!juicerRuntimeController.IsPaused)
+                                    currentDelay -= juicerRuntimeParam.TimeMode == TimeMode.Unscaled ? Time.unscaledDeltaTime : Time.deltaTime;
+                                yield return null;
+                            }
 
                             switch (juicerRuntimeParam.GetLoopType)
                             {
