@@ -6,6 +6,7 @@ namespace HeroesFlightProject.System.NPC.Enum
         Mushroom,
         Slime,
         Tree,
-        MiniBoss
+        MiniBoss,
+        EliteTree
     }
 }

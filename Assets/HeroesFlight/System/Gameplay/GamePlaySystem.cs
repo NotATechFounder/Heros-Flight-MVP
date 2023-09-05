@@ -214,7 +214,6 @@ namespace HeroesFlight.System.Gameplay
         bool CheckLevel(ref Level currentLevel)
         {
             currentLevel = container.GetLevel();
-            Debug.Log(currentLevel==null);
             if (currentLevel == null)
             {
                 ChangeState(GameState.Won);

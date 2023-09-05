@@ -1,10 +1,29 @@
+using UnityEngine;
+
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class MeleeEnemyAttackController : EnemyAttackControllerBase
     {
-        public override void AttackTargets()
+       
+        protected override void Update()
         {
-            base.AttackTargets();
+            if (health.IsDead())
+                return;
+
+            if (target.IsDead())
+            {
+                aiController.SetAttackState(false);
+                return;
+            }
+
+
+            timeSinceLastAttack += Time.deltaTime;
+            var distanceToPlayer = Vector2.Distance(transform.position, aiController.CurrentTarget.position);
+            if (distanceToPlayer <= attackRange && timeSinceLastAttack >= timeBetweenAttacks)
+            {
+                aiController.SetAttackState(true);
+                InitAttack();
+            }
         }
     }
 }

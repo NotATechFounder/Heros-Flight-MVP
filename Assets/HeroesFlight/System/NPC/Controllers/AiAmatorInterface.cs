@@ -7,6 +7,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
     public interface AiAnimatorInterface
     {
         event Action<AttackAnimationEvent> OnAnimationEvent;
+
+        void SetMovementAnimation(bool isMoving);
         void StartAttackAnimation(Action onCompleteAction);
         void StopAttackAnimation();
         void PlayDeathAnimation(Action onCompleteAction);

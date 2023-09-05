@@ -55,7 +55,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             if (isInknockback)
                 return;
             
-            ai.canMove = !InAttackRange();
+            SetMovementState(!InAttackRange());
             if (setter.target == null)
                 setter.target = CurrentTarget;
         }
@@ -80,7 +80,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             animator.PlayHitAnimation(m_Model.AttacksInteruptable,() =>
             {
-                ai.canMove = true;
+                SetMovementState(true);
             });
             hitEffect.Flash();
             
@@ -90,7 +90,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             if (isInknockback)
                 return;
             isInknockback = true;
-            ai.canMove = false;
+            SetMovementState(false);
 
              var forceVector = currentTarget.position.x >= transform.position.x ? Vector2.left : Vector2.right;
             // var forceVector = (transform.position - currentTarget.position).normalized;
@@ -126,6 +126,13 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 point.y = 0;
             point += (Vector2)ai.position;
             return point;
+        }
+
+
+        public override void SetMovementState(bool canMove)
+        {
+            base.SetMovementState(canMove);
+            ai.canMove = canMove;
         }
     }
 }

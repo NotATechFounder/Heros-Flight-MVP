@@ -9,11 +9,14 @@ public class CharacterStatData
     [SerializeField] protected float moveSpeed;
     [SerializeField] protected float attackRange;
     [SerializeField] float defense;
-
+    [SerializeField] float criticalHitChance = 10f;
+    [SerializeField] RangeValue criticalHitDamage;
     public float AttackSpeed => attackSpeed;
     public float MoveSpeed => moveSpeed;
     public float AttackRange => attackRange;
     public float Defense => defense;
+    public float CriticalHitChance => criticalHitChance;
+    public RangeValue CriticalHitDamage => criticalHitDamage;
 }
 
 [Serializable]
@@ -32,11 +35,9 @@ public class PlayerStatData: CharacterStatData
     [SerializeField] float agility;
     [SerializeField] float resilience;
     [SerializeField] float dodgeChance;
-
     [SerializeField] RangeValue magicDamage;
     [SerializeField] RangeValue physicalDamage;
-    [SerializeField] float criticalHitChance = 10f;
-    [SerializeField] RangeValue criticalHitDamage;
+   
 
     public HeroType HeroType => heroType;
     public float Vitality => vitality;
@@ -46,8 +47,7 @@ public class PlayerStatData: CharacterStatData
     public int Health => health;
     public RangeValue MagicDamage => magicDamage;
     public RangeValue PhysicalDamage => physicalDamage;
-    public float CriticalHitChance => criticalHitChance;
-    public RangeValue CriticalHitDamage => criticalHitDamage;
+   
 }
 
 public enum HeroType

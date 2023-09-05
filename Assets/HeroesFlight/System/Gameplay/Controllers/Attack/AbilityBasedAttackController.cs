@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,10 +5,10 @@ using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class MinibossAttackController :EnemyAttackControllerBase
+    public class AbilityBasedAttackController :EnemyAttackControllerBase
     {
         [SerializeField] AbilityBaseNPC[] abilities;
-
+        
 
         void Awake()
         {
@@ -49,7 +48,17 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (possibleAbilities.Count > 0)
             {
-                abilities[possibleAbilities.ElementAt(Random.Range(0,possibleAbilities.Count-1))].UseAbility(aiController.GetDamage, target);
+                var targetAbility =
+                    abilities[possibleAbilities.ElementAt(Random.Range(0, possibleAbilities.Count - 1))];
+                if (targetAbility.StopMovementOnUse)
+                {
+                    aiController.SetMovementState(false);
+                    targetAbility.UseAbility(aiController.GetDamage, target, () =>
+                    {
+                        aiController.SetMovementState(true);
+                    });
+                }
+                targetAbility.UseAbility(aiController.GetDamage, target);
             }
         }
     }
