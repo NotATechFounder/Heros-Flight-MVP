@@ -20,16 +20,24 @@ public class Crystal : MonoBehaviour
     [SerializeField] RangeValue goldRange;
     [SerializeField] int goldInBatch = 10;
 
+    [Header("Shake")]
+    [SerializeField] float shakeDuration = 0.5f;
+    [SerializeField] float shakePower = 0.5f;
+
     public BoosterDropSO BoosterDropSO => boosterDropSO;
 
     public int GoldInBatch => goldInBatch;
     public int GoldAmount => Mathf.RoundToInt(goldRange.GetRandomValue()) / goldInBatch;
 
     JuicerRuntime shineEffect;
-    JuicerRuntime hitEffect;
+    JuicerRuntime hitEffect; 
+    private Vector3 lastPos;
+    CoroutineHandle shakeRoutine;
 
     private void Awake()
     {
+        lastPos = transform.position;
+
         shineEffect = spriteRenderer.material.JuicyFloatProperty("_ShineLocation", 1f, 0.5f);
         shineEffect.SetLoop(-1);
         shineEffect.SetStepDelay(1f);
@@ -54,6 +62,21 @@ public class Crystal : MonoBehaviour
 
     public void OnHit()
     {
+        Vector3 randomDirection = UnityEngine.Random.insideUnitCircle.normalized;
+        Shake(randomDirection);
         hitEffect.Start();
+    }
+
+    private void Shake(Vector3 direction)
+    {
+        direction.y = 0;
+
+        if (shakeRoutine != null && !shakeRoutine.IsDone)
+        {
+            transform.position = lastPos;
+            Juicer.StopCoroutine(shakeRoutine);
+        }
+        lastPos = transform.position;
+        shakeRoutine = transform.JuicyShakePosition(shakeDuration, direction * shakePower, 1);
     }
 }
