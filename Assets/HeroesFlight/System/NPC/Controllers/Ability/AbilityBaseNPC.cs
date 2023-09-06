@@ -8,12 +8,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class AbilityBaseNPC : MonoBehaviour,AbilityInterface
     {
-        [SerializeField] AnimationReferenceAsset targetAnimation;
-        [SerializeField] float coolDown;
-        [SerializeField] bool stopOnUse = true;
-        AiAnimatorInterface animator;
-        float timeSincelastUse;
-        void Awake()
+        [SerializeField] protected AnimationReferenceAsset targetAnimation;
+        [SerializeField] protected float coolDown;
+        [SerializeField] protected bool stopOnUse = true;
+        protected AiAnimatorInterface animator;
+        protected float timeSincelastUse;
+       protected virtual void Awake()
         {
             animator = GetComponent<AiAnimatorInterface>();
             timeSincelastUse = 0;
