@@ -53,12 +53,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 if (targetAbility.StopMovementOnUse)
                 {
                     aiController.SetMovementState(false);
-                    targetAbility.UseAbility(aiController.GetDamage, target, () =>
+                    targetAbility.UseAbility(  () =>
                     {
                         aiController.SetMovementState(true);
                     });
                 }
-                targetAbility.UseAbility(aiController.GetDamage, target);
+                targetAbility.UseAbility();
             }
         }
     }

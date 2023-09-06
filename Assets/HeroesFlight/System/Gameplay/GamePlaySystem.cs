@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Cinemachine;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Character;
-using HeroesFlight.System.Character.Enum;
 using HeroesFlight.System.Environment;
 using HeroesFlight.System.FileManager.Enum;
 using HeroesFlight.System.FileManager.Model;
@@ -12,7 +11,6 @@ using HeroesFlight.System.Gameplay.Container;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC;
-using HeroesFlight.System.NPC.Controllers;
 using HeroesFlight.System.NPC.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
@@ -187,8 +185,7 @@ namespace HeroesFlight.System.Gameplay
             characterAttackController.ToggleControllerState(false);
             environmentSystem.ParticleManager.Spawn(characterSystem.CurrentCharacter.CharacterSO.VFXData.UltVfx,
                 characterSystem.CurrentCharacter.CharacterTransform.position,Quaternion.Euler(new Vector3(-90,0,0)));
-            characterAbility.UseAbility(characterStatController.CurrentPhysicalDamage * characterSystem.CurrentCharacter.CharacterSO.UltimateData.DamageMultiplier,
-                null, () =>
+            characterAbility.UseAbility(() =>
             {
                 cameraController.SetCameraState(GameCameraType.Character);
                 characterSystem.SetCharacterControllerState(true);

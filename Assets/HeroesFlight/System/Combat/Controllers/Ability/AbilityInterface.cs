@@ -4,8 +4,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public interface AbilityInterface
     {
+        float CoolDown { get; }
         bool StopMovementOnUse { get; }
         bool ReadyToUse { get; }
-        void UseAbility(float damage, IHealthController target = null, Action onComplete = null);
+        void UseAbility(Action onComplete = null);
     }
 }
