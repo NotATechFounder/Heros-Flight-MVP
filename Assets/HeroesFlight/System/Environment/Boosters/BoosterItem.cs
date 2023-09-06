@@ -2,10 +2,9 @@ using Pelumi.ObjectPool;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using StansAssets.Foundation.Async;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
+using Spine;
+using Spine.Unity;
 
 public class BoosterItem : MonoBehaviour
 {
@@ -13,28 +12,29 @@ public class BoosterItem : MonoBehaviour
 
     [SerializeField] private float launchForce = 10f;
     [SerializeField] private Trigger2DObserver triggerObserver;
-    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] SkeletonAnimation skeletonAnimation;
+
+    [Header("Animation and Viusal Settings")]
+    [SerializeField] public const string idleAnimationName = "Idle";
+    [SerializeField] public const string flyingRotateName = "Flying_Rotate";
+    [SerializeField] public const string pickUpAnimationName = "Pickup";
+    [SerializeField] public const string rotateAnimationName = "Rotate";
+
     [SerializeField] private BoosterSO boosterSO;
-    [SerializeField] float amplitude = 0.2f;
-    [SerializeField] float period = 1.5f;
-    float timeCustomizer;
+
     private Rigidbody2D rigid2D;
     private bool isUsed;
-    Coroutine floatingRoutine;
-    Transform particle;
     public BoosterSO BoosterSO => boosterSO;
 
     private void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
-        timeCustomizer=Random.Range(-5, 5);
-        var rng = Random.Range(0, 0.1f);
-        amplitude += rng;
     }
 
     private void Start()
     {
         triggerObserver.OnEnter += OnEnter;
+        skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
     }
 
     public void Initialize(BoosterSO booster, Func<BoosterItem, bool> func)
@@ -42,11 +42,11 @@ public class BoosterItem : MonoBehaviour
         isUsed = false;
         boosterSO = booster;
         OnBoosterInteracted = func;
-        spriteRenderer.sprite = boosterSO.BoosterSprite;
-        ApplyUpWardForce(launchForce);
 
-        particle = ObjectPoolManager.SpawnObject(booster.BoosterFlare, transform).transform;
-        floatingRoutine = StartCoroutine(FloatingRoutine());     
+        skeletonAnimation.skeleton.SetSkin(booster.SkinReference);
+        skeletonAnimation.AnimationState.SetAnimation(0, flyingRotateName, true);
+
+        ApplyUpWardForce(launchForce);
     }
 
     public void ApplyUpWardForce(float force)
@@ -61,28 +61,25 @@ public class BoosterItem : MonoBehaviour
         {
             if (OnBoosterInteracted.Invoke(this))
             {
+                isUsed = true;
+                skeletonAnimation.AnimationState.SetAnimation(0, pickUpAnimationName, false);
                 Release();
             }
         }
     }
 
-    IEnumerator FloatingRoutine()
+    private void AnimationState_Complete(TrackEntry trackEntry)
     {
-        while (true)
+        switch (trackEntry.Animation.Name)
         {
-            var modifiedTime = Time.time + timeCustomizer;
-            spriteRenderer.transform.localPosition = new Vector3(0, Mathf.Sin(modifiedTime*period) * amplitude , 0);
-            particle.localPosition = new Vector3(0, Mathf.Sin(modifiedTime*period) * amplitude  , 0);
-            yield return null;
+            case pickUpAnimationName: Release(); break;
+            default: break;
         }
     }
 
     public void Release()
     {
         isUsed = true;
-        StopCoroutine(floatingRoutine);
-        ObjectPoolManager.ReleaseObject(particle);
-        particle = null;
         ObjectPoolManager.ReleaseObject(this);
     }
 }
