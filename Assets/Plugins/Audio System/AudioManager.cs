@@ -113,9 +113,14 @@ public class AudioManager : MonoBehaviour
 
     public static void PlaySoundEffect(string audioID, bool randomPitch = false)
     {
+        PlaySoundEffect(GetSoundEffectClip(audioID), randomPitch);
+    }
+
+    public static void PlaySoundEffect(AudioClip audioClip ,bool randomPitch = false)
+    {
         if (Instance == null) return;
         Instance.soundEffectPlayer.pitch = randomPitch ? Random.Range(0.8f, 1.2f) : 1;
-        Instance.soundEffectPlayer.PlayOneShot(GetSoundEffectClip(audioID));
+        Instance.soundEffectPlayer.PlayOneShot(audioClip);
     }
 
     public static void PlayMusic(string ID, bool loop = true)

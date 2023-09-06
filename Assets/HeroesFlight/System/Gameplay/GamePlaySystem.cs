@@ -572,17 +572,20 @@ namespace HeroesFlight.System.Gameplay
         private void HandleBoosterActivated(BoosterSO sO, float arg2, Transform transform)
         {
             OnBoosterActivated?.Invoke(sO, arg2, transform);
+            characterVFXController.TriggerBoosterEffect(sO.BoosterEffectType);
         }
 
         public void AddGold(int amount)
         {
             collectedGold += amount;
             OnCoinsCollected?.Invoke(collectedGold);
+            characterVFXController.TriggerCurrencyEffect(CurrencyKeys.Gold);
         }
 
         public void AddExperience(int amount)
         {
             collectedXp += amount;
+            characterVFXController.TriggerCurrencyEffect(CurrencyKeys.Experience);
         }
 
         public void StoreRunReward()
