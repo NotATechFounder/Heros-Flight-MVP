@@ -75,7 +75,7 @@ namespace HeroesFlight.System.Character
             {
                 var turnTrack =
                     m_SkeletonAnimation.AnimationState.SetAnimation(1, aniamtionData.AttackAnimation, false);
-                m_SkeletonAnimation.AnimationState.AddEmptyAnimation(1, .2f, 0);
+                m_SkeletonAnimation.AnimationState.AddEmptyAnimation(1, .1f, 0);
                 turnTrack.TimeScale = speedMultiplier;
             }
         }
@@ -155,6 +155,8 @@ namespace HeroesFlight.System.Character
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
+            Debug.Log($"Got event with name {e.Data.Name} " +
+                $" STRING value {e.String} and INT value {e.Int}");
             switch (e.Data.Name)
             {
                 case AnimationEventNames.Damage:
@@ -172,10 +174,8 @@ namespace HeroesFlight.System.Character
 
                     break;
                 case AnimationEventNames.Sounds:
-                    Debug.Log(e.String);
                     break;
                 case AnimationEventNames.VFX:
-                    Debug.Log(e.String);
                     break;
             }
         }
