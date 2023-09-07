@@ -503,9 +503,8 @@ namespace HeroesFlight.System.Gameplay
 
         private void HandleWorldBoss()
         {
-            // Get boss music id from model and do other stuff
-           // container.CurrentModel.WorldBoss.
-            AudioManager.PlayMusic("");
+            //Init world boss
+            AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicKey);
         }
 
         private void TriggerAngelsGambit()
