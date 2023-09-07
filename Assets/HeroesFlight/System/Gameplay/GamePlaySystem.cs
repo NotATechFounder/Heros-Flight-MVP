@@ -155,8 +155,8 @@ namespace HeroesFlight.System.Gameplay
             foreach (var crystal in crystals)
             {
                 IHealthController healthController = crystal.GetComponent<IHealthController>();
-                healthController.OnBeingDamaged -= HandleCrystalDamaged;
-                healthController.OnDeath -= OnCrystalDestroyed;
+                healthController.OnBeingHitDamaged -= HandleCrystalHit;
+
                 ObjectPoolManager.ReleaseObject(crystal);
             }
             crystals.Clear();
@@ -529,8 +529,16 @@ namespace HeroesFlight.System.Gameplay
             {
                 Crystal crystal =  ObjectPoolManager.SpawnObject(container.CurrentModel.CrystalPrefab, spawnPoint.GetSpawnPosition(), Quaternion.identity);
                 IHealthController healthController = crystal.GetComponent<IHealthController>();
-                healthController.OnBeingDamaged += HandleCrystalDamaged;
-                healthController.OnDeath += OnCrystalDestroyed;
+                crystal.SpawnLoot = ()=> 
+                {
+                    environmentSystem.BoosterSpawner.SpawnBoostLoot(crystal.BoosterDropSO, crystal.transform.position);
+                    for (int i = 0; i < crystal.GoldInBatch; i++)
+                    {
+                        environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, crystal.GoldAmount, crystal.transform.position);
+                    }
+                };
+                crystal.OnDestroyed = OnCrystalDestroyed;
+                healthController.OnBeingHitDamaged += HandleCrystalHit;
                 crystals.Add(crystal);
             }
 
@@ -548,23 +556,17 @@ namespace HeroesFlight.System.Gameplay
             }
         }
 
-        private void HandleCrystalDamaged(DamageModel model)
+        private void HandleCrystalHit(Transform transform)
         {
-            Crystal crystal = model.Target.GetComponent<Crystal>();
-            crystal.OnHit();
-            HandleEnemyDamaged(model);
+            Crystal crystal = transform.GetComponent<Crystal>();
+            IHealthController healthController = crystal.GetComponent<IHealthController>();
+            crystal.OnHit(healthController.CurrentHit);
         }
 
-        private void OnCrystalDestroyed(IHealthController healthController)
+        private void OnCrystalDestroyed(Crystal crystal)
         {
-            healthController.OnBeingDamaged -= HandleCrystalDamaged;
-            healthController.OnDeath -= OnCrystalDestroyed;
-            Crystal crystal = healthController.HealthTransform.GetComponent<Crystal>();
-            environmentSystem.BoosterSpawner.SpawnBoostLoot(crystal.BoosterDropSO, crystal.transform.position);
-            for (int i = 0; i < crystal.GoldInBatch; i++)
-            {
-                environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, crystal.GoldAmount, crystal.transform.position);
-            }
+            IHealthController healthController = crystal.GetComponent<IHealthController>();
+            healthController.OnBeingHitDamaged -= HandleCrystalHit;
             crystals.Remove(crystal);
             ObjectPoolManager.ReleaseObject(crystal);
         }
