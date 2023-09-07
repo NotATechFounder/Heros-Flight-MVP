@@ -21,12 +21,17 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void NotifyTargetDetected(int count, Collider2D[] targets)
         {
-            OnTargetsDetected?.Invoke(count,targets);
+           OnTargetsDetected?.Invoke(count,targets);
         }
 
-        public virtual void StartDetection(Action onComplete)
+        public virtual void StartDetection(Action onComplete=null)
         {
-            if(detectionRoutine!=null)
+            StartDetectionRoutine(onComplete);
+        }
+
+        protected void StartDetectionRoutine(Action onComplete)
+        {
+            if (detectionRoutine != null)
                 StopCoroutine(detectionRoutine);
             StartCoroutine(DetectionRoutine(onComplete));
         }
