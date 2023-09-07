@@ -3,12 +3,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [CreateAssetMenu(fileName = "New Booster", menuName = "Boost/Booster", order = 1)]
 public class BoosterSO : ScriptableObject, IHasID
 {
     [SerializeField] private string boosterName;
+    [SerializeField] string skinReference;
     [SerializeField] private Sprite boosterSprite;
     [SerializeField] private BoosterEffectType boosterEffectType;
     [SerializeField] private BoosterStackType boosterStackType;
@@ -20,6 +20,8 @@ public class BoosterSO : ScriptableObject, IHasID
 
     public Color BoosterColor => boosterColor;
     public string BoosterName => boosterName;
+
+    public string SkinReference => skinReference;
     public Sprite BoosterSprite => boosterSprite;
 
     public BoosterEffectType BoosterEffectType => boosterEffectType;

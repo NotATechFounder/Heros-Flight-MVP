@@ -16,6 +16,16 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected HeathBarUI heathBarUI;
         [SerializeField] protected float defence;
         [SerializeField] protected float dodgeChance;
+
+        [Header("Hit Settings")]
+        [SerializeField] protected bool useHit;
+        [SerializeField] protected int maxHit;
+        [SerializeField] protected int currentHit;
+        public event Action<Transform> OnBeingHitDamaged;
+
+        public int MaxHit => maxHit;
+        public int CurrentHit => currentHit;
+
         public bool IsImmortal { get; protected set; }
         public Transform HealthTransform => transform;
         public float MaxHealth => maxHealth;
@@ -35,10 +45,19 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             currentHealth = maxHealth;
             heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+            currentHit = maxHit;
         }
 
         public virtual void DealDamage(DamageModel damage)
         {
+            // To remove
+            if(useHit)
+            {
+                DealHit();
+                return;
+            }
+
+
             if (IsImmortal)
                 return;
             
@@ -117,6 +136,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public bool DodgeAttack()
         {
             return Random.Range(0, 100) < dodgeChance;
+        }
+
+        public virtual void DealHit()
+        {
+            if (currentHealth <= 0) return;
+
+            --currentHit;
+            OnBeingHitDamaged?.Invoke(transform);
         }
     }
 }

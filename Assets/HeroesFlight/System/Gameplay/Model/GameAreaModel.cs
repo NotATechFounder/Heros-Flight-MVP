@@ -15,8 +15,10 @@ namespace HeroesFlight.System.Gameplay.Model
         [SerializeField] LevelPortal portalPrefab;
         [SerializeField] private Crystal crystalPrefab;
         [SerializeField] Level angelsGambitLevel;
+        [SerializeField] private GameObject worldBoss;
         [SerializeField] private SpawnModel spawnModel;
         [SerializeField] private MobDifficultyHolder mobDifficulty;
+
 
         public string AreaName => areaName;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;

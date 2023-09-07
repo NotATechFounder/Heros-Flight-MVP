@@ -15,6 +15,16 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [Header("Miss")]
         [SerializeField] private ParticleSystem missEffect;
 
+        [Header("Booster")]
+        [SerializeField] private ParticleSystem healingBoosterEffect;
+        [SerializeField] private ParticleSystem attackBoosterEffect;
+        [SerializeField] private ParticleSystem defBoosterEffect;
+        [SerializeField] private ParticleSystem speedBoosterEffect;
+
+        [Header("Currency")]
+        [SerializeField] private ParticleSystem goldEffect;
+        [SerializeField] private ParticleSystem expEffect;
+
 
         private CameraShakerInterface cameraShakerInterface;
 
@@ -47,6 +57,52 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public void TriggerMissEffect()
         {
             missEffect.Play();
+        }
+
+        public void TriggerBoosterEffect(BoosterEffectType boosterEffectType)
+        {
+            string audioID = "";
+
+            switch (boosterEffectType)
+            {
+                case BoosterEffectType.Attack:
+                    audioID = "AttackBooster";
+                    attackBoosterEffect.Play();         
+                    break;
+                case BoosterEffectType.Defense:
+                    audioID = "DefenseBooster";
+                    defBoosterEffect.Play();
+                    break;
+                case BoosterEffectType.Health:
+                    audioID = "HealthBooster";
+                    healingBoosterEffect.Play();
+                    break;
+                case BoosterEffectType.MoveSpeed:
+                    audioID = "SpeedBooster";
+                    speedBoosterEffect.Play();
+                    break;
+            }
+
+            AudioManager.PlaySoundEffect(audioID);
+        }
+
+        public void TriggerCurrencyEffect(string currencyID)
+        {
+            string audioID = "";
+
+            switch (currencyID)
+            {
+                case CurrencyKeys.Gold:
+                    audioID = "Gold";
+                    goldEffect.Play();
+                    break;
+                case CurrencyKeys.Experience:
+                    audioID = "Experience";
+                    expEffect.Play();
+                    break;
+            }
+
+            AudioManager.PlaySoundEffect(audioID, true);
         }
     }
 }

@@ -24,5 +24,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void SetInvulnerableState(bool isImmortal);
 
+        // hit to move
+        int MaxHit { get; }
+        int CurrentHit { get; }
+        public void DealHit();
+        public event Action<Transform> OnBeingHitDamaged;
     }
 }
