@@ -14,6 +14,7 @@ public class GameAreaModelEditor : Editor
     SerializedProperty portalPrefabProperty;
     SerializedProperty crystalPrefabProperty;
     SerializedProperty angelsGambitLevelProperty;
+    SerializedProperty worldBossProperty;
     SerializedProperty spawnModelProperty;
     SerializedProperty mobDifficultyProperty;
     SerializedProperty mobDifficultyArray;
@@ -28,6 +29,7 @@ public class GameAreaModelEditor : Editor
         portalPrefabProperty = serializedObject.FindProperty("portalPrefab");
         crystalPrefabProperty = serializedObject.FindProperty("crystalPrefab");
         angelsGambitLevelProperty = serializedObject.FindProperty("angelsGambitLevel");
+        worldBossProperty = serializedObject.FindProperty("worldBoss");
         spawnModelProperty = serializedObject.FindProperty("spawnModel");
         mobDifficultyProperty = serializedObject.FindProperty("mobDifficulty");
         mobDifficultyArray = mobDifficultyProperty.FindPropertyRelative("mobDifficulties");
@@ -47,10 +49,10 @@ public class GameAreaModelEditor : Editor
         EditorGUILayout.PropertyField(portalPrefabProperty);
         EditorGUILayout.PropertyField(crystalPrefabProperty);
         EditorGUILayout.PropertyField(angelsGambitLevelProperty);
+        EditorGUILayout.PropertyField(worldBossProperty);
         EditorGUILayout.PropertyField(spawnModelProperty);
 
         DisplayDiffiulties();
-
 
         serializedObject.ApplyModifiedProperties();
     }

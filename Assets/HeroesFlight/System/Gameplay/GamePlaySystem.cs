@@ -453,7 +453,7 @@ namespace HeroesFlight.System.Gameplay
         {
             switch (currentLevel.LevelType)
             {
-                case LevelType.Combat:
+                case LevelType.NormalCombat:
 
                     enemiesToKill = currentLevel.MiniHasBoss ? currentLevel.TotalMobsToSpawn + 1 : currentLevel.TotalMobsToSpawn;
                     OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
@@ -495,8 +495,17 @@ namespace HeroesFlight.System.Gameplay
                 case LevelType.Intermission:
                     characterSystem.SetCharacterControllerState(true);
                     break;
+                    case LevelType.WorldBoss:
+                    HandleWorldBoss();
+                    break;
             }
+        }
 
+        private void HandleWorldBoss()
+        {
+            // Get boss music id from model and do other stuff
+           // container.CurrentModel.WorldBoss.
+            AudioManager.PlayMusic("");
         }
 
         private void TriggerAngelsGambit()
@@ -543,7 +552,7 @@ namespace HeroesFlight.System.Gameplay
             npcSystem.NpcContainer.SetSpawnPoints(currentLevelEnvironment.SpawnPointsCache);
             switch (currentLevel.LevelType)
             {
-                case LevelType.Combat:
+                case LevelType.NormalCombat:
                     container.DisablePortal();
                     break;
                 case LevelType.Intermission:
