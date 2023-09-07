@@ -18,6 +18,7 @@ public class GameAreaModelEditor : Editor
     SerializedProperty mobDifficultyProperty;
     SerializedProperty mobDifficultyArray;
 
+    bool difficultyFoldout = false;
     Dictionary<int, bool> foldoutDictionary = new Dictionary<int, bool>();
 
     private void OnEnable()
@@ -56,6 +57,9 @@ public class GameAreaModelEditor : Editor
 
     public void DisplayDiffiulties()
     {
+        difficultyFoldout = EditorGUILayout.Foldout(difficultyFoldout, "Mob Difficulties");
+        if (!difficultyFoldout) return;
+
         EditorGUILayout.BeginVertical(GUI.skin.box);
 
         EditorGUILayout.LabelField("Mob Difficulties", EditorStyles.boldLabel);
