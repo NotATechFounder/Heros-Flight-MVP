@@ -12,6 +12,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected float tick = 0.5f;
         public event Action<int, Collider2D[]> OnTargetsDetected;
         WaitForSeconds tickWait;
+        Coroutine detectionRoutine;
         public virtual  void Init()
         {
             overlap.OnDetect += NotifyTargetDetected;
@@ -23,8 +24,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             OnTargetsDetected?.Invoke(count,targets);
         }
 
-        protected void StartDetection(Action onComplete)
+        public virtual void StartDetection(Action onComplete)
         {
+            if(detectionRoutine!=null)
+                StopCoroutine(detectionRoutine);
             StartCoroutine(DetectionRoutine(onComplete));
         }
 
