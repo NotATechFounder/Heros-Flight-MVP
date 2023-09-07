@@ -1,4 +1,7 @@
 using System;
+using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
 
@@ -9,6 +12,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] AbilityZone[] abilityZones;
         [SerializeField] float preDamageDelay;
         [SerializeField] float zoneWidth;
+        [SerializeField] float damage;
         public event Action<int, Collider2D[]> OnDetected; 
         protected override void Awake()
         {
@@ -23,6 +27,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void NotifyTargetDetected(int count, Collider2D[] targets)
         {
             OnDetected?.Invoke(count,targets);
+            for (int i = 0; i < count; i++)
+            {
+                if(targets[i].TryGetComponent<IHealthController>(out var health))
+                {
+                    health.DealDamage(new DamageModel(damage,DamageType.NoneCritical,AttackType.Regular));
+                }
+            }
         }
 
         public override void UseAbility(Action onComplete = null)

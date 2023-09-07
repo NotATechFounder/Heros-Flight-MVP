@@ -6,12 +6,12 @@ using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class ProjectileControllerBase : MonoBehaviour, ProjecttileControllerInterface
+    public class ProjectileControllerBase : MonoBehaviour, ProjectileControllerInterface
     {
         [SerializeField] float lifeTime;
         [SerializeField] float speed;
         Transform view;
-        public event Action<ProjecttileControllerInterface> OnEnded;
+        public event Action<ProjectileControllerInterface> OnEnded;
         Vector2 currentDirection = default;
         float damage;
         float currentLifetime;
@@ -35,11 +35,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             disabled = true;
             OnEnded?.Invoke(this);
-            Debug.Log("disabling projectile");
-         
         }
 
-        public void SetupProjectile(float targetDamage, Transform currentTarget, Vector2 targetDirection)
+        public void SetupProjectile(float targetDamage, Vector2 targetDirection)
         {
             currentDirection = targetDirection;
             currentLifetime = 0;

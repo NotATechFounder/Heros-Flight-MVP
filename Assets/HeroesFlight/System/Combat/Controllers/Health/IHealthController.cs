@@ -8,7 +8,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public interface IHealthController
     {
         Transform HealthTransform { get; }
-        CombatTargetType TargetType { get; }
         bool IsImmortal { get; }
         float MaxHealth { get; }
         float CurrentHealth { get; }

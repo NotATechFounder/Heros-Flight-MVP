@@ -16,6 +16,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         [SerializeField] AnimationReferenceAsset attackAnimation;
         [SerializeField] AnimationReferenceAsset deathAnimation;
         [SerializeField] AnimationReferenceAsset hitAnimation;
+        [SerializeField] bool changeSkeletonScale = true;
         SkeletonAnimation skeletonAnimation;
         AiControllerInterface aiController;
         int movementTrackIndex = 0;
@@ -35,7 +36,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         void Update()
         {
-            UpdateSkeletonScale();
+            if (changeSkeletonScale)
+                UpdateSkeletonScale();
         }
 
         void UpdateSkeletonScale()
@@ -51,10 +53,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
             var currentTrack = skeletonAnimation.AnimationState.GetCurrent(movementTrackIndex);
             if (currentTrack == null)
                 return;
-            
-            if ( currentTrack.Animation.Name.Equals(targetTrack.Animation.Name) || currentTrack.Animation.Name.Equals(deathAnimation.Animation.Name))
+
+            if (currentTrack.Animation.Name.Equals(targetTrack.Animation.Name) ||
+                currentTrack.Animation.Name.Equals(deathAnimation.Animation.Name))
                 return;
-            
+
             skeletonAnimation.AnimationState.SetAnimation(movementTrackIndex, targetTrack, true);
         }
 
@@ -89,18 +92,18 @@ namespace HeroesFlightProject.System.NPC.Controllers
             });
         }
 
-        public void PlayHitAnimation(bool interruptAttack,Action onCompleteAction=null)
+        public void PlayHitAnimation(bool interruptAttack, Action onCompleteAction = null)
         {
             var track = skeletonAnimation.AnimationState.GetCurrent(hitTrackIndex);
             if (track != null)
             {
-                var playingAttackAnimation =track.Animation.Name.Equals(attackAnimation.Animation.Name);
+                var playingAttackAnimation = track.Animation.Name.Equals(attackAnimation.Animation.Name);
                 if (playingAttackAnimation && interruptAttack || !playingAttackAnimation)
                 {
-                    var hitTrack =  skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, hitAnimation, false);
+                    var hitTrack = skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, hitAnimation, false);
                     hitTrack.TimeScale = 2f;
                     skeletonAnimation.AnimationState.AddEmptyAnimation(hitTrackIndex, 0, 0);
-                    CoroutineUtility.WaitForSeconds(hitAnimation.Animation.Duration/2f, () =>
+                    CoroutineUtility.WaitForSeconds(hitAnimation.Animation.Duration / 2f, () =>
                     {
                         onCompleteAction?.Invoke();
                     });
@@ -108,20 +111,17 @@ namespace HeroesFlightProject.System.NPC.Controllers
             }
             else
             {
-                var hitTrack =  skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, hitAnimation, false);
+                var hitTrack = skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, hitAnimation, false);
                 hitTrack.TimeScale = 2f;
                 skeletonAnimation.AnimationState.AddEmptyAnimation(hitTrackIndex, 0, 0);
-                CoroutineUtility.WaitForSeconds(hitAnimation.Animation.Duration/2f, () =>
+                CoroutineUtility.WaitForSeconds(hitAnimation.Animation.Duration / 2f, () =>
                 {
                     onCompleteAction?.Invoke();
                 });
             }
-           
-               
-         
         }
 
-        public void PlayAnimation(AnimationReferenceAsset animationReference,Action onCompleteAction=null)
+        public void PlayAnimation(AnimationReferenceAsset animationReference, Action onCompleteAction = null)
         {
             skeletonAnimation.AnimationState.SetAnimation(dynamicTrackIndex, animationReference, false);
             skeletonAnimation.AnimationState.AddEmptyAnimation(dynamicTrackIndex, 0, 0);

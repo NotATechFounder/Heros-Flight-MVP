@@ -18,7 +18,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected float dodgeChance;
         public bool IsImmortal { get; protected set; }
         public Transform HealthTransform => transform;
-        public CombatTargetType TargetType => targetType;
         public float MaxHealth => maxHealth;
         public float CurrentHealth => currentHealth;
         public float CurrentHealthProportion => (float)currentHealth / maxHealth;

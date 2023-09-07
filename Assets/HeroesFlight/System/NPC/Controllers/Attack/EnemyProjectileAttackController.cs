@@ -48,15 +48,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
                     var projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
                     projectile.OnEnded += ResetProjectile;
-                    projectile.SetupProjectile(Damage, aiController.CurrentTarget,
-                        final);
+                    projectile.SetupProjectile(Damage,final);
                 }
             });
         }
 
         protected override void HandleAnimationEvents(AttackAnimationEvent obj) { }
 
-        void ResetProjectile(ProjecttileControllerInterface obj)
+        void ResetProjectile(ProjectileControllerInterface obj)
         {
             var projectile = obj as ProjectileControllerBase;
             projectile.OnEnded -= ResetProjectile;
