@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Cinemachine;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Character;
-using HeroesFlight.System.Character.Enum;
 using HeroesFlight.System.Environment;
 using HeroesFlight.System.FileManager.Enum;
 using HeroesFlight.System.FileManager.Model;
@@ -12,7 +11,6 @@ using HeroesFlight.System.Gameplay.Container;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC;
-using HeroesFlight.System.NPC.Controllers;
 using HeroesFlight.System.NPC.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
@@ -187,8 +185,7 @@ namespace HeroesFlight.System.Gameplay
             characterAttackController.ToggleControllerState(false);
             environmentSystem.ParticleManager.Spawn(characterSystem.CurrentCharacter.CharacterSO.VFXData.UltVfx,
                 characterSystem.CurrentCharacter.CharacterTransform.position,Quaternion.Euler(new Vector3(-90,0,0)));
-            characterAbility.UseAbility(characterStatController.CurrentPhysicalDamage * characterSystem.CurrentCharacter.CharacterSO.UltimateData.DamageMultiplier,
-                null, () =>
+            characterAbility.UseAbility(() =>
             {
                 cameraController.SetCameraState(GameCameraType.Character);
                 characterSystem.SetCharacterControllerState(true);
@@ -456,7 +453,7 @@ namespace HeroesFlight.System.Gameplay
         {
             switch (currentLevel.LevelType)
             {
-                case LevelType.Combat:
+                case LevelType.NormalCombat:
 
                     enemiesToKill = currentLevel.MiniHasBoss ? currentLevel.TotalMobsToSpawn + 1 : currentLevel.TotalMobsToSpawn;
                     OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
@@ -498,8 +495,16 @@ namespace HeroesFlight.System.Gameplay
                 case LevelType.Intermission:
                     characterSystem.SetCharacterControllerState(true);
                     break;
+                    case LevelType.WorldBoss:
+                    HandleWorldBoss();
+                    break;
             }
+        }
 
+        private void HandleWorldBoss()
+        {
+            //Init world boss
+            AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicKey);
         }
 
         private void TriggerAngelsGambit()
@@ -546,7 +551,7 @@ namespace HeroesFlight.System.Gameplay
             npcSystem.NpcContainer.SetSpawnPoints(currentLevelEnvironment.SpawnPointsCache);
             switch (currentLevel.LevelType)
             {
-                case LevelType.Combat:
+                case LevelType.NormalCombat:
                     container.DisablePortal();
                     break;
                 case LevelType.Intermission:
