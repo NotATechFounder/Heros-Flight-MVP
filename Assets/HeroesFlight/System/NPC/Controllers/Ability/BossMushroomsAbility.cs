@@ -7,11 +7,10 @@ using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class BossMushroomsAbility : AbilityBaseNPC
+    public class BossMushroomsAbility : BossAttackAbilityBase
     {
         [SerializeField] AreaDamageEntity[] mushrooms;
-        [SerializeField] float damage;
-
+       
         protected override void Awake()
         {
             timeSincelastUse = 0;
@@ -29,7 +28,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 if(targets[i].TryGetComponent<IHealthController>(out var health))
                 {
-                    health.DealDamage(new DamageModel(damage,DamageType.NoneCritical,AttackType.Regular));
+                    health.DealDamage(new DamageModel(CalculateDamage(),DamageType.NoneCritical,AttackType.Regular));
                 }
             }
         }

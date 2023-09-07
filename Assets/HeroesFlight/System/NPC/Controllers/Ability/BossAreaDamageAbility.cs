@@ -7,12 +7,11 @@ using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class BossAreaDamageAbility : AbilityBaseNPC
+    public class BossAreaDamageAbility : BossAttackAbilityBase
     {
         [SerializeField] AbilityZone[] abilityZones;
         [SerializeField] float preDamageDelay;
         [SerializeField] float zoneWidth;
-        [SerializeField] float damage;
         public event Action<int, Collider2D[]> OnDetected; 
         protected override void Awake()
         {
@@ -31,7 +30,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 if(targets[i].TryGetComponent<IHealthController>(out var health))
                 {
-                    health.DealDamage(new DamageModel(damage,DamageType.NoneCritical,AttackType.Regular));
+                    health.DealDamage(new DamageModel(CalculateDamage(),DamageType.NoneCritical,AttackType.Regular));
                 }
             }
         }

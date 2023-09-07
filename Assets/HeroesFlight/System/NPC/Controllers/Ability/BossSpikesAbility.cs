@@ -6,12 +6,11 @@ using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class BossSpikesAbility:AbilityBaseNPC
+    public class BossSpikesAbility:BossAttackAbilityBase
     {
         [SerializeField] AbilityZone[] horizontalZones;
         [SerializeField] AbilityZone[] verticalZones;
         [SerializeField] ProjectileControllerBase projectilePrefab;
-        [SerializeField] float damagePerArrow;
         [SerializeField] float preDamageDelay;
         [SerializeField] float zoneWidth;
       
@@ -38,7 +37,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 {
                     var arrow = ObjectPoolManager.SpawnObject(projectilePrefab, zone.ZoneVisual.transform.position, Quaternion.identity);
                     arrow.OnEnded += HandleArrowDisable;
-                    arrow.SetupProjectile(damagePerArrow, zone.ZoneVisual.GetFowardDirection);
+                    arrow.SetupProjectile(CalculateDamage(), zone.ZoneVisual.GetFowardDirection);
                 },preDamageDelay,zoneWidth);
             }
 
