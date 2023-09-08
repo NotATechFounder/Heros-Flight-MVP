@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class WarningLine : MonoBehaviour
 {
-    public enum WarningLineType
+    public enum WarningMoveType
     {
         Stationary,
         Moving
     }
 
+    public enum WarningVisualType
+    {
+        LineRenderer,
+        SpriteRenderer
+    }
+
     [Header("WarningLine")]
-    [SerializeField] private WarningLineType warningLineType;
+    [SerializeField] private float warningDuration;
+    [SerializeField] private WarningMoveType warningLineType;
+    [SerializeField] private WarningVisualType warningVisualType;
     [SerializeField] private float length;
+    [SerializeField] private Transform visual;
+    [SerializeField] private SpriteRenderer visualSpriteRenderer;
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private LayerMask detectLayer;
     [SerializeField] Color startColor;
@@ -23,44 +33,99 @@ public class WarningLine : MonoBehaviour
     JuicerRuntimeCore<float> warmUpEffect;
     JuicerRuntime colorEffect;
     JuicerRuntime triggerEffect;
-
+    private float distance;
     private Action onCompleted;
 
     private void Start()
     {
         lineRenderer.enabled = false;
+        visualSpriteRenderer.enabled = false;
 
-        warmUpEffect = lineRenderer.JuicyWidth(1f, 1);
-        warmUpEffect.SetOnComplected(() =>
+        switch (warningVisualType)
         {
-            triggerEffect.Start();
-        });
+            case WarningVisualType.LineRenderer:
 
-        colorEffect = lineRenderer.material.JuicyColour(endColor, 1f);
+                warmUpEffect = lineRenderer.JuicyWidth(1f, 1);
+                warmUpEffect.SetOnComplected(() =>
+                {
+                    triggerEffect.Start();
+                });
 
-        triggerEffect = lineRenderer.JuicyWidth(0, 1);
-        triggerEffect.SetOnComplected(() =>
-        {
-            lineRenderer.enabled = false;
-            onCompleted?.Invoke();
-        });
+                colorEffect = lineRenderer.material.JuicyColour(endColor, 1f);
+
+                triggerEffect = lineRenderer.JuicyWidth(0, 1);
+                triggerEffect.SetOnComplected(() =>
+                {
+                    lineRenderer.enabled = false;
+                    onCompleted?.Invoke();
+                });
+
+                break;
+            case WarningVisualType.SpriteRenderer:
+
+                warmUpEffect = visual.JuicyScaleX(1f, 1);
+                warmUpEffect.SetOnComplected(() =>
+                {
+                    triggerEffect.Start();
+                });
+
+                colorEffect = visualSpriteRenderer.material.JuicyColour(endColor, 1f);
+
+                triggerEffect = lineRenderer.JuicyWidth(0, 1);
+                triggerEffect.SetOnComplected(() =>
+                {
+                    visualSpriteRenderer.enabled = false;
+                    onCompleted?.Invoke();
+                });
+
+                break;
+            default: break;
+        }
 
         GetEmitterPoints();
     }
 
     public void Trigger(Action OnFinishedEvent = null, float duration = 1f, float width = 0.5f)
     {
-        if (warningLineType == WarningLineType.Moving)
+        if (warningLineType == WarningMoveType.Moving)
             GetEmitterPoints();
 
         onCompleted = OnFinishedEvent;
+
+        switch (warningVisualType)
+        {
+            case WarningVisualType.LineRenderer:
+                LineRendererTrigger(duration, width);
+                break;
+            case WarningVisualType.SpriteRenderer:
+                SpriteRendererTrigger(duration, width);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void LineRendererTrigger(float duration, float width)
+    {
         colorEffect.ChangeDuration(duration);
         warmUpEffect.ChangeDuration(duration);
         warmUpEffect.ChangeDestination(width);
         triggerEffect.ChangeDuration(.15f);
         lineRenderer.enabled = true;
         colorEffect.Start(() => lineRenderer.material.color = startColor);
-        warmUpEffect.Start(()=> lineRenderer.widthMultiplier = 0);
+        warmUpEffect.Start(() => lineRenderer.widthMultiplier = 0);
+    }
+
+    private void SpriteRendererTrigger(float duration, float width)
+    {
+        visual.transform.localScale = new Vector3(width, length, 1);
+        colorEffect.ChangeDuration(duration);
+        warmUpEffect.ChangeDuration(duration);
+        warmUpEffect.ChangeDestination(width);
+        triggerEffect.ChangeDuration(.15f);
+        visualSpriteRenderer.enabled = true;
+        colorEffect.Start(() => visualSpriteRenderer.material.color = startColor);
+        warmUpEffect.Start(() => visual.transform.localScale = new Vector3(0, distance, 1));
     }
 
     public void GetEmitterPoints()
@@ -68,29 +133,26 @@ public class WarningLine : MonoBehaviour
         lineRenderer.SetPosition(0, transform.position);
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, -transform.up, length, detectLayer);
-        emitterEnd = hit.collider != null ? hit.point : transform.position + (-transform.up * length);
-        lineRenderer.SetPosition(1, emitterEnd);
+
+        switch (warningVisualType)
+        {
+            case WarningVisualType.LineRenderer:
+                emitterEnd = hit.collider != null ? hit.point : transform.position + (-transform.up * length);
+                lineRenderer.SetPosition(1, emitterEnd);
+                break;
+            case WarningVisualType.SpriteRenderer:
+                distance = hit.collider != null ? Vector2.Distance(transform.position, hit.point) : length;
+                visual.transform.localScale = new Vector3(visual.transform.localScale.x, distance, 1);
+                break;
+            default:    break;
+        }
     }
 
     public Vector2 GetFowardDirection => -transform.up;
-
-    public void OtherEffects()
-    {
-        // lineRenderer.startWidth = startWidth;
-        // lineRenderer.endWidth = endWidth;
-        // lineRenderer.widthMultiplier = widthMultiplier;
-    }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, -transform.up * length);
-
-        //if (lineRenderer.positionCount <= 1)
-        //{
-        //    lineRenderer.positionCount = 2;
-        //    lineRenderer.SetPositions(new Vector3[2]);
-        //}
-        //lineRenderer.SetPosition(1, transform.position + (-transform.up * length));
     }
 }
