@@ -458,6 +458,7 @@ namespace HeroesFlight.System.Gameplay
             if (currentState == newState)
                 return;
             currentState = newState;
+            Debug.Log(currentState);
             OnGameStateChange?.Invoke(currentState);
         }
 
@@ -523,6 +524,7 @@ namespace HeroesFlight.System.Gameplay
 
         private void HandleWorldBoss()
         {
+            Debug.Log("WORLD BOSS LOGIC");
             //Init world boss
             AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicKey);
             OnRemainingEnemiesLeft?.Invoke(0);
@@ -624,9 +626,13 @@ namespace HeroesFlight.System.Gameplay
             npcSystem.NpcContainer.SetSpawnPoints(currentLevelEnvironment.SpawnPointsCache);
             switch (currentLevel.LevelType)
             {
-                case LevelType.NormalCombat:
+                case LevelType.NormalCombat :
                     container.DisablePortal();
                     break;
+                case LevelType.WorldBoss:
+                    container.DisablePortal();
+                    break;
+                    
                 case LevelType.Intermission:
                     currentLevelEnvironment.InteractiveNPC.OnInteract = TriggerAngelsGambit;
                     container.EnablePortal(currentLevelEnvironment

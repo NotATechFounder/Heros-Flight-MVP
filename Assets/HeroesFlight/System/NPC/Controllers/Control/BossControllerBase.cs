@@ -109,8 +109,28 @@ namespace HeroesFlight.System.NPC.Controllers.Control
 
         void UseRandomAbility()
         {
-            var rng = Random.Range(0, abilities.Count);
-            var targetAbility = abilities[rng];
+            BossAbilityBase targetAbility =null;
+            float totalChance = 0;
+            foreach (var t in abilities)
+            {
+                totalChance += t.UseChance;
+            }
+
+            float currentChance = 0;
+            var rng = Random.Range(0, totalChance);
+            foreach (var t in abilities)
+            {
+                currentChance += t.UseChance;
+                if (rng <= currentChance)
+                {
+                    targetAbility = t;
+                    break;
+                    ;
+                }
+            }
+          
+           
+           
             Debug.Log($"using ability {targetAbility.gameObject.name}");
             var abilityCooldown = targetAbility.CoolDown;
             foreach (var health in bossHealth)
