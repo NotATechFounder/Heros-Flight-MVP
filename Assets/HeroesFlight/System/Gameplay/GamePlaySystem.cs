@@ -548,7 +548,12 @@ namespace HeroesFlight.System.Gameplay
             
             void HandleBossDamaged(DamageModel damageModel)
             {
-               OnEnemyDamaged?.Invoke(damageModel);
+                if (damageModel.AttackType == AttackType.Regular)
+                {
+                    characterAbility.UpdateAbilityCharges(5);
+                }
+                UpdateCharacterCombo();
+                OnEnemyDamaged?.Invoke(damageModel);
             }
             
             void HandleBossPercHealthChange(float amount)
