@@ -10,7 +10,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class HealthController : MonoBehaviour, IHealthController
     {
         [SerializeField] protected bool autoInit;
-        [SerializeField] CombatTargetType targetType;
         [SerializeField] protected float maxHealth;
         [SerializeField] protected float currentHealth;
         [SerializeField] protected HeathBarUI heathBarUI;

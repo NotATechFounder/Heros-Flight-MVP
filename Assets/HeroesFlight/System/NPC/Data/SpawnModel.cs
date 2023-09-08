@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using HeroesFlight.System.NPC.Controllers.Control;
 using HeroesFlight.System.NPC.Data;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace HeroesFlight.System.NPC.Model
 {
@@ -57,7 +59,7 @@ namespace HeroesFlight.System.NPC.Model
             {
                 foreach (var wave in waves)
                 {
-                    if (wave.AvaliableBosses.Count > 0)
+                    if (wave.Boss!=null)
                         return true;
                 }
                 return false;
@@ -72,13 +74,13 @@ namespace HeroesFlight.System.NPC.Model
         [SerializeField] float timeBetweenMobs = .5f;
         [SerializeField] List<SpawnModelEntry> avaliableTrashMobs = new List<SpawnModelEntry>();
         [SerializeField] List<SpawnModelEntry> avaliableMiniBosses = new List<SpawnModelEntry>();
-        [SerializeField] List<SpawnModelEntry> avaliableBosses = new List<SpawnModelEntry>();
+        [SerializeField] BossControllerBase boss ;
 
         public int TotalMobsToSpawn => totalMobsToSpawn;
         public float TimeBetweenMobs => timeBetweenMobs;
         public List<SpawnModelEntry> AvaliableTrashMobs => avaliableTrashMobs;
         public List<SpawnModelEntry> AvaliableMiniBosses => avaliableMiniBosses;
-        public List<SpawnModelEntry> AvaliableBosses => avaliableBosses;
+        public BossControllerBase Boss => boss;
     }
 
     public enum LevelType

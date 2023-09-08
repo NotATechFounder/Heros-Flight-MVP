@@ -1,6 +1,6 @@
 using System.Collections;
-using Unity.Plastic.Newtonsoft.Json.Serialization;
 using UnityEngine;
+using Action = Unity.Plastic.Newtonsoft.Json.Serialization.Action;
 
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -10,7 +10,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected OverlapChecker overlap;
         [SerializeField] protected float duration;
         [SerializeField] protected float tick = 0.5f;
-        public event Action<int, Collider2D[]> OnTargetsDetected;
+        public event Unity.Plastic.Newtonsoft.Json.Serialization.Action<int, Collider2D[]> OnTargetsDetected;
         WaitForSeconds tickWait;
         Coroutine detectionRoutine;
         public virtual  void Init()
@@ -21,12 +21,17 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void NotifyTargetDetected(int count, Collider2D[] targets)
         {
-            OnTargetsDetected?.Invoke(count,targets);
+           OnTargetsDetected?.Invoke(count,targets);
         }
 
-        public virtual void StartDetection(Action onComplete)
+        public virtual void StartDetection(Action onComplete=null)
         {
-            if(detectionRoutine!=null)
+            StartDetectionRoutine(onComplete);
+        }
+
+        protected void StartDetectionRoutine(Action onComplete)
+        {
+            if (detectionRoutine != null)
                 StopCoroutine(detectionRoutine);
             StartCoroutine(DetectionRoutine(onComplete));
         }
@@ -42,6 +47,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 currentDuration += tick;
             }
             onComplete?.Invoke();
+        }
+
+        void OnDestroy()
+        {
+            if (detectionRoutine != null)
+                StopCoroutine(detectionRoutine);
         }
     }
 }

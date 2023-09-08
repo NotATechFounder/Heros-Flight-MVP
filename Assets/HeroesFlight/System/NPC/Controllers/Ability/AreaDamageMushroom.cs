@@ -1,7 +1,6 @@
 using Spine.Unity;
 using Unity.Plastic.Newtonsoft.Json.Serialization;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -9,25 +8,24 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         [SerializeField] AnimationReferenceAsset idleAniamtion;
         [SerializeField] AnimationReferenceAsset activeAniamtion;
-        [SerializeField] GameObject particleObject;
-        SkeletonAnimation skeletonAnimation;
+        [SerializeField] ParticleSystem particleObject;
+        [SerializeField] SkeletonAnimation skeletonAnimation;
 
         public override void Init()
         {
             base.Init();
-            skeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
             skeletonAnimation.AnimationState.SetAnimation(0, idleAniamtion, true);
         }
 
 
         public override void StartDetection(Action onComplete)
         {
-            skeletonAnimation.AnimationState.SetAnimation(0, idleAniamtion, true);
-            particleObject.SetActive(true);
-            base.StartDetection(() =>
+            skeletonAnimation.AnimationState.SetAnimation(0, activeAniamtion, true);
+            particleObject.Play(true);
+            StartDetectionRoutine(() =>
             {
-                skeletonAnimation.AnimationState.SetAnimation(0, activeAniamtion, true);
-                particleObject.SetActive(false);
+                skeletonAnimation.AnimationState.SetAnimation(0, idleAniamtion, true);
+                particleObject.Stop(true);
                 onComplete?.Invoke();
             });
         }

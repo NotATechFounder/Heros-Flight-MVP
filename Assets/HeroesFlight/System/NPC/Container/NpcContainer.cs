@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using HeroesFlight.System.NPC.Controllers;
+using HeroesFlight.System.NPC.Controllers.Control;
 using HeroesFlight.System.NPC.Data;
 using HeroesFlight.System.NPC.Model;
 using HeroesFlightProject.System.NPC.Controllers;
@@ -21,6 +22,7 @@ namespace HeroesFlight.System.NPC.Container
 
         List<AiControllerBase> spawnedEnemies = new();
         Dictionary<SpawnType, List<ISpawnPointInterface>> spawnPointsCache = new();
+        public event Action OnBossWaveStarted;
         MonsterStatController monsterStatController;
         Coroutine spawningWaveRoutine;
         Coroutine spawningRoutine;
@@ -29,7 +31,7 @@ namespace HeroesFlight.System.NPC.Container
         private bool spawningEnded = false;
         private MobDifficultyHolder mobDifficulty;
         private int levelIndex;
-
+        Level currentLevel;
         public void Init()
         {
             // To be removed
@@ -49,6 +51,7 @@ namespace HeroesFlight.System.NPC.Container
         public void SpawnEnemies(Level level, int levelIndex, Action<AiControllerBase> OnOnEnemySpawned)
         {
             if (level.Waves.Length == 0) return;
+            currentLevel = level;
             spawningEnded = false;
             this.levelIndex = levelIndex;
             spawningRoutine = StartCoroutine(SpawnNewLevelRoutine(level, OnOnEnemySpawned));
@@ -73,6 +76,11 @@ namespace HeroesFlight.System.NPC.Container
 
         IEnumerator NewSpawnWave(Wave wave, int enemiesToSpawn, Action<AiControllerBase> OnOnEnemySpawned)
         {
+            if (wave.Boss != null)
+            {
+                OnBossWaveStarted?.Invoke();
+            }
+            
             if (wave.AvaliableMiniBosses.Count > 0)
             {
                 SpawnModelEntry targetEntry = PickRandomMob(wave.AvaliableMiniBosses);
@@ -140,6 +148,31 @@ namespace HeroesFlight.System.NPC.Container
 
 
             return spawnModel[0];
+        }
+
+        public BossControllerBase SpawnBoss(Level targetLevel)
+        {
+            if(spawnPointsCache.TryGetValue(SpawnType.Boss,out var point))
+            {
+                BossControllerBase prefab = null;
+                foreach (var wave in targetLevel.Waves)
+                {
+                    if (wave.Boss != null)
+                    {
+                        prefab = wave.Boss;
+                        break;
+                    }
+                }
+
+                if (prefab != null)
+                {
+                    return Instantiate(prefab, point[0].GetSpawnPosition(), Quaternion.identity);
+                }
+
+                return null;
+            }
+            
+            return null;
         }
 
         public void InjectPlayer(Transform playerTransform)

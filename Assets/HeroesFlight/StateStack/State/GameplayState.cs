@@ -290,7 +290,8 @@ namespace HeroesFlight.StateStack.State
                                 },
                                 () =>
                                 {
-                                    if (newLevel.LevelType == System.NPC.Model.LevelType.NormalCombat)
+                                    if (newLevel.LevelType == System.NPC.Model.LevelType.NormalCombat || 
+                                        newLevel.LevelType==System.NPC.Model.LevelType.WorldBoss)
                                     {
                                         CoroutineUtility.Start(ContinueGameLoopRoutine());
                                     }
