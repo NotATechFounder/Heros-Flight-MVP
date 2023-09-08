@@ -63,6 +63,7 @@ public class HazardArrow : MonoBehaviour
                 healthController.DealDamage(new DamageModel(damage, DamageType.NoneCritical, AttackType.Regular));
             }
 
+            Debug.Log("Arrow hit " + col.name, col);
             DisableProjectile();
         }
     }
