@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Cinemachine;
+using HeroesFlight.System.Combat;
 using HeroesFlightProject.System.NPC.Controllers;
 using Pelumi.ObjectPool;
 using UnityEngine;
@@ -9,8 +11,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class BossSpikesAbility:BossAttackAbilityBase
     {
-        [SerializeField] AbilityZone[] horizontalZones;
-        [SerializeField] AbilityZone[] verticalZones;
+        [SerializeField] List<BossAttackPattern> patterns = new();
         [SerializeField] ProjectileControllerBase projectilePrefab;
         [SerializeField] float preDamageDelay;
         [SerializeField] float zoneWidth;
@@ -30,16 +31,16 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 animator.PlayAnimation(targetAnimation,onComplete);
             }
 
-            var rng = Random.Range(0, 2);
-            var targetZones = rng == 0 ? horizontalZones : verticalZones;
+            var rng = Random.Range(0, patterns.Count);
+            var targetZones = patterns[rng].Lines;
             cameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,.5f);
             foreach (var zone in targetZones)
             {
-                zone.ZoneVisual.Trigger(() =>
+                zone.Trigger(() =>
                 {
-                    var arrow = ObjectPoolManager.SpawnObject(projectilePrefab, zone.ZoneVisual.transform.position, Quaternion.identity);
+                    var arrow = ObjectPoolManager.SpawnObject(projectilePrefab, zone.transform.position, Quaternion.identity);
                     arrow.OnEnded += HandleArrowDisable;
-                    arrow.SetupProjectile(CalculateDamage(), zone.ZoneVisual.GetFowardDirection);
+                    arrow.SetupProjectile(CalculateDamage(), zone.GetFowardDirection);
                 },preDamageDelay,zoneWidth);
             }
 
@@ -55,16 +56,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         
         public override void StopAbility()
         {
-            foreach (var zone in horizontalZones)
+            foreach (var lines in patterns)
             {
-                zone.ZoneVisual.gameObject.SetActive(false);
-               
+                foreach (var line in lines.Lines)
+                {
+                    line.gameObject.SetActive(false);
+                }
             }
-            foreach (var zone in verticalZones)
-            {
-                zone.ZoneVisual.gameObject.SetActive(false);
-                
-            }
+           
         }
     }
 }
