@@ -12,6 +12,22 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] AnimationReferenceAsset deathAniamtion;
         [SerializeField] AnimationReferenceAsset hitAnimation;
         [SerializeField] SkeletonAnimation skeletonAnimation;
+        [Header("Visuals")]
+        [SerializeField] Color flashColor = Color.gray;
+        [Header("Do not modify")]
+        [SerializeField] string fillPhaseProperty = "_FillPhase";
+        [SerializeField] string fillColorProperty = "_FillColor";
+
+        MaterialPropertyBlock mpb;
+        MeshRenderer meshRenderer;
+
+        public override void Init()
+        {
+            base.Init();
+            mpb = new MaterialPropertyBlock();
+            meshRenderer = GetComponentInChildren<MeshRenderer>();
+        }
+
         public void SetDefence(float value)
         {
             defence = value;
@@ -39,6 +55,21 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             base.SetInvulnerableState(isImmortal);
             hitCollider.enabled = !isImmortal;
+            Flash(isImmortal);
         }
+
+
+         void Flash (bool isInvul)
+         {
+             Debug.Log(flashColor);
+            meshRenderer.GetPropertyBlock(mpb);
+            var fillPhase = Shader.PropertyToID(fillPhaseProperty);
+            var fillColor = Shader.PropertyToID(fillColorProperty);
+            mpb.SetColor(fillColor, flashColor);
+            var fillValue = isInvul ? 1 : 0;
+            mpb.SetFloat(fillPhase,fillValue );
+            meshRenderer.SetPropertyBlock(mpb);
+        }
+
     }
 }

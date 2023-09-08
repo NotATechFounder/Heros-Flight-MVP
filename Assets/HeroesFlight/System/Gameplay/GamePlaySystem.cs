@@ -346,7 +346,7 @@ namespace HeroesFlight.System.Gameplay
                 dataSystemInterface.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
                     CharacterType.Lancer));
 
-                CoroutineUtility.WaitForSeconds(1f, () =>
+                CoroutineUtility.WaitForSeconds(4f, () =>
                 {
                     ChangeState(GameState.Won);
                 });
