@@ -71,14 +71,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected virtual void InitAttack()
         {
-            Debug.Log("STARTING ATTACK");
             timeSinceLastAttack = 0;
             animator.StartAttackAnimation(null);
         }
 
         protected virtual void DealDamage(int i, Collider2D[] collider2Ds)
         {
-            Debug.Log("detected player");
             var baseDamage = Damage;
             
             float criticalChance = aiController.AgentModel.AiData.CriticalHitChance;

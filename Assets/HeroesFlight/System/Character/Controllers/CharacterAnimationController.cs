@@ -155,8 +155,6 @@ namespace HeroesFlight.System.Character
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
-            Debug.Log($"Got event with name {e.Data.Name} " +
-                $" STRING value {e.String} and INT value {e.Int}");
             switch (e.Data.Name)
             {
                 case AnimationEventNames.Damage:

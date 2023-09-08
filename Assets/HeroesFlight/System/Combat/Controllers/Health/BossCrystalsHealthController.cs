@@ -61,7 +61,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
          void Flash (bool isInvul)
          {
-             Debug.Log(flashColor);
             meshRenderer.GetPropertyBlock(mpb);
             var fillPhase = Shader.PropertyToID(fillPhaseProperty);
             var fillColor = Shader.PropertyToID(fillColorProperty);
