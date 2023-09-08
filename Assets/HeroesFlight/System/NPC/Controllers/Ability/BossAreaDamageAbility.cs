@@ -1,4 +1,5 @@
 using System;
+using Cinemachine;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
@@ -46,11 +47,22 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 zone.ZoneVisual.Trigger(() =>
                 {
+                    cameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,.5f);
                     zone.ZoneChecker.Detect();
                 },preDamageDelay,zoneWidth);
             }
 
             timeSincelastUse = coolDown;
+        }
+
+
+        public override void StopAbility()
+        {
+            foreach (var zone in abilityZones)
+            {
+                zone.ZoneVisual.gameObject.SetActive(false);
+                zone.ZoneChecker.gameObject.SetActive(false);
+            }
         }
     }
 }

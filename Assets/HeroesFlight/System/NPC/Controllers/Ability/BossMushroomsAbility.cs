@@ -1,8 +1,10 @@
 using System;
+using Cinemachine;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.NPC.Controllers;
+using StansAssets.Foundation.Async;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -10,7 +12,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public class BossMushroomsAbility : BossAttackAbilityBase
     {
         [SerializeField] AreaDamageEntity[] mushrooms;
-       
+        [SerializeField] float preDamageDelay = 2f;
         protected override void Awake()
         {
             timeSincelastUse = 0;
@@ -37,9 +39,23 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public override void UseAbility(Action onComplete = null)
         {
             base.UseAbility(onComplete);
+            CoroutineUtility.WaitForSeconds(preDamageDelay,() =>
+            {
+                cameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,.5f);
+                foreach (var mushroom in mushrooms)
+                {
+                    mushroom.StartDetection();
+                }
+            });
+            
+        }
+        
+        
+        public override void StopAbility()
+        {
             foreach (var mushroom in mushrooms)
             {
-                mushroom.StartDetection();
+                mushroom.gameObject.SetActive(false);
             }
         }
     }

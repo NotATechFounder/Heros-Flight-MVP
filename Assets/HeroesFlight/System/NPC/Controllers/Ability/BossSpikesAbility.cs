@@ -1,4 +1,5 @@
 using System;
+using Cinemachine;
 using HeroesFlightProject.System.NPC.Controllers;
 using Pelumi.ObjectPool;
 using UnityEngine;
@@ -31,6 +32,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             var rng = Random.Range(0, 2);
             var targetZones = rng == 0 ? horizontalZones : verticalZones;
+            cameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,.5f);
             foreach (var zone in targetZones)
             {
                 zone.ZoneVisual.Trigger(() =>
@@ -49,6 +51,20 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             obj.OnEnded -= HandleArrowDisable;
             var arrow = obj as ProjectileControllerBase;
             ObjectPoolManager.ReleaseObject(arrow.gameObject);
+        }
+        
+        public override void StopAbility()
+        {
+            foreach (var zone in horizontalZones)
+            {
+                zone.ZoneVisual.gameObject.SetActive(false);
+               
+            }
+            foreach (var zone in verticalZones)
+            {
+                zone.ZoneVisual.gameObject.SetActive(false);
+                
+            }
         }
     }
 }
