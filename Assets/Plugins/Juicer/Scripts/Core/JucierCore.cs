@@ -404,7 +404,7 @@ namespace Pelumi.Juicer
     public class WaitUntilJuicerComplectedOrStep : CustomYieldInstruction
     {
         private JuicerRuntime _juicerRuntime;
-        public override bool keepWaiting => !_juicerRuntime.IsFinished && !_juicerRuntime.IsComplectedRound();
+        public override bool keepWaiting => !_juicerRuntime.IsFinished && !_juicerRuntime.IsStepCompleted;
 
         public WaitUntilJuicerComplectedOrStep(JuicerRuntime juicerRuntime)
         {

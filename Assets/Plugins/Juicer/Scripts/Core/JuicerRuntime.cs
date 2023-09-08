@@ -124,6 +124,8 @@ namespace Pelumi.Juicer
         public object Target => _juicerRuntimeController.Target;
         public float Duration => _juicerRuntimeController.Duration;
 
+        public bool IsStepCompleted => _juicerRuntimeController.IsStepCompleted;
+
         public abstract JuicerRuntime Start(JuicerEventHandler PreStart = null);
 
         public JuicerRuntime SetDelay(float delay)
@@ -204,12 +206,7 @@ namespace Pelumi.Juicer
             return this;
         }
 
-        public bool IsFinished { get => _juicerRuntimeController.IsCompletedStep; }
-
-        public bool IsComplectedRound()
-        {
-            return _juicerRuntimeController.IsCompletedStep;
-        }
+        public bool IsFinished { get => _coroutine.IsDone; }
 
         public void Pause()
         {
@@ -267,7 +264,7 @@ namespace Pelumi.Juicer
         private float _stepDelay;
         protected float _duration;
         private bool _isPaused;
-        private bool _isCompleted;
+        private bool _isStepCompleted;
         private JuicerRuntimeEvent _juicerEvent = new JuicerRuntimeEvent();
 
         public object Target => _target;
@@ -276,7 +273,8 @@ namespace Pelumi.Juicer
         public float StepDelay => _stepDelay;
         public float Duration => _duration;
         public bool IsPaused => _isPaused;
-        public bool IsCompletedStep => _isCompleted;
+
+        public bool IsStepCompleted => _isStepCompleted;
 
         public JuicerRuntimeController (object target, float duration)
         {
@@ -312,18 +310,19 @@ namespace Pelumi.Juicer
 
         public void OnStart()
         {
+            _isStepCompleted = false;
             _juicerEvent.InvokeOnStart();
             _juicerEvent.ResetTimelineEvents();
         }
 
         public void OnCompleted()
         {
-            _isCompleted = true;
             _juicerEvent.InvokeOnComplected();
         }
 
         public void OnCompleteStep()
         {
+            _isStepCompleted = true;
             _juicerEvent.InvokeOnStepComplete();
             _juicerEvent.ResetTimelineEvents();
         }

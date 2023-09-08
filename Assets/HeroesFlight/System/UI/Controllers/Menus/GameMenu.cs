@@ -240,8 +240,8 @@ namespace UISystem
             levelProgressPanel.SetActive(true);
             yield return new WaitForSeconds(0.5f);
 
-            levelProgressEffect.ChangeDestination(value);
-            levelProgressEffect.Start();
+            levelProgressEffect.StartNewDestination(value);
+
             yield return new WaitUntilJuicerComplected(levelProgressEffect);
 
             yield return new WaitForSeconds(0.25f);
@@ -264,8 +264,7 @@ namespace UISystem
             for (int i = 0; i < numberOfLevelInc; i++)
             {
                 OnSingleLevelUpComplete?.Invoke();
-                levelProgressEffect.ChangeDestination(1f);
-                levelProgressEffect.Start();
+                levelProgressEffect.StartNewDestination(1f);
 
                 yield return new WaitUntilJuicerComplected(levelProgressEffect);
 
@@ -279,8 +278,7 @@ namespace UISystem
 
             if (value > 0)
             {
-                levelProgressEffect.ChangeDestination(value);
-                levelProgressEffect.Start();
+                levelProgressEffect.StartNewDestination(value);
                 yield return new WaitUntilJuicerComplected(levelProgressEffect);
             }
 
