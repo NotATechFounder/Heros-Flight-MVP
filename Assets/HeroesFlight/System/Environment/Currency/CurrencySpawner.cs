@@ -14,8 +14,6 @@ public class CurrencySpawner : MonoBehaviour
     [SerializeField] private List<CurrencyItem> spawnedExpItems = new List<CurrencyItem>();
     [SerializeField] private Transform playerTransfrom;
 
-    WaitForSeconds delay = new WaitForSeconds(.05f);
-
     public void SetPlayer(Transform playerTrans)
     {
         playerTransfrom = playerTrans;
@@ -47,15 +45,17 @@ public class CurrencySpawner : MonoBehaviour
 
     private IEnumerator ActivateExpItemsWithDelay(Action OnAllExpCollected)
     {
+        float itemDelay = 1f / spawnedExpItems.Count;
+
         foreach (CurrencyItem item in spawnedExpItems)
         {
             item.MoveToPlayer();
-            yield return delay;
+            yield return new WaitForSeconds(itemDelay);
         }
 
         yield return new WaitUntil(() => AllExpCollected());
         spawnedExpItems.Clear();
-        yield return delay;
+        yield return new WaitForSeconds(.1F);
         OnAllExpCollected?.Invoke();
     }
 }
