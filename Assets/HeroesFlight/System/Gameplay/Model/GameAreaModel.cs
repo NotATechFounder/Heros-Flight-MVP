@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using HeroesFlight.System.NPC.Controllers.Control;
 using HeroesFlight.System.NPC.Data;
 using HeroesFlight.System.NPC.Model;
 using HeroesFlightProject.System.NPC.Enum;
@@ -15,7 +16,10 @@ namespace HeroesFlight.System.Gameplay.Model
         [SerializeField] LevelPortal portalPrefab;
         [SerializeField] private Crystal crystalPrefab;
         [SerializeField] Level angelsGambitLevel;
-        [SerializeField] private GameObject worldBoss;
+
+        [SerializeField] private BossControllerBase worldBoss;
+        [SerializeField] private string bossMusicKey;
+
         [SerializeField] private SpawnModel spawnModel;
         [SerializeField] private MobDifficultyHolder mobDifficulty;
 
@@ -23,6 +27,8 @@ namespace HeroesFlight.System.Gameplay.Model
         public string AreaName => areaName;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
         public Level AngelsGambitLevel => angelsGambitLevel;
+        public BossControllerBase WorldBoss => worldBoss;
+        public string WorldBossMusicKey => bossMusicKey;
         public SpawnModel SpawnModel => spawnModel;
         public LevelPortal PortalPrefab => portalPrefab;
         public Crystal CrystalPrefab => crystalPrefab;
