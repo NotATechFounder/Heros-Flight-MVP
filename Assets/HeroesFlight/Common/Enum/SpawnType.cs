@@ -8,5 +8,6 @@ namespace HeroesFlightProject.System.NPC.Enum
         Player,
         Portal,
         MiniBoss,
+        Boss
     }
 }

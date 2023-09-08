@@ -26,11 +26,9 @@ namespace HeroesFlight.System.NPC.Controllers.Control
         public event Action<BossState> OnBossStateChange;
 
         float maxHealth;
+        bool initied;
 
-        void Awake()
-        {
-            Init();
-        }
+        
 
 
         public void Init()
@@ -48,7 +46,9 @@ namespace HeroesFlight.System.NPC.Controllers.Control
                 health.OnBeingDamaged += HandleCrystalDamaged;
                 maxHealth += health.MaxHealth;
             }
-         
+
+            initied = true;
+            animator.PlayHitAnimation(false);
         }
 
         void HandleCrystalDamaged(DamageModel obj)
@@ -80,7 +80,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
                 ChangeState(BossState.Dead);
                 animator.PlayDeathAnimation( () =>
                 {
-                   
+                  gameObject.SetActive(false);
                 });
             }
            
@@ -89,6 +89,8 @@ namespace HeroesFlight.System.NPC.Controllers.Control
 
         void Update()
         {
+            if (!initied)
+                return;
             if (State == BossState.Dead)
                 return;
 

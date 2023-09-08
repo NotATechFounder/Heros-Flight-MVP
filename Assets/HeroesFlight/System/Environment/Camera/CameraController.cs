@@ -1,6 +1,7 @@
 using System;
 using Cinemachine;
 using HeroesFlight.System.Gameplay.Enum;
+using StansAssets.Foundation.Async;
 using UnityEngine;
 
 
@@ -12,6 +13,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] PolygonCollider2D boundsCollider;
         [SerializeField] CinemachineVirtualCamera characterCamera;
         [SerializeField] CinemachineVirtualCamera skillCamera;
+        [SerializeField] CinemachineVirtualCamera environmentCamera;
 
         [Header("Impulse sources")]
         [SerializeField] CinemachineImpulseSource bumpSource;
@@ -59,6 +61,28 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             characterCameraconfiner.m_BoundingShape2D = collider2D;
             skillCameraconfiner.m_BoundingShape2D = collider2D;
+        }
+
+        public void UpdateCharacterCameraFrustrum(float modifier, bool increase)
+        {
+            if (increase)
+            {
+                characterCamera.m_Lens.OrthographicSize *= modifier;
+            }
+            else
+            {
+                characterCamera.m_Lens.OrthographicSize /= modifier;
+            }
+        }
+
+        public void InitLevelOverview(float duration,Action onComplete)
+        {
+            environmentCamera.enabled = true;
+            CoroutineUtility.WaitForSeconds(duration, () =>
+            {
+                environmentCamera.enabled = false;
+                onComplete?.Invoke();
+            });
         }
 
         public void SetCameraState(GameCameraType newType)
