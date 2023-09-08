@@ -1,6 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
-using Action = Unity.Plastic.Newtonsoft.Json.Serialization.Action;
+
 
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -10,7 +11,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected OverlapChecker overlap;
         [SerializeField] protected float duration;
         [SerializeField] protected float tick = 0.5f;
-        public event Unity.Plastic.Newtonsoft.Json.Serialization.Action<int, Collider2D[]> OnTargetsDetected;
+        public event Action<int, Collider2D[]> OnTargetsDetected;
         WaitForSeconds tickWait;
         Coroutine detectionRoutine;
         public virtual  void Init()

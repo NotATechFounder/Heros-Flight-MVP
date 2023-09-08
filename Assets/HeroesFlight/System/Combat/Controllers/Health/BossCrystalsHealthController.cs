@@ -69,6 +69,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             mpb.SetFloat(fillPhase,fillValue );
             meshRenderer.SetPropertyBlock(mpb);
         }
+         
+         
 
     }
 }

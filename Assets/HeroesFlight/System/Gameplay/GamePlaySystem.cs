@@ -530,7 +530,7 @@ namespace HeroesFlight.System.Gameplay
             OnRemainingEnemiesLeft?.Invoke(0);
             OnCharacterComboChanged?.Invoke(characterComboNumber);
             ChangeState(GameState.Ongoing);
-            cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Bump,6f, 2f);
+            cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,3f, 4f);
             OnEnterMiniBossLvl?.Invoke();
             OnMinibossHealthChange?.Invoke(1f);
             environmentSystem.ParticleManager.Spawn("BossSpawn", new Vector2(-4, 0));

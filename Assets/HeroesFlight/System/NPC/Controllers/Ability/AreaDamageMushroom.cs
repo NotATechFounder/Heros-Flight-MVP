@@ -1,5 +1,5 @@
+using System;
 using Spine.Unity;
-using Unity.Plastic.Newtonsoft.Json.Serialization;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
