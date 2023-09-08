@@ -36,6 +36,7 @@ namespace UISystem
         [SerializeField] private Image levelProgressFill;
 
         [Header("Combo Counter")]
+        [SerializeField] private GameObject comboCounterPanel;
         [SerializeField] private ComboFeedback[] comboFeedbacks;
         [SerializeField] private TextMeshProUGUI comboCounterText;
         [SerializeField] private TextMeshProUGUI comboFeedbackText;
@@ -204,6 +205,7 @@ namespace UISystem
 
             if (value == 0)
             {
+                comboCounterPanel.SetActive(false);
                 comboFeedbackText.text = "";
                 comboCounterText.text = "";
             }
