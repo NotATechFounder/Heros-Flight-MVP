@@ -286,6 +286,8 @@ namespace UISystem
             levelProgressPanel.SetActive(false);
             OnLevelUpComplete?.Invoke(currentLevel + numberOfLevelInc);
             isExpComplete = true;
+            yield return new WaitForSeconds(0.1f);
+            isExpComplete = false;
         }
 
         public void UpdateBossHealthFill(float value)

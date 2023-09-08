@@ -573,10 +573,7 @@ namespace HeroesFlight.System.Gameplay
                 boss.Init();
             });
         
-            OnEnterMiniBossLvl?.Invoke();
-          
-
-
+            OnEnterMiniBossLvl?.Invoke();       
             //  boss.Init();
             combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());
         }
@@ -697,9 +694,12 @@ namespace HeroesFlight.System.Gameplay
         public void HandleHeroProgression()
         {
             GodsBenevolence.DeactivateGodsBenevolence();
-
-            HeroProgression.AddExp(collectedHeroProgressionSp);
-            collectedHeroProgressionSp = 0;
+            environmentSystem.CurrencySpawner.ActivateExpItems(()=>
+            {
+                Debug.Log("EXP ITEMS ACTIVATED");
+                HeroProgression.AddExp(collectedHeroProgressionSp);
+                collectedHeroProgressionSp = 0;
+            });
         }
 
         public void HandleSingleLevelUp()

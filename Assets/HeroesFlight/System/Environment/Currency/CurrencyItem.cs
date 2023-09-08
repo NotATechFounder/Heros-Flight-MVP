@@ -18,6 +18,8 @@ public class CurrencyItem : MonoBehaviour
     [SerializeField] private ParticleSystem particle;
     [SerializeField] protected ParticleSystem sparkParticle;
 
+    private bool isCollected;
+
     private CurrencySO currencySO;
     private Rigidbody2D rigid2D;
     private JuicerRuntime scaleEffect;
@@ -26,6 +28,7 @@ public class CurrencyItem : MonoBehaviour
     private Coroutine moveToPlayerCoroutine;
 
     public CurrencySO CurrencySO => currencySO;
+    public bool IsCollected => isCollected;
 
     private void Awake()
     {
@@ -35,12 +38,14 @@ public class CurrencyItem : MonoBehaviour
         {
             OnCurrencyInteracted?.Invoke(this, amount);
             moveToPlayerCoroutine = null;
+            isCollected = true;
             ObjectPoolManager.ReleaseObject(this);
         });
     }
 
-    public void Initialize(CurrencySO currency, Action<CurrencyItem, float> func , float amount, Transform target)
+    public void Initialize(CurrencySO currency, Action<CurrencyItem, float> func , float amount, Transform target, bool autoLocatePlayer = true)
     {
+        isCollected = false;
         transform.localScale = Vector3.one;
         currencySO = currency;
         spriteRenderer.sprite = currency.GetSprite;
@@ -57,7 +62,7 @@ public class CurrencyItem : MonoBehaviour
 
         ApplyUpWardForce(launchForce);
 
-        MoveToPlayer();
+        if (autoLocatePlayer) MoveToPlayer();
     }
 
     public void ApplyUpWardForce(float force)
