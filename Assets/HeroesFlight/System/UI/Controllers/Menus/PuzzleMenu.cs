@@ -126,9 +126,15 @@ namespace UISystem
                     break;
                 }
             }
+
             if (isCorrectRotation)
             {
+                AudioManager.PlaySoundEffect("RotateLastTile");
                 PuzzleSolved();
+            }
+            else
+            {
+                AudioManager.PlaySoundEffect("RotateTiles");
             }
         }
 
@@ -142,6 +148,11 @@ namespace UISystem
         {
             countDownTimer.Stop();
             blocker.SetActive(true);
+            
+            yield return new WaitForSeconds(.5f);
+
+            AudioManager.PlaySoundEffect(selectedBenevolence.CompletedSfxKey);    
+
             yield return new WaitForSeconds(3f);
             OnPuzzleSolved?.Invoke(selectedBenevolence);
             Close();

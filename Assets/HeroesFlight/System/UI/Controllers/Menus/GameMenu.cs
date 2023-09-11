@@ -202,15 +202,16 @@ namespace UISystem
         {
             comboCounterEffect.Start(()=> comboCounterText.transform.localScale = Vector3.zero);
             comboCounterText.text = "x" + value.ToString();
+            comboCounterPanel.SetActive(value != 0);
 
             if (value == 0)
             {
-                comboCounterPanel.SetActive(false);
                 comboFeedbackText.text = "";
                 comboCounterText.text = "";
             }
             else
             {
+                comboCounterPanel.SetActive(true);
                 foreach (ComboFeedback comboFeedback in comboFeedbacks)
                 {
                     if (comboFeedback.threshold == value)
@@ -220,7 +221,6 @@ namespace UISystem
                         break;
                     }
                 }
-
             }
         }
 

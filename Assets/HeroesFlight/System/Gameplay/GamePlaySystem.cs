@@ -464,6 +464,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandlePlayerTriggerPortal()
         {
+            AudioManager.PlaySoundEffect("EnterPortal");
             OnNextLvlLoadRequest?.Invoke();
         }
 
@@ -594,6 +595,8 @@ namespace HeroesFlight.System.Gameplay
                 Debug.LogError("Current lvl loop model has 0 lvls");
                 return null;
             }
+
+            AudioManager.PlaySoundEffect("ExitPortal");
 
             SetUpLevelEnvironment();
             return currentLevel;

@@ -16,6 +16,7 @@ public class GodsBenevolenceSO : ScriptableObject
     [SerializeField] private GodsBenevolenceAfterEffect[] godsBenevolenceAfterEffects;
     [SerializeField] private Sprite[] benevolencePuzzle;
     [SerializeField] private GameObject effectPrefab;
+    [SerializeField] private string completedSfxKey;
 
     public string BenevolenceName => benevolenceName;
     public string BenevolenceDescription => benevolenceDescription;
@@ -26,6 +27,7 @@ public class GodsBenevolenceSO : ScriptableObject
     public GodsBenevolenceAfterEffect[] AfterEffects => godsBenevolenceAfterEffects;
     public Sprite[] BenevolencePuzzle => benevolencePuzzle;
     public GameObject EffectPrefab => effectPrefab;
+    public string CompletedSfxKey => completedSfxKey;
 
     public float GetValue(string key)
     {
