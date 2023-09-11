@@ -33,6 +33,7 @@ public class CurrencyItem : MonoBehaviour
     private void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
+
         scaleEffect = transform.JuicyScale(0, .15f);
         scaleEffect.SetOnComplected(() =>
         {
@@ -60,9 +61,14 @@ public class CurrencyItem : MonoBehaviour
         ColorOverLifetimeModule sparkColorOverLifetime = sparkParticle.colorOverLifetime;
         sparkColorOverLifetime.color = currency.GetSparkGradient;
 
+        spriteRenderer.gameObject.SetActive(autoLocatePlayer);
+
         ApplyUpWardForce(launchForce);
 
-        if (autoLocatePlayer) MoveToPlayer();
+        if (autoLocatePlayer)
+        {
+            MoveToPlayer();
+        }
     }
 
     public void ApplyUpWardForce(float force)
@@ -79,6 +85,7 @@ public class CurrencyItem : MonoBehaviour
 
     public IEnumerator MoveToPosition(Action OnReachPlayer)
     {
+        spriteRenderer.gameObject.SetActive(true);
         yield return new WaitForSeconds(waitTime);
         yield return null;
         var currentPos = transform.position;
