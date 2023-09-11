@@ -10,7 +10,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
     {
         [SerializeField] protected SpriteRenderer buffDebuffIcon;
         [SerializeField] protected AiAgentModel m_Model;
-      
         protected FlashEffect hitEffect;
         protected AiViewController viewController;
         protected AiAnimatorInterface animator;
@@ -110,7 +109,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             isDisabled = true;
             attackCollider.enabled = false;
-            rigidBody.bodyType = RigidbodyType2D.Static;
+          //  rigidBody.bodyType = RigidbodyType2D.Static;
             animator.PlayDeathAnimation(() =>
             {
                 if (gameObject != null)
