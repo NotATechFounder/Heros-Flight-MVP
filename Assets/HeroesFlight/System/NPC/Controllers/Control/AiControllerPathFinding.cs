@@ -36,8 +36,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 StopCoroutine(knockBackRoutine);
             }
 
-            ai.canMove = false;
+            isDisabled = true;
             setter.target = null;
+            ai.canMove = false;
+            ai.isStopped = true;
             rigidBody.velocity = Vector2.zero;
             base.Disable();
         }
@@ -52,6 +54,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void ProcessFollowingState()
         {
+            if(isDisabled)
+                return;
+            
             if (isInknockback)
                 return;
             
