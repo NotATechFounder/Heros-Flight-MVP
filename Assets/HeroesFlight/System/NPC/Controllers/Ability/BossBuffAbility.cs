@@ -25,7 +25,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected override void Awake()
         {
             animator = GetComponentInParent<AiAnimatorInterface>();
-            timeSincelastUse = 0;
+            currentCooldown = 0;
            
         }
         public override void UseAbility(Action onComplete = null)
@@ -43,7 +43,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 animator.PlayAnimation(targetAnimation,onComplete);
             }
 
-            timeSincelastUse = coolDown;
+            currentCooldown = coolDown;
         }
 
 

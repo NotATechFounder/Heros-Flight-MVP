@@ -17,7 +17,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected override void Awake()
         {
             animator = GetComponentInParent<AiAnimatorInterface>();
-            timeSincelastUse = 0;
+            currentCooldown = 0;
             foreach (var zone in abilityZones)
             {
                 zone.ZoneChecker.OnDetect += NotifyTargetDetected;
@@ -52,7 +52,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 },preDamageDelay,zoneWidth);
             }
 
-            timeSincelastUse = coolDown;
+            currentCooldown = coolDown;
         }
 
 

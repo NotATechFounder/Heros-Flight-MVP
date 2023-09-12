@@ -19,7 +19,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected override void Awake()
         {
             animator = GetComponentInParent<AiAnimatorInterface>();
-            timeSincelastUse = 0;
+            currentCooldown = 0;
            
         }
      
@@ -44,7 +44,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 },preDamageDelay,zoneWidth);
             }
 
-            timeSincelastUse = coolDown;
+            currentCooldown = coolDown;
         }
 
         void HandleArrowDisable(ProjectileControllerInterface obj)

@@ -12,18 +12,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected float coolDown;
         [SerializeField] protected bool stopOnUse = true;
         protected AiAnimatorInterface animator;
-        protected float timeSincelastUse;
+       [SerializeField] protected float currentCooldown;
        protected virtual void Awake()
         {
             animator = GetComponent<AiAnimatorInterface>();
-            timeSincelastUse = 0;
+            currentCooldown = 0;
         }
 
         protected virtual void Update()
         {
-            if (timeSincelastUse > 0)
+            if (currentCooldown > 0)
             {
-                timeSincelastUse -= Time.deltaTime;
+                currentCooldown -= Time.deltaTime;
             }
           
         }
@@ -31,7 +31,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public float CoolDown => coolDown;
         public bool StopMovementOnUse => stopOnUse;
-        public virtual bool ReadyToUse => timeSincelastUse <= 0;
+        public virtual bool ReadyToUse => currentCooldown <= 0;
         
 
         public virtual void UseAbility(Action onComplete = null)
@@ -40,8 +40,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 animator.PlayAnimation(targetAnimation,onComplete);
             }
+            
 
-            timeSincelastUse = coolDown;
+            currentCooldown = coolDown;
         }
     }
 }
