@@ -26,7 +26,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public float Damage => currentDamage;
         public float TimeSinceLastAttack => timeSinceLastAttack;
 
-        void Start()
+        protected virtual void Start()
         {
             aiController = GetComponent<AiControllerBase>();
             animator = GetComponent<AiAnimatorInterface>();
