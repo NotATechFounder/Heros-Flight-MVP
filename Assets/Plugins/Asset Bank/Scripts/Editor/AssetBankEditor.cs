@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,10 +12,17 @@ namespace AssetBank
         SerializedProperty listProperty;
         GUILayoutOption[] verticalBoxOption;
 
+        Dictionary<int, bool> foldoutDictionary = new Dictionary<int, bool>();
+
         private void OnEnable()
         {
             listProperty = serializedObject.FindProperty("_valueList");
             verticalBoxOption = new GUILayoutOption[] { GUILayout.MaxHeight(50) };
+
+            for (int i = 0; i < listProperty.arraySize; i++)
+            {
+                foldoutDictionary.Add(i, false);
+            }
         }
 
         public override void OnInspectorGUI()
@@ -22,7 +30,6 @@ namespace AssetBank
             serializedObject.Update();
             DisplayAudioList();
             DisplayButtons();
-            serializedObject.ApplyModifiedProperties();
             CheckForDuplicates();
             serializedObject.ApplyModifiedProperties();
         }
@@ -35,6 +42,9 @@ namespace AssetBank
 
                 GUI.backgroundColor = (i % 2 == 0) ? Color.blue : Color.white;
 
+                foldoutDictionary[i] = EditorGUILayout.Foldout(foldoutDictionary[i], element.FindPropertyRelative("Key").stringValue);
+                if (!foldoutDictionary[i]) continue;
+
                 if (element.FindPropertyRelative("Asset").objectReferenceValue == null) GUI.backgroundColor = Color.red;
 
                 EditorGUILayout.BeginVertical("box", verticalBoxOption);
@@ -42,6 +52,7 @@ namespace AssetBank
                 GUI.backgroundColor = Color.red;
                 if (GUILayout.Button("X", GUILayout.Width(20)))
                 {
+                    foldoutDictionary.Remove(i);
                     listProperty.DeleteArrayElementAtIndex(i);
                     serializedObject.ApplyModifiedProperties();
                     return;
@@ -83,6 +94,7 @@ namespace AssetBank
             GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Add Asset Slot"))
             {
+                foldoutDictionary.Add(listProperty.arraySize, false);
                 listProperty.arraySize++;
                 serializedObject.ApplyModifiedProperties();
             }
@@ -90,6 +102,7 @@ namespace AssetBank
             GUI.backgroundColor = Color.red;
             if (GUILayout.Button("Remove last Asset Slot"))
             {
+                foldoutDictionary.Remove(listProperty.arraySize - 1);
                 listProperty.arraySize--;
                 serializedObject.ApplyModifiedProperties();
             }
@@ -108,7 +121,7 @@ namespace AssetBank
                     string id2 = element2.FindPropertyRelative("Key").stringValue;
                     if (id == id2)
                     {
-                        EditorGUILayout.HelpBox("Asset with same ID already exists", MessageType.Error);
+                        EditorGUILayout.HelpBox("Asset with same ID already exists : " + id, MessageType.Error);
                         return;
                     }
                 }

@@ -59,11 +59,9 @@ public class HazardArrow : MonoBehaviour
         {
             if (col.TryGetComponent(out IHealthController healthController))
             {
-                float damage = StatCalc.GetValueOfPercentage(healthPercentage, healthController.CurrentHealth);
+                float damage = StatCalc.GetValueOfPercentage(healthController.CurrentHealth, healthPercentage);
                 healthController.DealDamage(new DamageModel(damage, DamageType.NoneCritical, AttackType.Regular));
             }
-
-            Debug.Log("Arrow hit " + col.name, col);
             DisableProjectile();
         }
     }
