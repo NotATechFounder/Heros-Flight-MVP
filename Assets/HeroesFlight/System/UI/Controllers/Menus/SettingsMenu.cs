@@ -15,6 +15,10 @@ namespace UISystem
         [SerializeField] private RectTransform content;
         [SerializeField] private Button backButton;
 
+        [Header("Audio")]
+        [SerializeField] private Slider musicSlider;
+        [SerializeField] private Slider soundEffectSlider;
+
         JuicerRuntime openEffectBG;
         JuicerRuntime openEffectContent;
 
@@ -35,6 +39,16 @@ namespace UISystem
             backButton.onClick.AddListener(() =>
             {
                 OnBackButtonPressed?.Invoke();
+            });
+
+            musicSlider.onValueChanged.AddListener((value) =>
+            {
+                AudioManager.Instance.SetMusicVolume(value);
+            });
+
+            soundEffectSlider.onValueChanged.AddListener((value) =>
+            {
+                AudioManager.Instance.SetSoundEffectVolume(value);
             });
         }
 

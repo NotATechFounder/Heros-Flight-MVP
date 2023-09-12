@@ -3,16 +3,19 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Pool;
 using Pelumi.ObjectPool;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
+    [SerializeField] private AudioSource musicPlayer;
+    [SerializeField] private AudioSource soundEffectPlayer;
+    [SerializeField] private AudioMixer audioMixer;
+
     [SerializeField] private AudioBank musicBank;
-    [SerializeField] AudioBank soundEffectBank;
-    [SerializeField] AudioSource musicPlayer;
-    [SerializeField] AudioSource soundEffectPlayer;
-    [SerializeField] Audio3DPlayer audio3DPlayerPrefab;
+    [SerializeField] private AudioBank soundEffectBank;
+    [SerializeField] private Audio3DPlayer audio3DPlayerPrefab;
 
     private void Awake()
     {
@@ -20,6 +23,7 @@ public class AudioManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(this);
+            Init();
         }
         else Destroy(gameObject);
     }
@@ -29,16 +33,70 @@ public class AudioManager : MonoBehaviour
         AdvanceButton.OnAnyButtonClicked += PlayButtonSoundEffect;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SetMusicVolume(1f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            SetMusicVolume(.2f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            SetMusicVolume(0f);
+        }
+    }
+
+    public void Init()
+    {
+        musicPlayer.outputAudioMixerGroup = audioMixer.FindMatchingGroups("Music")[0];
+        soundEffectPlayer.outputAudioMixerGroup = audioMixer.FindMatchingGroups("Sound Effects")[0];
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+       SetVolume("Music Volume", volume);
+    }
+
+    public void SetSoundEffectVolume(float volume)
+    {
+        SetVolume("Sound Effects", volume);
+    }
+
+    public void SetMasterVolume(float volume)
+    {
+        SetVolume("Master Volume", volume);
+    }
+
+    public void SetMusicMute(bool mute)
+    {
+        SetMute("Music Volume", mute);
+    }
+
+    public void SetSoundEffectMute(bool mute)
+    {
+        SetMute("Sound Effects", mute);
+    }
+
+    public void SetMute(string key,bool mute)
+    {
+        audioMixer.SetFloat(key, mute ? -80 : 0);
+    }
+
+    public void SetVolume(string key, float volume)
+    {
+        if (volume <= 0) volume = 0.0001f;
+        audioMixer.SetFloat(key, Mathf.Log10(volume) * 20);
+        Debug.Log(Mathf.Log10(volume) * 20);
+    }
+
     private void PlayButtonSoundEffect()
     {
         PlaySoundEffect("Button Click");
-    }
-
-    private void ChangeMusic(AudioClip audioClip, bool loop)
-    {
-        musicPlayer.clip = audioClip;
-        musicPlayer.loop = loop;
-        musicPlayer.Play();
     }
 
     private IEnumerator PlayMusicFade(AudioClip audioClip, bool loop = true, float fadeDuration = 1.0f)
@@ -97,6 +155,7 @@ public class AudioManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(musicPlayer.clip.length - 0.5f);
         yield return PlayMusicFade(loopMusic, loop);
     }
+
     public static AudioClip GetMusicClip(string audioID)
     {
         if (!InstanceExists()) return null;

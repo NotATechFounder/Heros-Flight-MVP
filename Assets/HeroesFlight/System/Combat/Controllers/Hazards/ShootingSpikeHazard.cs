@@ -9,6 +9,7 @@ public class ShootingSpikeHazard : EnironmentHazard
     [Header("Shooting Spike Settings")]
     [SerializeField] private float warningLineDuration;
     [SerializeField] private float warningLineWidth;
+    [SerializeField] private float healthPercentage = 15;
     [SerializeField] private WarningLine warningLine;
     [SerializeField] private HazardArrow hazardArrow;
     private bool isTriggered;
@@ -24,7 +25,7 @@ public class ShootingSpikeHazard : EnironmentHazard
         warningLine.Trigger(() =>
         {
             HazardArrow arrow = ObjectPoolManager.SpawnObject(hazardArrow, warningLine.transform.position, Quaternion.identity);
-            arrow.SetupArrow(1, warningLine.GetFowardDirection);
+            arrow.SetupArrow(healthPercentage, warningLine.GetFowardDirection);
             isTriggered = false;
         }, warningLineDuration,warningLineWidth);
     }

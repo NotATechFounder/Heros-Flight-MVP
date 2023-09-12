@@ -17,7 +17,6 @@ public class WarningLine : MonoBehaviour
     }
 
     [Header("WarningLine")]
-    [SerializeField] private float warningDuration;
     [SerializeField] private WarningMoveType warningLineType;
     [SerializeField] private WarningVisualType warningVisualType;
     [SerializeField] private float length;

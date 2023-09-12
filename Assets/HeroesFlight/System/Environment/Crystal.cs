@@ -59,6 +59,7 @@ public class Crystal : MonoBehaviour
     IEnumerator SpawnLoopDelay()
     {
         yield return waitForSeconds;
+        AudioManager.PlaySoundEffect("CrystalBreak");
         SpawnLoot?.Invoke();
     }
 
