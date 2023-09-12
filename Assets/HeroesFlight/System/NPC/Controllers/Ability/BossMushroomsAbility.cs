@@ -15,7 +15,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] float preDamageDelay = 2f;
         protected override void Awake()
         {
-            timeSincelastUse = 0;
+            currentCooldown = 0;
             animator = GetComponentInParent<AiAnimatorInterface>();
             foreach (var mushroom in mushrooms)
             {
