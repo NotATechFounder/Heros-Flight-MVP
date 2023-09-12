@@ -1,3 +1,4 @@
+using Pelumi.ObjectPool;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,6 +33,6 @@ public class Audio3DPlayer : MonoBehaviour
 
     public void OnAudioFinish()
     {
-      //  ObjectPoolManager.ReleaseObject(this);
+        ObjectPoolManager.ReleaseObject(this);
     }
 }

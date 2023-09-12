@@ -240,6 +240,7 @@ namespace UISystem
             levelProgressPanel.SetActive(true);
             yield return new WaitForSeconds(0.5f);
 
+            AudioManager.PlaySoundEffect("ExperienceUp");
             levelProgressEffect.StartNewDestination(value);
 
             yield return new WaitUntilJuicerComplected(levelProgressEffect);
@@ -247,6 +248,8 @@ namespace UISystem
             yield return new WaitForSeconds(0.25f);
             levelProgressPanel.SetActive(false);
             isExpComplete = true;
+            yield return new WaitForSeconds(0.1f);
+            isExpComplete = false;
         }
 
         public void UpdateExpBarLevelUp(int currentLevel, int numberOfLevelInc, float value)
@@ -266,6 +269,8 @@ namespace UISystem
                 OnSingleLevelUpComplete?.Invoke();
                 levelProgressEffect.StartNewDestination(1f);
 
+                AudioManager.PlaySoundEffect("LevelUp");
+
                 yield return new WaitUntilJuicerComplected(levelProgressEffect);
 
                 yield return new WaitForSeconds(0.1f);
@@ -278,6 +283,7 @@ namespace UISystem
 
             if (value > 0)
             {
+                AudioManager.PlaySoundEffect("ExperienceUp");
                 levelProgressEffect.StartNewDestination(value);
                 yield return new WaitUntilJuicerComplected(levelProgressEffect);
             }

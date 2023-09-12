@@ -82,6 +82,7 @@ public class EffectMushroomHazard : EnironmentHazard
         effectArea.SetActive(state);
         if (state)
         {
+            AudioManager.PlaySoundEffect("PoisonCloud");
             mainfartingParticle.Play();
         }
         else
