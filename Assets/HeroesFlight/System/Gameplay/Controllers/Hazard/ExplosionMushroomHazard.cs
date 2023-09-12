@@ -2,6 +2,7 @@ using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
+using Pelumi.Juicer;
 using Spine;
 using Spine.Unity;
 using System;
@@ -18,12 +19,14 @@ public class ExplosionMushroomHazard : MonoBehaviour
 
     [Header("Animation and Viusal Settings")]
     [SerializeField] private GameObject visual;
+    [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] SkeletonAnimation skeletonAnimation;
     [SerializeField] private Trigger2DObserver detectorObserver;
     [SerializeField] private CircleOverlap damageOverlap;
     [SerializeField] private ParticleCallbackTrigger particleCallbackTrigger;
 
     private bool isExploded;
+    private JuicerRuntime juicerRuntime;
 
     private void Awake()
     {
@@ -31,6 +34,11 @@ public class ExplosionMushroomHazard : MonoBehaviour
         detectorObserver.OnEnter += OnEnterZone;
         damageOverlap.OnDetect += OnDetect;
         particleCallbackTrigger.OnEnd += ParticleCallbackTrigger_OnEnd;
+    }
+
+    private void Start()
+    {
+        juicerRuntime = meshRenderer.JuicyFloatProperty("_FillPhase", 1,.05f).SetLoop(-1);
     }
 
     private void AnimationState_Complete(TrackEntry trackEntry)
@@ -49,6 +57,7 @@ public class ExplosionMushroomHazard : MonoBehaviour
         }
         isExploded = true;
         skeletonAnimation.AnimationState.SetAnimation(0, idleToShowAnimationName, false);
+        juicerRuntime.Start();
     }
 
     private void Explode()

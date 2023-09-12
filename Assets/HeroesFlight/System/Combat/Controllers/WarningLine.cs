@@ -106,22 +106,30 @@ public class WarningLine : MonoBehaviour
 
     private void LineRendererTrigger(float duration, float width)
     {
-        colorEffect.ChangeDuration(duration);
-        warmUpEffect.ChangeDuration(duration);
+        // get 10% of the duration
+        float triggerDuration = duration * 0.1f;
+        float warmUpDuration = duration - triggerDuration;
+        
+        colorEffect.ChangeDuration(warmUpDuration);
+        warmUpEffect.ChangeDuration(warmUpDuration);
         warmUpEffect.ChangeDestination(width);
-        triggerEffect.ChangeDuration(.15f);
+        triggerEffect.ChangeDuration(triggerDuration);
         lineRenderer.enabled = true;
         colorEffect.Start(() => lineRenderer.material.color = startColor);
         warmUpEffect.Start(() => lineRenderer.widthMultiplier = 0);
     }
 
     private void SpriteRendererTrigger(float duration, float width)
-    {
+    {        
+        // get 10% of the duration
+        float triggerDuration = duration * 0.1f;
+        float warmUpDuration = duration - triggerDuration;
+
         visual.transform.localScale = new Vector3(width, length, 1);
-        colorEffect.ChangeDuration(duration);
-        warmUpEffect.ChangeDuration(duration);
+        colorEffect.ChangeDuration(warmUpDuration);
+        warmUpEffect.ChangeDuration(warmUpDuration);
         warmUpEffect.ChangeDestination(width);
-        triggerEffect.ChangeDuration(.15f);
+        triggerEffect.ChangeDuration(triggerDuration);
         visualSpriteRenderer.enabled = true;
         colorEffect.Start(() => visualSpriteRenderer.material.color = startColor);
         warmUpEffect.Start(() => visual.transform.localScale = new Vector3(0, distance, 1));
