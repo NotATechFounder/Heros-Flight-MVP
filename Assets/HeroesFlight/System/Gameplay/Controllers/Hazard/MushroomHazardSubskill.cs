@@ -143,7 +143,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers.Hazard
                 case SkillType.Slow:
                     if (collider2D.TryGetComponent(out CharacterStatController characterStatController))
                     {
-                        characterStatController.ModifyMoveSpeed(slowPercentageDecrease, false);
+                        characterStatController.ModifyMoveSpeed(slowPercentageDecrease, true);
                     }
                     break;
                 case SkillType.Both:

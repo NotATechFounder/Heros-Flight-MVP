@@ -46,6 +46,8 @@ namespace HeroesFlight.System.Gameplay
 
         public GodsBenevolence GodsBenevolence { get; private set; }
 
+        public GameEffectController  GameEffectController { get; private set; }
+
         public int CurrentLvlIndex => container.CurrentLvlIndex;
 
         public int MaxLvlIndex => container.MaxLvlIndex;
@@ -113,6 +115,8 @@ namespace HeroesFlight.System.Gameplay
             HeroProgression = scene.GetComponentInChildren<HeroProgression>();
 
             GodsBenevolence = scene.GetComponentInChildren<GodsBenevolence>();
+
+            GameEffectController = scene.GetComponentInChildren<GameEffectController>();
 
             container.Init();
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
@@ -424,6 +428,11 @@ namespace HeroesFlight.System.Gameplay
             if (!vfxReference.Equals(string.Empty))
                 environmentSystem.ParticleManager.Spawn(vfxReference, damageModel.Target.position);
 
+
+            //TODO: iMPROVE THIS
+              GameEffectController.StopTime(0.1f, 10f, 0.025f);
+
+          //  GameEffectController.StopFrame(0.1f);
 
             OnEnemyDamaged?.Invoke(damageModel);
         }

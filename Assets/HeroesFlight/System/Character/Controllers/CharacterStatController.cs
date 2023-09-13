@@ -51,15 +51,6 @@ public class CharacterStatController : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log($"Actual Speed: {CurrentMoveSpeed}");
-            Debug.Log($"Runtime Speed: {RuntimeMoveSpeed}");
-        }
-    }
-
     public void Initialize(PlayerStatData playerCombatModel)
     {
         this.playerCombatModel = playerCombatModel;
