@@ -214,7 +214,7 @@ public class AudioManager : MonoBehaviour
         Instance.StartCoroutine(Instance.BlendTwoMusicRoutine(GetMusicClip(startAudioID), GetMusicClip(nextAudioID), loop));
     }
 
-    public static Audio3DPlayer Play3DSoundEffect(string audioID, Vector3 position, float _dopplerLevel = 1, float _spread = 0, AudioRolloffMode _audioRolloffMode = AudioRolloffMode.Linear, float _minDistance = 1, float _maxDistance = 500)
+    public static Audio3DPlayer Play3DSoundEffect(string audioID, Vector3 position, float _minDistance = 1, float _maxDistance = 500, float _dopplerLevel = 1, float _spread = 0, AudioRolloffMode _audioRolloffMode = AudioRolloffMode.Linear)
     {
         if (Instance == null) return null;
         Audio3DPlayer audio3DPlayer = ObjectPoolManager.SpawnObject(Instance.audio3DPlayerPrefab);
