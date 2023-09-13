@@ -9,10 +9,13 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
+    [Header("Audio Sources")]
     [SerializeField] private AudioSource musicPlayer;
     [SerializeField] private AudioSource soundEffectPlayer;
     [SerializeField] private AudioMixer audioMixer;
+    [SerializeField] private float musicMaxVolume = 1f;
 
+    [Header("Resources")]
     [SerializeField] private AudioBank musicBank;
     [SerializeField] private AudioBank soundEffectBank;
     [SerializeField] private Audio3DPlayer audio3DPlayerPrefab;
@@ -33,24 +36,6 @@ public class AudioManager : MonoBehaviour
         AdvanceButton.OnAnyButtonClicked += PlayButtonSoundEffect;
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SetMusicVolume(1f);
-        }
-
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            SetMusicVolume(.2f);
-        }
-
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            SetMusicVolume(0f);
-        }
-    }
-
     public void Init()
     {
         musicPlayer.outputAudioMixerGroup = audioMixer.FindMatchingGroups("Music")[0];
@@ -64,7 +49,7 @@ public class AudioManager : MonoBehaviour
 
     public void SetSoundEffectVolume(float volume)
     {
-        SetVolume("Sound Effects", volume);
+        SetVolume("Sound Effects Volume", volume);
     }
 
     public void SetMasterVolume(float volume)
@@ -79,7 +64,7 @@ public class AudioManager : MonoBehaviour
 
     public void SetSoundEffectMute(bool mute)
     {
-        SetMute("Sound Effects", mute);
+        SetMute("Sound Effects Volume", mute);
     }
 
     public void SetMute(string key,bool mute)
@@ -91,7 +76,6 @@ public class AudioManager : MonoBehaviour
     {
         if (volume <= 0) volume = 0.0001f;
         audioMixer.SetFloat(key, Mathf.Log10(volume) * 20);
-        Debug.Log(Mathf.Log10(volume) * 20);
     }
 
     private void PlayButtonSoundEffect()
@@ -103,7 +87,7 @@ public class AudioManager : MonoBehaviour
     {
         // Fade out the music player
         float elapsedTime = 0f;
-        float startVolume = 1f;
+        float startVolume = musicPlayer.volume;
         float targetVolume = 0f;
 
         while (elapsedTime < fadeDuration)
@@ -124,7 +108,7 @@ public class AudioManager : MonoBehaviour
         // Fade in the music player
         elapsedTime = 0f;
         startVolume = 0f;
-        targetVolume = 1f;
+        targetVolume = musicMaxVolume;
 
         while (elapsedTime < fadeDuration)
         {
@@ -133,7 +117,7 @@ public class AudioManager : MonoBehaviour
             yield return null;
         }
 
-        musicPlayer.volume = 1f; // Ensure the volume is set to the target value
+        musicPlayer.volume = musicMaxVolume; // Ensure the volume is set to the target value
     }
 
     private IEnumerator StopMusicFade()

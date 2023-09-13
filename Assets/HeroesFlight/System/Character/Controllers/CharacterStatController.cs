@@ -19,7 +19,11 @@ public class CharacterStatController : MonoBehaviour
     public bool debug = false;
     public HeroType GetHeroType => playerCombatModel.HeroType;
     public float CurrentMaxHealth => runtimeMaxHealth;
-    [field: SerializeField] public float CurrentMoveSpeed { get; private set; }
+
+    // TODO: ImproveStatManagement.. force the current value to be within the range of the min and max value
+    public float CurrentMoveSpeed => RuntimeMoveSpeed <= 0 ? 3 : RuntimeMoveSpeed;
+
+    [field: SerializeField] public float RuntimeMoveSpeed { get; private set; }
     [field: SerializeField] public float CurrentVitality { get; private set; }
     [field: SerializeField] public float CurrentAgility { get; private set; }
     [field: SerializeField] public float CurrentResilience { get; private set; }
@@ -44,6 +48,15 @@ public class CharacterStatController : MonoBehaviour
         if (debug)
         {
             Initialize(playerCombatModel);
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log($"Actual Speed: {CurrentMoveSpeed}");
+            Debug.Log($"Runtime Speed: {RuntimeMoveSpeed}");
         }
     }
 
@@ -80,12 +93,12 @@ public class CharacterStatController : MonoBehaviour
 
     public void ModifyMoveSpeed(float percentageAmount, bool increase)
     {
-        CurrentMoveSpeed = StatCalc.ModifyValueByPercentage(playerCombatModel.MoveSpeed, CurrentMoveSpeed, percentageAmount, increase);
+        RuntimeMoveSpeed = StatCalc.ModifyValueByPercentage(playerCombatModel.MoveSpeed, RuntimeMoveSpeed, percentageAmount, increase);
     }
 
     public void ModifyVitality(float percentageAmount, bool increase)
     {
-        CurrentMoveSpeed = StatCalc.ModifyValueByPercentage(playerCombatModel.Vitality, CurrentVitality, percentageAmount, increase);
+        CurrentVitality = StatCalc.ModifyValueByPercentage(playerCombatModel.Vitality, CurrentVitality, percentageAmount, increase);
     }
 
     public void ModifyAgility(float percentageAmount, bool increase)
@@ -183,7 +196,7 @@ public class CharacterStatController : MonoBehaviour
     public void ResetStats()
     {
         runtimeMaxHealth = playerCombatModel.Health;
-        CurrentMoveSpeed = playerCombatModel.MoveSpeed;
+        RuntimeMoveSpeed = playerCombatModel.MoveSpeed;
         CurrentVitality = playerCombatModel.Vitality;
         CurrentAgility = playerCombatModel.Agility;
         CurrentResilience = playerCombatModel.Resilience;
