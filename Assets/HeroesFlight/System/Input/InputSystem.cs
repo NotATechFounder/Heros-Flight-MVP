@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 namespace HeroesFlight.System.Input
 {
-    public class InputSystem : IInputSystem
+    public class InputSystem : InputSystemInterface
     {
         public event Action<InputModel> OnInput;
         InputContainer container;

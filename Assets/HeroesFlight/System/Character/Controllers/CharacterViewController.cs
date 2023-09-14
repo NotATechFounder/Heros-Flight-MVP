@@ -20,7 +20,7 @@ namespace HeroesFlight.System.Character
         [SpineSkin][SerializeField] string m_WingsSkinReference = "";
         [SpineSkin][SerializeField] string m_HatSkinReference = "accessories/hat-red-yellow";
         [SpineSkin][SerializeField] string m_WeaponSkinReference;
-
+        [SpineSkin][SerializeField] string fullSkin;
         SkeletonAnimation m_SkeletonAnimation;
 
         // This "naked body" skin will likely change only once upon character creation,
@@ -31,23 +31,16 @@ namespace HeroesFlight.System.Character
         public Material m_RuntimeMaterial;
         public Texture2D m_RuntimeAtlas;
 
-        void Awake()
-        {
-            Init();
-        }
-
         void Init()
         {
-            m_SkeletonAnimation = GetComponent<SkeletonAnimation>();
-            UpdateCharacterSkin();
-            UpdateCombinedSkin();
+            m_SkeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
+            Skeleton skeleton = m_SkeletonAnimation.Skeleton;
+            SkeletonData skeletonData = skeleton.Data;
+            // UpdateCharacterSkin(false);
+            // UpdateCombinedSkin();
         }
 
-        void Start()
-        {
-            UpdateCharacterSkin();
-            UpdateCombinedSkin();
-        }
+       
 
         void UpdateCombinedSkin()
         {
@@ -75,22 +68,27 @@ namespace HeroesFlight.System.Character
                 resultCombinedSkin.AddSkin(skeletonData.FindSkin(m_HatSkinReference));
         }
 
-        void UpdateCharacterSkin()
+        void UpdateCharacterSkin(bool isCustomizable)
         {
             Skeleton skeleton = m_SkeletonAnimation.Skeleton;
             SkeletonData skeletonData = skeleton.Data;
             m_CharacterSkin = new Skin("character-base");
 
-            // Note that the result Skin returned by calls to skeletonData.FindSkin()
-            // could be cached once in Start() instead of searching for the same skin
-            // every time. For demonstration purposes we keep it simple here.
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_BaseSkinReference));
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_LipsSkinReference));
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_EyeLashesSkinReference));
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_EyesSkinReference));
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_HairSkinReference));
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_LipsSkinReference));
-            m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_WingsSkinReference));
+            if (isCustomizable)
+            {
+                m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_BaseSkinReference));
+                m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_LipsSkinReference));
+                m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_EyeLashesSkinReference));
+                m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_EyesSkinReference));
+                m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_HairSkinReference));
+                m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_LipsSkinReference));
+                m_CharacterSkin.AddSkin(skeletonData.FindSkin(m_WingsSkinReference));
+            }
+            else
+            {
+               // m_CharacterSkin.AddSkin(skeletonData.FindSkin(fullSkin));
+            }
+           
         }
 
         void OptimizeSkin()
@@ -137,7 +135,7 @@ namespace HeroesFlight.System.Character
             m_WingsSkinReference = data.WingsSkinReference;
             m_HatSkinReference = data.HatSkinReference;
             m_WeaponSkinReference = data.WeaponSkinReference;
-
+            fullSkin = data.FullSkin;
 
             Init();
         }

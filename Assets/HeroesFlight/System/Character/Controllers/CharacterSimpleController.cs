@@ -13,6 +13,7 @@ namespace HeroesFlight.System.Character
         CharacterStatController m_CharacterStatController;
         ICharacterViewController viewController;
         Vector3 m_SavedVelocity = default;
+        Vector3 inputVelocity=Vector3.zero;
         Transform m_Transform;
 
         public bool IsFacingLeft { get; private set; }
@@ -20,6 +21,8 @@ namespace HeroesFlight.System.Character
         public CharacterSO CharacterSO => characterSO;
         public CharacterStatController CharacterStatController => m_CharacterStatController;
         public event Action<CharacterState> OnCharacterMoveStateChanged;
+        public event Action<bool> OnFaceDirectionChange;
+
         CharacterState m_CurrentState;
 
         public  Vector3 GetVelocity() => m_SavedVelocity;
@@ -103,9 +106,6 @@ namespace HeroesFlight.System.Character
                 }
             }
            
-
-           
-
             bool facingLeft;
             if (input.x != 0)
             {
@@ -115,10 +115,11 @@ namespace HeroesFlight.System.Character
             {
                 facingLeft = IsFacingLeft;
             }
-            
 
             if (m_CurrentState == newState && IsFacingLeft==facingLeft)
                 return;
+            
+            OnFaceDirectionChange?.Invoke(facingLeft);
 
             IsFacingLeft = facingLeft;
             m_CurrentState = newState;
@@ -128,8 +129,8 @@ namespace HeroesFlight.System.Character
 
         Vector3 CalculateCharacterVelocity(Vector3 inputVector)
         {
-            var velocity = CalculateMovementDirection(inputVector);
-            return velocity * CharacterStatController.CurrentMoveSpeed;
+            inputVelocity = CalculateMovementDirection(inputVector);
+            return inputVelocity * CharacterStatController.CurrentMoveSpeed;
         }
 
         Vector3 CalculateMovementDirection(Vector3 inputVector)
@@ -140,7 +141,7 @@ namespace HeroesFlight.System.Character
             
             if(velocity.magnitude>1)
                 velocity.Normalize();
-
+            
             return velocity;
         }
     }

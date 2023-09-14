@@ -1,8 +1,8 @@
 using Pelumi.Juicer;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+
 using System;
+using UISystem.Entries;
 
 namespace UISystem
 {
@@ -10,8 +10,9 @@ namespace UISystem
     {
         public event Action OnContinueButtonClicked;
 
-        [SerializeField] private AdvanceButton continueButton;
-
+        [SerializeField] AdvanceButton continueButton;
+        [SerializeField] RewardEntry entryPrefab;
+        [SerializeField] Transform rewardsParent;
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
 
@@ -33,6 +34,10 @@ namespace UISystem
         public override void OnClosed()
         {
             closeEffectBG.Start();
+            foreach (Transform child in rewardsParent)
+            {
+                Destroy(child.gameObject);
+            }
         }
 
         public override void ResetMenu()
@@ -44,6 +49,12 @@ namespace UISystem
         {
             OnContinueButtonClicked?.Invoke();
             Close();
+        }
+
+        public void AddRewardEntry(string summary)
+        {
+            var entry = Instantiate(entryPrefab, rewardsParent);
+            entry.SetupReward(summary);
         }
     }
 }

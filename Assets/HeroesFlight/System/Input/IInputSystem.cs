@@ -3,7 +3,7 @@ using HeroesFlight.System.Input.Model;
 
 namespace HeroesFlight.System.Input
 {
-    public interface IInputSystem : ISystemInterface
+    public interface InputSystemInterface : SystemInterface
     {
         event Action<InputModel> OnInput;
         InputModel GetMovementInput();

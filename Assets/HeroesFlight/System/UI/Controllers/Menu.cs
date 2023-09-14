@@ -30,6 +30,7 @@ namespace UISystem
         protected CanvasGroup canvasGroup;
 
         public Close_Behaviour CloseBehaviour => closeBehaviour;
+        public Status MenuStatus => status;
 
         private void OnValidate()
         {
@@ -50,7 +51,7 @@ namespace UISystem
 
             foreach (Canvas canvas in canvas)
             {
-                if (canvas != null)
+                if (canvas != null && canvas.sortingOrder < viewPriority)
                     canvas.sortingOrder = viewPriority;
             }
         }

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class AngelEffectManager : MonoBehaviour
 {
+    public Action OnTrigger;
     public Action<AngelCard> OnPermanetCard;
 
     [SerializeField] private List<AngelCard> collectedAngelCards = new List<AngelCard>();
@@ -217,6 +218,11 @@ public class AngelEffectManager : MonoBehaviour
                 monsterStatController.ModifyAttackSpeedModifier(effect.GetValue(angelCardTier), !positive);
                 break;
         }
+    }
+
+    public void TriggerAngelsGambit()
+    {
+        OnTrigger?.Invoke();
     }
 
     public float CalculateValueWithPercentage(float baseValue, float percentageAmount, bool increase)

@@ -1,11 +1,18 @@
-﻿namespace HeroesFlight.System.Character
+﻿using HeroesFlight.Common.Enum;
+using UnityEngine;
+
+namespace HeroesFlight.System.Character
 {
-    public interface CharacterSystemInterface : ISystemInterface
+    public interface CharacterSystemInterface : SystemInterface
     {
         CharacterControllerInterface CurrentCharacter { get; }
-        CharacterControllerInterface CreateCharacter();
+        CharacterControllerInterface CreateCharacter(Vector2 position);
+
+        void SetCurrentCharacterType(CharacterType currentType);
         void SetCharacterControllerState(bool isEnabled);
         
-        void ResetCharacter();
+        void ResetCharacter(Vector2 position);
+      
+
     }
 }

@@ -12,6 +12,9 @@ namespace HeroesFlight.System.NPC
     {
        
         NpcContainer container;
+
+        public NpcContainer NpcContainer => container;
+
         public void Init(Scene scene = default, Action onComplete = null)
         {
             container = scene.GetComponentInChildren<NpcContainer>();
@@ -25,14 +28,9 @@ namespace HeroesFlight.System.NPC
 
         public event Action<AiControllerBase> OnEnemySpawned;
       
-        public void SpawnRandomEnemies(SpawnModel model)
+        public void SetSpawnModel(Level level, int levelIndex)
         {
-            container.SpawnEnemies(model,OnEnemySpawned);
-        }
-
-        public AiControllerBase SpawnMiniBoss(SpawnModel currentLvlModel, Action onComplete = null)
-        {
-             return container.SpawnMiniBoss(currentLvlModel);
+            container.SpawnEnemies(level, levelIndex,OnEnemySpawned);
         }
 
         public void InjectPlayer(Transform player)

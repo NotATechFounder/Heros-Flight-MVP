@@ -2,30 +2,35 @@ using System;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Model;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace HeroesFlight.System.Gameplay.Container
 {
     public class GameplayContainer : MonoBehaviour
     {
         [SerializeField] GameAreaModel currentModel;
-        [SerializeField] LevelPortal portalPrefab;
         [SerializeField] BoosterDropSO mobDrop;
-
 
         public event Action OnPlayerEnteredPortal;
         LevelPortal portal;
+        private Level currentLevel;
+
         public int CurrentLvlIndex { get; private set; }
 
-        public bool FinishedLoop => CurrentLvlIndex >= currentModel.Models.Count;
+        public bool FinishedLoop => CurrentLvlIndex >= currentModel.SpawnModel.Levels.Length;
+
+        public int MaxLvlIndex => currentModel.SpawnModel.Levels.Length;
 
         public BoosterDropSO MobDrop => mobDrop;
 
+        public float HeroProgressionExpEarnedPerKill => currentModel.HeroProgressionExpEarnedPerKill;
+
+        public GameAreaModel CurrentModel => currentModel;
+
         public void Init()
         {
-            portal = Instantiate(portalPrefab, currentModel.PortalSpawnPosition, Quaternion.identity);
+            portal = Instantiate(currentModel.PortalPrefab, transform.position, Quaternion.identity);
+            portal.gameObject.SetActive(false);
             portal.OnPlayerEntered += HandlePlayerTriggerPortal;
-            currentModel.Init();
         }
 
         public void SetStartingIndex(int startingIndex)
@@ -36,23 +41,37 @@ namespace HeroesFlight.System.Gameplay.Container
         void HandlePlayerTriggerPortal()
         {
             OnPlayerEnteredPortal?.Invoke();
-            portal.Disable();
         }
 
-        public SpawnModel GetCurrentLvlModel()
+        public Level GetLevel()
         {
-            if (CurrentLvlIndex >= currentModel.Models.Count)
+            if (CurrentLvlIndex >= currentModel.SpawnModel.Levels.Length)
                 return null;
 
-            Debug.LogError($"Returning model with index {CurrentLvlIndex}");
-            var model = currentModel.Models[CurrentLvlIndex];
+            if(currentLevel != null && currentLevel.LevelType != LevelType.Intermission && CurrentLvlIndex % 2 != 0)
+            {
+                return currentLevel = currentModel.AngelsGambitLevel;
+            }
+
+            currentLevel = currentModel.SpawnModel.Levels[CurrentLvlIndex];
             CurrentLvlIndex++;
-            return model;
+
+            return currentLevel;
         }
 
-        public void EnablePortal()
+        public Level GetAngelGambitLevel()
         {
-            portal.Enable();
+            return currentModel.AngelsGambitLevel;
+        }
+
+        public void EnablePortal(Vector2 position)
+        {
+            portal.Enable(position);
+        }
+
+        public void DisablePortal()
+        {
+            portal.Disable();
         }
     }
 }

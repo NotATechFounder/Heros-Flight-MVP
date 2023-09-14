@@ -1,17 +1,34 @@
+using System.Collections.Generic;
+using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Character.Enum;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 
 namespace HeroesFlight.System.Character.Container
 {
     public class CharacterContainer : MonoBehaviour
     {
-        [SerializeField] Vector2 spawnPoint;
-        [SerializeField] CharacterSimpleController characterPrefab;
+        [SerializeField] List<CharacterSimpleController> characterPrefabs = new();
         CharacterControllerInterface currentCharacter;
 
-        public CharacterControllerInterface CreateCharacter()
+        public CharacterControllerInterface CreateCharacter(CharacterType targetCharacterType, Vector2 position)
         {
-            currentCharacter = Instantiate(characterPrefab, spawnPoint, Quaternion.identity);
+            CharacterSimpleController characterPrefab = null;
+            foreach (var controller in characterPrefabs)
+            {
+                if (controller.CharacterSO.CharacterType == targetCharacterType)
+                {
+                    characterPrefab = controller;
+                    break;
+                }
+            }
+
+            if (characterPrefab == null)
+            {
+                Debug.LogError("Character prefab is not set");
+                return null;
+            }
+
+            currentCharacter = Instantiate(characterPrefab, position, Quaternion.identity);
             currentCharacter.Init();
             return currentCharacter;
         }
@@ -27,9 +44,9 @@ namespace HeroesFlight.System.Character.Container
             currentCharacter = null;
         }
 
-        public void ResetCharacter()
+        public void ResetCharacter(Vector2 position)
         {
-            currentCharacter.CharacterTransform.GetComponent<Rigidbody2D>().MovePosition(spawnPoint);
+            currentCharacter.CharacterTransform.GetComponent<Rigidbody2D>().MovePosition(position);
         }
     }
 }

@@ -1,13 +1,12 @@
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CountDownTimer
 {
-    public event Action<float> OnTimeTick;
-     event Action<float> onTimeTick = null;
-     event Action onTimeLapse = null;
+    event Action<int> OnTimeTickInt;
+    event Action<float> onTimeTick = null;
+    event Action onTimeLapse = null;
 
     private MonoBehaviour owner;
     private bool paused = false;
@@ -17,14 +16,13 @@ public class CountDownTimer
     private float maxTime = 0;
     private float lastTime = 0;
 
-    public CountDownTimer() { }
     public CountDownTimer(MonoBehaviour monoBehaviour)
     {
         owner = monoBehaviour;
     }
     
     
-    public void Start(float _time, Action<float> _onTimeTick, Action _onTimeLapse)
+    public void Start(float _time, Action<float> _onTimeTick = null, Action _onTimeLapse = null, Action<int> _onTimeTickInt = null)
     {
         if (timerRoutine != null)
             return;
@@ -33,24 +31,10 @@ public class CountDownTimer
         currentTime = maxTime;
         onTimeTick =null;
         onTimeLapse =null;
+        OnTimeTickInt = null;
         onTimeTick += _onTimeTick;
         onTimeLapse += _onTimeLapse;
-        timerRoutine = owner.StartCoroutine(TimerRoutine());
-    }
-
-    public void Start(float _time, Action<float> _onTimeTick, Action _onTimeLapse, MonoBehaviour monoBehaviour)
-    {
-        owner = monoBehaviour;
-        
-        if (timerRoutine != null)
-            return;
-
-        maxTime = _time;
-        currentTime = maxTime;
-        onTimeTick =null;
-        onTimeLapse =null;
-        onTimeTick += _onTimeTick;
-        onTimeLapse += _onTimeLapse;
+        OnTimeTickInt += _onTimeTickInt;
         timerRoutine = owner.StartCoroutine(TimerRoutine());
     }
 
@@ -63,7 +47,11 @@ public class CountDownTimer
                 lastTime = currentTime;
                 currentTime -= Time.deltaTime;
                 onTimeTick?.Invoke(currentTime);
-                OnTimeTick?.Invoke(currentTime);
+
+                if ((int)currentTime != (int)GetLastTime)
+                {
+                    OnTimeTickInt?.Invoke((int)currentTime);
+                }
 
                 if (currentTime <= 0)
                 {
@@ -94,6 +82,8 @@ public class CountDownTimer
             return;
         
         owner.StopCoroutine(timerRoutine);
+        onTimeTick?.Invoke(0);
+        OnTimeTickInt?.Invoke(0);
         timerRoutine = null;
     }
 }

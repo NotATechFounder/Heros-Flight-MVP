@@ -1,7 +1,9 @@
 ﻿using System;
 using HeroesFlight.Core.StateStack.Enum;
+using HeroesFlight.System.Character;
 using HeroesFlight.System.UI;
 using JetBrains.Annotations;
+using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Patterns;
 using StansAssets.SceneManagement;
 using UnityEngine;
@@ -26,16 +28,29 @@ namespace HeroesFlight.StateStack.State
                     Debug.Log(ApplicationState);
                     progressReporter.SetDone();
                     var uiSystem = GetService<IUISystem>();
+                    var dataSystem = GetService<DataSystemInterface>();
 
                     uiSystem.UiEventHandler.MainMenu.Open();
 
                     void HandleGameStartRequest()
                     {
                         uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;
+                        uiSystem.UiEventHandler.MainMenu.OnCharacterSelectButtonPressed -=
+                            HandleCharacterSelectionRequest;
                         AppStateStack.State.Set(ApplicationState.Gameplay);
                     }
 
+                    void HandleCharacterSelectionRequest()
+                    {
+                        uiSystem.UiEventHandler.CharacterSelectionMenu.SetUnlockedCharacters(dataSystem.GetUnlockedHeroes());
+                        uiSystem.UiEventHandler.CharacterSelectionMenu.Open();
+                    }
+                    
                     uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed += HandleGameStartRequest;
+                    uiSystem.UiEventHandler.MainMenu.OnCharacterSelectButtonPressed +=
+                        HandleCharacterSelectionRequest;
+                   
+                    
                     break;
                 case StackAction.Paused:
                     break;

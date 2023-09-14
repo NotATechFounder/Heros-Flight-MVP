@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class LevelPortal : MonoBehaviour
 {
+    [SerializeField] private ParticleSystem impactVfx;
     public event Action OnPlayerEntered;
 
-    public void Enable()
+    public void Enable(Vector2 position)
     {
+        transform.position = position;
         gameObject.SetActive(true);
     }
 
@@ -18,6 +20,10 @@ public class LevelPortal : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        OnPlayerEntered?.Invoke();
+        if(col.CompareTag("Player"))
+        {
+            impactVfx.Play();
+            OnPlayerEntered?.Invoke();
+        }
     }
 }

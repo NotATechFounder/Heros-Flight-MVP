@@ -7,7 +7,7 @@ namespace Pelumi.ObjectPool
 {
     public class ObjectPoolManager : MonoBehaviour
     {
-        public static List<PoolObjectInfo> objectPools;
+        public static Dictionary<string, PoolObjectInfo> objectPoolDictionary;
 
         public static GameObject _poolHolder;
         public static GameObject _particleSystemParent;
@@ -28,10 +28,10 @@ namespace Pelumi.ObjectPool
             _uiParent = new GameObject("UI Parent");
             _uiParent.transform.SetParent(_poolHolder.transform);
 
-            objectPools = new List<PoolObjectInfo>();
+            objectPoolDictionary = new Dictionary<string, PoolObjectInfo>();
         }
 
-        public static T SpawnObject<T>(T original, PoolType poolType = PoolType.Any) where T : MonoBehaviour
+        public static T SpawnObject<T>(T original, PoolType poolType = PoolType.Any) where T : Component
         {
             if (SpawnObject(original.gameObject, Vector3.zero, Quaternion.identity, poolType).TryGetComponent(out T t))
             {
@@ -49,7 +49,7 @@ namespace Pelumi.ObjectPool
             return SpawnObject(original, Vector3.zero, Quaternion.identity, poolType);
         }
 
-        public static T SpawnObject<T>(T original, Vector3 position, Quaternion rotation, Transform parent, PoolType poolType = PoolType.Any) where T : MonoBehaviour
+        public static T SpawnObject<T>(T original, Vector3 position, Quaternion rotation, Transform parent, PoolType poolType = PoolType.Any) where T : Component
         {
             if (SpawnObject(original.gameObject, position, rotation, parent, poolType).TryGetComponent(out T t))
             {
@@ -72,7 +72,7 @@ namespace Pelumi.ObjectPool
             return gameObject;
         }
 
-        public static T SpawnObject<T>(T original, Transform parent, PoolType poolType = PoolType.Any) where T : MonoBehaviour
+        public static T SpawnObject<T>(T original, Transform parent, PoolType poolType = PoolType.Any) where T : Component
         {
             if (SpawnObject(original.gameObject, parent.transform.position, parent.transform.rotation, parent, poolType).TryGetComponent(out T t))
             {
@@ -90,12 +90,13 @@ namespace Pelumi.ObjectPool
             GameObject gameObject = SpawnObject(original, parent.transform.position, parent.transform.rotation, poolType);
             if (gameObject != null)
             {
-                gameObject.transform.SetParent(parent, true);
+                gameObject.transform.SetParent(parent, false);
+                gameObject.transform.localPosition = Vector3.zero;
             }
             return gameObject;
         }
 
-        public static T SpawnObject<T>(T original, Vector3 position, Quaternion rotation, PoolType poolType = PoolType.Any) where T : MonoBehaviour
+        public static T SpawnObject<T>(T original, Vector3 position, Quaternion rotation, PoolType poolType = PoolType.Any) where T : Component
         {
             if (SpawnObject(original.gameObject, position, rotation, poolType).TryGetComponent(out T t))
             {
@@ -110,27 +111,37 @@ namespace Pelumi.ObjectPool
 
         public static GameObject SpawnObject(GameObject objectPrefab, Vector3 position, Quaternion rotation, PoolType poolType = PoolType.Any)
         {
-            PoolObjectInfo poolObjectInfo = objectPools.Find(x => x.key == objectPrefab.name);
+            PoolObjectInfo poolObjectInfo = null;
 
-            if (poolObjectInfo == null)
+            if (objectPoolDictionary.ContainsKey(objectPrefab.name))
+            {
+                poolObjectInfo = objectPoolDictionary[objectPrefab.name];
+            }
+            else
             {
                 poolObjectInfo = new PoolObjectInfo(objectPrefab, poolType);
-                objectPools.Add(poolObjectInfo);
+                objectPoolDictionary.Add(objectPrefab.name, poolObjectInfo);
             }
+
 
             GameObject gameObject = poolObjectInfo.pool.Get();
             gameObject.transform.SetPositionAndRotation(position, rotation);
             return gameObject;
         }
 
-        public static void ReleaseObject<T>(T t) where T : MonoBehaviour
+        public static void ReleaseObject<T>(T t) where T : Component
         {
             ReleaseObject(t.gameObject);
         }
 
         public static void ReleaseObject(GameObject poolObject)
         {
-            PoolObjectInfo poolObjectInfo = objectPools.Find(x => x.key == poolObject.GetRawName());
+            PoolObjectInfo poolObjectInfo = null;
+
+            if (objectPoolDictionary.ContainsKey(poolObject.GetRawName()))
+            {
+                poolObjectInfo = objectPoolDictionary[poolObject.GetRawName()];
+            }
 
             if (poolObjectInfo == null)
             {

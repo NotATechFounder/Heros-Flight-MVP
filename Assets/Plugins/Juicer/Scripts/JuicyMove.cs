@@ -6,7 +6,8 @@ using UnityEngine;
 public class JuicyMove : MonoBehaviour
 {
     [SerializeField] private float duration = 1f;
-    [SerializeField] private Vector3 targetPosition = Vector3.zero;
+    [SerializeField] private RectTransform start;
+    [SerializeField] private RectTransform target;
     [SerializeField] private Ease easeType = Ease.Linear;
     [SerializeField] LoopType loopType = LoopType.Yoyo;
     [SerializeField] private int loopCount = 0;
@@ -15,9 +16,8 @@ public class JuicyMove : MonoBehaviour
 
     private void Awake()
     {
-       // Vector3 outsideScreen = Screen.width * Vector3.right;
-
-        moveEffect = transform.JuicyMove(targetPosition, duration);
+        transform.position = start.position;
+        moveEffect = transform.JuicyMove(target.position, duration);
         moveEffect.SetEase(easeType);
         moveEffect.SetLoop(loopCount, loopType);
     }

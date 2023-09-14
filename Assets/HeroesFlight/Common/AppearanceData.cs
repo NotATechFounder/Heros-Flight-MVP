@@ -6,6 +6,10 @@ namespace  HeroesFlight.Common
     [Serializable]
     public class AppearanceData
     {
+        [Header("Base")]
+        [SerializeField] string preConfiguredSkin;
+        
+        [Header("Customizable")]
         [SerializeField] string m_BaseSkinReference = "APPEARANCE/skin_color/skin_2";
         [SerializeField] string m_EyeLashesSkinReference = "APPEARANCE/eyebrows/eyebrows_004";
         [SerializeField] string m_HairSkinReference = "APPEARANCE/hair/hair_012";
@@ -27,5 +31,7 @@ namespace  HeroesFlight.Common
         public string WingsSkinReference => m_WingsSkinReference;
         public string HatSkinReference => m_HatSkinReference;
         public string WeaponSkinReference => m_WeaponSkinReference;
+
+        public string FullSkin => preConfiguredSkin;
     }
 }

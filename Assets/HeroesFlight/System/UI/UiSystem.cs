@@ -11,10 +11,14 @@ namespace HeroesFlight.System.UI
 {
     public class UiSystem : IUISystem
     {
-        public UiSystem(IDataSystemInterface dataSystemInterface, GamePlaySystemInterface gamePlaySystem)
+        public UiSystem(DataSystemInterface dataSystemInterface, GamePlaySystemInterface gamePlaySystem)
         {
             dataSystem = dataSystemInterface;
             gameplaySystem = gamePlaySystem;
+
+            gameplaySystem.OnCountDownTimerUpdate += UpateCountDownUI;
+            gameplaySystem.OnGameTimerUpdate += UpdateGameTimeUI;
+
             gameplaySystem.OnEnemyDamaged += HandleEnemyDamaged;
             gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
             gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
@@ -23,7 +27,7 @@ namespace HeroesFlight.System.UI
             gameplaySystem.OnCharacterComboChanged += UpdateComboUI;
             gameplaySystem.OnMinibossSpawned += HandleMiniboss;
             gameplaySystem.OnMinibossHealthChange += HandleMinibossHealthChange;
-            gameplaySystem.GameTimer.OnTimeTick += UpdateGameTimeUI;
+            gameplaySystem.OnEnterMiniBossLvl += GameplaySystem_OnEnterMiniBossLvl;
             gameplaySystem.OnBoosterActivated += HandleBoosterActivated;
             gameplaySystem.OnCoinsCollected += HandleCoinChange;
             gameplaySystem.OnUltimateChargesChange += UpdateUltimateButton;
@@ -51,7 +55,7 @@ namespace HeroesFlight.System.UI
         UiContainer container;
 
         GamePlaySystemInterface gameplaySystem;
-        IDataSystemInterface dataSystem;
+        DataSystemInterface dataSystem;
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
@@ -92,6 +96,8 @@ namespace HeroesFlight.System.UI
                     OnSpecialButtonClicked?.Invoke();
                 };
 
+                UiEventHandler.GameMenu.OnLevelUpComplete += UiEventHandler.HeroProgressionMenu.OnLevelUp;
+
                 //UiEventHandler.GameMenu.GetCoinText = () =>
                 //{
                 //    return dataSystem.GetCurrencyAmount(CurrencyKeys.Gold);
@@ -118,14 +124,14 @@ namespace HeroesFlight.System.UI
                     OnReviveCharacterRequest?.Invoke();
                     return true;
                 };
-                UiEventHandler.ReviveMenu.OnCloseButtonClicked += () =>
-                {
-                    UiEventHandler.SummaryMenu.Open();
-                };
-                UiEventHandler.ReviveMenu.OnCountDownCompleted += () =>
-                {
-                    UiEventHandler.SummaryMenu.Open();
-                };
+                // UiEventHandler.ReviveMenu.OnCloseButtonClicked += () =>
+                // {
+                //     UiEventHandler.SummaryMenu.Open();
+                // };
+                // UiEventHandler.ReviveMenu.OnCountDownCompleted += () =>
+                // {
+                //     UiEventHandler.SummaryMenu.Open();
+                // };
 
                 UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
                 {
@@ -143,6 +149,11 @@ namespace HeroesFlight.System.UI
                     OnReturnToMainMenuRequest?.Invoke();
                     UiEventHandler.SummaryMenu.Close();
                 };
+
+                // UiEventHandler.MainMenu.OnCharacterSelectButtonPressed += () =>
+                // {
+                //     UiEventHandler.CharacterSelectionMenu.Open();
+                // };
 
                 onComplete?.Invoke();
             });
@@ -197,6 +208,11 @@ namespace HeroesFlight.System.UI
             UiEventHandler.GameMenu.UpdateTimerText(timeLeft);
         }
 
+        void UpateCountDownUI(int timeLeft)
+        {
+            UiEventHandler.GameMenu.UpateCountDownText(timeLeft);
+        }
+
         private void OnPlayButtonPressed()
         {
             UiEventHandler.MainMenu.Close();
@@ -231,7 +247,7 @@ namespace HeroesFlight.System.UI
             var damageText = NumberConverter.ConvertNumberToString((int)damageModel.Amount);
             var spriteAsset = container.GetDamageTextSprite(damageModel.DamageType);
             var size = damageModel.DamageType == DamageType.NoneCritical ? 60 : 100;
-            UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.one, damageText,
+            PopUpManager.Instance.PopUpTextAtTransfrom(damageModel.Target, Vector3.zero, damageText,
                 spriteAsset,size);
         }
 
@@ -250,15 +266,15 @@ namespace HeroesFlight.System.UI
             var damageString = damageModel.DamageType == DamageType.NoneCritical
                 ? $"{(int)damageModel.Amount}"
                 : $"!!{(int)damageModel.Amount}!!";
-            UiEventHandler.PopupManager.PopUpTextAtTransfrom(damageModel.Target, Vector3.one, damageString,
+            PopUpManager.Instance.PopUpTextAtTransfrom(damageModel.Target, Vector3.zero, damageString,
                 Color.red);
         }
 
         void HandleCharacterHeal(float amount, Transform pos)
         {
-            //var damageString = $"{(int)amount}";
-            //UiEventHandler.PopupManager.PopUpTextAtTransfrom(pos, Vector3.one, damageString,
-            //    Color.green);
+            var damageString = $"{(int)amount}";
+            PopUpManager.Instance.PopUpTextAtTransfrom(pos, Vector3.zero, damageString,
+                Color.green);
         }
 
 
@@ -270,7 +286,7 @@ namespace HeroesFlight.System.UI
 
         void PopUpTextAtPos(string info, Vector2 pos, Color color)
         {
-            UiEventHandler.PopupManager.PopUpAtTextPosition(pos, new Vector2(0, 1), info, color);
+            PopUpManager.Instance.PopUpAtTextPosition(pos, Vector3.zero, info, color);
         }
 
         void UpdateComboUI(int count)
@@ -280,6 +296,11 @@ namespace HeroesFlight.System.UI
         private void HandleBoosterContainerCreated(BoosterContainer container)
         {
             UiEventHandler.GameMenu.VisualiseBooster(container);
+        }
+
+        private void GameplaySystem_OnEnterMiniBossLvl()
+        {
+            UiEventHandler.GameMenu.ShowMiniBossWarning();
         }
     }
 }

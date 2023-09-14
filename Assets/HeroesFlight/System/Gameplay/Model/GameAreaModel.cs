@@ -1,5 +1,9 @@
+using System;
 using System.Collections.Generic;
+using HeroesFlight.System.NPC.Controllers.Control;
+using HeroesFlight.System.NPC.Data;
 using HeroesFlight.System.NPC.Model;
+using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
 
 namespace HeroesFlight.System.Gameplay.Model
@@ -7,31 +11,34 @@ namespace HeroesFlight.System.Gameplay.Model
     [CreateAssetMenu(fileName = "GameAreaModel", menuName = "Model/GameAreaModel", order = 0)]
     public class GameAreaModel : ScriptableObject
     {
-        [SerializeField] Vector2 portalPosition;
-        [SerializeField] List<SpawnModel> avaibleLvls=new ();
+        [SerializeField] private string areaName;
+        [SerializeField] float heroProgressionExpEarnedPerKill = 20f;
+        [SerializeField] LevelPortal portalPrefab;
+        [SerializeField] private Crystal crystalPrefab;
+        [SerializeField] Level angelsGambitLevel;
 
-        public void Init()
-        {
-            OnValidate();
-        }
-        
-        void OnValidate()
-        {
-            if (Models.Count == 0 && avaibleLvls.Count != 0)
-            {
-                GenerateCache();
-            }
-        }
+        [SerializeField] private BossControllerBase worldBoss;
+        [SerializeField] private string bossMusicKey;
 
-        void GenerateCache()
-        {
-            for (int i = 0; i < avaibleLvls.Count; i++)
-            {
-                Models.Add(i,avaibleLvls[i]);
-            }
-        }
+        [SerializeField] private SpawnModel spawnModel;
+        [SerializeField] private MobDifficultyHolder mobDifficulty;
 
-        public Dictionary<int, SpawnModel> Models = new();
-        public Vector2 PortalSpawnPosition => portalPosition;
+        [Header("Time Stop Testing")]
+        [SerializeField] float timeStopRestoreSpeed;
+        [SerializeField] float timeStopDuration;
+
+
+        public string AreaName => areaName;
+        public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
+        public Level AngelsGambitLevel => angelsGambitLevel;
+        public BossControllerBase WorldBoss => worldBoss;
+        public string WorldBossMusicKey => bossMusicKey;
+        public SpawnModel SpawnModel => spawnModel;
+        public LevelPortal PortalPrefab => portalPrefab;
+        public Crystal CrystalPrefab => crystalPrefab;
+        public MobDifficultyHolder MobDifficulty => mobDifficulty;
+
+        public float TimeStopRestoreSpeed => timeStopRestoreSpeed;
+        public float TimeStopDuration => timeStopDuration;
     }
 }
