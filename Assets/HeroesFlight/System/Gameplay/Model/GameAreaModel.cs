@@ -23,6 +23,10 @@ namespace HeroesFlight.System.Gameplay.Model
         [SerializeField] private SpawnModel spawnModel;
         [SerializeField] private MobDifficultyHolder mobDifficulty;
 
+        [Header("Time Stop Testing")]
+        [SerializeField] float timeStopRestoreSpeed;
+        [SerializeField] float timeStopDuration;
+
 
         public string AreaName => areaName;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
@@ -33,5 +37,8 @@ namespace HeroesFlight.System.Gameplay.Model
         public LevelPortal PortalPrefab => portalPrefab;
         public Crystal CrystalPrefab => crystalPrefab;
         public MobDifficultyHolder MobDifficulty => mobDifficulty;
+
+        public float TimeStopRestoreSpeed => timeStopRestoreSpeed;
+        public float TimeStopDuration => timeStopDuration;
     }
 }

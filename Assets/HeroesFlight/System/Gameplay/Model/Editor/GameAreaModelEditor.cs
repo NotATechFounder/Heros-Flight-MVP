@@ -20,6 +20,9 @@ public class GameAreaModelEditor : Editor
     SerializedProperty mobDifficultyProperty;
     SerializedProperty mobDifficultyArray;
 
+    SerializedProperty timeStopRestoreSpeedProperty;
+    SerializedProperty timeStopDurationProperty;
+
     bool difficultyFoldout = false;
     Dictionary<int, bool> foldoutDictionary = new Dictionary<int, bool>();
 
@@ -35,6 +38,9 @@ public class GameAreaModelEditor : Editor
         spawnModelProperty = serializedObject.FindProperty("spawnModel");
         mobDifficultyProperty = serializedObject.FindProperty("mobDifficulty");
         mobDifficultyArray = mobDifficultyProperty.FindPropertyRelative("mobDifficulties");
+
+        timeStopRestoreSpeedProperty = serializedObject.FindProperty("timeStopRestoreSpeed");
+        timeStopDurationProperty = serializedObject.FindProperty("timeStopDuration");
 
         for (int i = 0; i < mobDifficultyArray.arraySize; i++)
         {
@@ -56,6 +62,9 @@ public class GameAreaModelEditor : Editor
         EditorGUILayout.PropertyField(spawnModelProperty);
 
         DisplayDiffiulties();
+
+        EditorGUILayout.PropertyField(timeStopRestoreSpeedProperty);
+        EditorGUILayout.PropertyField(timeStopDurationProperty);
 
         serializedObject.ApplyModifiedProperties();
     }

@@ -430,7 +430,7 @@ namespace HeroesFlight.System.Gameplay
 
 
             //TODO: iMPROVE THIS
-              GameEffectController.StopTime(0.1f, 5f, 0.025f);
+              GameEffectController.StopTime(0.1f, container.CurrentModel.TimeStopRestoreSpeed, container.CurrentModel.TimeStopDuration);
 
           //  GameEffectController.StopFrame(0.1f);
 

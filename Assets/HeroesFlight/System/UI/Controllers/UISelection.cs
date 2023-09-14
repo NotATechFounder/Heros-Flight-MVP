@@ -14,9 +14,9 @@ public class UISelection : MonoBehaviour
 
     [SerializeField] private RectTransform parent;
 
-    [SerializeField] private CharacterSlotUI leftSlot;
-    [SerializeField] private CharacterSlotUI midSlot;
-    [SerializeField] private CharacterSlotUI rightSlot;
+    [SerializeField] private CharacterUISlot leftSlot;
+    [SerializeField] private CharacterUISlot midSlot;
+    [SerializeField] private CharacterUISlot rightSlot;
 
     [SerializeField] private RectTransform[] targets;
     private RectTransform currentTarget => midSlot.rectTransform;
@@ -136,7 +136,7 @@ public class UISelection : MonoBehaviour
         MoveTarget(target, rightSlot);
     }
 
-    private void MoveTarget(RectTransform target, CharacterSlotUI to)
+    private void MoveTarget(RectTransform target, CharacterUISlot to)
     {
         target.SetParent(parent);
         target.JuicyMove(to.rectTransform.position, 0.5f)
@@ -146,7 +146,7 @@ public class UISelection : MonoBehaviour
 }
 
 [Serializable]
-public class CharacterSlotUI
+public class CharacterUISlot
 {
     public RectTransform rectTransform;
     public RectTransform characterUI;

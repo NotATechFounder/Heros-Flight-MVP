@@ -11,6 +11,8 @@ public class DataSystem : DataSystemInterface
     {
         RewardHandler = new RewardsHandler();
         unlockedCharacters.Add(CharacterType.Tagon);
+        unlockedCharacters.Add(CharacterType.Lancer);
+        unlockedCharacters.Add(CharacterType.Storm);
     }
     CurrencyManager currencyManager;
     public RewardsHandlerInterface RewardHandler { get; private set; }
