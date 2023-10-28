@@ -569,7 +569,7 @@ namespace HeroesFlight.System.Gameplay
 
           //  GameEffectController.StopFrame(0.1f);
 
-            OnEnemyDamaged?.Invoke(damageModel);
+            // OnEnemyDamaged?.Invoke(damageModel);
             hitEffectsPlayer.PlayHitEffect("Hit", true);
         }
 
