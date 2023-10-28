@@ -32,7 +32,8 @@ namespace UISystem
         public void UpdateLoadingBar(float progress)
         {
             progressImage.fillAmount = progress;
-            progresstext.text = $"{progress * 100}%";
+            int percent = (int)(progress * 100);
+            progresstext.text = $"{percent}%";
 
         }
 

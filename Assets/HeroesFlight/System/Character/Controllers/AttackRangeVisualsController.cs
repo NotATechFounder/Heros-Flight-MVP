@@ -21,6 +21,18 @@ namespace HeroesFlight.System.Character
             realSizeX = damageZoneSizeX;
         }
 
+        public void SetFacing(bool IsFacingLeft)
+        {
+            if (IsFacingLeft)
+            {
+                canvasTransform.localScale = new Vector3(3, 3, 3);
+            }
+            else
+            {
+                canvasTransform.localScale = new Vector3(-3, 3, 3);
+            }
+        }
+
         public void SetPosition(Vector2 position)
         {
             canvasTransform.localPosition = CalculateVisualFinalPosition(position);
