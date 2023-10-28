@@ -36,7 +36,7 @@ namespace UISystem
             closeEffectContainer = container.JuicyScale(Vector3.zero, 0.15f).SetEase(Ease.EaseInQuart);
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(0.15f);
-            closeEffectBG.SetOnComplected(CloseMenu);
+            closeEffectBG.SetOnCompleted(CloseMenu);
 
             waitForSeconds = new WaitForSeconds(visibileTime);
         }

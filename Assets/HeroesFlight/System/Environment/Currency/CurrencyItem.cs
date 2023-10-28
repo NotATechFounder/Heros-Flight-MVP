@@ -1,4 +1,3 @@
-
 using Pelumi.Juicer;
 using Pelumi.ObjectPool;
 using StansAssets.Foundation.Async;
@@ -23,7 +22,7 @@ public class CurrencyItem : MonoBehaviour
     private CurrencySO currencySO;
     private Rigidbody2D rigid2D;
     private JuicerRuntime scaleEffect;
-    private Transform target;
+    [SerializeField] private Transform target;
     public float amount;
     private Coroutine moveToPlayerCoroutine;
 
@@ -33,9 +32,8 @@ public class CurrencyItem : MonoBehaviour
     private void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
-
         scaleEffect = transform.JuicyScale(0, .15f);
-        scaleEffect.SetOnComplected(() =>
+        scaleEffect.SetOnCompleted(() =>
         {
             OnCurrencyInteracted?.Invoke(this, amount);
             moveToPlayerCoroutine = null;
@@ -44,7 +42,8 @@ public class CurrencyItem : MonoBehaviour
         });
     }
 
-    public void Initialize(CurrencySO currency, Action<CurrencyItem, float> func , float amount, Transform target, bool autoLocatePlayer = true)
+    public void Initialize(CurrencySO currency, Action<CurrencyItem, float> func, float amount, Transform target,
+        bool autoLocatePlayer = true)
     {
         isCollected = false;
         transform.localScale = Vector3.one;
@@ -98,5 +97,14 @@ public class CurrencyItem : MonoBehaviour
         }
 
         if (t >= 1) OnReachPlayer?.Invoke();
+
+        moveToPlayerCoroutine = null;
+    }
+
+    public void ResetState()
+    {
+        if (moveToPlayerCoroutine != null)
+            StopCoroutine(moveToPlayerCoroutine);
+        ObjectPoolManager.ReleaseObject(this);
     }
 }

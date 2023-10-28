@@ -18,6 +18,7 @@ namespace HeroesFlight.System.NPC.Model
     public class Level
     {
         [SerializeField] private LevelType levelType = LevelType.NormalCombat;
+        [SerializeField] float lvlDuration = 120f;
         [SerializeField] private GameObject levelPrefab;
         [SerializeField] private float timeBetweenWaves = 3f;
         [SerializeField] private Wave[] waves;
@@ -26,6 +27,7 @@ namespace HeroesFlight.System.NPC.Model
         public GameObject LevelPrefab => levelPrefab;
         public float TimeBetweenWaves => timeBetweenWaves;
         public Wave[] Waves => waves;
+        public float LevelDuration => lvlDuration;
 
         public int TotalMobsToSpawn
         {

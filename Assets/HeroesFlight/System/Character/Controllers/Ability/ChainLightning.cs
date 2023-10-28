@@ -25,7 +25,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         float range;
         float timeBetweenBounces ;
         int jumpsLeft;
-        DamageModel damageModel;
+        HealthModificationIntentModel healthModificationIntentModel;
         IHealthController currentTarget;
         List<IHealthController> hitedTargets = new();
         Collider2D[] colliders;
@@ -33,9 +33,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public event Action<Transform> OnDealingDamage;
         public event Action<ChainLightning> OnComplete;
 
-        public void Start(IHealthController targetHealthController, DamageModel damage)
+        public void Start(IHealthController targetHealthController, HealthModificationIntentModel healthModificationIntent)
         {
-            damageModel = damage;
+            healthModificationIntentModel = healthModificationIntent;
             jumpsLeft = maxJumps;
             currentTarget = targetHealthController;
             CoroutineUtility.Start(StartBounce());
@@ -47,7 +47,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             var emitParams = new ParticleSystem.EmitParams();
             emitParams.position = currentTarget.HealthTransform.position;
             particle.GetParticleSystem.Emit(emitParams,1);
-            currentTarget.DealDamage(damageModel);
+            currentTarget.TryDealDamage(healthModificationIntentModel);
             hitedTargets.Add(currentTarget);
             OnDealingDamage?.Invoke(currentTarget.HealthTransform);
             if (jumpsLeft <= 0)
@@ -104,8 +104,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             hitedTargets.Clear();
         }
 
-        public void Init(int jumpsLeft, float maxRange, float timeBetweenJumps,
-            LayerMask targetMask)
+        public void Init(int jumpsLeft, float maxRange, float timeBetweenJumps, LayerMask targetMask)
         {
             maxJumps = jumpsLeft-1;
             range = maxRange;

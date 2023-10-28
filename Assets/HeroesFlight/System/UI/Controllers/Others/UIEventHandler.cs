@@ -23,7 +23,6 @@ public class UIEventHandler : MonoBehaviour
     public HeroProgressionMenu HeroProgressionMenu { get; private set; }
     public ConfirmationUISO BackToMenuConfirmation => backToMenu;
     public ConfirmationUISO PuzzleConfirmation => puzzleConfirmation;
-    public CharacterSelectionMenu CharacterSelectionMenu { get; private set; }
     public RewardPopupController RewardPopup { get; private set; }
 
     public void Init(Action OnComplecte = null)
@@ -41,7 +40,6 @@ public class UIEventHandler : MonoBehaviour
         AngelGambitMenu = uIManager.InitMenu<AngelGambitMenu>();
         AngelPermanetCardMenu = uIManager.InitMenu<AngelPermanetCardMenu>();
         HeroProgressionMenu = uIManager.InitMenu<HeroProgressionMenu>();
-        CharacterSelectionMenu = uIManager.InitMenu<CharacterSelectionMenu>();
         RewardPopup = uIManager.InitMenu<RewardPopupController>();
         OnComplecte?.Invoke();
     }

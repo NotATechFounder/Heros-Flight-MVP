@@ -19,7 +19,9 @@ public class GameAreaModelEditor : Editor
     SerializedProperty spawnModelProperty;
     SerializedProperty mobDifficultyProperty;
     SerializedProperty mobDifficultyArray;
+    SerializedProperty mobDropTableArray;
 
+    SerializedProperty bossDropProperty;
     SerializedProperty timeStopRestoreSpeedProperty;
     SerializedProperty timeStopDurationProperty;
 
@@ -38,7 +40,8 @@ public class GameAreaModelEditor : Editor
         spawnModelProperty = serializedObject.FindProperty("spawnModel");
         mobDifficultyProperty = serializedObject.FindProperty("mobDifficulty");
         mobDifficultyArray = mobDifficultyProperty.FindPropertyRelative("mobDifficulties");
-
+        mobDropTableArray = serializedObject.FindProperty("mobDropTable");
+        bossDropProperty = serializedObject.FindProperty("bossDrop");
         timeStopRestoreSpeedProperty = serializedObject.FindProperty("timeStopRestoreSpeed");
         timeStopDurationProperty = serializedObject.FindProperty("timeStopDuration");
 
@@ -58,10 +61,13 @@ public class GameAreaModelEditor : Editor
         EditorGUILayout.PropertyField(crystalPrefabProperty);
         EditorGUILayout.PropertyField(angelsGambitLevelProperty);
         EditorGUILayout.PropertyField(worldBossProperty);
+        EditorGUILayout.PropertyField(bossDropProperty);
         EditorGUILayout.PropertyField(bossMusicKeyProperty);
         EditorGUILayout.PropertyField(spawnModelProperty);
 
         DisplayDiffiulties();
+
+        EditorGUILayout.PropertyField(mobDropTableArray);
 
         EditorGUILayout.PropertyField(timeStopRestoreSpeedProperty);
         EditorGUILayout.PropertyField(timeStopDurationProperty);

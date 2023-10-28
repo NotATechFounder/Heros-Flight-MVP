@@ -126,6 +126,8 @@ namespace Pelumi.Juicer
 
         public bool IsStepCompleted => _juicerRuntimeController.IsStepCompleted;
 
+        public bool IsPaused => _juicerRuntimeController.IsPaused;
+
         public abstract JuicerRuntime Start(JuicerEventHandler PreStart = null);
 
         public JuicerRuntime SetDelay(float delay)
@@ -157,9 +159,9 @@ namespace Pelumi.Juicer
             return this;
         }
 
-        public JuicerRuntime SetOnComplected(JuicerEventHandler onComplected)
+        public JuicerRuntime SetOnCompleted(JuicerEventHandler onCompleted)
         {
-            _juicerRuntimeController.JuicerEvent.SetOnComplected(onComplected);
+            _juicerRuntimeController.JuicerEvent.SetOnCompleted(onCompleted);
             return this;
         }
 
@@ -317,7 +319,7 @@ namespace Pelumi.Juicer
 
         public void OnCompleted()
         {
-            _juicerEvent.InvokeOnComplected();
+            _juicerEvent.InvokeOnCompleted();
         }
 
         public void OnCompleteStep()
@@ -343,7 +345,7 @@ namespace Pelumi.Juicer
         private List<JuicerTimelineEvent> timelineEvents = new List<JuicerTimelineEvent>();
         private JuicerEventHandler OnStart;
         private JuicerEventHandler OnTick;
-        private JuicerEventHandler OnComplected;
+        private JuicerEventHandler OnCompleted;
         private JuicerEventHandler OnStepComplete;
 
         public void InvokeOnStart()
@@ -356,9 +358,9 @@ namespace Pelumi.Juicer
             OnTick?.Invoke();
         }
 
-        public void InvokeOnComplected()
+        public void InvokeOnCompleted()
         {
-            OnComplected?.Invoke();
+            OnCompleted?.Invoke();
         }
 
         public void InvokeOnStepComplete()
@@ -376,9 +378,9 @@ namespace Pelumi.Juicer
             OnTick = onTick;
         }
 
-        public void SetOnComplected(JuicerEventHandler onFinished)
+        public void SetOnCompleted(JuicerEventHandler onFinished)
         {
-            OnComplected = onFinished;
+            OnCompleted = onFinished;
         }
 
         public void SetOnStepComplete(JuicerEventHandler onStepComplete)
@@ -449,7 +451,7 @@ namespace Pelumi.Juicer
         private CoroutineHandle _coroutine;
         private JuicerRuntime _currentJuicerRuntime;
         private Action _OnStarted;
-        private Action _OnComplected;
+        private Action _OnCompleted;
         private bool _isPaused;
         private float _delay;
 
@@ -486,7 +488,7 @@ namespace Pelumi.Juicer
                     case JuicerRuntime juicerRuntime:
                         _currentJuicerRuntime = juicerRuntime;
                         juicerRuntime.Start();
-                        yield return new WaitUntilJuicerComplected(juicerRuntime);
+                        yield return new WaitUntilJuicerCompleted(juicerRuntime);
                         break;
 
                     case JuicerDelay juicerDelay:
@@ -512,7 +514,7 @@ namespace Pelumi.Juicer
                     default: break;
                 }
             }
-            _OnComplected?.Invoke();
+            _OnCompleted?.Invoke();
         }
 
         public void Pause()
@@ -532,9 +534,9 @@ namespace Pelumi.Juicer
             _OnStarted = onStarted;
         }
 
-        public void SetOnComplected(Action onComplected)
+        public void SetOnCompleted(Action onCompleted)
         {
-            _OnComplected = onComplected;
+            _OnCompleted = onCompleted;
         }
 
         public float Duration()

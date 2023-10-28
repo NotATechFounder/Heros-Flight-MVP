@@ -28,7 +28,7 @@ public class CardEffectUI : MonoBehaviour
         rectTransform.JuicyMove(target.position, 1f)
             .SetDelay(delay)
             .SetEase(Ease.EaseInOutSine)
-            .SetOnComplected(() =>
+            .SetOnCompleted(() =>
             {
                 OnReached?.Invoke();
                 ResetParent();

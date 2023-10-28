@@ -390,23 +390,23 @@ namespace Pelumi.Juicer
         }
     }
 
-    public class WaitUntilJuicerComplected : CustomYieldInstruction
+    public class WaitUntilJuicerCompleted : CustomYieldInstruction
     {
         private JuicerRuntime _juicerRuntime;
         public override bool keepWaiting => !_juicerRuntime.IsFinished;
 
-        public WaitUntilJuicerComplected(JuicerRuntime juicerRuntime)
+        public WaitUntilJuicerCompleted(JuicerRuntime juicerRuntime)
         {
             _juicerRuntime = juicerRuntime;
         }
     }
 
-    public class WaitUntilJuicerComplectedOrStep : CustomYieldInstruction
+    public class WaitUntilJuicerCompletedOrStep : CustomYieldInstruction
     {
         private JuicerRuntime _juicerRuntime;
         public override bool keepWaiting => !_juicerRuntime.IsFinished && !_juicerRuntime.IsStepCompleted;
 
-        public WaitUntilJuicerComplectedOrStep(JuicerRuntime juicerRuntime)
+        public WaitUntilJuicerCompletedOrStep(JuicerRuntime juicerRuntime)
         {
             _juicerRuntime = juicerRuntime;
         }

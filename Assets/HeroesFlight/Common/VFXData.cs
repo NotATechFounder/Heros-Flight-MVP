@@ -1,4 +1,5 @@
 using System;
+using Pelumi.ObjectPool;
 using UnityEngine;
 
 namespace HeroesFlight.Common
@@ -6,17 +7,17 @@ namespace HeroesFlight.Common
     [Serializable]
     public class VFXData
     {
-        [SerializeField] string autoattackNormal;
-        [SerializeField] string autoattackCrit;
-        [SerializeField] string ultNormal;
-        [SerializeField] string ultCrit;
-        [SerializeField] string ultVfx;
+        [SerializeField] Particle autoattackNormal;
+        [SerializeField] Particle autoattackCrit;
+        [SerializeField] Particle ultNormal;
+        [SerializeField] Particle ultCrit;
+       
 
 
-        public string AutoattackNormal => autoattackNormal;
-        public string AutoattackCrit => autoattackCrit;
-        public string UltNormal => ultNormal;
-        public string UltCrit => ultCrit;
-        public string UltVfx => ultVfx;
+        public Particle AutoattackNormal => autoattackNormal;
+        public Particle AutoattackCrit => autoattackCrit;
+        public Particle UltNormal => ultNormal;
+        public Particle UltCrit => ultCrit;
+       
     }
 }

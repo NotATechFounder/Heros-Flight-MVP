@@ -1,10 +1,12 @@
 using System;
 using Cinemachine;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -31,7 +33,25 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 if(targets[i].TryGetComponent<IHealthController>(out var health))
                 {
-                    health.DealDamage(new DamageModel(CalculateDamage(),DamageType.NoneCritical,AttackType.Regular));
+                    if (canCrit)
+                    {
+                        bool isCritical = Random.Range(0, 100) <= critChance;
+
+                        float damageToDeal = isCritical
+                            ? CalculateDamage() * critModifier
+                            : CalculateDamage();
+
+                        var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
+                        var damageModel = new HealthModificationIntentModel(damageToDeal, 
+                            type, AttackType.Regular,DamageCalculationType.Flat);
+                        health.TryDealDamage(damageModel);
+                    }
+                    else
+                    {
+                        health.TryDealDamage(new HealthModificationIntentModel(CalculateDamage(),
+                            DamageType.NoneCritical,AttackType.Regular,DamageCalculationType.Flat));      
+                    }
+                  
                 }
             }
         }
@@ -40,19 +60,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (targetAnimation != null)
             {
-                animator.PlayAnimation(targetAnimation,onComplete);
+                animator.PlayDynamicAnimation(targetAnimation,onComplete);
             }
 
             foreach (var zone in abilityZones)
             {
                 zone.ZoneVisual.Trigger(() =>
                 {
-                    cameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,.5f);
+                    cameraShaker?.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,.5f);
                     zone.ZoneChecker.Detect();
                 },preDamageDelay,zoneWidth);
             }
 
-            currentCooldown = coolDown;
         }
 
 

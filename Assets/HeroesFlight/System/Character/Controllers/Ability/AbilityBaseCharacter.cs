@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using HeroesFlight.Common;
 using HeroesFlight.System.Character;
+using HeroesFlightProject.System.Combat.Controllers;
 using Spine.Unity;
 using UnityEngine;
 
@@ -11,16 +14,15 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         [SerializeField] float coolDown;
         [SerializeField] bool stopOnUse;
-        protected AnimationReferenceAsset[] targetAnimations;
+        protected List<AnimationReferenceAsset>  targetAnimations = new ();
         protected  CharacterAnimationControllerInterface animator;
         int targetCharges = 0;
-        int currentCharges = 0;
+        protected int currentCharges = 0;
 
-        void Awake()
+        protected virtual void Awake()
         {
             animator = GetComponent<CharacterAnimationControllerInterface>();
         }
-
 
         public float CoolDown => coolDown;
         public bool StopMovementOnUse => stopOnUse;
@@ -37,9 +39,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public float CurrentCharge => (float)currentCharges/targetCharges;
      
-        public void Init(AnimationReferenceAsset[] animations,int charges)
+        public void Init(List<AnimationData> animations, int charges)
         {
-            targetAnimations = animations;
+            foreach (var data in animations)
+            {
+                targetAnimations.Add(data.Aniamtion);
+            }
             targetCharges = charges;
             currentCharges = 0;
         }

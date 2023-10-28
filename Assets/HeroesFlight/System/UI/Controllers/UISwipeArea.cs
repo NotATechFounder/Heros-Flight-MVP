@@ -19,7 +19,6 @@ public class UISwipeArea : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private Vector2 touchStartPos;
     private Vector2 touchEndPos;
 
-
     public void OnPointerDown(PointerEventData eventData)
     {
         touchStartPos = eventData.position;
@@ -40,33 +39,25 @@ public class UISwipeArea : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             // Calculate the direction of the swipe
             Vector2 swipeDirection = touchEndPos - touchStartPos;
 
-            // Check if it's a horizontal swipe
             if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
             {
                 if (swipeDirection.x > 0)
                 {
-                    Debug.Log("Right swipe detected");
                     OnSwipe?.Invoke(SwipeDirection.Right);
                 }
                 else
                 {
-                    Debug.Log("Left swipe detected");
-                    // Handle left swipe action here
                     OnSwipe?.Invoke(SwipeDirection.Left);
                 }
             }
-            else // It's a vertical swipe
+            else
             {
                 if (swipeDirection.y > 0)
                 {
-                    Debug.Log("Up swipe detected");
-                    // Handle up swipe action here
                     OnSwipe?.Invoke(SwipeDirection.Up);
                 }
                 else
                 {
-                    Debug.Log("Down swipe detected");
-                    // Handle down swipe action here
                     OnSwipe?.Invoke(SwipeDirection.Down);
                 }
             }

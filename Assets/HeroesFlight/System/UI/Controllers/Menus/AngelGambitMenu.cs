@@ -28,6 +28,9 @@ namespace UISystem
         [SerializeField] private Color debuffCardColor;
         [SerializeField] private Color blankCardColor;
 
+        [Header("Card Selection")]
+        [SerializeField] private GameObject cardSelectionPanel;
+
         [Header("Card Reveal")]
         [SerializeField] private GameObject cardRevealPanel;
         [SerializeField] private Transform cardToReveal;
@@ -36,6 +39,7 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI cardTierDisplay;
         [SerializeField] private TextMeshProUGUI cardDescriptionDisplay;
         [SerializeField] private Image cardImageDisplay;
+        [SerializeField] private TextMeshProUGUI cardInfoDisplay;
         [SerializeField] private GameObject[] cardRevealProperties;
 
         [Header("Card List")]
@@ -65,13 +69,13 @@ namespace UISystem
                                             .SetDelay(0.15f);
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
-            closeEffectBG.SetOnComplected(CloseMenu);
+            closeEffectBG.SetOnCompleted(CloseMenu);
 
             buffCardEffect = buffCardButton.transform.JuicyScale(Vector3.one * 1.2f, .5f).SetEase(Ease.EaseOutSine).SetLoop(-1);
             debuffCardEffect = debuffCardButton.transform.JuicyScale(Vector3.one * 1.2f, .5f).SetEase(Ease.EaseOutSine).SetLoop(-1);
 
             spinCardEffect = cardToReveal.transform.JuicyRotate(Vector3.up * 360, .25f).SetEase(Ease.Linear).SetLoop(2, LoopType.Incremental);
-            spinCardEffect.SetOnComplected(() => ToggleCardRevealProperties(true));
+            spinCardEffect.SetOnCompleted(() => ToggleCardRevealProperties(true));
 
             buffCardButton.onClick.AddListener(() => GenerateRandomCards(AngelCardType.Buff));
 
@@ -94,6 +98,7 @@ namespace UISystem
             buffCardEffect.Start();
             debuffCardEffect.Start();
             openEffectContainer.Start(() => container.localScale = Vector3.zero);
+            cardSelectionPanel.SetActive(true);
         }
 
         public override void OnClosed()
@@ -165,6 +170,7 @@ namespace UISystem
         
         public void DisplayCard()
         {
+            cardSelectionPanel.SetActive(false);
             cardRevealPanel.SetActive(true);
 
             AngelCard existingCard = CardExit?.Invoke(selectedCard);
@@ -183,6 +189,7 @@ namespace UISystem
             cardNameDisplay.text = selectedCard.CardName;
             cardImageDisplay.sprite = selectedCard.CardImage;
             cardBg.color = selectedCard.CardType == AngelCardType.Buff ? buffCardColor : debuffCardColor;
+            cardInfoDisplay.text = selectedCard.CardType == AngelCardType.Buff ? "BUFF MONSTERS" : "DEBUFF HERO";
 
             spinCardEffect.Start();
         }

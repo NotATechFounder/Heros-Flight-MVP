@@ -121,7 +121,7 @@ namespace Pelumi.Juicer
             JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
             (transform,
                 () => transform.localScale.x,
-                (value) => transform.localScale = new Vector3(to, to, to),
+                (value) => transform.localScale = new Vector3(value, value, value),
                 to, duration
             );
             return juicerRuntime;
@@ -387,7 +387,7 @@ namespace Pelumi.Juicer
         {
             Init();
             JuicerRuntimeCore<float> juicerRuntime = new JuicerRuntimeCore<float>
-            (textMeshPro, () => float.Parse(textMeshPro.text), (value) => textMeshPro.text = value.ToString(), to, duration);
+            (textMeshPro, () => int.Parse(textMeshPro.text), (value) => textMeshPro.text = ((int)value).ToString(), to, duration);
             return juicerRuntime;
         }
 

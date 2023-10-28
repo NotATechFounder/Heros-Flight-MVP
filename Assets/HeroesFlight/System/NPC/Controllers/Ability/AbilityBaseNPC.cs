@@ -2,20 +2,21 @@ using System;
 using HeroesFlightProject.System.NPC.Controllers;
 using Spine.Unity;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class AbilityBaseNPC : MonoBehaviour,AbilityInterface
+    public abstract class AbilityBaseNPC : MonoBehaviour,AbilityInterface
     {
         [SerializeField] protected AnimationReferenceAsset targetAnimation;
-        [SerializeField] protected float coolDown;
+        [SerializeField] protected Vector2 coolDown;
         [SerializeField] protected bool stopOnUse = true;
         protected AiAnimatorInterface animator;
        [SerializeField] protected float currentCooldown;
        protected virtual void Awake()
         {
-            animator = GetComponent<AiAnimatorInterface>();
+            animator = GetComponentInParent<AiAnimatorInterface>();
             currentCooldown = 0;
         }
 
@@ -29,7 +30,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-        public float CoolDown => coolDown;
+        public float CoolDown => Random.Range(coolDown.x,coolDown.y);
         public bool StopMovementOnUse => stopOnUse;
         public virtual bool ReadyToUse => currentCooldown <= 0;
         
@@ -38,11 +39,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (targetAnimation != null)
             {
-                animator.PlayAnimation(targetAnimation,onComplete);
+                animator.PlayDynamicAnimation(targetAnimation,onComplete);
             }
             
 
-            currentCooldown = coolDown;
+            currentCooldown = CoolDown;
         }
     }
 }

@@ -24,7 +24,7 @@ public abstract class OverlapChecker : MonoBehaviour
     
 
 
-    private void Start()
+    private void Awake()
     {
         colliders = new Collider2D[maxHit];
     }

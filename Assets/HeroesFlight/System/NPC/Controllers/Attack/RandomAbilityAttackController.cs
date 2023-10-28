@@ -1,20 +1,35 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeroesFlightProject.System.NPC.Enum;
+using HeroesFlight.Common.Animation;
 using UnityEngine;
+using NotImplementedException = System.NotImplementedException;
 using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class RandomAbilityAttackController : EnemyAttackControllerBase
     {
-        [SerializeField] AbilityBaseNPC[] abilities;
-
-
+        [SerializeField] BossAbilityBase[] abilities;
+        [SerializeField] OverlapChecker rangeCheck;
+        CameraShakerInterface shaker;
         void Awake()
         {
-            abilities = GetComponents<AbilityBaseNPC>();
+          rangeCheck.OnDetect += HandlePlayerDetected;
+          shaker = FindObjectOfType<CameraController>().CameraShaker;
+          foreach (var ability in abilities)
+          {
+              ability.InjectShaker(shaker);
+          }
+
+        }
+       
+        void HandlePlayerDetected(int arg1, Collider2D[] arg2)
+        {
+            if (timeSinceLastAttack >= timeBetweenAttacks)
+            {
+                aiController.SetAttackState(true);
+                InitAttack();
+            }
         }
 
         protected override void Update()
@@ -30,16 +45,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
 
             timeSinceLastAttack += Time.deltaTime;
-            var distanceToPlayer = Vector2.Distance(transform.position, aiController.CurrentTarget.position);
-            if (distanceToPlayer <= attackRange && timeSinceLastAttack >= timeBetweenAttacks)
-            {
-                aiController.SetAttackState(true);
-                InitAttack();
-            }
-            else
+            rangeCheck.Detect();
+            if (timeSinceLastAttack < timeBetweenAttacks)
             {
                 aiController.SetAttackState(false);
             }
+            
         }
 
         protected override void InitAttack()
@@ -54,14 +65,17 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             var possibleAbilities = new List<int>();
             for (int i = 0; i < abilities.Length; i++)
             {
+                Debug.Log(abilities[i].ReadyToUse);
                 if (abilities[i].ReadyToUse)
                     possibleAbilities.Add(i);
+                   
             }
-
+            Debug.Log(possibleAbilities.Count);
             if (possibleAbilities.Count > 0)
             {
                 var targetAbility =
-                    abilities[possibleAbilities.ElementAt(Random.Range(0, possibleAbilities.Count - 1))];
+                    abilities[possibleAbilities.ElementAt(Random.Range(0, possibleAbilities.Count ))];
+                Debug.Log(targetAbility.name);
                 if (targetAbility.StopMovementOnUse)
                 {
                     aiController.SetMovementState(false);
@@ -79,6 +93,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
-      
+        protected override void HandleAnimationEvents(AttackAnimationEvent obj) { }
     }
 }

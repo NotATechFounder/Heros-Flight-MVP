@@ -19,14 +19,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
         public void UseAbility( IHealthController targetHealthController,
-            DamageModel damageToDeal)
+            HealthModificationIntentModel healthModificationIntentToDeal)
         {
             var lightning = pool.Get();
             lightning.Init(jumpsNumber, jumpRadius, timeBetweenJumps, targetMask);
             lightning.OnComplete += HandleChainComplete;
                // new ChainLightning(jumpsNumber, jumpRadius, timeBetweenJumps, targetMask);
             lightning.OnDealingDamage += HandleDamageDealt;
-            lightning.Start(targetHealthController,damageToDeal);
+            lightning.Start(targetHealthController,healthModificationIntentToDeal);
           
         }
 

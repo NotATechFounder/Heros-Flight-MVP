@@ -34,7 +34,7 @@ namespace UISystem
             closeEffectContent = content.transform.JuicyScale(0, .15f).SetEase(Ease.EaseOutQuart);
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
-            closeEffectBG.SetOnComplected(CloseMenu);
+            closeEffectBG.SetOnCompleted(CloseMenu);
 
             backButton.onClick.AddListener(() =>
             {

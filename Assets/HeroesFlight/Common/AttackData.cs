@@ -7,9 +7,7 @@ namespace HeroesFlight.Common
     public class AttackData
     {
         [SerializeField] int enemiesPerAttack=4;
-        [SerializeField] float attackPositionOffset=1;
-
         public int EnemiesPerAttack => enemiesPerAttack;
-        public float AttackPositionOffset => attackPositionOffset;
+       
     }
 }

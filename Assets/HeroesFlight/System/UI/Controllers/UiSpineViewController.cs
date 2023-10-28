@@ -95,7 +95,7 @@ namespace UISystem
             // m_WeaponSkinReference = viewData.WeaponSkinReference;
             UpdateCharacterSkin();
             UpdateCombinedSkin();
-            m_SkeletonAnimation.AnimationState.SetAnimation(0,data.CharacterData.AnimationData.IdleAniamtion.Animation,  true);
+            m_SkeletonAnimation.AnimationState.SetAnimation(0,data.CharacterData.CharacterAnimations.IdleAniamtion.Animation,  true);
         }
     }
 }

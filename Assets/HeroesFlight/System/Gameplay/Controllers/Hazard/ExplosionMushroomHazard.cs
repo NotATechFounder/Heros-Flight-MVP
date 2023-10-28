@@ -3,6 +3,7 @@ using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using Pelumi.Juicer;
+using Plugins.Audio_System;
 using Spine;
 using Spine.Unity;
 using System;
@@ -15,7 +16,7 @@ public class ExplosionMushroomHazard : MonoBehaviour
     public const string idleHidingAnimationName = "1_idle_hiding";
     public const string idleToShowAnimationName = "2_idle_to_show";
 
-    [SerializeField] private float damage;
+    [SerializeField] private float damagePercentage = 20;
 
     [Header("Animation and Viusal Settings")]
     [SerializeField] private GameObject visual;
@@ -24,6 +25,7 @@ public class ExplosionMushroomHazard : MonoBehaviour
     [SerializeField] private Trigger2DObserver detectorObserver;
     [SerializeField] private CircleOverlap damageOverlap;
     [SerializeField] private ParticleCallbackTrigger particleCallbackTrigger;
+    [SerializeField] private GameObject warningEffect;
 
     private bool isExploded;
     private JuicerRuntime juicerRuntime;
@@ -56,12 +58,15 @@ public class ExplosionMushroomHazard : MonoBehaviour
             return;
         }
         isExploded = true;
+
         skeletonAnimation.AnimationState.SetAnimation(0, idleToShowAnimationName, false);
         juicerRuntime.Start();
+        warningEffect.SetActive(true);
     }
 
     private void Explode()
     {
+        AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Environment);
         visual.SetActive(false);
         particleCallbackTrigger.Play();
         damageOverlap.Detect();
@@ -73,7 +78,22 @@ public class ExplosionMushroomHazard : MonoBehaviour
         {
             if (collider2D[i].TryGetComponent(out IHealthController healthController))
             {
-                healthController.DealDamage(new DamageModel(damage, DamageType.NoneCritical, AttackType.Regular));
+                healthController.DealHealthPercentageDamage(damagePercentage,DamageType.Critical, AttackType.Regular);
+            }
+
+            if (collider2D[i].TryGetComponent(out Trigger2DObserver trigger2DObserver))
+            {
+                if (!trigger2DObserver.transform.parent.TryGetComponent(out ExplosionMushroomHazard explosionMushroomHazard))
+                {
+                    continue;
+                }
+
+                if (explosionMushroomHazard == this || explosionMushroomHazard.isExploded)
+                {
+                    continue;
+                }
+
+                explosionMushroomHazard.OnEnterZone(null);
             }
         }
     }

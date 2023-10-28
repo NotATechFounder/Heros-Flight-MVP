@@ -1,4 +1,5 @@
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 
@@ -58,8 +59,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers.Hazard
         {
             if (collider2D.TryGetComponent(out IHealthController healthController))
             {
-                float damage = StatCalc.GetValueOfPercentage(healthPercentageDecrease, healthController.CurrentHealth);
-                healthController.DealDamage(new DamageModel(damage, DamageType.NoneCritical, AttackType.Regular));
+                float damage = StatCalc.GetPercentage(healthPercentageDecrease, healthController.CurrentHealth);
+                healthController.TryDealDamage(new HealthModificationIntentModel(damage, 
+                    DamageType.NoneCritical, AttackType.Regular,DamageCalculationType.Percentage));
             }
         }
 

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace HeroesFlight.System.Input.Container
@@ -6,7 +7,7 @@ namespace HeroesFlight.System.Input.Container
 
     {
         CharacterInputActions.CharacterActions m_InputActions;
-       
+        public event Action<Vector2> OnMovementInput; 
         void Awake()
         {
             var inputActionMap= new CharacterInputActions();
@@ -14,9 +15,13 @@ namespace HeroesFlight.System.Input.Container
             m_InputActions.Enable();
 
         }
-       
-       
 
-        public   Vector2 GetMovementInput() =>  m_InputActions.Move.ReadValue<Vector2>();
+        private void Update()
+        {
+            OnMovementInput?.Invoke(GetMovementInput());
+        }
+
+
+           Vector2 GetMovementInput() =>  m_InputActions.Move.ReadValue<Vector2>();
     }
 }

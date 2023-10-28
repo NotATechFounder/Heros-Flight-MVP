@@ -16,7 +16,6 @@ namespace HeroesFlight.System.Character
         public CharacterSystem(InputSystemInterface inputSystem)
         {
             inputSystem.OnInput += HandleCharacterInput;
-            
         }
 
         public CharacterControllerInterface CurrentCharacter => characterController;
@@ -24,8 +23,6 @@ namespace HeroesFlight.System.Character
         CharacterControllerInterface characterController;
         CharacterContainer container;
         CharacterType targetCharacterType;
-       
-
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -59,12 +56,9 @@ namespace HeroesFlight.System.Character
             container.ResetCharacter(position);
         }
 
-      
-
-
         void HandleCharacterInput(InputModel obj)
         {
-            //process Input
+            container.SetMovementInput(obj.InputValue.InputValue);
         }
     }
 }

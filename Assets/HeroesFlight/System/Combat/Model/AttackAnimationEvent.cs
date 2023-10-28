@@ -8,7 +8,8 @@ namespace HeroesFlight.Common.Animation
         public AttackType AttackType { get; }
         public int AttackIndex { get; }
 
-        public AttackAnimationEvent(AttackType attackType,int index) 
+     
+        public AttackAnimationEvent(AniamtionEventType eventType,int index,AttackType attackType) :base(eventType,index)
         {
             AttackType = attackType;
             AttackIndex = index;

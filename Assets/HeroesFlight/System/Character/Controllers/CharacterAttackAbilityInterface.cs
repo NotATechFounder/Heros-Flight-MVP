@@ -8,6 +8,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public interface CharacterAttackAbilityInterface
     {
         event Action<Transform> OnDealingDamage;
-        void UseAbility( IHealthController targetHealthController, DamageModel damageToDeal);
+        void UseAbility( IHealthController targetHealthController, HealthModificationIntentModel healthModificationIntentToDeal);
     }
 }

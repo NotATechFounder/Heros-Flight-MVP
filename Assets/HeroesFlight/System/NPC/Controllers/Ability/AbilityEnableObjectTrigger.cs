@@ -50,7 +50,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             yield return waiter;
             targetObject.SetActive(false);
             OnComplete?.Invoke();
-            currentCooldown = coolDown;
+            currentCooldown = CoolDown;
             isRunning = false;
         }
     }

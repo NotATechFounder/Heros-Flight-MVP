@@ -63,7 +63,7 @@ public class PuzzlePiece : MonoBehaviour,IPointerClickHandler
         _image.transform.JuicyLocalRotateQuaternion(targetRotation, .25f)
             .SetEase(Ease.Spring)
             .SetOnStart(() => _inMotion =  true)
-            .SetOnComplected(() => _inMotion = false)
+            .SetOnCompleted(() => _inMotion = false)
             .Start();
 
         OnPuzzlePieceClicked?.Invoke(this);

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Character.Enum;
 using UnityEngine;
+using NotImplementedException = System.NotImplementedException;
 
 namespace HeroesFlight.System.Character.Container
 {
@@ -9,6 +10,7 @@ namespace HeroesFlight.System.Character.Container
     {
         [SerializeField] List<CharacterSimpleController> characterPrefabs = new();
         CharacterControllerInterface currentCharacter;
+        CharacterInputReceiver inputReceiver;
 
         public CharacterControllerInterface CreateCharacter(CharacterType targetCharacterType, Vector2 position)
         {
@@ -30,6 +32,7 @@ namespace HeroesFlight.System.Character.Container
 
             currentCharacter = Instantiate(characterPrefab, position, Quaternion.identity);
             currentCharacter.Init();
+            inputReceiver = currentCharacter.CharacterTransform.GetComponent<CharacterInputReceiver>();
             return currentCharacter;
         }
 
@@ -47,6 +50,11 @@ namespace HeroesFlight.System.Character.Container
         public void ResetCharacter(Vector2 position)
         {
             currentCharacter.CharacterTransform.GetComponent<Rigidbody2D>().MovePosition(position);
+        }
+
+        public void SetMovementInput(Vector2 inputValueInputValue)
+        {
+            inputReceiver?.SetInput(inputValueInputValue);
         }
     }
 }

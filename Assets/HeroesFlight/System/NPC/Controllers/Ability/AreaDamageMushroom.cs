@@ -8,7 +8,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         [SerializeField] AnimationReferenceAsset idleAniamtion;
         [SerializeField] AnimationReferenceAsset activeAniamtion;
-        [SerializeField] ParticleSystem particleObject;
+        [SerializeField] ParticleSystem[] particleObject;
         [SerializeField] SkeletonAnimation skeletonAnimation;
 
         public override void Init()
@@ -21,11 +21,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public override void StartDetection(Action onComplete)
         {
             skeletonAnimation.AnimationState.SetAnimation(0, activeAniamtion, true);
-            particleObject.Play(true);
+            foreach (var particle in particleObject)
+            {
+                particle.Play(true);
+            }
+           
             StartDetectionRoutine(() =>
             {
                 skeletonAnimation.AnimationState.SetAnimation(0, idleAniamtion, true);
-                particleObject.Stop(true);
+                foreach (var particle in particleObject)
+                {
+                    particle.Stop(true);
+                }
                 onComplete?.Invoke();
             });
         }
