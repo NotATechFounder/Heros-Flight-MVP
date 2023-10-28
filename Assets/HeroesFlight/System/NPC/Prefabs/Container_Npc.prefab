@@ -1,3 +1,53 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:25f31b8e4fd3729449b2d6ee230496ab09ad82cc2d7f84aa0b0332605d97c8a5
-size 1774
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2761211711483186244
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1280492204730283621}
+  - component: {fileID: 6670686129037283678}
+  m_Layer: 0
+  m_Name: Container_Npc
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1280492204730283621
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2761211711483186244}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6670686129037283678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2761211711483186244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37dc83492081418cae5912f125b61d17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aiPrefabs:
+  - {fileID: 2992476299700490976, guid: 1898488424d3bb8479c1e66952dba617, type: 3}
+  - {fileID: 2222735971989389661, guid: 66d7e2f9701ae5b46949b4b2dc6aee8c, type: 3}
+  - {fileID: 6783479523097378304, guid: 171ce866e19b22a4eb6d5bad0b86ec1d, type: 3}
+  - {fileID: 5676927885172234728, guid: cd5e9d109bb0ecb478a9f189746597be, type: 3}
+  miniBosses:
+  - {fileID: 1754194792859177353, guid: 0c5fc0012db18b546ba8770da1f8cbda, type: 3}

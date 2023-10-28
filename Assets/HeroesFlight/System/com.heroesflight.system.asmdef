@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:23f89ff2dcc7ff50e33d84d5c9791876385c6a6523184c4a58fdfe79962a0c4d
-size 98
+{
+	"name": "com.heroesflight.system",
+	"references":[ "GUID:27377cbff5b029c42b4301d227252dcf" ]
+}

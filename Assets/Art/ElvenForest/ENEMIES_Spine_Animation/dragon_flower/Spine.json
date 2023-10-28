@@ -1,3 +1,42 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7cfc370034da0506c04b2d6b625e5fbdcb8919f2d9dfdc040a7f3b4e440a11e2
-size 2588
+{"skeleton":{"images":""},
+"bones":[{"name":"root"}],
+"slots":[
+	{"name":"flower_head_1_back","bone":"root","attachment":"flower_head_1_back"},
+	{"name":"flower_head_1_front","bone":"root","attachment":"flower_head_1_front"},
+	{"name":"body_root","bone":"root","attachment":"body_root"},
+	{"name":"grass_base","bone":"root","attachment":"grass_base"},
+	{"name":"flower_head_2","bone":"root","attachment":"flower_head_2"},
+	{"name":"flower_head_2_middle","bone":"root","attachment":"flower_head_2_middle"},
+	{"name":"flower_head_2_bottom","bone":"root","attachment":"flower_head_2_bottom"},
+	{"name":"flower_head_2_front","bone":"root","attachment":"flower_head_2_front"},
+	{"name":"flower_head_3","bone":"root","attachment":"flower_head_3"},
+	{"name":"flower_head_4","bone":"root","attachment":"flower_head_4"},
+	{"name":"mouth_back","bone":"root","attachment":"mouth_back"},
+	{"name":"tongue","bone":"root","attachment":"tongue"},
+	{"name":"poison_particle","bone":"root","attachment":"poison_particle"},
+	{"name":"head_bottom","bone":"root","attachment":"head_bottom"},
+	{"name":"head_top","bone":"root","attachment":"head_top"},
+	{"name":"eye","bone":"root","attachment":"eye"}
+],
+"skins":{
+	"default":{
+		"flower_head_1_back":{"flower_head_1_back":{"x":5312.5,"y":7581.5,"width":389,"height":413}},
+		"flower_head_1_front":{"flower_head_1_front":{"x":5333.5,"y":7548,"width":433,"height":366}},
+		"body_root":{"body_root":{"x":5109,"y":7182.5,"width":232,"height":625}},
+		"grass_base":{"grass_base":{"x":5107,"y":6910.5,"width":330,"height":185}},
+		"flower_head_2":{"flower_head_2":{"x":5358.5,"y":7597,"width":507,"height":484}},
+		"flower_head_2_middle":{"flower_head_2_middle":{"x":5347,"y":7570.5,"width":380,"height":287}},
+		"flower_head_2_bottom":{"flower_head_2_bottom":{"x":5384,"y":7496.5,"width":456,"height":283}},
+		"flower_head_2_front":{"flower_head_2_front":{"x":5279,"y":7638.5,"width":348,"height":401}},
+		"flower_head_3":{"flower_head_3":{"x":5326.5,"y":7589.5,"width":509,"height":543}},
+		"flower_head_4":{"flower_head_4":{"x":5184.5,"y":7437,"width":427,"height":486}},
+		"mouth_back":{"mouth_back":{"x":5302,"y":7493.5,"width":206,"height":203}},
+		"tongue":{"tongue":{"x":5343.5,"y":7482.5,"width":275,"height":75}},
+		"poison_particle":{"poison_particle":{"x":5267,"y":7494.5,"width":242,"height":159}},
+		"head_bottom":{"head_bottom":{"x":5284,"y":7445.5,"width":274,"height":143}},
+		"head_top":{"head_top":{"x":5304.5,"y":7617.5,"width":337,"height":225}},
+		"eye":{"eye":{"x":5253,"y":7598,"width":50,"height":64}}
+	}
+},
+"animations":{"animation":{}}
+}

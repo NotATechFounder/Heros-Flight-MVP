@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6e13c7b9ac996197e5272111a7b38c6bd1d61a064bf71116cb6745df19f4d4bc
-size 1100
+{"skeleton":{"images":""},
+"bones":[{"name":"root"}],
+"slots":[
+	{"name":"mockup","bone":"root","attachment":"mockup"},
+	{"name":"trap_body","bone":"root","attachment":"trap_body"},
+	{"name":"trap_curve_2","bone":"root","attachment":"trap_curve_2"},
+	{"name":"trap_curve_1","bone":"root","attachment":"trap_curve_1"},
+	{"name":"trap_local","bone":"root","attachment":"trap_local"},
+	{"name":"leaves_2","bone":"root","attachment":"leaves_2"},
+	{"name":"leaves_1","bone":"root","attachment":"leaves_1"}
+],
+"skins":{
+	"default":{
+		"mockup":{"mockup":{"x":9130.5,"y":7409.5,"width":739,"height":1333}},
+		"trap_body":{"trap_body":{"x":9223,"y":6909,"width":296,"height":454}},
+		"trap_curve_2":{"trap_curve_2":{"x":9311,"y":6797.5,"width":208,"height":113}},
+		"trap_curve_1":{"trap_curve_1":{"x":9031.5,"y":6842.5,"width":187,"height":129}},
+		"trap_local":{"trap_local":{"x":9119.5,"y":6760.5,"width":781,"height":175}},
+		"leaves_2":{"leaves_2":{"x":9089,"y":6954,"width":126,"height":168}},
+		"leaves_1":{"leaves_1":{"x":9335,"y":7019,"width":102,"height":116}}
+	}
+},
+"animations":{"animation":{}}
+}

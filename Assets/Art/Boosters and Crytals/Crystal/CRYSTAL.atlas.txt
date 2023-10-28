@@ -1,3 +1,43 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c9d9c780002fafe77be02241e93bb9d9e67ee749ed006c83a6ac0c41f7552f4b
-size 586
+CRYSTAL.png
+size:1024,256
+filter:Linear,Linear
+pma:true
+scale:0.4
+Crystal1
+bounds:448,161,86,177
+rotate:90
+Crystal2
+bounds:629,161,86,177
+rotate:90
+Crystal3
+bounds:810,161,86,177
+rotate:90
+Crystal4
+bounds:266,70,86,177
+rotate:90
+Crystal5
+bounds:266,160,87,178
+rotate:90
+Crystal6
+bounds:624,75,82,162
+rotate:90
+Crystal_Overlay
+bounds:448,76,81,172
+rotate:90
+FX_Star
+bounds:4,4,23,23
+FX_Star2
+bounds:991,223,24,24
+Fragment1
+bounds:4,31,48,97
+rotate:90
+Fragment2
+bounds:835,108,43,49
+Fragment3
+bounds:790,91,41,66
+Fragment4
+bounds:105,33,46,60
+rotate:90
+Glow
+bounds:4,83,164,258
+rotate:90

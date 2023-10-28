@@ -1,3 +1,38 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f1f910ead20a8d5edae64cff1079263605b9e4716eef15dba31d9937f57284e6
-size 578
+shy_tibli.png
+size:2048,2048
+filter:Linear,Linear
+pma:true
+body
+bounds:1021,475,752,536
+body_spin_1
+bounds:4,654,1013,649
+body_spin_2
+bounds:4,1307,1104,733
+body_spin_3
+bounds:4,4,1004,646
+body_spin_4
+bounds:1112,1015,1025,608
+rotate:90
+eyes
+bounds:1605,175,39,38
+eyes_stun
+bounds:1854,1522,80,83
+face
+bounds:1854,1609,431,186
+rotate:90
+flower
+bounds:1605,217,254,229
+rotate:90
+shadow
+bounds:1724,1269,771,126
+rotate:90
+splinter_1
+bounds:1012,34,197,89
+splinter_2
+bounds:1021,1120,183,62
+rotate:90
+splinter_3
+bounds:1724,1125,140,49
+rotate:90
+top_header
+bounds:1012,127,589,344

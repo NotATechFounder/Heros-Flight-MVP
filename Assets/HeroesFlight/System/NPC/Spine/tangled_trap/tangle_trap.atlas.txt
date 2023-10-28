@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:84a401cea549198bff071913a8d8c3fa0570a5393b761c4dff406435e15a304d
-size 131
+tangle_trap.png
+size:1024,512
+filter:Linear,Linear
+pma:true
+trap_body
+bounds:4,4,296,454
+rotate:90
+trap_local
+bounds:4,304,781,175

@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:caf90bd6ebcbdc2ffc9034544531f6ca66cae860c782f1933c1250901ab1c3fb
-size 654
+{
+	"name": "com.esotericsoftware.spine.timeline",
+	"displayName": "Spine Timeline Extensions",
+	"description": "This plugin provides integration of spine-unity for the Unity Timeline.\n\nPrerequisites:\nIt requires a working installation of the spine-unity runtime (via the spine-unity unitypackage), version 4.1.\n(See http://esotericsoftware.com/git/spine-runtimes/spine-unity)",
+	"version": "4.1.7",
+	"unity": "2018.3",
+	"author": {
+		"name": "Esoteric Software",
+		"email": "contact@esotericsoftware.com",
+		"url": "http://esotericsoftware.com/"
+	},
+	"dependencies": {
+		"com.unity.timeline": "1.2.10"
+	},
+	"keywords": [
+		"spine",
+		"timeline"
+	]
+}

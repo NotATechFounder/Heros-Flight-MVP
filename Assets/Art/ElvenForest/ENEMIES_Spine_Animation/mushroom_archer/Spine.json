@@ -1,3 +1,28 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1400c522e37dcb382471a7ff563070cd848af68e3edfa0a619859dff18efc6dc
-size 1202
+{"skeleton":{"images":""},
+"bones":[{"name":"root"}],
+"slots":[
+	{"name":"arm_back","bone":"root","attachment":"arm_back"},
+	{"name":"body","bone":"root","attachment":"body"},
+	{"name":"eyes","bone":"root","attachment":"eyes"},
+	{"name":"lips","bone":"root","attachment":"lips"},
+	{"name":"head","bone":"root","attachment":"head"},
+	{"name":"line","bone":"root","attachment":"line"},
+	{"name":"bow","bone":"root","attachment":"bow"},
+	{"name":"arm","bone":"root","attachment":"arm"},
+	{"name":"arrow","bone":"root","attachment":"arrow"}
+],
+"skins":{
+	"default":{
+		"arm_back":{"arm_back":{"x":12706,"y":8181,"width":120,"height":102}},
+		"body":{"body":{"x":12531,"y":8248,"width":344,"height":468}},
+		"eyes":{"eyes":{"x":12617,"y":8268,"width":32,"height":42}},
+		"lips":{"lips":{"x":12564.5,"y":8247.5,"width":31,"height":15}},
+		"head":{"head":{"x":12499,"y":8460.5,"width":676,"height":365}},
+		"line":{"line":{"x":12713,"y":8169.5,"width":22,"height":251}},
+		"bow":{"bow":{"x":12757.5,"y":8165,"width":141,"height":302}},
+		"arm":{"arm":{"x":12321.5,"y":8170.5,"width":83,"height":117}},
+		"arrow":{"arrow":{"x":12682.5,"y":8169.5,"width":307,"height":159}}
+	}
+},
+"animations":{"animation":{}}
+}

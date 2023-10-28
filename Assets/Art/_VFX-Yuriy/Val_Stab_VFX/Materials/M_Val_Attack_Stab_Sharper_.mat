@@ -1,3 +1,195 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9ea4b70f9e3f874a942e303633f9a6c234ee347cad24aeb0878b75e1abdbe564
-size 6425
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-72569599954232857
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 7
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: M_Val_Attack_Stab_Sharper_
+  m_Shader: {fileID: -6465566751694194690, guid: 25704e09c9d51cd44891d3ce3e2f2cd6,
+    type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _SURFACE_TYPE_TRANSPARENT
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap:
+    MotionVector: User
+    RenderType: Transparent
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  - SHADOWCASTER
+  - DepthOnly
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - Texture2D_35C8F223:
+        m_Texture: {fileID: 2800000, guid: 3d1dd28456ef249feaa90041a6a944de, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_E6842E1C:
+        m_Texture: {fileID: 2800000, guid: 3d1dd28456ef249feaa90041a6a944de, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_E6842E1C_1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D:
+        m_Texture: {fileID: 2800000, guid: 8d6cead46d98fca4881de205f992c257, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - Vector1_38D55491: 5.77
+    - Vector1_45E81C1B: 15
+    - Vector1_6E97D424: 0.9
+    - Vector1_EF0B7D15: 2
+    - _AlphaClip: 0
+    - _AlphaPower: 1
+    - _AlphaToMask: 0
+    - _Alpha_NoisesProcessing__NoisesImpactValue: 0
+    - _Alpha_NoisesProcessing_sstep1_a: 0
+    - _Alpha_NoisesProcessing_sstep1_b: 1
+    - _Alpha_NoisesProcessing_sstep2_a: 0
+    - _Alpha_NoisesProcessing_sstep2_b: 1
+    - _Blend: 0
+    - _CastShadows: 0
+    - _Columns: 2
+    - _Cull: 0
+    - _DstBlend: 10
+    - _Flipbook_Columns: 1
+    - _Flipbook_Rows: 1
+    - _Flipbook_StartFrame: 1
+    - _FramePhaseDelta: 0
+    - _HueShift_degrees: 0
+    - _InvertNoise: 0
+    - _MaskEdgeSoftnessU_GammaPower: 1
+    - _MaskEdgeSoftnessU_percentsOfUwidth: 4.9
+    - _MaskOfMask_tiling1_a: 0.2
+    - _MaskOfMask_tiling1_b: 1
+    - _MaskOffset: 0.041
+    - _MaskTileU: 1
+    - _Noise1_AngleOffset: 13.1
+    - _Noise1_CellDensity: 4.48
+    - _Noise1_CellDensity_DifferenceByTextureMask_RangeIsolationRemap_1a: -0.91
+    - _Noise1_CellDensity_DifferenceByTextureMask_RangeIsolationRemap_1b: 1.63
+    - _Noise1_CellDensity_DifferenceByTextureMask_RangeIsolationRemap_2a: 3.56
+    - _Noise1_CellDensity_DifferenceByTextureMask_RangeIsolationRemap_2b: -1.12
+    - _Noise1_Invert: 0
+    - _Noise1_Masking_MaskEdgeSoftnessV_GammaPower: 0.46
+    - _Noise1_Masking_MaskEdgeSoftnessV_percentsOfVwidth: 50
+    - _Noise1_Masking_MaskEdgeSoftnessV_percentsOfVwidth_1: 12.5
+    - _Noise1_Masking_MaskOffsetV: -0.09
+    - _Noise1_Masking_MaskTileV: 1
+    - _Noise1_Masking_NoiseContrast: 0.448
+    - _Noise1_Masking_NoiseRemap_a: 0.452
+    - _Noise1_Masking_NoiseRemap_b: 0.67
+    - _Noise1_Masking_Sstep_1_a: 0
+    - _Noise1_Masking_Sstep_1_a_1: 0
+    - _Noise1_Masking_Sstep_1_b: 1
+    - _Noise1_Masking_Sstep_1_b_1: 1
+    - _Noise1_TilingU: 10
+    - _Noise1_TilingV: 1
+    - _Noise2_AngleOffset: 0
+    - _Noise2_CellDensity: 5.4
+    - _Noise2_CellDensity_DifferenceByTextureMask_RangeIsolationRemap_1a: 0.75
+    - _Noise2_CellDensity_DifferenceByTextureMask_RangeIsolationRemap_1b: 0.44
+    - _Noise2_CellDensity_DifferenceByTextureMask_RangeIsolationRemap_2a: -0.89
+    - _Noise2_CellDensity_DifferenceByTextureMask_RangeIsolationRemap_2b: 1.76
+    - _Noise2_Invert: 1
+    - _Noise2_Masking_MaskEdgeSoftnessV_GammaPower: 1
+    - _Noise2_Masking_MaskEdgeSoftnessV_percentsOfVwidth: 50
+    - _Noise2_Masking_MaskOffsetV: 0.24
+    - _Noise2_Masking_MaskTileV: 1
+    - _Noise2_Masking_NoiseRemap_a: 0.37
+    - _Noise2_Masking_NoiseRemap_b: 1
+    - _Noise2_Masking_Sstep_1_a: 0
+    - _Noise2_Masking_Sstep_1_b: 1
+    - _Noise2_TilingU: 18.59
+    - _Noise2_TilingV: 2.37
+    - _NoiseImpact: 0
+    - _Noise_AngleOffset: 6
+    - _Noise_CellDensity: -3
+    - _Noise_ImpactValue: 1
+    - _Noise_MaskOffset_U: 0.24
+    - _Noise_MaskOffset_V: 0.25
+    - _Noise_Mask_EdgeSoftnessV_percentsOfVwidth: 50
+    - _Noise_Mask_TileV: 2
+    - _Noise_Masking_MaskEdgeSoftnessV_percentsOfVwidth: 32
+    - _Noise_Masking_MaskTileV: 1
+    - _Noise_Masking_NoiseContrast: 0.434
+    - _Noise_Offset_U: 0.36
+    - _Noise_Offset_V: 1.17
+    - _Noise_TilingU: 47.1
+    - _Noise_TilingV: 2.69
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _Rows: 8
+    - _Saturation: 1
+    - _SlidingMask_tiling1_a: 0.2
+    - _SlidingMask_tiling1_b: 1
+    - _SrcBlend: 5
+    - _Surface: 1
+    - _ZTest: 8
+    - _ZWrite: 0
+    - _ZWriteControl: 0
+    - _alphapower1: 1
+    - _alphapower2: 1
+    - _colorClamp1_a: 0
+    - _colorClamp1_b: 1
+    - _color_sstep1_a: 0
+    - _color_sstep1_b: 1
+    - _color_sstep2_a: 0
+    - _color_sstep2_b: 1
+    - _noise1_a: 0
+    - _noise1_b: 0
+    - _sstep1_a: 0
+    - _sstep1_b: 1
+    - _sstep2_a: 0
+    - _sstep2_b: 1
+    - _tiling1_a: 2.79
+    - _tiling1_b: 1
+    m_Colors:
+    - Color_4A3A6CA5: {r: 0.7490196, g: 0.7490196, b: 0.7490196, a: 1}
+    - _HDRColorMult: {r: 0.7490196, g: 0.7490196, b: 0.7490196, a: 0.01176471}
+    - _Noise1_Masking_Sstep_1_a: {r: 0, g: 0, b: 0, a: 0}
+    - _Noise1_Masking_Sstep_1_b: {r: 1, g: 1, b: 1, a: 0}
+    - _Offset: {r: 0, g: 0.25, b: 0, a: 0}
+    - _Tiling: {r: 10, g: 1, b: 0, a: 0}
+    - _UV_Tiling: {r: 1, g: 1, b: 0, a: 0}
+    - _alpharemap1_a: {r: 0, g: 1, b: 0, a: 0}
+    - _alpharemap1_b: {r: 0, g: 1, b: 0, a: 0}
+  m_BuildTextureStacks: []

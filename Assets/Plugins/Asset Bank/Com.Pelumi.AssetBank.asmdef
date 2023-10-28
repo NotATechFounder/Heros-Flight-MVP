@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d000fab9dfe3e6e98acb9efeb45cda583de6385a15269eb9991d90bba7685e76
-size 406
+{
+    "name": "Com.Pelumi.AssetBank",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ccf6b2475aa39634897191f14568172a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

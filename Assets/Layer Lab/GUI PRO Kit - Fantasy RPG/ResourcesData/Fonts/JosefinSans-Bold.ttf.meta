@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:917d710c7ba9f201c2473ddbbb22c91e4884e85cf9b6c613ff350d8e72c1f80b
-size 502
+fileFormatVersion: 2
+guid: db8d8dc6103114098a190617a8111df9
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Josefin Sans
+  fontNames:
+  - Josefin Sans
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

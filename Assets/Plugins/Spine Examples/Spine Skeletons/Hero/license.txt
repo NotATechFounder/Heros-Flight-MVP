@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:22539bbab9b2324781176c75eda4620a0a3029b5b640629efde1b70a608e4ea6
-size 210
+Copyright (c) 2014, XDTech
+
+The project file and images in this "Hero" project are provided for
+demonstration purposes only and may not be redistributed for any reason nor
+used as the basis for derivative work.

@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3c7a3a3cb483da22af07a548fd4883f5e283e20a21aa2adde9d8738454f6919d
-size 659
+{
+    "name": "Com.HeroesFlight.System.Shop",
+    "rootNamespace": "",
+    "references": [
+        "GUID:08a53d9257730bf49bf6ac0661e17cb3",
+        "GUID:31326f97b346afe47ab0d62a681eaff7",
+        "GUID:db0eb1f6c1244402aa4d287a997cdb47",
+        "GUID:41156cdbab6bbf9498004681b8319c94",
+        "GUID:27377cbff5b029c42b4301d227252dcf",
+        "GUID:4aae0b6a871697848b151ea1f4cd345a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

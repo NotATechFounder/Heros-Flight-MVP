@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:297ad36406521c8763263b1b487eb5aefd172bcf4eaf74151c280c23acaaefab
-size 476
+fileFormatVersion: 2
+guid: 691612f7309adb8478e646e7d52fc8c3
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Fredoka One
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

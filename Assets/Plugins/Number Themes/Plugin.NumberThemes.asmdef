@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:68d5314fb19159c4c92ed1771ce1bb82ba5d3be9092ec8631ae7da6565f00b7b
-size 405
+{
+    "name": "Plugin.NumberThemes",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

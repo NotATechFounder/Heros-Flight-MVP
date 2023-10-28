@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:212c94647b8f3061d13541e1e31841cb301fc93de7f6f54c3bf666565114357f
-size 267
+coin.png
+size:1024,1024
+filter:Linear,Linear
+pma:true
+images/coin_Front
+bounds:4,422,540,538
+images/coin_light
+bounds:670,402,158,558
+images/coin_side
+bounds:832,416,154,544
+images/coin_star_effect
+bounds:548,842,118,118
+images/coin_turn
+bounds:4,4,414,544
+rotate:90

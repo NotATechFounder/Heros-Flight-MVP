@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8826cae9a9d95e9b402f41b2c2d9467838cbb6bc83bab8a8303b845390ee8626
-size 561
+{
+    "name": "com.heroesflight.system.gameplay.editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:50a05f6e5398f23419a76fc0348858de",
+        "GUID:ce466f6f7f263e14db34c068af7ebea9",
+        "GUID:d4c16c7a7693d244fb893641e394b0b1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [
+        "Android",
+        "iOS"
+    ],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

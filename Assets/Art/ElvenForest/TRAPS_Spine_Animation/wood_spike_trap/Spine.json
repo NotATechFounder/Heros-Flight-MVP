@@ -1,3 +1,26 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b70430a4467bf07a8c14c12a67fb6a0d4cf74ca0ecaac64cffbd50d09f41e769
-size 1217
+{"skeleton":{"images":""},
+"bones":[{"name":"root"}],
+"slots":[
+	{"name":"mockup","bone":"root","attachment":"mockup"},
+	{"name":"wood_spike1","bone":"root","attachment":"wood_spike1"},
+	{"name":"wood_spike2","bone":"root","attachment":"wood_spike2"},
+	{"name":"wood_spike3","bone":"root","attachment":"wood_spike3"},
+	{"name":"trap_ground","bone":"root","attachment":"trap_ground"},
+	{"name":"leaf_1","bone":"root","attachment":"leaf_1"},
+	{"name":"leaf_2","bone":"root","attachment":"leaf_2"},
+	{"name":"leaf_3","bone":"root","attachment":"leaf_3"}
+],
+"skins":{
+	"default":{
+		"mockup":{"mockup":{"x":9130.5,"y":7409.5,"width":739,"height":1333}},
+		"wood_spike1":{"wood_spike1":{"x":7641,"y":8143,"width":262,"height":1346}},
+		"wood_spike2":{"wood_spike2":{"x":7964.5,"y":8067.5,"width":257,"height":1195}},
+		"wood_spike3":{"wood_spike3":{"x":8305.5,"y":8088,"width":257,"height":1248}},
+		"trap_ground":{"trap_ground":{"x":7995.5,"y":7559,"width":1071,"height":220}},
+		"leaf_1":{"leaf_1":{"x":8530.5,"y":7768,"width":127,"height":72}},
+		"leaf_2":{"leaf_2":{"x":8544,"y":7882,"width":100,"height":106}},
+		"leaf_3":{"leaf_3":{"x":8646.5,"y":7828.5,"width":93,"height":63}}
+	}
+},
+"animations":{"animation":{}}
+}

@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8e74b8a19239239c2d004ec32569f1226c66703876a043819282e3933f53b0bb
-size 347
+fairy_frog.png
+size:2048,512
+filter:Linear,Linear
+pma:true
+back_arm
+bounds:1343,303,265,126
+back_eyes
+bounds:1612,293,160,136
+back_leg
+bounds:502,15,304,206
+body
+bounds:4,4,494,425
+eyes_blink
+bounds:1343,220,120,79
+front_arm
+bounds:828,242,279,187
+front_eyes
+bounds:1776,308,134,121
+front_legs
+bounds:1111,201,228,228
+wings
+bounds:502,225,322,204

@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b074cbba9d851704f36ef8f7ed7590ba64f10b6f45492a143b157fa286786e55
-size 360
+wood_spike_trap.png
+size:2048,1024
+filter:Linear,Linear
+pma:true
+ladybird
+bounds:1354,832,73,70
+leaf_1
+bounds:1256,619,127,72
+rotate:90
+leaf_2
+bounds:1354,906,100,106
+leaf_3
+bounds:1079,161,93,63
+trap_ground
+bounds:4,4,1071,220
+wood_spike1
+bounds:4,750,262,1346
+rotate:90
+wood_spike2
+bounds:4,228,257,1195
+rotate:90
+wood_spike3
+bounds:4,489,257,1248
+rotate:90

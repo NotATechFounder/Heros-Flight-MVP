@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:bf329a7582f837dc36b4097f5b913e4347c8dcec91d5d46aafe23991363770f1
-size 723
+{"skeleton":{"images":"shy_tibli\"},
+"bones":[{"name":"root"}],
+"slots":[
+	{"name":"body_spin_1","bone":"root","attachment":"body_spin_1"},
+	{"name":"body_spin_2","bone":"root","attachment":"body_spin_2"},
+	{"name":"body_spin_3","bone":"root","attachment":"body_spin_3"},
+	{"name":"body_spin_4","bone":"root","attachment":"body_spin_4"}
+],
+"skins":{
+	"default":{
+		"body_spin_1":{"body_spin_1":{"x":7053.5,"y":7151.5,"width":1013,"height":649}},
+		"body_spin_2":{"body_spin_2":{"x":7054,"y":7168.5,"width":1104,"height":733}},
+		"body_spin_3":{"body_spin_3":{"x":7029,"y":7152,"width":1004,"height":646}},
+		"body_spin_4":{"body_spin_4":{"x":7059.5,"y":7133,"width":1025,"height":608}}
+	}
+},
+"animations":{"animation":{}}
+}

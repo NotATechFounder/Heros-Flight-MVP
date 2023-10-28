@@ -1,3 +1,29 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:90416de457142d67e44823ba351e2fec015f7a6a27d493c107340e503bf98d96
-size 387
+mushroom_archer.png
+size:2048,512
+filter:Linear,Linear
+pma:true
+arm
+bounds:110,4,120,84
+rotate:90
+arm_back
+bounds:4,4,120,102
+rotate:90
+arrow
+bounds:1312,366,304,142
+body
+bounds:684,164,344,468
+rotate:90
+body_2
+bounds:1312,190,172,234
+rotate:90
+bow
+bounds:1156,194,152,314
+eyes
+bounds:1620,466,32,42
+head
+bounds:4,143,676,365
+line
+bounds:4,128,11,251
+rotate:90
+lips
+bounds:684,145,31,15

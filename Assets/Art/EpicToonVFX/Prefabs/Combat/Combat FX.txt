@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9accf8e60eb4b94ec7dbcdb33a72f2ace967968ca0a29e4158b74280aa1a6be8
-size 160
+In the Combat folder you will find effects that:
+
+- are used for guns, magic, melee and sword combat
+- indicates that an enemy has been hit, injured or defeated

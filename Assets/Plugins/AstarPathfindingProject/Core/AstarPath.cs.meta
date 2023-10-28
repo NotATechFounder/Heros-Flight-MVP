@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ae7e328999f8e44a6528c6c30d5c6cdb7c6058beac1e905035c9ccdb4a2273d4
-size 455
+fileFormatVersion: 2
+guid: 78396926cbbfc4ac3b48fc5fc34a87d1
+labels:
+- Pathfinder
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - gizmoSurfaceMaterial: {fileID: 2100000, guid: 5ce51318bbfb1466188b929a68a6bd3a,
+      type: 2}
+  - gizmoLineMaterial: {fileID: 2100000, guid: 91035448860ba4e708919485c73f7edc, type: 2}
+  executionOrder: -10000
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

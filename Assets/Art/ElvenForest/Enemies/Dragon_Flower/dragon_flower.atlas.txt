@@ -1,3 +1,41 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:95516b0e23f4d9c92e787734fd91d3c8ebc23aa6cd2106b36c668ef13df62208
-size 700
+dragon_flower.png
+size:2048,1024
+filter:Linear,Linear
+pma:true
+body_root
+bounds:4,362,160,655
+eye
+bounds:168,406,50,64
+flower_head_1_back
+bounds:1169,604,389,413
+flower_head_1_front
+bounds:1127,73,433,366
+rotate:90
+flower_head_2
+bounds:681,510,507,484
+rotate:90
+flower_head_2_bottom
+bounds:409,14,456,283
+rotate:90
+flower_head_2_front
+bounds:4,10,348,401
+rotate:90
+flower_head_2_middle
+bounds:1562,730,380,287
+flower_head_3
+bounds:168,474,509,543
+flower_head_4
+bounds:696,20,427,486
+grass_base
+bounds:1497,167,330,185
+rotate:90
+head_bottom
+bounds:1743,354,274,143
+head_top
+bounds:1562,501,337,225
+mouth_back
+bounds:1743,147,206,203
+poison_particle
+bounds:1497,4,242,159
+tongue
+bounds:1169,525,275,75

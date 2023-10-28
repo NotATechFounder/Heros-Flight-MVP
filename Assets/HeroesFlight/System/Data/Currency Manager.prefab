@@ -1,3 +1,67 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5b49be6e43dd8a86f2a03726e8785b47ddfbbb988e6f73915f2fa814119753a8
-size 2179
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1867480665262523823
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2824621245807837479}
+  - component: {fileID: 6217578109007483507}
+  - component: {fileID: 6387975369664246043}
+  m_Layer: 0
+  m_Name: Currency Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2824621245807837479
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1867480665262523823}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.38, y: 9.05, z: -0.24339612}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6217578109007483507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1867480665262523823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8cd01d82d2905b4ebf9e83de255931c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currencies:
+  - {fileID: 11400000, guid: f27107a93061f6745ba9a40c63d0b63a, type: 2}
+  - {fileID: 11400000, guid: d33c15605e372774f9890d268d17ebbd, type: 2}
+--- !u!114 &6387975369664246043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1867480665262523823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4501634360159af4aa5838cb802a468c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currencyDatabase: {fileID: 11400000, guid: a3ee4d8b2db9fa84cac2a02a4643301a, type: 2}
+  currencyPrefab: {fileID: 5470108303386013032, guid: 1299f9299550d564cac3be0b33e06082,
+    type: 3}
+  spawnedCurrencyItems: []
+  playerTransfrom: {fileID: 0}

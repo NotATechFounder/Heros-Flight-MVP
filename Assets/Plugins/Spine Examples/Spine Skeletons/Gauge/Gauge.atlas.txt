@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a3e9614411c6727afbaeec4f3601181ce7ba00fa9b818125290b0a53fc6af252
-size 157
+Gauge.png
+	size: 512, 128
+	filter: Linear, Linear
+	pma: true
+Background
+	bounds: 254, 36, 224, 32
+Bar
+	bounds: 254, 2, 224, 32
+Border
+	bounds: 2, 8, 250, 60

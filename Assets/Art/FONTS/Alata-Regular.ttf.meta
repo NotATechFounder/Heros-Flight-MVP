@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1ffd2a40afb33f9a2643113f1e99782a885f11803da07a3ebee1d5a9815bd425
-size 539
+fileFormatVersion: 2
+guid: 6af1a7e524007e744801028f776b9bed
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Alata
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 45051d5d816ef4b8d84119f09ef942fb, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

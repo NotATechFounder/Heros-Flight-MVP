@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:abf6541fb9ebe8530bc07a22f45e264671949e0bad9cfd02e70ab78030236d3c
-size 500
+fileFormatVersion: 2
+guid: a4e6a5491519adb45919dc87eff28e55
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Poetsen One
+  fontNames:
+  - Poetsen One
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,3 +1,95 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:bd963a32c62b173e87224d5e4d1583d61dfcf51cf5cc6beed9d36a98421284b8
-size 3514
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6840123347932162874
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1191390152884812147, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2625790774443940291, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5561451630660946610, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8793301581181334636, guid: af23122e0239e9843a69faa63474670e,
+        type: 3}
+      propertyPath: m_Name
+      value: P_Animations_Hero_Valerie_Spear_2_basic_attack_3__VFX Variant
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: af23122e0239e9843a69faa63474670e, type: 3}

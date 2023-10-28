@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a9e1a616abf1a5a34b0dafae00b3c1052d7b0618b06e9f7e07c217c0a45471c7
-size 442
+{
+    "name": "com.heroesflight.utilities..editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4aae0b6a871697848b151ea1f4cd345a"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

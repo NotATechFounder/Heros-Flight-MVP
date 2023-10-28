@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:edddb3e47ff160df4a4260119b622a1c81ff57199d50f9fdf166b33a274b2414
-size 252
+{
+    "name": "spine-unity-editor",
+    "references": [
+        "spine-csharp",
+        "spine-unity"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

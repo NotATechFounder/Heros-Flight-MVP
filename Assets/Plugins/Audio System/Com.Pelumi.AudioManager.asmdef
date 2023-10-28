@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2919a69b2dc40490a454a1e73f8d4801b5067917e7e25fc13f854924d9fed79a
-size 507
+{
+    "name": "Com.Pelumi.AudioManager",
+    "rootNamespace": "",
+    "references": [
+        "GUID:83cf0e0357bbfb44c9a0fb939ea42b11",
+        "GUID:ccf6b2475aa39634897191f14568172a",
+        "GUID:4aae0b6a871697848b151ea1f4cd345a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

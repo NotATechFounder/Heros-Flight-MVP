@@ -1,3 +1,32 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:21b635ba8fdab090b5c9e4ef705e6b58e70684df252e48193fc33d9a6ec277d7
-size 805
+{
+	"name": "com.esotericsoftware.spine.spine-unity",
+	"displayName": "spine-unity Runtime",
+	"description": "This plugin provides the spine-unity runtime core.",
+	"version": "4.1.15",
+	"unity": "2018.3",
+	"author": {
+		"name": "Esoteric Software",
+		"email": "contact@esotericsoftware.com",
+		"url": "http://esotericsoftware.com/"
+	},
+	"dependencies": {
+		"com.esotericsoftware.spine.spine-csharp": "4.1.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:EsotericSoftware/spine-runtimes.git"
+	},
+	"keywords": [
+		"spine",
+		"spine-unity",
+		"runtimes",
+		"2d",
+		"skeletal",
+		"animation"
+	],
+	"license": "SEE LICENSE IN LICENSE",
+	"bugs": {
+		"url": "https://github.com/EsotericSoftware/spine-runtimes/issues"
+	},
+	"homepage": "https://github.com/EsotericSoftware/spine-runtimes#readme"
+}

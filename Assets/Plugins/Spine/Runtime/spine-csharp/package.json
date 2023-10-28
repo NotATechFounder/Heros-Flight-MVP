@@ -1,3 +1,31 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:dd06cf45275be047a209ef1286728c7311b5776daec1ba226b2e2a1851d74d47
-size 755
+{
+	"name": "com.esotericsoftware.spine.spine-csharp",
+	"displayName": "spine-csharp Runtime",
+	"description": "This plugin provides the spine-csharp core runtime.",
+	"version": "4.1.0",
+	"unity": "2018.3",
+	"author": {
+		"name": "Esoteric Software",
+		"email": "contact@esotericsoftware.com",
+		"url": "http://esotericsoftware.com/"
+	},
+	"dependencies": {
+	},
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:EsotericSoftware/spine-runtimes.git"
+	},
+	"keywords": [
+		"spine",
+		"spine-csharp",
+		"runtimes",
+		"2d",
+		"skeletal",
+		"animation"
+	],
+	"license": "SEE LICENSE IN LICENSE",
+	"bugs": {
+		"url": "https://github.com/EsotericSoftware/spine-runtimes/issues"
+	},
+	"homepage": "https://github.com/EsotericSoftware/spine-runtimes#readme"
+}

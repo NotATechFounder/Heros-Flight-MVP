@@ -1,3 +1,12 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fea176fff259538bb6ca56fbc1d3f5ade19c4efce21770f161da67ad6493e1c9
-size 197
+eyes.png
+	size: 1024, 512
+	filter: Linear, Linear
+	pma: true
+EyeLines
+	bounds: 2, 2, 868, 322
+EyeWhite
+	bounds: 2, 326, 700, 148
+L_Eye
+	bounds: 704, 326, 148, 148
+R_Eye
+	bounds: 704, 326, 148, 148

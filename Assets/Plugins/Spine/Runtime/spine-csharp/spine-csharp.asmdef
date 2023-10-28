@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c0d52b23af44df76c073152a1f3685759bbdbd1eca6716eb30b8b02ab6802a54
-size 50
+﻿{
+	"name": "spine-csharp",
+	"references": []
+}

@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6609dafa58eb5d100c503872bb56f4a739121f9e989eb98d58642bf481d08335
-size 456
+{
+    "name": "com.Pelumi.StatManagement.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d4c16c7a7693d244fb893641e394b0b1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [
+        "Android",
+        "iOS"
+    ],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

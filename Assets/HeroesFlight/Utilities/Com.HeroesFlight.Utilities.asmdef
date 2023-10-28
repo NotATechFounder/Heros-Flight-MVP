@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b7262b125a9e971e10223e152d02f7b1b9c4484ce8b9a8ff40d1c2ec5a68834e
-size 461
+{
+    "name": "Com.HeroesFlight.Utilities",
+    "rootNamespace": "",
+    "references": [
+        "GUID:7c5aa3ad00d203545b3329cdde8d9307",
+        "GUID:91de482a0a233614ab5962ea5f6c24ee"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

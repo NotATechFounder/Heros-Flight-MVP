@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d0d763ebeca5a75d009fdc87fbc9bb752917a5bbb8230062d08508bddcd9c618
-size 461
+{
+    "name": "com.Peluni.ParticleManager",
+    "rootNamespace": "",
+    "references": [
+        "GUID:83cf0e0357bbfb44c9a0fb939ea42b11",
+        "GUID:ccf6b2475aa39634897191f14568172a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:96f6de3cba2ad3a78653a428741a3d86fd294aa3c38e6c01c507b7c7a43b2b18
-size 72
+Package version: com.esotericsoftware.spine.timeline-4.1-2023-08-04.zip

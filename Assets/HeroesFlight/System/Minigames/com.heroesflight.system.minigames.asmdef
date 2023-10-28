@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7c95cb2e2708a2d873d656953df9a25248c55566de783f4a2813a1cd3447a912
-size 713
+{
+    "name": "com.heroesflight.system.minigames",
+    "rootNamespace": "",
+    "references": [
+        "GUID:7c5aa3ad00d203545b3329cdde8d9307",
+        "GUID:ccf6b2475aa39634897191f14568172a",
+        "GUID:63ffe7df5f6b17e47bc02918465bca40",
+        "GUID:27377cbff5b029c42b4301d227252dcf",
+        "GUID:41156cdbab6bbf9498004681b8319c94",
+        "GUID:4aae0b6a871697848b151ea1f4cd345a",
+        "GUID:f90407e589e19d54595a886adf7aabf5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

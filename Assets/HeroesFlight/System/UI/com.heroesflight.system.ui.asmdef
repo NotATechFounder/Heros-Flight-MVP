@@ -1,3 +1,29 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:92fe48ede87bc44e050bb3f03bacba770930d140a3a329318ff5b9147ad2427f
-size 1049
+{
+    "name": "com.heroesflight.system.ui",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:41156cdbab6bbf9498004681b8319c94",
+        "GUID:db0eb1f6c1244402aa4d287a997cdb47",
+        "GUID:7c5aa3ad00d203545b3329cdde8d9307",
+        "GUID:4aae0b6a871697848b151ea1f4cd345a",
+        "GUID:3f9b1a44bea14ae40b9dac513eaa0e6b",
+        "GUID:ccf6b2475aa39634897191f14568172a",
+        "GUID:c9d95b15757d9954d99b159c9be4f760",
+        "GUID:08a53d9257730bf49bf6ac0661e17cb3",
+        "GUID:68765d262e2128e4ab49c983f3411946",
+        "GUID:72d1fea872bd7a449bf3818f2b0a6708",
+        "GUID:27377cbff5b029c42b4301d227252dcf",
+        "GUID:3d6aa70406196ed4da349b7cfdafbf04",
+        "GUID:f90407e589e19d54595a886adf7aabf5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,3 +1,144 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f853ec1c5220797c3a65935b94fb995b771369108111c5e4c4ce5cc551ab412f
-size 13818
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ccf1e953-edc2-4889-9cc5-61f7a8ab500d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Controllers/Shrine.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Controllers/Shrine/Healer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Controllers/Shrine/Healer.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Controllers/Shrine/Shrine.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Controllers/Shrine/Shrine.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Controllers/Shrine/ShrineNPC.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Controllers/Shrine/ShrineNPC.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.heros-fight-prototype/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.heros-fight-prototype/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Character/Controllers/Ability/AresSword.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Character/Controllers/Ability/AresSword.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Character/com.heroesflight.system.character.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Character/com.heroesflight.system.character.asmdef" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Combat/Controllers/Hazards/HazardArrow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Combat/Controllers/Hazards/HazardArrow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Combat/Controllers/Health/HealthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Combat/Controllers/Health/HealthController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Environment/InteractiveNPC.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Environment/InteractiveNPC.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Environment/LevelEnvironment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Environment/LevelEnvironment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Environment/Prefabs/MysticalForest/Levels/MF Level Angels Gambit.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Environment/Prefabs/MysticalForest/Levels/MF Level Angels Gambit.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Environment/com.heroesflight.system.environment.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Environment/com.heroesflight.system.environment.asmdef" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Controllers/Hazard/EffectMushroomHazard.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Controllers/Hazard/EffectMushroomHazard.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Controllers/Hazard/MushroomHazardSubskill.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Controllers/Hazard/MushroomHazardSubskill.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/GamePlaySystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/GamePlaySystem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Prefabs/Container.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Prefabs/Container.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Prefabs/Container_Gameplay.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Gameplay/Prefabs/Container_Gameplay.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/Angel/AngelEffectManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/Angel/AngelEffectManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/GodsBenevolence/Ares/Ares.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/GodsBenevolence/Ares/Ares.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/GodsBenevolence/GodsBenevolence.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/GodsBenevolence/GodsBenevolence.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/GodsBenevolence/GodsBenevolence.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/GodsBenevolence/GodsBenevolence.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/GodsBenevolence/Hermes/Hermes.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/GodsBenevolence/Hermes/Hermes.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/GodsBenevolence/Hermes/HermesEffect.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/GodsBenevolence/Hermes/HermesEffect.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/com.heroesflight.system.minigames.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/com.heroesflight.system.minigames.asmdef" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/UI/Controllers/Menus/PuzzleMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/UI/Controllers/Menus/PuzzleMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/UI/Prefabs/New Menu/New PuzzleMenu.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/UI/Prefabs/New Menu/New PuzzleMenu.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/UI/Prefabs/New Menu/New_LoadingMenu.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/UI/Controllers/Entries/New_LoadingMenu.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/System/UI/Prefabs/New Menu/New_LoadingMenu.prefab.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/System/UI/Controllers/Entries/New_LoadingMenu.prefab.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/HeroesFlight/Utilities/Stat Helper/StatCalc.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/HeroesFlight/Utilities/Stat Helper/StatCalc.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/MainMenu_Demo.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/MainMenu_Demo.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scriptable Objects/SfxBank.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scriptable Objects/SfxBank.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Examples &amp; Extras/Resources/Fonts &amp; Materials/Anton SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Examples &amp; Extras/Resources/Fonts &amp; Materials/Anton SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Examples &amp; Extras/Resources/Fonts &amp; Materials/Roboto-Bold SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Examples &amp; Extras/Resources/Fonts &amp; Materials/Roboto-Bold SDF.asset" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/HeroesFlight/System/Minigames/GodsBenevolence/Apollo/ApolloEffect.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.textmeshpro@3.0.6/Scripts/Runtime/TMP_SpriteAsset.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2TeIqoNhc29ncnszhdwrimpYWiS" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Discover.Launch.Via.Unity": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "Merging feature/AHF-182",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\justb\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\DecompilerCache",
+      "C:\\Users\\justb\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\SourcesCache",
+      "C:\\Users\\justb\\AppData\\Local\\Symbols\\src"
+    ]
+  }
+}]]></component>
+  <component name="RunManager" selected="Standalone Player.Start Unity">
+    <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
+      <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\2022.3.5f1\Editor\Unity.exe" />
+      <option name="PROGRAM_PARAMETERS" value="-projectPath C:\Repositories\heros-fight-prototype -debugCodeOptimization" />
+      <option name="WORKING_DIRECTORY" value="C:\Repositories\heros-fight-prototype" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <method v="2" />
+    </configuration>
+    <configuration name="UnitTests (batch mode)" type="RunUnityExe" factoryName="Unity Executable">
+      <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\2022.3.5f1\Editor\Unity.exe" />
+      <option name="PROGRAM_PARAMETERS" value="-runTests -batchmode -projectPath C:\Repositories\heros-fight-prototype -testResults Logs/results.xml -testPlatform EditMode -debugCodeOptimization" />
+      <option name="WORKING_DIRECTORY" value="C:\Repositories\heros-fight-prototype" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+      <option name="allowRunningInParallel" value="false" />
+      <option name="listenPortForConnections" value="false" />
+      <option name="pid" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <method v="2" />
+    </configuration>
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+      <option name="allowRunningInParallel" value="false" />
+      <option name="listenPortForConnections" value="false" />
+      <option name="pid" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ccf1e953-edc2-4889-9cc5-61f7a8ab500d" name="Changes" comment="" />
+      <created>1691397316317</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1691397316317</updated>
+      <workItem from="1691397322264" duration="16618000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="EditMode" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+</project>

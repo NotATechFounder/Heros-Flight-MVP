@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ddfe88bc7caf27b52cb268ed778b651b0e1176861873e6101d72ebb37c6cb87c
-size 145
+In the Interactive folder you will find effects that:
+
+- are intended to be directly interacted with
+- spawn after certain events or interactions
