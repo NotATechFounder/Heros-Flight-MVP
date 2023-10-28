@@ -57,7 +57,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             m_TimeSinceLastAttack = playerStatData.AttackSpeed;
             attackPoint = (Vector2)transform.position +  (  new Vector2(-1.5f,1) * attackPointOffset);
             visualController.Init(reguarAttackOverlap.GetSizeX());
-            visualController.SetPosition(attackPoint);
+            // visualController.SetPosition(attackPoint);
             isDisabled = false;
             //attackDuration = characterController.CharacterSO.CharacterAnimations.AttackAnimation.Animation.Duration;
             attackDuration = 999;
@@ -82,8 +82,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             attackPoint = characterController.IsFacingLeft
                 ?  new Vector2(-1f,1) * attackPointOffset
                 :  new Vector2(1f,1) * attackPointOffset;
-            visualController.SetPosition(attackPoint);
+            // visualController.SetPosition(attackPoint);
             var direction = characterController.IsFacingLeft ? OverlapChecker.Direction.Left : OverlapChecker.Direction.Right;
+            visualController.SetFacing(characterController.IsFacingLeft);
             reguarAttackOverlap.SetDirection(direction);
             ultAttackOverlap.SetDirection(direction);
             ProcessAttackLogic();

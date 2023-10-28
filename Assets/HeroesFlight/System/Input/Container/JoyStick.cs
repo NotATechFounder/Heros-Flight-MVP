@@ -16,6 +16,9 @@ public class Joystick : OnScreenControl
 
     public bool IsTouching { get; private set; }
 
+    public float HorizontalPadding = 0.03f;
+    public float VerticalPadding = 0.1f;
+
     public Vector2 MovementAmount => _movementAmount;
 
     protected override string controlPathInternal
@@ -78,9 +81,18 @@ public class Joystick : OnScreenControl
         ETouch.Touch.onFingerMove -= ETouch_onFingerMove;
     }
 
+    private bool isWithinActiveZone(Vector2 position)
+    {
+        return position.x <= HorizontalPadding * Screen.width &&
+            position.x >= Screen.width - HorizontalPadding * Screen.width &&
+            position.y <= VerticalPadding * Screen.height &&
+            position.y >= Screen.height - VerticalPadding * Screen.height &&
+            _movementFinger == null;
+    }
+
     private void ETouch_onFingerDown(Finger touchedFinger)
     {
-        if (ClickOnUI(touchedFinger) || (_movementFinger == null && touchedFinger.screenPosition.y >= Screen.height / 1.5f))
+        if (ClickOnUI(touchedFinger) || isWithinActiveZone(touchedFinger.screenPosition))
         {
             return;
         }

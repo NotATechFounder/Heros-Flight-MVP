@@ -566,6 +566,10 @@ namespace HeroesFlight.System.Gameplay
                 environmentSystem.ParticleManager.Spawn(vfxReference,
                     healthModificationIntentModel.TargetTransform.position);
 
+
+          //  GameEffectController.StopFrame(0.1f);
+
+            OnEnemyDamaged?.Invoke(damageModel);
             hitEffectsPlayer.PlayHitEffect("Hit", true);
         }
 
