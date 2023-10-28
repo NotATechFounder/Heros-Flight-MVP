@@ -18,11 +18,6 @@ public static class StatCalc
     {
         return (percentageAmount / 100) * baseValue;
     }
-    
-    public static float GetValueOfPercentage(float baseValue, float percent)
-    {
-        return (baseValue / 100) * percent;
-    }
 }
 
 

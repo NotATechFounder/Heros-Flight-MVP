@@ -6,6 +6,7 @@ namespace HeroesFlight.System.Gameplay.Enum
     public enum AttackControllerState
     {
         Attacking,
-        LookingForTarget
+        LookingForTarget,
+        Cooldown
     }
 }

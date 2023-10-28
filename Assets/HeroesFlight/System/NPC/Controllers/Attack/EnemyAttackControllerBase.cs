@@ -1,6 +1,7 @@
 using System;
 using HeroesFlight.Common.Animation;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.NPC.Controllers;
@@ -22,6 +23,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected OverlapChecker damageZone;
 
         public event Action OnHitTarget;
+        public event Action<AttackControllerState> OnStateChange;
 
         public float Damage => currentDamage;
         public float TimeSinceLastAttack => timeSinceLastAttack;
@@ -87,8 +89,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 : baseDamage;
 
             var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
-            var damageModel = new DamageModel(damageToDeal, type, AttackType.Regular);
-            target.DealDamage(damageModel);
+            var damageModel = new HealthModificationIntentModel(damageToDeal, type, 
+                AttackType.Regular,DamageCalculationType.Flat);
+            target.TryDealDamage(damageModel);
             aiController.SetAttackState(false);
             OnHitTarget?.Invoke();
         }

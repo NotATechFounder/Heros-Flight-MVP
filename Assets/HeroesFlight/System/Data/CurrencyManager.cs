@@ -1,41 +1,37 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.SceneManagement;
-using System.Linq;
 using System;
 
 public class CurrencyManager : MonoBehaviour
 {
-    public event Action<CurrencySO, bool> OnCurrencyChange;
     [SerializeField] private List<CurrencySO> _currencies;
-
 
     private void Awake()
     {
-        LoadCurrencies();
+        InitCurrencies();
     }
 
     public void ReduceCurency(string key, float amount)
     {
         CurrencySO currency = GetCurrecy(key);
         currency.ReduceCurrency(amount);
-        OnCurrencyChange?.Invoke(currency, false);
     }
 
     public void AddCurency(string key, float amount)
     {
         CurrencySO currency = GetCurrecy(key);
         currency.IncreaseCurrency(amount);
-        OnCurrencyChange?.Invoke(currency, false);
     }
 
     public void SetCurencyAmount(string key, float amount)
     {
         CurrencySO currency = GetCurrecy(key);
         currency.SetCurrency(amount);
-        OnCurrencyChange?.Invoke(currency, false);
+    }
+
+    public void AddCurrrencyChangeCallback(string currencyKey, Action<CurrencySO, bool> action)
+    {
+        _currencies.Find ((currency) => currency.GetKey == currencyKey).AssignCurrencyChangeCallback(action);
     }
 
     public float GetCurrencyAmount(string currencyKey)
@@ -45,7 +41,9 @@ public class CurrencyManager : MonoBehaviour
     }
 
     public CurrencySO GetCurrecy(string currencyKey) => _currencies.Find((currency) => currency.GetKey == currencyKey);
-   
+
+    public void InitCurrencies() => _currencies.ForEach(currency => currency.Init());
+
     public void LoadCurrencies() => _currencies.ForEach(currency => currency.Load());
 
     public void SaveCurrencies() => _currencies.ForEach(currency => currency.Save());

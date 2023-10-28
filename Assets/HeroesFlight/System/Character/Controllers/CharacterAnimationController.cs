@@ -1,30 +1,34 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeroesFlight.Common;
 using HeroesFlight.Common.Animation;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Character.Enum;
+using Plugins.Audio_System;
 using Spine;
 using Spine.Unity;
 using StansAssets.Foundation.Async;
 using UnityEngine;
 using Event = Spine.Event;
+using Random = UnityEngine.Random;
 
 namespace HeroesFlight.System.Character
 {
     public class CharacterAnimationController : MonoBehaviour, CharacterAnimationControllerInterface
     {
         SkeletonAnimation m_SkeletonAnimation;
-        AnimationData aniamtionData;
+        CharacterAnimations m_AnimationData;
         bool m_WasFacingLeft;
         Dictionary<CharacterState, AnimationReferenceAsset> m_AnimationsCache = new();
 
         public event Action<AnimationEventInterface> OnAnimationEvent;
+        public event Action<bool> OnAttackAnimationStateChange;
+        float speedMultiplier;
 
-
-        public void Init(AnimationData data)
+        public void Init(CharacterAnimations data)
         {
-            aniamtionData = data;
+            m_AnimationData = data;
             m_SkeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
             m_SkeletonAnimation.AnimationState.Event += HandleTrackEvent;
             CreateAnimationCache();
@@ -35,11 +39,11 @@ namespace HeroesFlight.System.Character
 
         void CreateAnimationCache()
         {
-            m_AnimationsCache.Add(CharacterState.Idle, aniamtionData.IdleAniamtion);
-            m_AnimationsCache.Add(CharacterState.FlyingUp, aniamtionData.FlyingUpAnimation);
-            m_AnimationsCache.Add(CharacterState.FlyingDown, aniamtionData.FlyingDownAnimation);
-            m_AnimationsCache.Add(CharacterState.FlyingLeft, aniamtionData.FlyingForwardAnimation);
-            m_AnimationsCache.Add(CharacterState.FlyingRight, aniamtionData.FlyingForwardAnimation);
+            m_AnimationsCache.Add(CharacterState.Idle, m_AnimationData.IdleAniamtion);
+            m_AnimationsCache.Add(CharacterState.FlyingUp, m_AnimationData.FlyingUpAnimation);
+            m_AnimationsCache.Add(CharacterState.FlyingDown, m_AnimationData.FlyingDownAnimation);
+            m_AnimationsCache.Add(CharacterState.FlyingLeft, m_AnimationData.FlyingForwardAnimation);
+            m_AnimationsCache.Add(CharacterState.FlyingRight, m_AnimationData.FlyingForwardAnimation);
         }
 
 
@@ -51,7 +55,7 @@ namespace HeroesFlight.System.Character
                 {
                     m_SkeletonAnimation.Skeleton.ScaleX = m_WasFacingLeft ? 1f : -1f;
                     var turnTrack =
-                        m_SkeletonAnimation.AnimationState.SetAnimation(0, aniamtionData.TurnLeftAnimation, false);
+                        m_SkeletonAnimation.AnimationState.SetAnimation(0, m_AnimationData.TurnLeftAnimation, false);
                     turnTrack.AttachmentThreshold = 1f;
                     turnTrack.MixDuration = 0f;
 
@@ -68,16 +72,24 @@ namespace HeroesFlight.System.Character
             }
         }
 
-        void PlayAttackAnimation(float speedMultiplier)
+        float PlayAttackAnimation(float speedMultiplier)
         {
+            this.speedMultiplier = speedMultiplier;
             var track = m_SkeletonAnimation.AnimationState.GetCurrent(1);
             if (track == null || track.Animation.Name.Equals("<empty>"))
             {
+                OnAttackAnimationStateChange?.Invoke(true);
+                var attackAnimation = m_AnimationData.AttackAnimationsData
+                    .ElementAt(Random.Range(0, m_AnimationData.AttackAnimationsData.Count)).Aniamtion;
                 var turnTrack =
-                    m_SkeletonAnimation.AnimationState.SetAnimation(1, aniamtionData.AttackAnimation, false);
+                    m_SkeletonAnimation.AnimationState.SetAnimation(1, attackAnimation, false);
                 m_SkeletonAnimation.AnimationState.AddEmptyAnimation(1, .1f, 0);
                 turnTrack.TimeScale = speedMultiplier;
+                OnAnimationEvent?.Invoke(new VFXAnimationEvent(AniamtionEventType.Vfx,0, attackAnimation.Animation.Name,speedMultiplier));
+                return attackAnimation.Animation.Duration;
             }
+
+            return 0;
         }
 
         void StopAttackAnimation()
@@ -86,6 +98,8 @@ namespace HeroesFlight.System.Character
 
             if (track != null && !track.Animation.Name.Equals("<empty>"))
                 m_SkeletonAnimation.AnimationState.SetEmptyAnimation(1, .2f);
+            
+            OnAttackAnimationStateChange?.Invoke(false);
         }
 
         bool TurnCharacterVisuals(bool facingLeft)
@@ -102,10 +116,10 @@ namespace HeroesFlight.System.Character
         public void PlayDeathAnimation(Action onComplete = null)
         {
             m_SkeletonAnimation.AnimationState.ClearTrack(1);
-            var track = m_SkeletonAnimation.AnimationState.SetAnimation(0, aniamtionData.DeathAnimation, false);
+            var track = m_SkeletonAnimation.AnimationState.SetAnimation(0, m_AnimationData.DeathAnimation, false);
             track.AttachmentThreshold = 1f;
             track.MixDuration = .5f;
-            CoroutineUtility.WaitForSeconds(aniamtionData.DeathAnimation.Animation.Duration, () =>
+            CoroutineUtility.WaitForSeconds(m_AnimationData.DeathAnimation.Animation.Duration, () =>
             {
                 onComplete?.Invoke();
             });
@@ -113,14 +127,14 @@ namespace HeroesFlight.System.Character
 
         public void PlayIdleAnimation()
         {
-            var track = m_SkeletonAnimation.AnimationState.SetAnimation(0, aniamtionData.IdleAniamtion, true);
+            var track = m_SkeletonAnimation.AnimationState.SetAnimation(0, m_AnimationData.IdleAniamtion, true);
             track.AttachmentThreshold = 1f;
             track.MixDuration = .5f;
         }
 
-        public void PlayAttackSequence(float speedMultiplier)
+        public float PlayAttackSequence(float speedMultiplier)
         {
-            PlayAttackAnimation(speedMultiplier);
+          return   PlayAttackAnimation(speedMultiplier);
         }
 
         public void StopAttackSequence()
@@ -137,6 +151,7 @@ namespace HeroesFlight.System.Character
                 if (i == 0)
                 {
                     m_SkeletonAnimation.AnimationState.SetAnimation(2, animations[i], false);
+                    OnAnimationEvent?.Invoke(new VFXAnimationEvent(AniamtionEventType.Vfx,0, animations[i].Animation.Name,1));
                 }
                 else
                 {
@@ -145,7 +160,7 @@ namespace HeroesFlight.System.Character
 
                 duration += animations[i].Animation.Duration;
             }
-
+         
             CoroutineUtility.WaitForSeconds(duration, () =>
             {
                 m_SkeletonAnimation.AnimationState.SetEmptyAnimation(2, 0f);
@@ -161,19 +176,20 @@ namespace HeroesFlight.System.Character
                     switch (e.String)
                     {
                         case AnimationEventValues.NormalAttack:
-                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Regular, 0));
-                            AudioManager.PlaySoundEffect("Attack Sound");
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Attack,e.Int, AttackType.Regular));
                             break;
                         case AnimationEventValues.UltimateAttack:
-                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AttackType.Ultimate, 0));
-                            AudioManager.PlaySoundEffect("Attack Sound");
+                            OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Attack, e.Int,AttackType.Ultimate));
+                            AudioManager.PlaySoundEffect("Attack Sound",SoundEffectCategory.Hero);
                             break;
                     }
 
                     break;
                 case AnimationEventNames.Sounds:
+                    OnAnimationEvent?.Invoke(new SFXAnimationEvent(AniamtionEventType.Sfx,e.Int, trackentry.Animation.Name));
                     break;
                 case AnimationEventNames.VFX:
+                    //OnAnimationEvent?.Invoke(new VFXAnimationEvent(AniamtionEventType.Vfx,e.Int, trackentry.Animation.Name,speedMultiplier));
                     break;
             }
         }

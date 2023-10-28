@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Enum;
 
 public class HazardArrow : MonoBehaviour
 {
@@ -59,8 +60,9 @@ public class HazardArrow : MonoBehaviour
         {
             if (col.TryGetComponent(out IHealthController healthController))
             {
-                float damage = StatCalc.GetValueOfPercentage(healthController.CurrentHealth, healthPercentage);
-                healthController.DealDamage(new DamageModel(damage, DamageType.NoneCritical, AttackType.Regular));
+                float damage = StatCalc.GetPercentage(healthController.CurrentHealth, healthPercentage);
+                healthController.TryDealDamage(new HealthModificationIntentModel(damage, 
+                    DamageType.NoneCritical, AttackType.Regular,DamageCalculationType.Flat));
             }
             DisableProjectile();
         }

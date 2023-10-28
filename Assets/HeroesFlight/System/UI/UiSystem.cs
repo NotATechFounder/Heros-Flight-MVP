@@ -1,7 +1,5 @@
 using System;
-using HeroesFlight.System.Gameplay;
-using HeroesFlight.System.Gameplay.Enum;
-using HeroesFlight.System.Gameplay.Model;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.UI.Container;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
@@ -11,27 +9,21 @@ namespace HeroesFlight.System.UI
 {
     public class UiSystem : IUISystem
     {
-        public UiSystem(DataSystemInterface dataSystemInterface, GamePlaySystemInterface gamePlaySystem)
+        public UiSystem(DataSystemInterface dataSystemInterface)
         {
-            dataSystem = dataSystemInterface;
-            gameplaySystem = gamePlaySystem;
-
-            gameplaySystem.OnCountDownTimerUpdate += UpateCountDownUI;
-            gameplaySystem.OnGameTimerUpdate += UpdateGameTimeUI;
-
-            gameplaySystem.OnEnemyDamaged += HandleEnemyDamaged;
-            gameplaySystem.OnCharacterHealthChanged += HandleCharacterHealthChanged;
-            gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
-            gameplaySystem.OnCharacterDamaged += HandleCharacterDamaged;
-            gameplaySystem.OnCharacterHeal += HandleCharacterHeal;
-            gameplaySystem.OnCharacterComboChanged += UpdateComboUI;
-            gameplaySystem.OnMinibossSpawned += HandleMiniboss;
-            gameplaySystem.OnMinibossHealthChange += HandleMinibossHealthChange;
-            gameplaySystem.OnEnterMiniBossLvl += GameplaySystem_OnEnterMiniBossLvl;
-            gameplaySystem.OnBoosterActivated += HandleBoosterActivated;
-            gameplaySystem.OnCoinsCollected += HandleCoinChange;
-            gameplaySystem.OnUltimateChargesChange += UpdateUltimateButton;
-            gameplaySystem.OnBoosterContainerCreated += HandleBoosterContainerCreated;
+            // gameplaySystem.OnCountDownTimerStart += DisplayStartInfoMessage;
+            // gameplaySystem.OnGameTimerUpdate += UpdateGameTimeUI;
+            //
+            //
+            // gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
+            // gameplaySystem.OnCharacterComboChanged += UpdateComboUI;
+            // gameplaySystem.OnSpecialEnemySpawned += HandleSpecialEnemy;
+            // gameplaySystem.OnSpecialEnemyHealthChange += HandleSpecialEnemyHealthChange;
+            // gameplaySystem.OnEncounterSpecialEnemy += GameplaySystemOnEncounterSpecialEnemy;
+            // gameplaySystem.OnBoosterActivated += HandleBoosterActivated;
+            // gameplaySystem.OnCoinsCollected += HandleCoinChange;
+            // gameplaySystem.OnUltimateChargesChange += UpdateUltimateButton;
+            // gameplaySystem.OnBoosterContainerCreated += HandleBoosterContainerCreated;
         }
 
         public event Action OnReturnToMainMenuRequest;
@@ -42,20 +34,20 @@ namespace HeroesFlight.System.UI
 
         public event Action OnSpecialButtonClicked;
 
+        public event Action OnSkillOneButtonClicked;
+
         public UIEventHandler UiEventHandler { get; private set; }
 
         public CountDownTimer GameTimer { get; private set; }
 
-        public const string MainMenuMusicID = "MainMenu";
+         const string MainMenuMusicID = "MainMenu";
 
-        public const string GameMusicID = "ForestStart";
+         const string GameMusicID = "ForestStart";
 
-        public const string GameMusicLoopID = "ForestLoop";
+         const string GameMusicLoopID = "ForestLoop";
 
         UiContainer container;
 
-        GamePlaySystemInterface gameplaySystem;
-        DataSystemInterface dataSystem;
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
@@ -65,36 +57,23 @@ namespace HeroesFlight.System.UI
 
             UiEventHandler.Init(() =>
             {
-                UiEventHandler.MainMenu.OnMenuOpened += () =>
-                {
-                    AudioManager.PlayMusic(MainMenuMusicID);
-                };
+                UiEventHandler.MainMenu.OnMenuOpened += () => { AudioManager.PlayMusic(MainMenuMusicID); };
 
                 UiEventHandler.MainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
-                UiEventHandler.MainMenu.OnSettingsButtonPressed += () =>
-                {
-                    UiEventHandler.SettingsMenu.Open();
-                };
+                UiEventHandler.MainMenu.OnSettingsButtonPressed += () => { UiEventHandler.SettingsMenu.Open(); };
 
-                UiEventHandler.SettingsMenu.OnBackButtonPressed += () =>
-                {
-                    UiEventHandler.SettingsMenu.Close();
-                };
+                UiEventHandler.SettingsMenu.OnBackButtonPressed += () => { UiEventHandler.SettingsMenu.Close(); };
 
                 UiEventHandler.GameMenu.OnMenuOpened += () =>
                 {
                     AudioManager.BlendTwoMusic(GameMusicID, GameMusicLoopID);
                 };
 
+                UiEventHandler.GameMenu.OnPauseButtonClicked += () => { UiEventHandler.PauseMenu.Open(); };
 
-                UiEventHandler.GameMenu.OnPauseButtonClicked += () =>
-                {
-                    UiEventHandler.PauseMenu.Open();
-                };
-                UiEventHandler.GameMenu.OnSpecialAttackButtonClicked += () =>
-                {
-                    OnSpecialButtonClicked?.Invoke();
-                };
+                UiEventHandler.GameMenu.OnSpecialAttackButtonClicked += () => { OnSpecialButtonClicked?.Invoke(); };
+
+                UiEventHandler.GameMenu.OnSkillOneButtonClicked += () => { OnSkillOneButtonClicked?.Invoke(); };
 
                 UiEventHandler.GameMenu.OnLevelUpComplete += UiEventHandler.HeroProgressionMenu.OnLevelUp;
 
@@ -103,22 +82,16 @@ namespace HeroesFlight.System.UI
                 //    return dataSystem.GetCurrencyAmount(CurrencyKeys.Gold);
                 //};
 
-                UiEventHandler.PauseMenu.OnSettingsButtonClicked += () =>
-                {
-                    UiEventHandler.SettingsMenu.Open();
-                };
+                UiEventHandler.PauseMenu.OnSettingsButtonClicked += () => { UiEventHandler.SettingsMenu.Open(); };
 
-                UiEventHandler.PauseMenu.OnResumeButtonClicked += () =>
-                {
-                    UiEventHandler.PauseMenu.Close();
-                };
+                UiEventHandler.PauseMenu.OnResumeButtonClicked += () => { UiEventHandler.PauseMenu.Close(); };
 
                 UiEventHandler.PauseMenu.OnQuitButtonClicked += () =>
                 {
                     UiEventHandler.ConfirmationMenu.Display(UiEventHandler.BackToMenuConfirmation, ReturnToMainMenu,
                         null);
                 };
-         
+
                 UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
                 {
                     OnReviveCharacterRequest?.Invoke();
@@ -139,10 +112,9 @@ namespace HeroesFlight.System.UI
                     return true;
                 };
 
-                UiEventHandler.SummaryMenu.OnMenuOpened += () =>
-                {
- 
-                };
+                UiEventHandler.SummaryMenu.OnMenuOpened += () => { };
+
+                UiEventHandler.SummaryMenu.GetCurrentGold = () => { return UiEventHandler.GameMenu.CoinText.text; };
 
                 UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
                 {
@@ -150,46 +122,31 @@ namespace HeroesFlight.System.UI
                     UiEventHandler.SummaryMenu.Close();
                 };
 
-                // UiEventHandler.MainMenu.OnCharacterSelectButtonPressed += () =>
-                // {
-                //     UiEventHandler.CharacterSelectionMenu.Open();
-                // };
-
                 onComplete?.Invoke();
             });
         }
 
-        public void Reset()
-        {
+        public void Reset() { }
 
+        public void DisplayStartInfoMessage(float duration)
+        {
+            UiEventHandler.GameMenu.DisplayInfoMessage(UISystem.GameMenu.InfoMessageType.Start, duration);
         }
 
-        private void HandleCurrencyChange(CurrencySO currencySO, bool arg2)
+     
+
+        public void UpdateUltimateButtonFill(float value)
         {
-            switch (currencySO.GetKey)
-            {
-                case CurrencyKeys.Gold:
-                    UiEventHandler.GameMenu.UpdateCoinText(currencySO.GetCurrencyAmount);
-                    break;
-            }
+            UiEventHandler.GameMenu.FillSpecial(value);
         }
 
-        void UpdateUltimateButton(float value)
-        {
-           UiEventHandler.GameMenu.FillSpecial(value);
-        }
 
-        private void HandleCoinChange(int amount)
-        {
-            UiEventHandler.GameMenu.UpdateCoinText(amount);
-        }
-
-        void HandleMinibossHealthChange(float value)
+        public void UpdateSpecialEnemyHealthBar(float value)
         {
             UiEventHandler.GameMenu.UpdateBossHealthFill(value);
         }
 
-        void HandleMiniboss(bool isEnabled)
+        public void ToggleSpecialEnemyHealthBar(bool isEnabled)
         {
             if (isEnabled)
             {
@@ -203,23 +160,18 @@ namespace HeroesFlight.System.UI
         }
 
 
-        void UpdateGameTimeUI(float timeLeft)
+        public void UpdateGameTimeUI(float timeLeft)
         {
             UiEventHandler.GameMenu.UpdateTimerText(timeLeft);
         }
 
-        void UpateCountDownUI(int timeLeft)
-        {
-            UiEventHandler.GameMenu.UpateCountDownText(timeLeft);
-        }
-
-        private void OnPlayButtonPressed()
+        void OnPlayButtonPressed()
         {
             UiEventHandler.MainMenu.Close();
             UiEventHandler.GameMenu.Open();
         }
 
-        public void ReturnToMainMenu()
+         void ReturnToMainMenu()
         {
             OnReturnToMainMenuRequest?.Invoke();
             UiEventHandler.GameMenu.Close();
@@ -227,80 +179,57 @@ namespace HeroesFlight.System.UI
             UiEventHandler.ConfirmationMenu.Close();
         }
 
-        public void OpenPuzzleConfirmation()
+     
+
+        public void ShowDamageText(float damage, Transform target, bool isCritical, bool targetIsPlayer,
+            bool isHeal = false)
         {
-            UiEventHandler.ConfirmationMenu.Display(UiEventHandler.PuzzleConfirmation, UiEventHandler.PuzzleMenu.Open,
-                null);
+            if (targetIsPlayer)
+            {
+                var damageString = string.Empty;
+                 damageString = !isCritical
+                    ? $"{(int)damage}"
+                    : $"!!{(int)damage}!!";
+                var color = isHeal ? Color.green : Color.red;
+                PopUpManager.Instance.PopUpTextAtTransfrom(target, Vector3.zero, damageString,
+                    color);
+            }
+            else
+            {
+                var damageText = NumberConverter.ConvertNumberToString((int)damage);
+                var spriteAsset = container.GetDamageTextSprite(isCritical);
+                var size = !isCritical ? 60 : 100;
+                PopUpManager.Instance.PopUpTextAtTransfrom(target, Vector3.zero, damageText,
+                    spriteAsset, size);
+            }
         }
 
-        void HandleCharacterHealthChanged(int obj)
-        {
-        }
 
-        void HandlePlayerDeath()
-        {
-            UiEventHandler.ReviveMenu.Open();
-        }
-
-        void HandleEnemyDamaged(DamageModel damageModel)
-        {
-            var damageText = NumberConverter.ConvertNumberToString((int)damageModel.Amount);
-            var spriteAsset = container.GetDamageTextSprite(damageModel.DamageType);
-            var size = damageModel.DamageType == DamageType.NoneCritical ? 60 : 100;
-            PopUpManager.Instance.PopUpTextAtTransfrom(damageModel.Target, Vector3.zero, damageText,
-                spriteAsset,size);
-        }
-
-        void HandlePlayerWin()
-        {
-            UiEventHandler.SummaryMenu.Open();
-        }
-
-        void UpdateEnemiesCounter(int enemiesLeft)
+        public void UpdateEnemiesCounter(int enemiesLeft)
         {
             UiEventHandler.GameMenu.UpdateEnemyCountText(enemiesLeft);
         }
 
-        void HandleCharacterDamaged(DamageModel damageModel)
-        {
-            var damageString = damageModel.DamageType == DamageType.NoneCritical
-                ? $"{(int)damageModel.Amount}"
-                : $"!!{(int)damageModel.Amount}!!";
-            PopUpManager.Instance.PopUpTextAtTransfrom(damageModel.Target, Vector3.zero, damageString,
-                Color.red);
-        }
 
-        void HandleCharacterHeal(float amount, Transform pos)
-        {
-            var damageString = $"{(int)amount}";
-            PopUpManager.Instance.PopUpTextAtTransfrom(pos, Vector3.zero, damageString,
-                Color.green);
-        }
-
-
-        private void HandleBoosterActivated(BoosterSO boosterSO, float arg2, Transform transform)
-        {
-            //PopUpTextAtPos($"+{boosterSO.Abreviation} %{arg2}", new Vector2(transform.position.x, transform.position.y + 2) , boosterSO.BoosterColor);
-            PopUpTextAtPos($"+{boosterSO.Abreviation}", new Vector2(transform.position.x, transform.position.y + 2), boosterSO.BoosterColor);
-        }
-
-        void PopUpTextAtPos(string info, Vector2 pos, Color color)
+        public void ShowPopupAtPosition(string info, Vector2 pos, Color color)
         {
             PopUpManager.Instance.PopUpAtTextPosition(pos, Vector3.zero, info, color);
         }
 
-        void UpdateComboUI(int count)
+        public void UpdateComboUI(int count)
         {
             UiEventHandler.GameMenu.UpdateComboCounterText(count);
         }
-        private void HandleBoosterContainerCreated(BoosterContainer container)
+
+
+        public void ShowSpecialEnemyWarning(EncounterType encounterType)
         {
-            UiEventHandler.GameMenu.VisualiseBooster(container);
+            UiEventHandler.GameMenu.ShowMiniBossWarning(encounterType);
         }
 
-        private void GameplaySystem_OnEnterMiniBossLvl()
+        public void UpdateCoinsUi(int amount)
         {
-            UiEventHandler.GameMenu.ShowMiniBossWarning();
+            UiEventHandler.GameMenu.UpdateCoinText(amount);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         [SerializeField] float lifeTime;
         [SerializeField] float speed;
+        [SerializeField] LayerMask collisionMask;
         Transform view;
         public event Action<ProjectileControllerInterface> OnEnded;
         Vector2 currentDirection = default;
@@ -53,9 +55,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void OnTriggerEnter2D(Collider2D col)
         {
+            if (collisionMask != (collisionMask | (1 << col.gameObject.layer)))
+                return;
+
             if (col.gameObject.TryGetComponent<IHealthController>(out var healthController))
             {
-                healthController.DealDamage(new DamageModel(damage,DamageType.NoneCritical,AttackType.Regular));
+                healthController.TryDealDamage(new HealthModificationIntentModel(damage,
+                    DamageType.NoneCritical,AttackType.Regular,DamageCalculationType.Flat));
                 DisableProjectile();
             }
         }

@@ -24,17 +24,17 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             animator.PlayIdleAnimation();
             animator = GetComponent<CharacterAnimationController>();
             maxHealth = characterStatController.CurrentMaxHealth;
-            characterStatController.OnHealthModified += ModifyHealth;
+            characterStatController.OnHealthModified += Heal;
             characterStatController.GetCurrentHealth = () => currentHealth;
             characterStatController.OnMaxHealthChanged = SetMaxHealth;
             base.Init();
         }
 
-        private void ModifyHealth(float value, bool increase)
-        {
-            if (increase)
-                Heal(value);
-        }
+        // private void ModifyHealth(float value, bool increase)
+        // {
+        //     if (increase)
+        //         Heal(value);
+        // }
 
         protected override void ProcessDeath()
         {
@@ -60,11 +60,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             base.Revive();
         }
 
-        public override void DealDamage(DamageModel damage)
+        public override void TryDealDamage(HealthModificationIntentModel healthModificationIntent)
         {
             dodgeChance = characterStatController.CurrentDodgeChance;
             defence = characterStatController.CurrentDefense;
-            base.DealDamage(damage);
+            base.TryDealDamage(healthModificationIntent);
         }
     }
 }

@@ -1,3 +1,4 @@
+using StansAssets.Foundation.Async;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +8,22 @@ public class GameEffectController : MonoBehaviour
 {
     Coroutine stopTimeCoroutine;
     Coroutine stopFrameCoroutine;
+
+    public void ForceStop(Action OnFinished)
+    {
+        if (stopTimeCoroutine != null)
+        {
+            StopCoroutine(stopTimeCoroutine);
+            stopTimeCoroutine = null;
+        }
+
+        Time.timeScale = 0.2f;
+        CoroutineUtility.WaitForSecondsRealtime(2f, () =>
+        {
+            Time.timeScale = 1f;
+            OnFinished?.Invoke();
+        });
+    }
 
     public void StopTime(float newTimeScale,float restoreSpeed, float duration)
     {

@@ -45,7 +45,7 @@ public class WarningLine : MonoBehaviour
             case WarningVisualType.LineRenderer:
 
                 warmUpEffect = lineRenderer.JuicyWidth(1f, 1);
-                warmUpEffect.SetOnComplected(() =>
+                warmUpEffect.SetOnCompleted(() =>
                 {
                     triggerEffect.Start();
                 });
@@ -53,7 +53,7 @@ public class WarningLine : MonoBehaviour
                 colorEffect = lineRenderer.material.JuicyColour(endColor, 1f);
 
                 triggerEffect = lineRenderer.JuicyWidth(0, 1);
-                triggerEffect.SetOnComplected(() =>
+                triggerEffect.SetOnCompleted(() =>
                 {
                     lineRenderer.enabled = false;
                     onCompleted?.Invoke();
@@ -63,7 +63,7 @@ public class WarningLine : MonoBehaviour
             case WarningVisualType.SpriteRenderer:
 
                 warmUpEffect = visual.JuicyScaleX(1f, 1);
-                warmUpEffect.SetOnComplected(() =>
+                warmUpEffect.SetOnCompleted(() =>
                 {
                     triggerEffect.Start();
                 });
@@ -71,7 +71,7 @@ public class WarningLine : MonoBehaviour
                 colorEffect = visualSpriteRenderer.material.JuicyColour(endColor, 1f);
 
                 triggerEffect = lineRenderer.JuicyWidth(0, 1);
-                triggerEffect.SetOnComplected(() =>
+                triggerEffect.SetOnCompleted(() =>
                 {
                     visualSpriteRenderer.enabled = false;
                     onCompleted?.Invoke();

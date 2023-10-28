@@ -8,24 +8,9 @@ using HeroesFlight.System.FileManager.Rewards;
 
 public interface DataSystemInterface : SystemInterface
 {
-    public event Action<CurrencySO, bool> OnCurrencyChange;
+    public CharacterManager CharacterManager { get;}
+
+    public CurrencyManager CurrencyManager { get; }
+
     RewardsHandlerInterface RewardHandler { get; }
-    public void ReduceCurency(string key, float amount);
-
-    public void AddCurency(string key, float amount);
-
-    public void SetCurencyAmount(string key, float amount);
-
-    public float GetCurrencyAmount(string currencyKey);
-
-    public void LoadCurrencies();
-
-    public void SaveCurrencies();
-
-    List<CharacterType> GetUnlockedHeroes();
-
-    void UnlockHero(CharacterType type);
-
-
-
 }

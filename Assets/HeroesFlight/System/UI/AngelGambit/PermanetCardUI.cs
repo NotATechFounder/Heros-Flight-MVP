@@ -33,12 +33,12 @@ public class PermanetCardUI : MonoBehaviour
 
         tierEffect = tierText.transform.JuicyScale(Vector3.one, 0.25f)
             .SetEase(Ease.Linear)
-            .SetOnComplected(() => tierText.text = "Tier " + ((int)angelCard.tier + 1));
+            .SetOnCompleted(() => tierText.text = "Tier " + ((int)angelCard.tier + 1));
 
         statEffect = cardEffectText.JuicyText("", 0.5f);
         statEffect.SetTextAnimationMode(TextAnimationMode.ClearOldText)
             .SetOnStart(() => cardEffectText.color = Color.green)
-            .SetOnComplected(() => cardEffectText.color = Color.white)
+            .SetOnCompleted(() => cardEffectText.color = Color.white)
             .SetDelay(0.25f);
     }
 

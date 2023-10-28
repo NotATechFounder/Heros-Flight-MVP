@@ -14,29 +14,31 @@ namespace HeroesFlight.System.Gameplay.Model
         [SerializeField] private string areaName;
         [SerializeField] float heroProgressionExpEarnedPerKill = 20f;
         [SerializeField] LevelPortal portalPrefab;
-        [SerializeField] private Crystal crystalPrefab;
+        [SerializeField] private Environment.Objects.Crystal crystalPrefab;
         [SerializeField] Level angelsGambitLevel;
-
+        [SerializeField] BoosterDropSO bossDrop;
         [SerializeField] private BossControllerBase worldBoss;
         [SerializeField] private string bossMusicKey;
 
         [SerializeField] private SpawnModel spawnModel;
         [SerializeField] private MobDifficultyHolder mobDifficulty;
+        [SerializeField] private MobDropTableHolder mobDropTable;
 
         [Header("Time Stop Testing")]
         [SerializeField] float timeStopRestoreSpeed;
         [SerializeField] float timeStopDuration;
-
-
+       
         public string AreaName => areaName;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
         public Level AngelsGambitLevel => angelsGambitLevel;
         public BossControllerBase WorldBoss => worldBoss;
+        public BoosterDropSO BossDrop => bossDrop;
         public string WorldBossMusicKey => bossMusicKey;
         public SpawnModel SpawnModel => spawnModel;
         public LevelPortal PortalPrefab => portalPrefab;
-        public Crystal CrystalPrefab => crystalPrefab;
+        public Environment.Objects.Crystal CrystalPrefab => crystalPrefab;
         public MobDifficultyHolder MobDifficulty => mobDifficulty;
+        public MobDropTableHolder MobDropTableHolder => mobDropTable;
 
         public float TimeStopRestoreSpeed => timeStopRestoreSpeed;
         public float TimeStopDuration => timeStopDuration;

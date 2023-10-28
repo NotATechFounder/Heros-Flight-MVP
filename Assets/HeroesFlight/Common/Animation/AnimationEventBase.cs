@@ -10,10 +10,12 @@ namespace HeroesFlight.Common.Animation
         {
             
         }
-        public AnimationEventBase(AniamtionEventType type)
+        public AnimationEventBase(AniamtionEventType type,int eventIndex) 
         {
             Type = type;
+            EventIndex = eventIndex;
         }
         public AniamtionEventType Type { get; protected set; }
+        public int EventIndex { get; }
     }
 }

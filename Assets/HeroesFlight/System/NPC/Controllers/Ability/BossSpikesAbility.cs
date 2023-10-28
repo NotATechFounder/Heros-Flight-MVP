@@ -28,7 +28,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (targetAnimation != null)
             {
-                animator.PlayAnimation(targetAnimation,onComplete);
+                animator.PlayDynamicAnimation(targetAnimation,onComplete);
             }
 
             var rng = Random.Range(0, patterns.Count);
@@ -43,8 +43,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                     arrow.SetupProjectile(CalculateDamage(), zone.GetFowardDirection);
                 },preDamageDelay,zoneWidth);
             }
-
-            currentCooldown = coolDown;
+         
         }
 
         void HandleArrowDisable(ProjectileControllerInterface obj)

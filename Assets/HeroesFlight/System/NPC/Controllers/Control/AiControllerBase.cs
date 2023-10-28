@@ -49,6 +49,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             viewController.Init();
 
             currentHealth = Mathf.RoundToInt(statModifier.CalculateAttack(health));
+            
             currentDamage = statModifier.CalculateAttack(damage);
 
             OnInit();
@@ -145,15 +146,18 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public void DisplayModifiyer(Sprite sprite)
         {
-            if (sprite == null)
-            {
-                buffDebuffIcon.enabled = false;
-            }
-            else
-            {
-                buffDebuffIcon.enabled = true;
-                buffDebuffIcon.sprite = sprite;
-            }
+            // TODO: Fix this
+            buffDebuffIcon.enabled = false;
+
+            //if (sprite == null)
+            //{
+            //    buffDebuffIcon.enabled = false;
+            //}
+            //else
+            //{
+            //    buffDebuffIcon.enabled = true;
+            //    buffDebuffIcon.sprite = sprite;
+            //}
         }
 
         protected void OnInit()

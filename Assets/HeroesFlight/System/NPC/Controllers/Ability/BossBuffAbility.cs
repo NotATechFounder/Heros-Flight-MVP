@@ -36,14 +36,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 if (buffRoutine != null)
                     StopCoroutine(buffRoutine);
                 StartCoroutine(ProcessBuff(type));
+                abilityParticle.Play();
                 cameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,.5f);
             });
             if (targetAnimation != null)
             {
-                animator.PlayAnimation(targetAnimation,onComplete);
+                animator.PlayDynamicAnimation(targetAnimation,onComplete);
             }
-
-            currentCooldown = coolDown;
+           
         }
 
 
@@ -71,7 +71,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             yield return new WaitForSeconds(buffDuration);
             foreach (var ability in attackAbilities)
             {
-                ability.SetModifierValue(1);
+                ability.SetModifierValue(0);
             }
             foreach (var health in healthControllers)
             {

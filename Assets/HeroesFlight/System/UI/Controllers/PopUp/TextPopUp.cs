@@ -18,7 +18,7 @@ public class TextPopUp : MonoBehaviour
     private void Awake()
     {
         scaleEffect = transform.JuicyScale(Vector3.one, scaleDuration);
-        scaleEffect.SetOnComplected(() =>
+        scaleEffect.SetOnCompleted(() =>
         {
             moveEffect.Start();
             fadeEffect.Start();
@@ -27,7 +27,7 @@ public class TextPopUp : MonoBehaviour
         moveEffect = transform.JuicyMove(transform.position , moveDuration);
 
         fadeEffect = textMeshPro.JuicyAlpha(0, fadeDuration).SetDelay(0.1f);
-        fadeEffect.SetOnComplected(() =>
+        fadeEffect.SetOnCompleted(() =>
         {
             textMeshPro.color = Color.white;
             textMeshPro.spriteAsset = null;

@@ -17,6 +17,7 @@ public class CurrencySpawner : MonoBehaviour
     public void SetPlayer(Transform playerTrans)
     {
         playerTransfrom = playerTrans;
+        Debug.Log(playerTransfrom.name);
     }
 
     public void SpawnAtPosition(string key, float amount, Vector3 position)
@@ -57,5 +58,15 @@ public class CurrencySpawner : MonoBehaviour
         spawnedExpItems.Clear();
         yield return new WaitForSeconds(.1F);
         OnAllExpCollected?.Invoke();
+    }
+
+    public void ResetItems()
+    {
+        foreach (var expItem in spawnedExpItems)
+        {
+            expItem.ResetState();
+        }
+
+        spawnedExpItems.Clear();    
     }
 }

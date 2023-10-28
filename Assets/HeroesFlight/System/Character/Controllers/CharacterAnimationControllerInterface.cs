@@ -10,11 +10,12 @@ namespace HeroesFlight.System.Character
     public interface CharacterAnimationControllerInterface
     {
         event Action<AnimationEventInterface> OnAnimationEvent;
-        void Init(AnimationData data);
+        event Action<bool> OnAttackAnimationStateChange;
+        void Init(CharacterAnimations data);
         void AnimateCharacterMovement(CharacterState newState,bool isfacingLeft);
         void PlayDeathAnimation(Action onComplete=null);
         void PlayIdleAnimation();
-        void PlayAttackSequence(float speedMultiplier);
+        float PlayAttackSequence(float speedMultiplier);
         void StopAttackSequence();
         void PlayAnimationSequence(List<AnimationReferenceAsset> animations,Action onCompleteAction=null);
     }

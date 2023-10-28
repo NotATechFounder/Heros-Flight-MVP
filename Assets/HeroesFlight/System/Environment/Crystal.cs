@@ -1,15 +1,15 @@
-using HeroesFlight.System.Environment;
 using Pelumi.Juicer;
-using Pelumi.ObjectPool;
 using Spine;
 using Spine.Unity;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+
+using Plugins.Audio_System;
 using UnityEngine;
 
-public class Crystal : MonoBehaviour
+namespace HeroesFlight.System.Environment.Objects
+{
+    public class Crystal : MonoBehaviour
 {
     public Action SpawnLoot;
     public Action<Crystal> OnDestroyed;
@@ -41,7 +41,6 @@ public class Crystal : MonoBehaviour
     [SerializeField] float shakePower = 0.5f;
 
     public BoosterDropSO BoosterDropSO => boosterDropSO;
-
     public int GoldInBatch => goldInBatch;
     public int GoldAmount => Mathf.RoundToInt(goldRange.GetRandomValue()) / goldInBatch;
 
@@ -59,7 +58,7 @@ public class Crystal : MonoBehaviour
     IEnumerator SpawnLoopDelay()
     {
         yield return waitForSeconds;
-        AudioManager.PlaySoundEffect("CrystalBreak");
+        AudioManager.PlaySoundEffect("CrystalBreak",SoundEffectCategory.Environment);
         SpawnLoot?.Invoke();
     }
 
@@ -130,3 +129,5 @@ public class Crystal : MonoBehaviour
         shakeRoutine = transform.JuicyShakePosition(shakeDuration, direction * shakePower, 1);
     }
 }
+}
+

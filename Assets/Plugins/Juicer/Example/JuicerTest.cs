@@ -34,9 +34,9 @@ public class JuicerTest : MonoBehaviour
             Debug.Log("On StepComplete");
         });
 
-        juicerRuntime.SetOnComplected(() =>
+        juicerRuntime.SetOnCompleted(() =>
         {
-            Debug.Log("On Complected");
+            Debug.Log("On Completed");
         });
 
         juicerRuntime.Start();

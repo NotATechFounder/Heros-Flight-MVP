@@ -31,7 +31,6 @@ namespace HeroesFlight.StateStack.State
                     {
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(environmentScene);
                         EnvironmentSystemInterface environmentSystem = GetService<EnvironmentSystemInterface>();
-                        Debug.Log("Initing environment system");
                         environmentSystem.Init(loadedScene);
                         AppStateStack.State.Set(ApplicationState.MainMenu);
                     });

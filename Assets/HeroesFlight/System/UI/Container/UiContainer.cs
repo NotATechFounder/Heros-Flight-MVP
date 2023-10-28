@@ -1,5 +1,4 @@
 
-using HeroesFlight.System.Gameplay.Enum;
 using TMPro;
 using UnityEngine;
 
@@ -10,16 +9,15 @@ namespace HeroesFlight.System.UI.Container
         [SerializeField] TMP_SpriteAsset normalDamageAsset;
         [SerializeField] TMP_SpriteAsset criticalDamageAsset;
 
-        public TMP_SpriteAsset GetDamageTextSprite(DamageType damageType)
+        public TMP_SpriteAsset GetDamageTextSprite(bool isCritical)
         {
-            switch (damageType)
+            switch (isCritical)
             {
-                case DamageType.NoneCritical:
+                case false:
                     return normalDamageAsset;
-                case DamageType.Critical:
+                case true:
                     return criticalDamageAsset;
-                default:
-                    return null;
+              
             }
         }
     }

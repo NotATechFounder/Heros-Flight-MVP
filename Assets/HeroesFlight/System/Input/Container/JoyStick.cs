@@ -80,7 +80,7 @@ public class Joystick : OnScreenControl
 
     private void ETouch_onFingerDown(Finger touchedFinger)
     {
-        if (_movementFinger == null && touchedFinger.screenPosition.y >= Screen.height / 1.5f)
+        if (ClickOnUI(touchedFinger) || (_movementFinger == null && touchedFinger.screenPosition.y >= Screen.height / 1.5f))
         {
             return;
         }
@@ -91,11 +91,8 @@ public class Joystick : OnScreenControl
 
         joyStick.gameObject.SetActive(true);
 
-        if (!ClickOnUI(touchedFinger))
-        {
-            _joystickSize = joyStick.sizeDelta;
-            if (!fixedJoystick) joyStick.anchoredPosition = ClampStartPosition(touchedFinger.screenPosition);
-        }
+        _joystickSize = joyStick.sizeDelta;
+        if (!fixedJoystick) joyStick.anchoredPosition = ClampStartPosition(touchedFinger.screenPosition);
 
         SetFocus();
     }
@@ -121,11 +118,6 @@ public class Joystick : OnScreenControl
 
     private void ETouch_onFingerMove(Finger onFingerMove)
     {
-        if (ClickOnUI(onFingerMove))
-        {
-            return;
-        }
-
         if (_movementFinger == onFingerMove)
         {
             _releaseTime += Time.deltaTime;

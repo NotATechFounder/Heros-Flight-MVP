@@ -15,6 +15,8 @@ namespace UISystem
         private event Action onYesButtonPressed;
         private event Action onNoButtonPressed;
 
+        [SerializeField] private Image headerIcon;
+
         [Header("Texts")]
         [SerializeField] private TextMeshProUGUI titleText;
         [SerializeField] private TextMeshProUGUI questionText;
@@ -43,7 +45,7 @@ namespace UISystem
                                             .SetDelay(0.25f);
 
             _closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
-            _closeEffectBG.SetOnComplected(CloseMenu);
+            _closeEffectBG.SetOnCompleted(CloseMenu);
 
             closeButton.onClick.AddListener(() =>
             {
@@ -92,6 +94,16 @@ namespace UISystem
 
         public void Display (ConfirmationUISO confirmationUISO, Action Yes, Action No)
         {
+            if (confirmationUISO.Icon != null)
+            {
+                headerIcon.sprite = confirmationUISO.Icon;
+                headerIcon.enabled = true;
+            }
+            else
+            {
+                headerIcon.enabled = false;
+            }
+
             titleText.text = confirmationUISO.TitleText;
             questionText.text = confirmationUISO.QuestionText;
             descriptionText.text = confirmationUISO.DescriptionText;

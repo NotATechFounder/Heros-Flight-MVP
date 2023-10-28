@@ -2,6 +2,7 @@ using Pelumi.Juicer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Plugins.Audio_System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,7 @@ namespace UISystem
         [SerializeField] private AdvanceButton closeButton;
         [SerializeField] private AnimationCurve animationCurve;
         [SerializeField] private GameObject blocker;
+        [SerializeField] private Image timerFill;
 
         [Header("Puzzle Menu")]
         [SerializeField] private GodsBenevolenceSO[] godsBenevolenceArray;
@@ -44,10 +46,13 @@ namespace UISystem
         {
             selectedBenevolence = godsBenevolenceArray[UnityEngine.Random.Range(0, godsBenevolenceArray.Length)];
 
+            // TODO: Remove this
+            selectedBenevolence = godsBenevolenceArray[0];
+
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
-            closeEffectBG.SetOnComplected(CloseMenu);
+            closeEffectBG.SetOnCompleted(CloseMenu);
 
             closeButton.onClick.AddListener(PuzzleFailed);
 
@@ -73,7 +78,8 @@ namespace UISystem
                 random = godsBenevolenceArray[UnityEngine.Random.Range(0, godsBenevolenceArray.Length)];
             } while (random == selectedBenevolence);
 
-            selectedBenevolence = random;
+            // TODO: Remove this
+            selectedBenevolence = godsBenevolenceArray[0];
 
             for (int i = 0; i < puzzlePieces.Length; i++)
             {
@@ -84,7 +90,7 @@ namespace UISystem
             blocker.SetActive(false);
 
             openEffectBG.Start();
-            openEffectBG.SetOnComplected(() =>
+            openEffectBG.SetOnCompleted(() =>
             {
                 StartTimer();
             });
@@ -104,6 +110,8 @@ namespace UISystem
         {
             countDownTimer.Start(countDownTime, (current) =>
             {
+                timerFill.fillAmount = current / countDownTime;
+
                 if ((int)current != (int)countDownTimer.GetLastTime)
                 {
                     countDownTextEffect.Start();
@@ -129,12 +137,12 @@ namespace UISystem
 
             if (isCorrectRotation)
             {
-                AudioManager.PlaySoundEffect("RotateLastTile");
+                AudioManager.PlaySoundEffect("RotateLastTile",SoundEffectCategory.UI);
                 PuzzleSolved();
             }
             else
             {
-                AudioManager.PlaySoundEffect("RotateTiles");
+                AudioManager.PlaySoundEffect("RotateTiles",SoundEffectCategory.UI);
             }
         }
 
@@ -151,7 +159,7 @@ namespace UISystem
             
             yield return new WaitForSeconds(.5f);
 
-            AudioManager.PlaySoundEffect(selectedBenevolence.CompletedSfxKey);    
+            AudioManager.PlaySoundEffect(selectedBenevolence.CompletedSfxKey,SoundEffectCategory.UI);    
 
             yield return new WaitForSeconds(3f);
             OnPuzzleSolved?.Invoke(selectedBenevolence);

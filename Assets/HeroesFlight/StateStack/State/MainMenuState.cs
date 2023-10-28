@@ -1,4 +1,5 @@
 ﻿using System;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.UI;
@@ -32,25 +33,36 @@ namespace HeroesFlight.StateStack.State
 
                     uiSystem.UiEventHandler.MainMenu.Open();
 
+                    uiSystem.UiEventHandler.MainMenu.OnCharacterSelected += dataSystem.CharacterManager.ToggleCharacterSelected;
+
                     void HandleGameStartRequest()
                     {
                         uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;
-                        uiSystem.UiEventHandler.MainMenu.OnCharacterSelectButtonPressed -=
-                            HandleCharacterSelectionRequest;
-                        AppStateStack.State.Set(ApplicationState.Gameplay);
-                    }
 
+                        //TODO: Remove this line
+                        //  uiSystem.UiEventHandler.MainMenu.OnCharacterSelectButtonPressed -= HandleCharacterSelectionRequest;
+                          AppStateStack.State.Set(ApplicationState.Gameplay);
+                    } 
+
+
+                    //TODO: Remove this line
                     void HandleCharacterSelectionRequest()
                     {
-                        uiSystem.UiEventHandler.CharacterSelectionMenu.SetUnlockedCharacters(dataSystem.GetUnlockedHeroes());
-                        uiSystem.UiEventHandler.CharacterSelectionMenu.Open();
+                        //uiSystem.UiEventHandler.CharacterSelectionMenu.SetUnlockedCharacters(dataSystem.GetUnlockedHeroes());
+                        //uiSystem.UiEventHandler.CharacterSelectionMenu.Open();
                     }
                     
                     uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed += HandleGameStartRequest;
-                    uiSystem.UiEventHandler.MainMenu.OnCharacterSelectButtonPressed +=
-                        HandleCharacterSelectionRequest;
-                   
-                    
+
+                    uiSystem.UiEventHandler.MainMenu.UpdateGoldText(dataSystem.CurrencyManager.GetCurrencyAmount("GP"));
+                    //uiSystem.UiEventHandler.MainMenu.UpdateGoldText(dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gold));
+
+                    //TODO: Remove this line
+                    // uiSystem.UiEventHandler.MainMenu.OnCharacterSelectButtonPressed += HandleCharacterSelectionRequest;
+
+                    //  uiSystem.UiEventHandler.MainMenu.OnCharacterSelected += dataSystem.CharacterManager.ToggleCharacterSelected;
+
+
                     break;
                 case StackAction.Paused:
                     break;

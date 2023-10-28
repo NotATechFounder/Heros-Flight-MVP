@@ -5,6 +5,12 @@ using Pelumi.Juicer;
 
 public class SliderHelper : MonoBehaviour
 {
+    [Header("Settings")]
+    [SerializeField] Image icon;
+    [SerializeField] Sprite isOnSprite;
+    [SerializeField] Sprite isOffSprite;
+
+    [Header("References")]
     [SerializeField] private Slider _slider;
     [SerializeField] private AdvanceButton _button;
     [SerializeField] private float _durationAnimation = 0.3f;
@@ -23,6 +29,7 @@ public class SliderHelper : MonoBehaviour
 
     private void UpdateValue(bool notify = true)
     {
-        _slider.JuicyValue(notify ==  true? 1 : 0, _durationAnimation).Start();
+        _slider.JuicyValue(notify ? 1 : 0, _durationAnimation).Start();
+        icon.sprite = notify ? isOnSprite : isOffSprite;
     }
 }

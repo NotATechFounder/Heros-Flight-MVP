@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Pool;
 using Pelumi.ObjectPool;
+using Plugins.Audio_System;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class AudioManager : MonoBehaviour
 {
@@ -12,6 +14,11 @@ public class AudioManager : MonoBehaviour
     [Header("Audio Sources")]
     [SerializeField] private AudioSource musicPlayer;
     [SerializeField] private AudioSource soundEffectPlayer;
+    [SerializeField] AudioSource combatSource;
+    [SerializeField] AudioSource heroSource;
+    [SerializeField] AudioSource itemsSource;
+    [SerializeField] AudioSource uiSource;
+    [SerializeField] AudioSource environmentSource;
     [SerializeField] private AudioMixer audioMixer;
     [SerializeField] private float musicMaxVolume = 1f;
 
@@ -40,6 +47,11 @@ public class AudioManager : MonoBehaviour
     {
         musicPlayer.outputAudioMixerGroup = audioMixer.FindMatchingGroups("Music")[0];
         soundEffectPlayer.outputAudioMixerGroup = audioMixer.FindMatchingGroups("Sound Effects")[0];
+        combatSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("Combat")[0];
+        heroSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("Hero")[0];
+        itemsSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("Items")[0];
+        uiSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("UI")[0];
+        environmentSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("Environment")[0];
     }
 
     public void SetMusicVolume(float volume)
@@ -80,7 +92,7 @@ public class AudioManager : MonoBehaviour
 
     private void PlayButtonSoundEffect()
     {
-        PlaySoundEffect("Button Click");
+        PlaySoundEffect("Button Click",SoundEffectCategory.UI);
     }
 
     private IEnumerator PlayMusicFade(AudioClip audioClip, bool loop = true, float fadeDuration = 1.0f)
@@ -154,16 +166,35 @@ public class AudioManager : MonoBehaviour
 
     public AudioSource GetSfxAudioSource() => soundEffectPlayer;
 
-    public static void PlaySoundEffect(string audioID, bool randomPitch = false)
+    public static void PlaySoundEffect(string audioID,SoundEffectCategory category, bool randomPitch = false)
     {
-        PlaySoundEffect(GetSoundEffectClip(audioID), randomPitch);
+        PlaySoundEffect(GetSoundEffectClip(audioID),category, randomPitch);
     }
 
-    public static void PlaySoundEffect(AudioClip audioClip ,bool randomPitch = false)
+    public static void PlaySoundEffect(AudioClip audioClip ,SoundEffectCategory category,bool randomPitch = false)
     {
         if (Instance == null) return;
         Instance.soundEffectPlayer.pitch = randomPitch ? Random.Range(0.8f, 1.2f) : 1;
-        Instance.soundEffectPlayer.PlayOneShot(audioClip);
+        switch (category)
+        {
+            case SoundEffectCategory.Hero:
+                Instance.heroSource.PlayOneShot(audioClip);
+                break;
+            case SoundEffectCategory.Combat:
+                Instance.combatSource.PlayOneShot(audioClip);
+                break;
+            case SoundEffectCategory.Items:
+                Instance.itemsSource.PlayOneShot(audioClip);
+                break;
+            case SoundEffectCategory.UI:
+                Instance.uiSource.PlayOneShot(audioClip);
+                break;
+            case SoundEffectCategory.Environment:
+                Instance.environmentSource.PlayOneShot(audioClip);
+                break;
+        }
+
+        return;
     }
 
     public static void PlayMusic(string ID, bool loop = true)

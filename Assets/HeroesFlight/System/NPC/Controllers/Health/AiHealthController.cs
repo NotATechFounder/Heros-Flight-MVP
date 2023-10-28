@@ -1,5 +1,6 @@
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.NPC.Controllers;
+using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -23,9 +24,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             aiController.Disable();
         }
 
-        public override void DealDamage(DamageModel damage)
+        public override void TryDealDamage(HealthModificationIntentModel healthModificationIntent)
         {
-            base.DealDamage(damage);
+            base.TryDealDamage(healthModificationIntent);
             aiController.Aggravate();
             aiController.ProcessKnockBack();
             

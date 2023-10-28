@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
@@ -30,7 +31,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 : baseDamage;
 
             var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
-            var damageModel = new DamageModel(damageToDeal, type, AttackType.Regular);
+            var damageModel = new HealthModificationIntentModel(damageToDeal, type,
+                AttackType.Regular,DamageCalculationType.Flat);
             for (int i = 0; i < hits; i++)
             {
                 if (colliders[i].TryGetComponent<IHealthController>(out var health))

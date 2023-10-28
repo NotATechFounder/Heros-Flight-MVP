@@ -27,7 +27,7 @@ namespace UISystem
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
-            closeEffectBG.SetOnComplected(CloseMenu);
+            closeEffectBG.SetOnCompleted(CloseMenu);
 
             settingsButton.onClick.AddListener(() => OnSettingsButtonClicked?.Invoke());
             closeButton.onClick.AddListener(() => OnResumeButtonClicked?.Invoke());

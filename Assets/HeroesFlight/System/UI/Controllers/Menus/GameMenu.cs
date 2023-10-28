@@ -4,25 +4,41 @@ using UnityEngine.UI;
 using System;
 using Pelumi.Juicer;
 using System.Collections;
+using HeroesFlight.Common.Enum;
+using Plugins.Audio_System;
 using StansAssets.Foundation.Async;
+using UnityEngine.Serialization;
 
 namespace UISystem
 {
     public class GameMenu : BaseMenu<GameMenu>
     {
-     //   public Func<float> GetCoinText;
+        public enum InfoMessageType
+        {
+            Start,
+            Complete,
+            TimeUp
+        }
+
+        //   public Func<float> GetCoinText;
 
         public event Action OnSingleLevelUpComplete;
         public event Action OnPauseButtonClicked;
         public event Action OnSpecialAttackButtonClicked;
         public event Action<int> OnLevelUpComplete;
+        public event Action OnUpdateXpBarCompleted;
+
+        public event Action OnSkillOneButtonClicked;
 
         private Action OnEndTransitionHalfComplete;
         private Action OnEndTransitionComplete;
 
         [Header("CountDown")]
-        [SerializeField] private GameObject countDownPanel;
-        [SerializeField] private TextMeshProUGUI countDownText;
+        [SerializeField] private GameObject infoPanel;
+        [SerializeField] private Image infoImage;
+        [SerializeField] private Sprite goSprite;
+        [SerializeField] private Sprite CompletedSprite;
+        [SerializeField] private Sprite timeOutSprite;
 
         [Header("Gameplay")]
         [SerializeField] private TextMeshProUGUI coinText;
@@ -31,50 +47,60 @@ namespace UISystem
         [SerializeField] private AdvanceButton pauseButton;
 
         [Header("level Progress")]
-        [SerializeField] private GameObject levelProgressPanel;
+        [SerializeField]
+        private GameObject levelProgressPanel;
+
         [SerializeField] private TextMeshProUGUI levelProgressText;
         [SerializeField] private Image levelProgressFill;
 
         [Header("Combo Counter")]
-        [SerializeField] private GameObject comboCounterPanel;
+        [SerializeField]
+        private GameObject comboCounterPanel;
+
         [SerializeField] private ComboFeedback[] comboFeedbacks;
         [SerializeField] private TextMeshProUGUI comboCounterText;
         [SerializeField] private TextMeshProUGUI comboFeedbackText;
 
-        [Header("Boss")]
-        [SerializeField] private GroupImageFill bossHealthFill;
+        [Header("Boss")][SerializeField] private GroupImageFill bossHealthFill;
 
         [SerializeField] GameObject bossCanvas;
 
+        [FormerlySerializedAs("minibossPanel")]
         [Header("Warning")]
         [SerializeField] private GameObject warningPanel;
+        [SerializeField] GameObject minibosspanel;
+        [SerializeField] GameObject bosspanel;
 
         [Header("Special Attack")]
-        [SerializeField] private AdvanceButton specialAttackButton;
+        [SerializeField]
+        private AdvanceButton specialAttackButton;
+
         [SerializeField] private Image specialAttackButtonFill;
         [SerializeField] private Image specialAttackIcon;
+
+        [Header("Skills")]
+        [SerializeField] private AdvanceButton skillOneButton;
+        [SerializeField] private Image skillOneButtonFill;
 
         [Header("Boosters")]
         [SerializeField] private BoosterUI[] boosterButtons;
 
-        [Header("Transition")]
-        [SerializeField] private AnimationCurve transitionCurve;
+        [Header("Transition")][SerializeField] private AnimationCurve transitionCurve;
         [SerializeField] private GameObject transitionPanel;
         [SerializeField] private CanvasGroup transitionCanvasGroup;
-        
+
+        public TextMeshProUGUI CoinText => coinText;
+
         JuicerRuntime openEffect;
         JuicerRuntime closeEffect;
-        JuicerRuntime countDownEffect;
+        JuicerRuntime InfoEffect;
         JuicerRuntime comboCounterEffect;
         JuicerRuntime comboFeedbackEffect;
         JuicerRuntime specialEffect;
         JuicerRuntime specialIconEffect;
         JuicerRuntimeCore<float> levelProgressEffect;
         JuicerRuntime transitionEffect;
-
-        private bool isExpComplete;
-
-        public bool IsExpComplete => isExpComplete;
+        JuicerRuntime skillOneEffect;
 
         public override void OnCreated()
         {
@@ -83,9 +109,9 @@ namespace UISystem
 
             closeEffect = canvasGroup.JuicyAlpha(0, 0.5f);
             closeEffect.SetOnStart(() => canvasGroup.alpha = 1);
-            closeEffect.SetOnComplected(CloseMenu);
+            closeEffect.SetOnCompleted(CloseMenu);
 
-            countDownEffect = countDownText.transform.JuicyScale(1f, 0.1f);
+            InfoEffect = infoImage.transform.JuicyScale(1f, .5f);
 
             comboCounterEffect = comboCounterText.transform.JuicyScale(1f, 0.1f);
 
@@ -93,10 +119,10 @@ namespace UISystem
 
             specialEffect = specialAttackButtonFill.JuicyAlpha(0, 0.25f);
             specialEffect.SetEase(Ease.EaseInBounce);
-            specialEffect.SetLoop( -1);
+            specialEffect.SetLoop(-1);
 
             specialIconEffect = specialAttackIcon.transform.JuicyScale(5f, 0.25f);
-            specialIconEffect.SetOnComplected(() => ToggleSpecialAttackButton(false));
+            specialIconEffect.SetOnCompleted(() => ToggleSpecialAttackButton(false));
 
             pauseButton.onClick.AddListener(() => OnPauseButtonClicked?.Invoke());
 
@@ -111,11 +137,17 @@ namespace UISystem
             {
                 OnEndTransitionHalfComplete?.Invoke();
             });
-            transitionEffect.SetOnComplected(() =>
+            transitionEffect.SetOnCompleted(() =>
             {
                 OnEndTransitionComplete?.Invoke();
                 transitionPanel.gameObject.SetActive(false);
             });
+
+            skillOneButton.onClick.AddListener(SkillOneButtonClicked);
+
+            skillOneEffect = skillOneButtonFill.JuicyAlpha(0, 0.25f);
+            skillOneEffect.SetEase(Ease.EaseInBounce);
+            skillOneEffect.SetLoop(-1);
 
             ResetMenu();
         }
@@ -125,7 +157,7 @@ namespace UISystem
             ResetMenu();
             openEffect.Start();
 
-           // UpdateCoinText(GetCoinText());
+            // UpdateCoinText(GetCoinText());
         }
 
         public override void OnClosed()
@@ -151,28 +183,31 @@ namespace UISystem
             }
         }
 
-        public void UpateCountDownText(int value)
+        public void DisplayInfoMessage(InfoMessageType infoMessageType, float duration = 1.5f)
         {
-            countDownEffect.Start(() => countDownText.transform.localScale = Vector3.zero);
+            Sprite message = null;
 
-            countDownPanel.gameObject.SetActive(value > 0);
-
-            if (Mathf.CeilToInt(value) == 1)
+            switch (infoMessageType)
             {
-                countDownText.text = "Start!";
+                case InfoMessageType.Start:
+                    message = goSprite;
+                    break;
+                case InfoMessageType.Complete:
+                    message = CompletedSprite;
+                    break;
+                case InfoMessageType.TimeUp:
+                    message = timeOutSprite;
+                    break;
             }
-            else
-            {
-                countDownText.text = Mathf.CeilToInt(value - 1).ToString();
-            }
-        }
 
-        public void DisplayLevelMessage(string message, float duration = 1.5f)
-        {
-            countDownEffect.Start(() => countDownText.transform.localScale = Vector3.zero);
-            countDownPanel.gameObject.SetActive(true);
-            countDownText.text = message;
-            CoroutineUtility.WaitForSeconds(duration, () => countDownPanel.gameObject.SetActive(false));
+            InfoEffect.Start(() =>
+            {
+                infoImage.transform.localScale = Vector3.zero;
+                infoImage.sprite = message;
+                infoPanel.gameObject.SetActive(true);
+            });
+
+            CoroutineUtility.WaitForSeconds(duration, () => infoPanel.gameObject.SetActive(false));
         }
 
         public void UpdateCoinText(float value)
@@ -184,6 +219,7 @@ namespace UISystem
         {
             float minutes = Mathf.FloorToInt(value / 60);
             float seconds = Mathf.FloorToInt(value % 60);
+
             //timerText.text = (minutes == 0) ? $"{seconds.ToString("F0")}s" : $"{minutes:00}m : {seconds:00}s";
             timerText.text = (minutes == 0) ? $"{seconds.ToString("F0")}" : $"{minutes:00} : {seconds:00}";
         }
@@ -200,7 +236,7 @@ namespace UISystem
 
         public void UpdateComboCounterText(int value)
         {
-            comboCounterEffect.Start(()=> comboCounterText.transform.localScale = Vector3.zero);
+            comboCounterEffect.Start(() => comboCounterText.transform.localScale = Vector3.zero);
             comboCounterText.text = "x" + value.ToString();
             comboCounterPanel.SetActive(value != 0);
 
@@ -229,36 +265,12 @@ namespace UISystem
             levelProgressText.text = value.ToString();
         }
 
-        public void UpdateExpBar(float value)
+        public void UpdateExpBar(int currentLevel, int numberOfLevelInc, float value)
         {
-            isExpComplete = false;
-            StartCoroutine(UpdateExpBarRoutine(value));
+            StartCoroutine(UpdateExpBarRoutine(currentLevel, numberOfLevelInc, value));
         }
 
-        public IEnumerator UpdateExpBarRoutine(float value)
-        {
-            levelProgressPanel.SetActive(true);
-            yield return new WaitForSeconds(0.5f);
-
-            AudioManager.PlaySoundEffect("ExperienceUp");
-            levelProgressEffect.StartNewDestination(value);
-
-            yield return new WaitUntilJuicerComplected(levelProgressEffect);
-
-            yield return new WaitForSeconds(0.25f);
-            levelProgressPanel.SetActive(false);
-            isExpComplete = true;
-            yield return new WaitForSeconds(0.1f);
-            isExpComplete = false;
-        }
-
-        public void UpdateExpBarLevelUp(int currentLevel, int numberOfLevelInc, float value)
-        {
-            isExpComplete = false;
-            StartCoroutine(UpdateExpBarLevelUpRoutine(currentLevel, numberOfLevelInc, value));
-        }
-
-        public IEnumerator UpdateExpBarLevelUpRoutine(int currentLevel, int numberOfLevelInc, float value)
+        public IEnumerator UpdateExpBarRoutine(int currentLevel, int numberOfLevelInc, float value)
         {
             levelProgressPanel.SetActive(true);
             yield return new WaitForSeconds(0.5f);
@@ -269,9 +281,9 @@ namespace UISystem
                 OnSingleLevelUpComplete?.Invoke();
                 levelProgressEffect.StartNewDestination(1f);
 
-                AudioManager.PlaySoundEffect("LevelUp");
+                AudioManager.PlaySoundEffect("LevelUp", SoundEffectCategory.UI);
 
-                yield return new WaitUntilJuicerComplected(levelProgressEffect);
+                yield return new WaitUntilJuicerCompleted(levelProgressEffect);
 
                 yield return new WaitForSeconds(0.1f);
 
@@ -283,17 +295,15 @@ namespace UISystem
 
             if (value > 0)
             {
-                AudioManager.PlaySoundEffect("ExperienceUp");
+                AudioManager.PlaySoundEffect("ExperienceUp", SoundEffectCategory.UI);
                 levelProgressEffect.StartNewDestination(value);
-                yield return new WaitUntilJuicerComplected(levelProgressEffect);
+                yield return new WaitUntilJuicerCompleted(levelProgressEffect);
             }
 
             yield return new WaitForSeconds(1f);
             levelProgressPanel.SetActive(false);
-            OnLevelUpComplete?.Invoke(currentLevel + numberOfLevelInc);
-            isExpComplete = true;
-            yield return new WaitForSeconds(0.1f);
-            isExpComplete = false;
+            if (numberOfLevelInc != 0) OnLevelUpComplete?.Invoke(currentLevel + numberOfLevelInc);
+            OnUpdateXpBarCompleted?.Invoke();
         }
 
         public void UpdateBossHealthFill(float value)
@@ -301,11 +311,27 @@ namespace UISystem
             bossHealthFill.SetValue(value);
         }
 
-        public void ShowMiniBossWarning()
+        public void ShowMiniBossWarning(EncounterType encounterType)
         {
+            switch (encounterType)
+            {
+                case EncounterType.Miniboss:
+                    minibosspanel.SetActive(true);
+                    break;
+                case EncounterType.Boss:
+                    bosspanel.SetActive(true);
+                    break;
+            }
+
             warningPanel.SetActive(true);
 
-            CoroutineUtility.WaitForSeconds(1.5f, () => warningPanel.SetActive(false));
+            CoroutineUtility.WaitForSeconds(1.5f, () =>
+                {
+                    warningPanel.SetActive(false);
+                    minibosspanel.SetActive(false);
+                    bosspanel.SetActive(false);
+                }
+            );
         }
 
         public void ToggleBossHpBar(bool isEnabled)
@@ -324,12 +350,14 @@ namespace UISystem
             switch (value)
             {
                 case true:
-                    specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r, specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
+                    specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r,
+                        specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
                     specialEffect.Start();
                     break;
                 case false:
                     specialEffect.Pause();
-                    specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r, specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
+                    specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r,
+                        specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
                     specialAttackIcon.transform.localScale = Vector3.one;
                     break;
             }
@@ -338,17 +366,45 @@ namespace UISystem
         private void SpecialAttackButtonClicked()
         {
             if (specialAttackButtonFill.fillAmount < 1) return;
-            
+
             specialAttackButtonFill.fillAmount = 0;
             specialIconEffect.Start();
             OnSpecialAttackButtonClicked?.Invoke();
+        }
+
+        private void SkillOneButtonClicked()
+        {
+            if (skillOneButtonFill.fillAmount < 1) return;
+            OnSkillOneButtonClicked?.Invoke();
+        }
+
+        public void UpdateSkillOneFill(float normalisedValue)
+        {
+            skillOneButtonFill.fillAmount = normalisedValue;
+
+            if (!skillOneEffect.IsPaused)
+            {
+                skillOneEffect.Pause();
+                skillOneButtonFill.color = new Color(skillOneButtonFill.color.r, skillOneButtonFill.color.g, skillOneButtonFill.color.b, 1);
+            }
+        }
+
+        public void UpdateSkillOneFillCoolDown(float normalisedValue)
+        {
+            skillOneButtonFill.fillAmount = 1 - normalisedValue;
+
+            if (skillOneButtonFill.fillAmount >= 1)
+            {
+                skillOneButtonFill.color = new Color(skillOneButtonFill.color.r, skillOneButtonFill.color.g, skillOneButtonFill.color.b, 1);
+                skillOneEffect.Start();
+            }
         }
 
         public void ShowTransition(Action OntransitionHalf, Action OnEndTransition = null)
         {
             OnEndTransitionHalfComplete = OntransitionHalf;
             OnEndTransitionComplete = OnEndTransition;
-            transitionEffect.Start(()=> transitionCanvasGroup.alpha = 0);
+            transitionEffect.Start(() => transitionCanvasGroup.alpha = 0);
         }
 
         public void VisualiseBooster(BoosterContainer boosterContainer)

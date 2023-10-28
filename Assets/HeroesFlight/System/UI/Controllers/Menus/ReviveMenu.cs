@@ -15,7 +15,6 @@ namespace UISystem
 
         [SerializeField] private int countDownTime = 5;
         [SerializeField] private TextMeshProUGUI countDownText;
-        [SerializeField] private Image countDownImage;
         [SerializeField] private AdvanceButton closeButton;
         [SerializeField] private AdvanceButton watchAdsButton;
         [SerializeField] private AdvanceButton gemButton;
@@ -33,7 +32,7 @@ namespace UISystem
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
-            closeEffectBG.SetOnComplected(CloseMenu);
+            closeEffectBG.SetOnCompleted(CloseMenu);
 
             closeButton.onClick.AddListener(CloseButtonAction);
 
@@ -63,11 +62,10 @@ namespace UISystem
 
         public override void OnOpened()
         {
-            countDownImage.fillAmount = 1;
             countDownText.text = countDownTime.ToString("0");
             canvasGroup.alpha = 0;
             openEffectBG.Start();
-            openEffectBG.SetOnComplected(StartTimer);
+            openEffectBG.SetOnCompleted(StartTimer);
         }
 
         public override void OnClosed()
@@ -89,8 +87,6 @@ namespace UISystem
                     countDownTextEffect.Start();
                     countDownText.text = Mathf.CeilToInt(current).ToString();
                 }
-
-                countDownImage.fillAmount = startTimer.GetNormalizedTime;
 
             }, () =>
             {

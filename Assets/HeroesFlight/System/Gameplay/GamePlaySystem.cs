@@ -4,19 +4,27 @@ using System.Collections.Generic;
 using Cinemachine;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Combat;
+using HeroesFlight.System.Combat.Enum;
+using HeroesFlight.System.Combat.Model;
 using HeroesFlight.System.Environment;
 using HeroesFlight.System.FileManager.Enum;
 using HeroesFlight.System.FileManager.Model;
 using HeroesFlight.System.Gameplay.Container;
+using HeroesFlight.System.Gameplay.Controllers.Sound;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC;
+using HeroesFlight.System.NPC.Controllers.Ability;
 using HeroesFlight.System.NPC.Controllers.Control;
 using HeroesFlight.System.NPC.Model;
+using HeroesFlight.System.Stats;
+using HeroesFlight.System.UI;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
 using Pelumi.ObjectPool;
+using Plugins.Audio_System;
 using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
@@ -26,96 +34,83 @@ namespace HeroesFlight.System.Gameplay
 {
     public class GamePlaySystem : GamePlaySystemInterface
     {
-        public GamePlaySystem(DataSystemInterface dataSystemInterface, CharacterSystemInterface characterSystem,
-            NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem)
+        public GamePlaySystem(DataSystemInterface dataSystem, CharacterSystemInterface characterSystem,
+            NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem,
+            CombatSystemInterface combatSystem,
+            IUISystem uiSystem, ProgressionSystemInterface progressionSystem)
         {
-            this.dataSystemInterface = dataSystemInterface;
+            this.dataSystem = dataSystem;
             this.npcSystem = npcSystem;
             this.characterSystem = characterSystem;
             this.environmentSystem = environmentSystem;
-            npcSystem.OnEnemySpawned += HandleEnemySpawned;
+            this.combatSystem = combatSystem;
+            this.uiSystem = uiSystem;
+            this.progressionSystem = progressionSystem;
+            this.npcSystem.OnEnemySpawned += HandleEnemySpawned;
+            this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
+            this.combatSystem.OnEntityDied += HandleEntityDied;
+            this.uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
+            this.uiSystem.OnReviveCharacterRequest += ReviveCharacter;
         }
 
-        public event Action OnNextLvlLoadRequest;
-        public CountDownTimer GameTimer { get; private set; }
-        public AngelEffectManager EffectManager { get; private set; }
+        CountDownTimer GameTimer;
+        AngelEffectManager EffectManager;
+        GodsBenevolence GodsBenevolence;
+        GameEffectController GameEffectController;
 
-        public BoosterManager BoosterManager { get; private set; }
 
-        public HeroProgression HeroProgression { get; private set; }
-
-        public GodsBenevolence GodsBenevolence { get; private set; }
-
-        public GameEffectController  GameEffectController { get; private set; }
-
-        public int CurrentLvlIndex => container.CurrentLvlIndex;
-
-        public int MaxLvlIndex => container.MaxLvlIndex;
-
-        public Vector2 GetPlayerSpawnPosition => currentLevelEnvironment
-            .GetSpawnpoint(HeroesFlightProject.System.NPC.Enum.SpawnType.Player).GetSpawnPosition();
-
-        public event Action<float> OnUltimateChargesChange;
-        public event Action<bool> OnMinibossSpawned;
-        public event Action<float> OnMinibossHealthChange;
-
-        public event Action<int> OnRemainingEnemiesLeft;
-        public event Action<DamageModel> OnCharacterDamaged;
-        public event Action<float, Transform> OnCharacterHeal;
-        public event Action<DamageModel> OnEnemyDamaged;
-        public event Action<int> OnCharacterHealthChanged;
-        public event Action<int> OnCharacterComboChanged;
-        public event Action<GameState> OnGameStateChange;
-        public event Action<BoosterSO, float, Transform> OnBoosterActivated;
-        public event Action<int> OnCoinsCollected;
-        public event Action<BoosterContainer> OnBoosterContainerCreated;
-        public event Action<int> OnCountDownTimerUpdate;
-        public event Action<float> OnGameTimerUpdate;
-        public event Action OnEnterMiniBossLvl;
-
-        DataSystemInterface dataSystemInterface;
-
-        List<IHealthController> activeEnemyHealthControllers = new();
-        IHealthController miniBoss;
-        IHealthController characterHealthController;
-        BossControllerBase boss;
-        BaseCharacterAttackController characterAttackController;
-        CharacterStatController characterStatController;
-        CharacterVFXController characterVFXController;
-        CharacterAbilityInterface characterAbility;
-        CharacterSystemInterface characterSystem;
-        CameraControllerInterface cameraController;
+        DataSystemInterface dataSystem;
         EnvironmentSystemInterface environmentSystem;
         NpcSystemInterface npcSystem;
+        CombatSystemInterface combatSystem;
+        IUISystem uiSystem;
+        ProgressionSystemInterface progressionSystem;
+        CharacterSystemInterface characterSystem;
+
         GameplayContainer container;
+
+        IHealthController characterHealthController;
+
+        BaseCharacterAttackController characterAttackController;
+
+        CharacterVFXController characterVFXController;
+
+        CameraControllerInterface cameraController;
+
+        HitEffectPlayerInterface hitEffectsPlayer;
+
+        BossControllerBase boss;
+
         GameState currentState;
-        float timeSinceLastStrike;
-        float timeToResetCombo = 3f;
-        int characterComboNumber;
+
         int enemiesToKill;
-        int wavesAmount;
-        Coroutine combotTimerRoutine;
-        int collectedGold;
-        float collectedXp;
+        int CurrentLvlIndex => container.CurrentLvlIndex;
+
+        int MaxLvlIndex => container.MaxLvlIndex;
+
+        public Vector2 GetPlayerSpawnPosition => currentLevelEnvironment
+            .GetSpawnpoint(SpawnType.Player).GetSpawnPosition();
+
         float collectedHeroProgressionSp;
+
         float countDownDelay;
+
         LevelEnvironment currentLevelEnvironment;
+
         Level currentLevel;
-        List<Crystal> crystals = new List<Crystal>();
+
+        List<Environment.Objects.Crystal> crystals = new();
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
             EffectManager = scene.GetComponentInChildren<AngelEffectManager>();
             container = scene.GetComponentInChildren<GameplayContainer>();
-            BoosterManager = scene.GetComponentInChildren<BoosterManager>();
-            BoosterManager.OnBoosterActivated += HandleBoosterActivated;
-            BoosterManager.OnBoosterContainerCreated += HandleBoosterWithDurationActivated;
-
-            HeroProgression = scene.GetComponentInChildren<HeroProgression>();
-
+            hitEffectsPlayer = container.GetComponent<StackableSoundPlayer>();
+           
+            progressionSystem.BoosterManager.OnBoosterActivated += HandleBoosterActivated;
+            progressionSystem.BoosterManager.OnBoosterContainerCreated += HandleBoosterWithDurationActivated;
             GodsBenevolence = scene.GetComponentInChildren<GodsBenevolence>();
-
             GameEffectController = scene.GetComponentInChildren<GameEffectController>();
 
             container.Init();
@@ -124,45 +119,179 @@ namespace HeroesFlight.System.Gameplay
 
             npcSystem.NpcContainer.SetMobDifficultyHolder(container.CurrentModel.MobDifficulty);
 
-            OnUltimateChargesChange?.Invoke(0);
+            uiSystem.UpdateUltimateButtonFill(0);
 
             GameTimer = new CountDownTimer(container);
 
             environmentSystem.CurrencySpawner.OnCollected = HandleCurrencyCollected;
 
-            environmentSystem.BoosterSpawner.ActivateBooster = BoosterManager.ActivateBooster;
+            environmentSystem.BoosterSpawner.ActivateBooster =  progressionSystem.BoosterManager.ActivateBooster;
+
+            EffectManager.OnTrigger += uiSystem.UiEventHandler.AngelGambitMenu.Open;
+            EffectManager.OnPermanetCard +=
+                uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
+            uiSystem.UiEventHandler.AngelGambitMenu.CardExit += EffectManager.Exists;
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += EffectManager.AddAngelCardSO;
+            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
+
+            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes += () =>
+                progressionSystem.Progression.HeroProgressionAttributeInfos;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent +=
+                progressionSystem.Progression.DecrementAttributeSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent +=
+                progressionSystem.Progression.IncrementAttributeSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=
+                progressionSystem.Progression.Confirm;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed +=
+                progressionSystem.Progression.ResetSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=
+                HeroProgressionCompleted;
+            progressionSystem.Progression.OnEXPAdded +=
+                uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
+            progressionSystem.Progression.OnSpChanged +=
+                uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
+            uiSystem.UiEventHandler.PuzzleMenu.OnPuzzleSolved +=
+                GodsBenevolence.ActivateGodsBenevolence;
+            uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += StoreRunReward;
+            uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete += HandleSingleLevelUp;
+            uiSystem.OnRestartLvlRequest += HandleLvlRestart;
+            uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += ContinueGameLoop;
+            uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
+            uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
+
+          
 
             OnComplete?.Invoke();
+        }
+
+        /// <summary>
+        /// Used to start game from first lvl
+        /// </summary>
+        public void StartGameSession()
+        {
+            uiSystem.UiEventHandler.GameMenu.Open();
+            CoroutineUtility.WaitForSeconds(1f, () => // Run the first time the game is loaded
+            {
+                uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level transition
+                    {
+                        uiSystem.UiEventHandler.LoadingMenu.Close();
+                        ResetLogic();
+                        PreloadLvl();
+                        SetupCharacter();
+                    }
+                    , ContinueGameLoop);
+            });
         }
 
         public void Reset()
         {
             ResetLogic();
-            ResetPlayerSubscriptions();
+            ResetConnections();
             container.SetStartingIndex(0);
         }
 
-
-        void ResetPlayerSubscriptions()
+        /// <summary>
+        /// Used when any entity in game received died
+        /// </summary>
+        /// <param name="deathModel"></param>
+        void HandleEntityDied(EntityDeathModel deathModel)
         {
-            characterHealthController.OnDeath -= HandleCharacterDeath;
-            characterHealthController.OnBeingDamaged -= HandleCharacterDamaged;
-            characterHealthController.OnHeal -= HandleCharacterHeal;
+            switch (deathModel.EntityType)
+            {
+                case CombatEntityType.Player:
+                    HandleCharacterDeath();
+                    break;
+                case CombatEntityType.Mob:
+                    HandleEnemyDeath(deathModel.Position);
+                    break;
+                case CombatEntityType.MiniBoss:
+                    HandleEnemyDeath(deathModel.Position);
+                    SpawnLootFromMiniboss(deathModel.Position);
+                    break;
+                case CombatEntityType.Boss:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Used when any entity in game received damage
+        /// </summary>
+        /// <param name="damageModel"></param>
+        void HandleEntityReceivedDamage(EntityDamageReceivedModel damageModel)
+        {
+            switch (damageModel.EntityType)
+            {
+                case CombatEntityType.Player:
+                    HandleCharacterDamaged(damageModel.DamageIntentModel);
+                    break;
+                case CombatEntityType.Mob:
+                    HandleEnemyDamaged(damageModel.DamageIntentModel);
+                    break;
+                case CombatEntityType.MiniBoss:
+                    HandleEnemyDamaged(damageModel.DamageIntentModel);
+                    HandleMinibossHealthChange(damageModel.HealthPercentagePercentageLeft);
+                    break;
+                case CombatEntityType.Boss:
+                    HandleEnemyDamaged(damageModel.DamageIntentModel);
+                    break;
+                case CombatEntityType.TempMob:
+                    HandleEnemyDamaged(damageModel.DamageIntentModel);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Resets session subscriptions
+        /// </summary>
+        void ResetConnections()
+        {
+            EffectManager.OnTrigger -= uiSystem.UiEventHandler.AngelGambitMenu.Open;
+            EffectManager.OnPermanetCard -=
+                uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
+            uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= EffectManager.Exists;
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= EffectManager.AddAngelCardSO;
+            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
+
+            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -= () =>
+                progressionSystem.Progression.HeroProgressionAttributeInfos;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent -=
+                progressionSystem.Progression.DecrementAttributeSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent -=
+                progressionSystem.Progression.IncrementAttributeSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=
+                progressionSystem.Progression.Confirm;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -=
+                progressionSystem.Progression.ResetSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=
+                HeroProgressionCompleted;
+            progressionSystem.Progression.OnEXPAdded -=
+                uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
+            progressionSystem.Progression.OnSpChanged -=
+                uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
+            uiSystem.UiEventHandler.PuzzleMenu.OnPuzzleSolved -=
+                GodsBenevolence.ActivateGodsBenevolence;
+            uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= StoreRunReward;
+            uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= HandleSingleLevelUp;
+            uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= ContinueGameLoop;
+            uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked -= HandleGameLoopFinish;
+            uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted -= HandleGameLoopFinish;
+
+            characterAttackController.OnHitTarget -= OnEnemyHitSuccess;
             characterHealthController.OnDodged -= HandleCharacterDodged;
             characterAttackController = null;
             characterHealthController = null;
-            characterAbility = null;
         }
 
-        public void ResetLogic()
+        /// <summary>
+        /// Used to reset cached logic
+        /// </summary>
+         void ResetLogic()
         {
-            activeEnemyHealthControllers.Clear();
-
+            environmentSystem.CurrencySpawner.ResetItems();
             foreach (var crystal in crystals)
             {
                 IHealthController healthController = crystal.GetComponent<IHealthController>();
                 healthController.OnBeingHitDamaged -= HandleCrystalHit;
-
                 ObjectPoolManager.ReleaseObject(crystal);
             }
 
@@ -174,29 +303,33 @@ namespace HeroesFlight.System.Gameplay
             enemiesToKill = 0;
             GameTimer.Stop();
             ChangeState(GameState.Ended);
-            OnMinibossSpawned?.Invoke(false);
-            if (combotTimerRoutine != null)
-                CoroutineUtility.Stop(combotTimerRoutine);
+            uiSystem.ToggleSpecialEnemyHealthBar(false);
         }
 
-        public void EnablePortal()
+        /// <summary>
+        /// Used to enable character controller movement
+        /// </summary>
+        void EnableMovement()
         {
-            container.EnablePortal(currentLevelEnvironment
-                .GetSpawnpoint(HeroesFlightProject.System.NPC.Enum.SpawnType.Portal).GetSpawnPosition());
+            characterSystem.SetCharacterControllerState(true);
         }
 
-        public void UseCharacterSpecial()
+        /// <summary>
+        /// Used to trigger character's ultimate ability
+        /// </summary>
+        void UseCharacterSpecial()
         {
             if (characterHealthController.IsDead())
                 return;
 
-            cameraController.SetCameraState(GameCameraType.Skill);
-            characterHealthController.SetInvulnerableState(true);
-            characterSystem.SetCharacterControllerState(false);
-            characterAttackController.ToggleControllerState(false);
-            environmentSystem.ParticleManager.Spawn(characterSystem.CurrentCharacter.CharacterSO.VFXData.UltVfx,
-                characterSystem.CurrentCharacter.CharacterTransform.position, Quaternion.Euler(new Vector3(-90, 0, 0)));
-            characterAbility.UseAbility(() =>
+
+            combatSystem.UseCharacterUltimate(() =>
+            {
+                cameraController.SetCameraState(GameCameraType.Skill);
+                characterHealthController.SetInvulnerableState(true);
+                characterSystem.SetCharacterControllerState(false);
+                characterAttackController.ToggleControllerState(false);
+            }, () =>
             {
                 cameraController.SetCameraState(GameCameraType.Character);
                 characterSystem.SetCharacterControllerState(true);
@@ -205,18 +338,20 @@ namespace HeroesFlight.System.Gameplay
             });
         }
 
-        public void CreateCharacter()
-        {
-            SetupCharacter();
-        }
 
-        public void ReviveCharacter()
+        void ReviveCharacter()
         {
-            characterHealthController.Revive();
+            combatSystem.RevivePlayer();
             GameTimer.Resume();
             ChangeState(GameState.Ongoing);
+            uiSystem.UiEventHandler.ReviveMenu.Close();
         }
-
+        
+        /// <summary>
+        /// Used to load next lvl model
+        /// </summary>
+        /// <param name="currentLevel"> regerenced model</param>
+        /// <returns>true if next lvl model exists</returns>
         bool CheckLevel(ref Level currentLevel)
         {
             currentLevel = container.GetLevel();
@@ -228,12 +363,19 @@ namespace HeroesFlight.System.Gameplay
 
             return true;
         }
-
-        void CreateLvL(Level currentLvl)
+        
+        /// <summary>
+        /// Used to spawn enemies from provided Level
+        /// </summary>
+        /// <param name="currentLvl">target Level to get enemy data from</param>
+        void SpawnEnemies(Level currentLvl)
         {
-            npcSystem.SetSpawnModel(currentLvl, CurrentLvlIndex);
+            npcSystem.SpawnEnemies(currentLvl, CurrentLvlIndex);
         }
-
+        
+        /// <summary>
+        /// Used to create  player character and proper init it
+        /// </summary>
         void SetupCharacter()
         {
             var characterController = characterSystem.CreateCharacter(GetPlayerSpawnPosition);
@@ -242,63 +384,78 @@ namespace HeroesFlight.System.Gameplay
             characterAttackController =
                 characterController.CharacterTransform.GetComponent<BaseCharacterAttackController>();
 
-            characterVFXController = characterController.CharacterTransform.GetComponent<CharacterVFXController>();
-            characterVFXController.Initialize(cameraController.CameraShaker);
-
-            characterAbility = characterController.CharacterTransform.GetComponent<AbilityBaseCharacter>();
-            characterAbility.Init(characterController.CharacterSO.AnimationData.UltimateAnimations,
+            combatSystem.RegisterEntity(new CombatEntityModel(characterHealthController, characterAttackController,
+                CombatEntityType.Player));
+            combatSystem.InitCharacterUltimate(characterController.CharacterSO.CharacterAnimations.UltAnimationsData,
                 characterController.CharacterSO.UltimateData.Charges);
-            characterAttackController.Init();
 
-            characterHealthController.OnDeath += HandleCharacterDeath;
-            characterHealthController.OnBeingDamaged += HandleCharacterDamaged;
-            characterHealthController.OnHeal += HandleCharacterHeal;
+
+            characterAttackController.OnHitTarget += OnEnemyHitSuccess;
+
+            characterVFXController = characterController.CharacterTransform.GetComponent<CharacterVFXController>();
+            characterVFXController.InjectShaker(cameraController.CameraShaker);
             characterHealthController.OnDodged += HandleCharacterDodged;
-            characterHealthController.Init();
+          
             characterSystem.SetCharacterControllerState(false);
             cameraController.SetTarget(characterController.CharacterTransform
                 .GetComponentInChildren<CameraTargetController>().transform);
             npcSystem.InjectPlayer(characterController.CharacterTransform);
 
-            characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
+            var characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
             EffectManager.Initialize(characterStatController);
-            BoosterManager.Initialize(characterStatController);
+            progressionSystem.BoosterManager.Initialize(characterStatController);
+
             environmentSystem.CurrencySpawner.SetPlayer(characterController.CharacterTransform);
-            HeroProgression.Initialise(characterStatController);
+            progressionSystem.Progression.Initialise(characterStatController);
             GodsBenevolence.Initialize(characterStatController);
         }
-
-        void HandleMinibossHealthChange(DamageModel damageModel)
+        
+        
+        void OnEnemyHitSuccess()
         {
-            OnMinibossHealthChange?.Invoke(miniBoss.CurrentHealthProportion);
-            if (miniBoss.CurrentHealthProportion <= 0)
-            {
-                miniBoss.OnBeingDamaged -= HandleMinibossHealthChange;
-            }
+            GameEffectController.StopTime(0.1f, container.CurrentModel.TimeStopRestoreSpeed,
+                container.CurrentModel.TimeStopDuration);
+        }
+
+        void HandleMinibossHealthChange(float healthProportion)
+        {
+            uiSystem.UpdateSpecialEnemyHealthBar(healthProportion);
         }
 
         void HandleEnemySpawned(AiControllerBase obj)
         {
-            var healthController = obj.GetComponent<AiHealthController>();
+            var healthController = obj.GetComponent<IHealthController>();
 
-            if (obj.EnemyType == HeroesFlightProject.System.NPC.Enum.EnemyType.MiniBoss)
+            if (obj.EnemyType == EnemyType.MiniBoss)
             {
-                miniBoss = obj.GetComponent<IHealthController>();
-                miniBoss.OnBeingDamaged += HandleEnemyDamaged;
-                miniBoss.OnBeingDamaged += HandleMinibossHealthChange;
-                miniBoss.OnDeath += HandleEnemyDeath;
-                miniBoss.Init();
-                activeEnemyHealthControllers.Add(miniBoss);
-                OnMinibossSpawned?.Invoke(true);
+                var attackController = obj.GetComponent<IAttackControllerInterface>();
+                combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController,
+                    CombatEntityType.MiniBoss));
+                uiSystem.ToggleSpecialEnemyHealthBar(true);
+                var spawnAbility = obj.transform.GetComponentInChildren<SpawnEnemyAbility>();
+                if (spawnAbility != null)
+                {
+                    spawnAbility.OnEnemySpawned += (healthController) =>
+                    {
+                        var attackController =
+                            healthController.HealthTransform.GetComponent<IAttackControllerInterface>();
+                        combatSystem.RegisterEntity(new CombatEntityModel(healthController,attackController,CombatEntityType.TempMob));
+                    };
+                }
             }
             else
             {
                 obj.OnDisabled += HandleEnemyDisabled;
-                healthController.OnBeingDamaged += HandleEnemyDamaged;
-                healthController.OnDeath += HandleEnemyDeath;
-                healthController.Init();
-                activeEnemyHealthControllers.Add(healthController);
+                var attackController = obj.GetComponent<IAttackControllerInterface>();
+                combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController,
+                    CombatEntityType.Mob));
             }
+        }
+
+        void SpawnLootFromMiniboss(Vector3 position)
+        {
+            environmentSystem.BoosterSpawner.SpawnBoostLoot(container.CurrentModel.BossDrop,
+                position);
         }
 
         void HandleEnemyDisabled(AiControllerInterface obj)
@@ -308,21 +465,19 @@ namespace HeroesFlight.System.Gameplay
             environmentSystem.ParticleManager.Spawn("Enemy_Death", baseComponent.transform.position);
         }
 
-        void HandleEnemyDeath(IHealthController iHealthController)
+        void HandleEnemyDeath(Vector3 position)
         {
-            iHealthController.OnBeingDamaged -= HandleEnemyDamaged;
-            iHealthController.OnDeath -= HandleEnemyDeath;
-            activeEnemyHealthControllers.Remove(iHealthController);
             enemiesToKill--;
-            environmentSystem.ParticleManager.Spawn("Loot_Spawn", iHealthController.HealthTransform.position,
+            environmentSystem.ParticleManager.Spawn("Loot_Spawn", position,
                 Quaternion.Euler(new Vector3(-90, 0, 0)));
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10,
-                iHealthController.HealthTransform.position);
+                position);
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10,
-                iHealthController.HealthTransform.position);
+                position);
+            progressionSystem.AddCurrency(CurrencyKeys.Experience,(int)container.HeroProgressionExpEarnedPerKill);
             collectedHeroProgressionSp += container.HeroProgressionExpEarnedPerKill;
 
-            OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
+            uiSystem.UpdateEnemiesCounter(enemiesToKill);
             if (currentState != GameState.Ongoing)
                 return;
 
@@ -335,51 +490,38 @@ namespace HeroesFlight.System.Gameplay
 
         void HandlePlayerWon()
         {
-            Time.timeScale = 0.2f;
-            CoroutineUtility.WaitForSecondsRealtime(2f, () =>
+            GameEffectController.ForceStop(() =>
             {
-                Time.timeScale = 1f;
-            });
-
-            if (container.FinishedLoop)
-            {
-                characterAttackController.ToggleControllerState(false);
-                characterSystem.SetCharacterControllerState(false);
-
-                //Temp rewarding player with unlock here
-                dataSystemInterface.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
-                    CharacterType.Lancer));
-
-                CoroutineUtility.WaitForSeconds(4f, () =>
+                if (container.FinishedLoop)
                 {
-                    ChangeState(GameState.Won);
-                });
+                    characterAttackController.ToggleControllerState(false);
 
-                return;
-            }
+                    //Temp rewarding player with unlock here
+                    dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
+                        CharacterType.Lancer));
 
-            ChangeState(GameState.WaitingPortal);
+                    CoroutineUtility.WaitForSeconds(6f, () => { ChangeState(GameState.Won); });
+
+                    return;
+                }
+
+                ChangeState(GameState.WaitingPortal);
+            });
         }
 
-        void HandleCharacterDamaged(DamageModel damageModel)
+        void HandleCharacterDamaged(HealthModificationIntentModel healthModificationIntentModel)
         {
             if (currentState != GameState.Ongoing)
                 return;
-
-            OnCharacterDamaged?.Invoke(damageModel);
         }
 
-        void HandleCharacterHeal(float arg1, Transform transform)
-        {
-            OnCharacterHeal?.Invoke(arg1, transform);
-        }
 
-        private void HandleCharacterDodged()
+        void HandleCharacterDodged()
         {
             characterVFXController.TriggerMissEffect();
         }
 
-        void HandleCharacterDeath(IHealthController obj)
+        void HandleCharacterDeath()
         {
             Debug.LogError($"character died and game state is {currentState}");
             if (currentState != GameState.Ongoing)
@@ -388,25 +530,20 @@ namespace HeroesFlight.System.Gameplay
 
             //freezes engine?  
             // GameTimer.Pause();
-            CoroutineUtility.WaitForSeconds(1f, () =>
-            {
-                ChangeState(GameState.Died);
-            });
+            CoroutineUtility.WaitForSeconds(1f, () => { ChangeState(GameState.Died); });
         }
 
-        void HandleEnemyDamaged(DamageModel damageModel)
+        void HandleEnemyDamaged(HealthModificationIntentModel healthModificationIntentModel)
         {
-            UpdateCharacterCombo();
-            var vfxReference = string.Empty;
-            var isCritical = damageModel.DamageType == DamageType.Critical;
-            switch (damageModel.AttackType)
+            Particle vfxReference = null;
+            var isCritical = healthModificationIntentModel.DamageType == DamageType.Critical;
+            switch (healthModificationIntentModel.AttackType)
             {
                 case AttackType.Regular:
                     vfxReference = isCritical
                         ? characterSystem.CurrentCharacter.CharacterSO.VFXData.AutoattackCrit
                         : characterSystem.CurrentCharacter.CharacterSO.VFXData.AutoattackNormal;
-                    characterAbility.UpdateAbilityCharges(5);
-                    OnUltimateChargesChange?.Invoke(characterAbility.CurrentCharge);
+
                     break;
                 case AttackType.Ultimate:
                     vfxReference = isCritical
@@ -415,7 +552,7 @@ namespace HeroesFlight.System.Gameplay
                     break;
             }
 
-            if (damageModel.DamageType == DamageType.Critical)
+            if (healthModificationIntentModel.DamageType == DamageType.Critical)
             {
                 cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion, 0.1f,
                     0.20f);
@@ -425,42 +562,13 @@ namespace HeroesFlight.System.Gameplay
                 cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Bump, 0.1f, 0.1f);
             }
 
-            if (!vfxReference.Equals(string.Empty))
-                environmentSystem.ParticleManager.Spawn(vfxReference, damageModel.Target.position);
+            if (vfxReference != null)
+                environmentSystem.ParticleManager.Spawn(vfxReference,
+                    healthModificationIntentModel.TargetTransform.position);
 
-
-            //TODO: iMPROVE THIS
-              GameEffectController.StopTime(0.1f, container.CurrentModel.TimeStopRestoreSpeed, container.CurrentModel.TimeStopDuration);
-
-          //  GameEffectController.StopFrame(0.1f);
-
-            OnEnemyDamaged?.Invoke(damageModel);
+            hitEffectsPlayer.PlayHitEffect("Hit", true);
         }
 
-        void UpdateCharacterCombo()
-        {
-            timeSinceLastStrike = timeToResetCombo;
-            characterComboNumber++;
-            OnCharacterComboChanged?.Invoke(characterComboNumber);
-        }
-
-        IEnumerator CheckTimeSinceLastStrike()
-        {
-            while (true)
-            {
-                timeSinceLastStrike -= Time.deltaTime;
-                if (timeSinceLastStrike <= 0)
-                {
-                    if (characterComboNumber != 0)
-                    {
-                        characterComboNumber = 0;
-                        OnCharacterComboChanged?.Invoke(characterComboNumber);
-                    }
-                }
-
-                yield return null;
-            }
-        }
 
         void ChangeState(GameState newState)
         {
@@ -468,17 +576,18 @@ namespace HeroesFlight.System.Gameplay
                 return;
             currentState = newState;
             Debug.Log(currentState);
-            OnGameStateChange?.Invoke(currentState);
+            HandleGameStateChanged(newState);
         }
 
         void HandlePlayerTriggerPortal()
         {
-            AudioManager.PlaySoundEffect("EnterPortal");
-            OnNextLvlLoadRequest?.Invoke();
+            AudioManager.PlaySoundEffect("EnterPortal", SoundEffectCategory.UI);
+            MoveToNextLvl();
         }
 
         public void StartGameLoop()
         {
+            uiSystem.DisplayStartInfoMessage(2f);
             switch (currentLevel.LevelType)
             {
                 case LevelType.NormalCombat:
@@ -486,41 +595,39 @@ namespace HeroesFlight.System.Gameplay
                     enemiesToKill = currentLevel.MiniHasBoss
                         ? currentLevel.TotalMobsToSpawn + 1
                         : currentLevel.TotalMobsToSpawn;
-                    OnRemainingEnemiesLeft?.Invoke(enemiesToKill);
-                    OnCharacterComboChanged?.Invoke(characterComboNumber);
-                    combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());
+                    uiSystem.UpdateEnemiesCounter(enemiesToKill);
+                    combatSystem.StartCharacterComboCheck();
 
                     ChangeState(GameState.Ongoing);
                     if (currentLevel.MiniHasBoss)
                     {
                         cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,
-                            3f);
-                        OnEnterMiniBossLvl?.Invoke();
-                        countDownDelay = 2;
+                            3f, 3f);
+                        uiSystem.ShowSpecialEnemyWarning(EncounterType.Miniboss);
+                        SpawnEnemies(currentLevel);
                     }
                     else
                     {
                         countDownDelay = .5f;
+                        CoroutineUtility.WaitForSeconds(countDownDelay, () =>
+                        {
+                            GameTimer.Start(2, null,
+                                () =>
+                                {
+                                    SpawnEnemies(currentLevel);
+                                    GameTimer.Start(currentLevel.LevelDuration, uiSystem.UpdateGameTimeUI,
+                                        () =>
+                                        {
+                                            if (currentState != GameState.Ongoing)
+                                                return;
+
+                                            ChangeState(GameState.TimeEnded);
+                                        });
+                                }, null);
+                        });
                     }
 
                     characterSystem.SetCharacterControllerState(true);
-
-                    CoroutineUtility.WaitForSeconds(countDownDelay, () =>
-                    {
-                        GameTimer.Start(5, null,
-                            () =>
-                            {
-                                CreateLvL(currentLevel);
-                                GameTimer.Start(120, OnGameTimerUpdate,
-                                    () =>
-                                    {
-                                        if (currentState != GameState.Ongoing)
-                                            return;
-
-                                        ChangeState(GameState.TimeEnded);
-                                    });
-                            }, OnCountDownTimerUpdate);
-                    });
 
                     break;
                 case LevelType.Intermission:
@@ -532,66 +639,8 @@ namespace HeroesFlight.System.Gameplay
             }
         }
 
-        private void HandleWorldBoss()
-        {
-            Debug.Log("WORLD BOSS LOGIC");
-            //Init world boss
-            AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicKey);
-            OnRemainingEnemiesLeft?.Invoke(0);
-            OnCharacterComboChanged?.Invoke(characterComboNumber);
-            ChangeState(GameState.Ongoing);
-            cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,3f, 4f);
-            OnEnterMiniBossLvl?.Invoke();
-            OnMinibossHealthChange?.Invoke(1f);
-            environmentSystem.ParticleManager.Spawn("BossSpawn", new Vector2(-4, 0));
-            void HandleBossStateChange(BossState obj)
-            {
-                if (obj == BossState.Dead)
-                {
-                    boss.OnBossStateChange -= HandleBossStateChange;
-                    boss.OnBeingDamaged -= HandleBossDamaged;
-                    boss.OnHealthPercentageChange -= HandleBossPercHealthChange;
-                    HandlePlayerWon();
 
-                }
-            }
-            
-            void HandleBossDamaged(DamageModel damageModel)
-            {
-                if (damageModel.AttackType == AttackType.Regular)
-                {
-                    characterAbility.UpdateAbilityCharges(5);
-                }
-                UpdateCharacterCombo();
-                OnEnemyDamaged?.Invoke(damageModel);
-            }
-            
-            void HandleBossPercHealthChange(float amount)
-            {
-                OnMinibossHealthChange?.Invoke(amount);
-            }
-            
-            cameraController.InitLevelOverview(6f, () =>
-            {
-                cameraController.UpdateCharacterCameraFrustrum(1.5f,true);
-                boss = npcSystem.NpcContainer.SpawnBoss(currentLevel);
-                boss.OnBossStateChange += HandleBossStateChange;
-                boss.OnBeingDamaged += HandleBossDamaged;
-               
-                boss.OnHealthPercentageChange += HandleBossPercHealthChange;
-                characterSystem.SetCharacterControllerState(true);
-                boss.Init();
-            });
-        
-            OnEnterMiniBossLvl?.Invoke();       
-            //  boss.Init();
-            combotTimerRoutine = CoroutineUtility.Start(CheckTimeSinceLastStrike());
-        }
-
-      
-
-
-        private void TriggerAngelsGambit()
+        void TriggerAngelsGambit()
         {
             characterSystem.SetCharacterControllerState(false);
             EffectManager.TriggerAngelsGambit();
@@ -605,21 +654,20 @@ namespace HeroesFlight.System.Gameplay
                 return null;
             }
 
-            AudioManager.PlaySoundEffect("ExitPortal");
+            AudioManager.PlaySoundEffect("ExitPortal", SoundEffectCategory.Environment);
 
             SetUpLevelEnvironment();
             return currentLevel;
         }
 
-        public void SetUpLevelEnvironment()
+        void SetUpLevelEnvironment()
         {
             if (currentLevelEnvironment != null) GameObject.DestroyImmediate(currentLevelEnvironment.gameObject);
             currentLevelEnvironment = GameObject.Instantiate(currentLevel.LevelPrefab).GetComponent<LevelEnvironment>();
 
-            foreach (var spawnPoint in currentLevelEnvironment.GetSpawnpoints(HeroesFlightProject.System.NPC.Enum
-                         .SpawnType.Crystal))
+            foreach (var spawnPoint in currentLevelEnvironment.GetSpawnpoints(SpawnType.Crystal))
             {
-                Crystal crystal = ObjectPoolManager.SpawnObject(container.CurrentModel.CrystalPrefab,
+                var crystal = ObjectPoolManager.SpawnObject(container.CurrentModel.CrystalPrefab,
                     spawnPoint.GetSpawnPosition(), Quaternion.identity);
                 IHealthController healthController = crystal.GetComponent<IHealthController>();
                 crystal.SpawnLoot = () =>
@@ -640,29 +688,29 @@ namespace HeroesFlight.System.Gameplay
             npcSystem.NpcContainer.SetSpawnPoints(currentLevelEnvironment.SpawnPointsCache);
             switch (currentLevel.LevelType)
             {
-                case LevelType.NormalCombat :
+                case LevelType.NormalCombat:
                     container.DisablePortal();
                     break;
                 case LevelType.WorldBoss:
                     container.DisablePortal();
                     break;
-                    
+
                 case LevelType.Intermission:
-                    currentLevelEnvironment.InteractiveNPC.OnInteract = TriggerAngelsGambit;
+                    currentLevelEnvironment.AngelsGambitNPC.OnInteract = TriggerAngelsGambit;
                     container.EnablePortal(currentLevelEnvironment
-                        .GetSpawnpoint(HeroesFlightProject.System.NPC.Enum.SpawnType.Portal).GetSpawnPosition());
+                        .GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
                     break;
             }
         }
 
-        private void HandleCrystalHit(Transform transform)
+        void HandleCrystalHit(Transform transform)
         {
-            Crystal crystal = transform.GetComponent<Crystal>();
+            var crystal = transform.GetComponent<Environment.Objects.Crystal>();
             IHealthController healthController = crystal.GetComponent<IHealthController>();
             crystal.OnHit(healthController.CurrentHit);
         }
 
-        private void OnCrystalDestroyed(Crystal crystal)
+        void OnCrystalDestroyed(Environment.Objects.Crystal crystal)
         {
             IHealthController healthController = crystal.GetComponent<IHealthController>();
             healthController.OnBeingHitDamaged -= HandleCrystalHit;
@@ -670,70 +718,328 @@ namespace HeroesFlight.System.Gameplay
             ObjectPoolManager.ReleaseObject(crystal);
         }
 
-        private void HandleBoosterActivated(BoosterSO sO, float arg2, Transform transform)
+        void HandleBoosterActivated(BoosterSO sO, float arg2, Transform transform)
         {
-            OnBoosterActivated?.Invoke(sO, arg2, transform);
+            uiSystem.ShowPopupAtPosition($"+{sO.Abreviation}",
+                new Vector2(transform.position.x, transform.position.y + 2), sO.BoosterColor);
             characterVFXController.TriggerBoosterEffect(sO.BoosterEffectType);
         }
 
-        public void AddGold(int amount)
+
+        void AddCurrency(string key, int amount)
         {
-            collectedGold += amount;
-            OnCoinsCollected?.Invoke(collectedGold);
-            characterVFXController.TriggerCurrencyEffect(CurrencyKeys.Gold);
+            progressionSystem.AddCurrency(key, amount);
         }
 
-        public void AddExperience(int amount)
-        {
-            collectedXp += amount;
-            characterVFXController.TriggerCurrencyEffect(CurrencyKeys.Experience);
-        }
 
         public void StoreRunReward()
         {
-            dataSystemInterface.AddCurency(CurrencyKeys.Gold, collectedGold);
-            dataSystemInterface.AddCurency(CurrencyKeys.Experience, collectedXp);
-            collectedGold = 0;
-            collectedXp = 0;
-            collectedHeroProgressionSp = 0;
+            progressionSystem.SaveRunResults();
+            //collectedHeroProgressionSp = 0;
         }
 
-        private void HandleBoosterWithDurationActivated(BoosterContainer container)
+        void HandleBoosterWithDurationActivated(BoosterContainer container)
         {
-            OnBoosterContainerCreated?.Invoke(container);
+            uiSystem.UiEventHandler.GameMenu.VisualiseBooster(container);
         }
 
-        public void HandleHeroProgression()
+        void HandleHeroProgression()
         {
             GodsBenevolence.DeactivateGodsBenevolence();
-            environmentSystem.CurrencySpawner.ActivateExpItems(()=>
+            environmentSystem.CurrencySpawner.ActivateExpItems(() =>
             {
                 Debug.Log("EXP ITEMS ACTIVATED");
-                HeroProgression.AddExp(collectedHeroProgressionSp);
-                collectedHeroProgressionSp = 0;
+               // progressionSystem.Progression.AddExp(collectedHeroProgressionSp);
+               //collectedHeroProgressionSp = 0;
+               progressionSystem.Progression.AddExp(progressionSystem.GetCurrency(CurrencyKeys.Experience));
+               progressionSystem.ResetCurrency(CurrencyKeys.Experience);
             });
         }
 
-        public void HandleSingleLevelUp()
+        void HandleSingleLevelUp()
         {
             characterVFXController.TriggerLevelUpEffect();
         }
 
-        public void HeroProgressionCompleted()
+        void HeroProgressionCompleted()
         {
             characterVFXController.TriggerLevelUpAfterEffect();
         }
 
-        private void HandleCurrencyCollected(string key, int amount)
+        void HandleCurrencyCollected(string key, int amount)
         {
+            AddCurrency(key, amount);
+
             switch (key)
             {
                 case CurrencyKeys.Gold:
-                    AddGold(amount);
+                    characterVFXController.TriggerCurrencyEffect(CurrencyKeys.Gold);
+                    uiSystem.UpdateCoinsUi(progressionSystem.GetCurrency(CurrencyKeys.Gold));
                     break;
                 case CurrencyKeys.Experience:
-                    AddExperience(amount);
+                    characterVFXController.TriggerCurrencyEffect(CurrencyKeys.Experience);
                     break;
+            }
+        }
+
+
+        void HandleGameStateChanged(GameState newState)
+        {
+            switch (newState)
+            {
+                case GameState.Ongoing:
+                    break;
+                case GameState.Won:
+
+                    dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
+                        CharacterType.Storm));
+                    dataSystem.CharacterManager.UnlockCharacter(CharacterType.Storm);
+                    Debug.Log("Granting STORM");
+
+                    HandleGameLoopFinish();
+                    break;
+                case GameState.Died:
+                    uiSystem.UiEventHandler.ReviveMenu.Open();
+                    break;
+                case GameState.Ended:
+                    break;
+                case GameState.WaitingPortal:
+
+                    Debug.Log(CurrentLvlIndex);
+                    if (CurrentLvlIndex == 3)
+                    {
+                        dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
+                            CharacterType.Lancer));
+                        dataSystem.CharacterManager.UnlockCharacter(CharacterType.Lancer);
+                        Debug.Log("Granting LANCER");
+                    }
+                    CoroutineUtility.Start(WaitingPortalRoutine());
+                    break;
+
+                case GameState.TimeEnded:
+                    uiSystem.UiEventHandler.GameMenu.DisplayInfoMessage(UISystem.GameMenu.InfoMessageType.TimeUp);
+                    CoroutineUtility.WaitForSeconds(1f, HandleGameLoopFinish);
+                    break;
+            }
+        }
+
+        //Boss
+        void HandleWorldBoss()
+        {
+            Debug.Log("WORLD BOSS LOGIC");
+
+            //Init world boss
+            AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicKey);
+            uiSystem.UpdateEnemiesCounter(0);
+            combatSystem.StartCharacterComboCheck();
+            ChangeState(GameState.Ongoing);
+            cameraController.CameraShaker.ShakeCamera(container.BossProfile);
+
+            uiSystem.ShowSpecialEnemyWarning(EncounterType.Boss);
+            uiSystem.UpdateSpecialEnemyHealthBar(1f);
+            uiSystem.ToggleSpecialEnemyHealthBar(true);
+            environmentSystem.ParticleManager.Spawn("BossSpawn", new Vector2(-4, 0));
+
+
+            cameraController.InitLevelOverview(6f, () =>
+            {
+                cameraController.UpdateCharacterCameraFrustrum(1.5f, true);
+                boss = npcSystem.NpcContainer.SpawnBoss(currentLevel);
+                boss.OnBossStateChange += HandleBossStateChange;
+                boss.OnBeingDamaged += HandleBossDamaged;
+            
+                boss.OnHealthPercentageChange += HandleBossHealthChange;
+                boss.OnCrystalDestroyed += SpawnLootFromBoss;
+                characterSystem.SetCharacterControllerState(true);
+                boss.Init();
+                foreach (var health in boss.CrystalNodes)
+                {
+                    combatSystem.RegisterEntity(new CombatEntityModel(health,CombatEntityType.Boss));
+                }
+                var spawnAbility = boss.transform.GetComponentInChildren<BossMushroomSummonAbility>();
+                if (spawnAbility != null)
+                {
+                    spawnAbility.OnEnemySpawned += (healthController) =>
+                    {
+                        var attackController =
+                            healthController.HealthTransform.GetComponent<IAttackControllerInterface>();
+                        combatSystem.RegisterEntity(new CombatEntityModel(healthController,attackController,CombatEntityType.TempMob));
+                    };
+                }
+            });
+        }
+
+        void HandleBossStateChange(BossState obj)
+        {
+            if (obj == BossState.Dead)
+            {
+                boss.OnBossStateChange -= HandleBossStateChange;
+                boss.OnBeingDamaged -= HandleBossDamaged;
+                boss.OnHealthPercentageChange -= HandleBossHealthChange;
+                boss.OnCrystalDestroyed -= SpawnLootFromBoss;
+                HandlePlayerWon();
+            }
+        }
+
+        void HandleBossDamaged(HealthModificationIntentModel damageIntentModel)
+        {
+            
+        }
+
+        void HandleBossHealthChange(float amount)
+        {
+            uiSystem.UpdateSpecialEnemyHealthBar(amount);
+        }
+
+        void SpawnLootFromBoss(Transform target)
+        {
+            Debug.Log("Crystal destroyed spawning loot");
+            environmentSystem.BoosterSpawner.SpawnBoostLoot(container.CurrentModel.BossDrop,
+                target.transform.position);
+        }
+
+        IEnumerator WaitingPortalRoutine()
+        {
+            uiSystem.UiEventHandler.GameMenu.DisplayInfoMessage(UISystem.GameMenu.InfoMessageType.Complete);
+
+            yield return new WaitForSeconds(2f);
+
+            void ContinueWaitForPortalRoutine()
+            {
+                uiSystem.UiEventHandler.GameMenu.OnUpdateXpBarCompleted -= ContinueWaitForPortalRoutine;
+                CoroutineUtility.Start(ContinueAfterXpBarUpdate());
+            }
+
+            uiSystem.UiEventHandler.GameMenu.OnUpdateXpBarCompleted += ContinueWaitForPortalRoutine;
+            HandleHeroProgression();
+        }
+
+        IEnumerator ContinueAfterXpBarUpdate()
+        {
+            yield return new WaitUntil(() =>
+                uiSystem.UiEventHandler.HeroProgressionMenu.MenuStatus == UISystem.Menu.Status.Closed);
+            yield return new WaitForSeconds(1f);
+            if (EffectManager.CompletedLevel())
+            {
+                yield return new WaitUntil(() =>
+                    uiSystem.UiEventHandler.AngelPermanetCardMenu.MenuStatus ==
+                    UISystem.Menu.Status.Closed);
+            }
+
+            ShowLevelPortal();
+        }
+
+        void ShowLevelPortal()
+        {
+            CoroutineUtility.WaitForSeconds(1f,
+                () =>
+                {
+                    container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
+                });
+        }
+
+        void ShowGodBenevolencePrompt()
+        {
+            uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
+                uiSystem.UiEventHandler.PuzzleMenu.Open,
+                ContinueGameLoop);
+        }
+
+        void HandleGameLoopFinish()
+        {
+            if (dataSystem.RewardHandler.RewardPending)
+            {
+                var pendingRewards = dataSystem.RewardHandler.GetPendingRewards();
+                var rewardsToConsume = new List<RewardModel>();
+
+                if (pendingRewards.TryGetValue(RewardType.Hero, out var rewards))
+                {
+                    foreach (var reward in rewards)
+                    {
+                        if (reward.RewardType == RewardType.Hero)
+                        {
+                            var heroReward = reward as HeroRewardModel;
+                            rewardsToConsume.Add(reward);
+                            uiSystem.UiEventHandler.SummaryMenu.AddRewardEntry(
+                                $"Unlocked new Hero - {heroReward.HeroType}");
+                        }
+                    }
+                }
+
+
+                foreach (var reward in rewardsToConsume)
+                {
+                    dataSystem.RewardHandler.ConsumeReward(reward);
+                }
+            }
+
+            uiSystem.UiEventHandler.SummaryMenu.Open();
+        }
+
+        void HandleLvlRestart()
+        {
+            characterSystem.Reset();
+            npcSystem.Reset();
+            Reset();
+            uiSystem.UiEventHandler.ReviveMenu.Close();
+            uiSystem.UiEventHandler.AngelPermanetCardMenu.ResetMenu();
+            SetupCharacter();
+            StartGameLoop();
+        }
+
+
+        void MoveToNextLvl()
+        {
+            characterSystem.SetCharacterControllerState(false);
+
+            CoroutineUtility.WaitForSeconds(0.5f, () =>
+            {
+                Level newLevel = null;
+                uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level to level transition
+                    {
+                        ResetLogic();
+                        npcSystem.Reset();
+
+                        newLevel = PreloadLvl();
+                        characterSystem.ResetCharacter(GetPlayerSpawnPosition);
+                    },
+                    () =>
+                    {
+                        if (newLevel.LevelType == LevelType.NormalCombat ||
+                            newLevel.LevelType == LevelType.WorldBoss)
+                        {
+                            CoroutineUtility.Start(ContinueGameLoopRoutine());
+                        }
+                        else
+                        {
+                            characterSystem.SetCharacterControllerState(true);
+                        }
+                    });
+            });
+        }
+
+        void ContinueGameLoop()
+        {
+            CoroutineUtility.WaitForSeconds(0.5f, () =>
+            {
+                npcSystem.Reset();
+                characterSystem.ResetCharacter(GetPlayerSpawnPosition);
+                characterSystem.SetCharacterControllerState(false);
+                StartGameLoop();
+            });
+        }
+
+        IEnumerator ContinueGameLoopRoutine()
+        {
+            yield return new WaitForSeconds(0.5f);
+
+            if (CurrentLvlIndex != MaxLvlIndex) // Open every second lvl
+            {
+                ShowGodBenevolencePrompt();
+            }
+            else
+            {
+                ContinueGameLoop();
             }
         }
     }

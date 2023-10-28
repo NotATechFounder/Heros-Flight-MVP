@@ -35,10 +35,10 @@ public class JuicerSequencerEx : MonoBehaviour
 
         jucierSequencer.Run();
 
-        jucierSequencer.SetOnComplected(() =>
+        jucierSequencer.SetOnCompleted(() =>
         {
             DoSequencer();
-            Debug.Log("Complected");
+            Debug.Log("Completed");
         });
     }
 }

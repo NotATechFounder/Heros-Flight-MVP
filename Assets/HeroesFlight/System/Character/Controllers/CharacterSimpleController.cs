@@ -1,5 +1,7 @@
 using System;
+using HeroesFlight.System.Character.Controllers.Sound;
 using HeroesFlight.System.Character.Enum;
+using HeroesFlightProject.System.Gameplay.Controllers;
 using UnityEngine;
 
 namespace HeroesFlight.System.Character
@@ -12,6 +14,8 @@ namespace HeroesFlight.System.Character
         CharacterInputReceiver m_InputReceiver;
         CharacterStatController m_CharacterStatController;
         ICharacterViewController viewController;
+        CharacterVFXController vfxController;
+        CharacterSfxController sfxController;
         Vector3 m_SavedVelocity = default;
         Vector3 inputVelocity=Vector3.zero;
         Transform m_Transform;
@@ -37,9 +41,13 @@ namespace HeroesFlight.System.Character
             m_CharacterStatController = GetComponent<CharacterStatController>();
             viewController = GetComponent<ICharacterViewController>();
             m_Transform = GetComponent<Transform>();
+            vfxController = GetComponent<CharacterVFXController>();
+            sfxController = GetComponent<CharacterSfxController>();
+            vfxController.Initialize(characterSO.CharacterAnimations);
+            sfxController.Initialize(characterSO.CharacterAnimations);
             m_CharacterStatController.Initialize(CharacterSO.GetPlayerStatData);
             viewController.SetupView(CharacterSO.GetAppearanceData);
-            animationController.Init(characterSO.AnimationData);
+            animationController.Init(characterSO.CharacterAnimations);
             m_CurrentState = CharacterState.Idle;
             IsFacingLeft = true;
             isEnabled = false;

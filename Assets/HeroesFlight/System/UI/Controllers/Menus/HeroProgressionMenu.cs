@@ -1,4 +1,5 @@
 using Pelumi.Juicer;
+using Plugins.Audio_System;
 using StansAssets.Foundation.Async;
 using System;
 using System.Collections;
@@ -23,7 +24,6 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private TextMeshProUGUI spText;
         [SerializeField] private HeroAttributeUI[] heroAttributeUIArray;
-        [SerializeField] private TextMeshProUGUI infoText;
         [SerializeField] private AdvanceButton closeButton;
         [SerializeField] private AdvanceButton resetButton;
 
@@ -35,6 +35,8 @@ namespace UISystem
 
         private bool loadedHeroAttributes = false;
 
+        private int currentSP;
+
         public override void OnCreated()
         {
             container.localScale = Vector3.zero;
@@ -42,7 +44,7 @@ namespace UISystem
             openEffectContainer = container.JuicyScale(Vector3.one, 0.15f).SetEase(Ease.EaseInQuart).SetDelay(0.15f);
             closeEffectContainer = container.JuicyScale(Vector3.zero, 0.15f).SetEase(Ease.EaseInQuart);
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(0.15f);
-            closeEffectBG.SetOnComplected(CloseMenu);
+            closeEffectBG.SetOnCompleted(CloseMenu);
 
             closeButton.onClick.AddListener(ForceClose);
             resetButton.onClick.AddListener(ResetButtonPressed);
@@ -56,6 +58,11 @@ namespace UISystem
             if (!loadedHeroAttributes)
             {
                 SetHeroAttributeUIs();
+            }
+
+            foreach (var heroAttributeUI in heroAttributeUIArray)
+            {
+                heroAttributeUI.ToggleButtonActive(true);
             }
         }
 
@@ -73,14 +80,14 @@ namespace UISystem
         public void OnLevelUp(int level)
         {
             ResetHeroAttributeUIs();
-            levelText.text = $"Level {level}";
+            levelText.text = level.ToString();
             Open(); 
         }
 
         public void OnSpChanged(int sp)
         {
-            spText.text = $"Avaliable SP : {sp}";
-            closeButton.interactable = (sp == 0);
+            currentSP = sp;
+            spText.text = sp.ToString();
         }
 
         public void SetHeroAttributeUIs()
@@ -91,10 +98,36 @@ namespace UISystem
                 heroAttributeUIArray[i].SetAttribute(heroProgressionAttributeInfos[i]);
                 heroAttributeUIArray[i].OnUpButtonClickedEvent = OnUpButtonClickedEvent;
                 heroAttributeUIArray[i].OnDownButtonClickedEvent = OnDownButtonClickedEvent;
-                heroAttributeUIArray[i].OnInfoButtonClickedEvent = OnInfoButtonClickedEvent;
+                heroAttributeUIArray[i].OnAddSpEffectStart = OnAddSpStart;
+                heroAttributeUIArray[i].OnAddSpEffectCompleted = OnAddSpCompleted;
             }
 
             loadedHeroAttributes = true;
+        }
+
+        private void OnAddSpStart(HeroAttributeUI heroAttributeUI)
+        {
+            heroAttributeUI.ToggleButtonActive(false);
+        }
+
+        private void OnAddSpCompleted(HeroAttributeUI heroAttributeUI)
+        {
+            if (currentSP == 0)
+            {
+                foreach (var heroAttributeUIs in heroAttributeUIArray)
+                {
+                    heroAttributeUIs.ToggleButtonActive(false);
+                }
+
+                CoroutineUtility.WaitForSeconds(1f, () =>
+                {
+                    ForceClose();
+                });
+            }
+            else
+            {
+                heroAttributeUI.ToggleButtonActive(true);
+            }
         }
 
         public void ResetHeroAttributeUIs()
@@ -103,11 +136,6 @@ namespace UISystem
             {
                 heroAttributeUI.OnModified(false);
             }
-        }
-
-        private void OnInfoButtonClickedEvent(HPAttributeSO sO)
-        {
-            infoText.text = sO.Description;
         }
 
         public void ForceClose()

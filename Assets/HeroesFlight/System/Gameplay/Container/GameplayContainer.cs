@@ -1,6 +1,7 @@
 using System;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Model;
+using HeroesFlightProject.System.Gameplay.Controllers.ShakeProfile;
 using UnityEngine;
 
 namespace HeroesFlight.System.Gameplay.Container
@@ -9,6 +10,7 @@ namespace HeroesFlight.System.Gameplay.Container
     {
         [SerializeField] GameAreaModel currentModel;
         [SerializeField] BoosterDropSO mobDrop;
+        [SerializeField] ScreenShakeProfile bossProfile;
 
         public event Action OnPlayerEnteredPortal;
         LevelPortal portal;
@@ -16,6 +18,7 @@ namespace HeroesFlight.System.Gameplay.Container
 
         public int CurrentLvlIndex { get; private set; }
 
+        public ScreenShakeProfile BossProfile=>bossProfile;
         public bool FinishedLoop => CurrentLvlIndex >= currentModel.SpawnModel.Levels.Length;
 
         public int MaxLvlIndex => currentModel.SpawnModel.Levels.Length;

@@ -98,7 +98,7 @@ namespace HeroesFlight.System.NPC.Container
             yield return true;
         }
 
-        public void SpawnSingleEnemy(SpawnModelEntry spawnModelEntry, Action<AiControllerBase> OnOnEnemySpawned)
+         void SpawnSingleEnemy(SpawnModelEntry spawnModelEntry, Action<AiControllerBase> OnOnEnemySpawned)
         {
             List<ISpawnPointInterface> targetPoints = spawnPointsCache[spawnModelEntry.Prefab.AgentModel.EnemySpawmType];
 
@@ -119,7 +119,7 @@ namespace HeroesFlight.System.NPC.Container
             }
             else
             {
-                resultEnemy.Init(player.transform, mobDifficulty.GetHealth(levelIndex, resultEnemy.EnemyType), mobDifficulty.GetDamage(levelIndex, resultEnemy.EnemyType),
+              resultEnemy.Init(player.transform, mobDifficulty.GetHealth(levelIndex, resultEnemy.EnemyType), mobDifficulty.GetDamage(levelIndex, resultEnemy.EnemyType),
                     monsterStatController.GetMonsterStatModifier, monsterStatController.CurrentCardIcon);
             }
 
@@ -230,4 +230,48 @@ public class MobDifficulty
     public EnemyType EnemyType => enemyType;
     public CustomAnimationCurve HealthStat => healthStat;
     public CustomAnimationCurve DamageStat => damageStat;
+}
+
+[Serializable]
+public class MobDropTableHolder
+{
+    [SerializeField] MobDropTable[] mobDropTables;
+
+    public event Action<int> OnGoldDropped;
+    public event Action<int> OnGemDropped;
+    public event Action<int> OnRuneFragmentDropped;
+    public event Action<int> OnBonusRoomKeyFragmentDropped;
+
+    public bool GetDrops(EnemyType enemyType)
+    {
+        MobDropTable drop = mobDropTables.FirstOrDefault(x => x.EnemyType == enemyType);
+        return drop.GetDrops(OnGoldDropped, OnGemDropped, OnRuneFragmentDropped, OnBonusRoomKeyFragmentDropped);
+    }
+}
+
+[Serializable]
+public class MobDropTable
+{
+    [SerializeField] EnemyType enemyType;
+    [SerializeField] Drop goldDrop;
+    [SerializeField] Drop gemDrop;
+    [SerializeField] Drop runeFragment;
+    [SerializeField] Drop bonusRoomKeyFragment;
+
+    public EnemyType EnemyType => enemyType;
+
+    public bool GetDrops(Action<int> OnGoldDropped, Action<int> OnGemDropped, Action<int> OnRuneFragmentDropped, Action<int> OnBonusRoomKeyFragmentDropped)
+    {
+        bool goldDroped =  TryGetDrop(goldDrop, OnGoldDropped);
+        bool gemDropped = TryGetDrop(gemDrop, OnGemDropped);
+        bool runeFragmentDropped = TryGetDrop(runeFragment, OnRuneFragmentDropped);
+        bool bonusRoomKeyFragmentDropped = TryGetDrop(bonusRoomKeyFragment, OnBonusRoomKeyFragmentDropped);
+
+        return goldDroped || gemDropped || runeFragmentDropped || bonusRoomKeyFragmentDropped;
+    }
+
+    public bool TryGetDrop(Drop drop, Action<int> OnDropSuccessFul)
+    {
+        return drop.DropSuccessFul(OnDropSuccessFul);
+    }
 }

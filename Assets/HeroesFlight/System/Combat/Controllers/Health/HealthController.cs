@@ -1,14 +1,17 @@
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using System;
+using HeroesFlight.System.Combat.Enum;
+using HeroesFlight.System.Combat.Model;
 using UnityEngine;
-using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class HealthController : MonoBehaviour, IHealthController
     {
+        [SerializeField] protected HealthType healthType;
         [SerializeField] protected bool autoInit;
         [SerializeField] protected float maxHealth;
         [SerializeField] protected float currentHealth;
@@ -26,13 +29,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public int CurrentHit => currentHit;
 
         public bool IsImmortal { get; protected set; }
+        public HealthType HealthType => healthType;
         public Transform HealthTransform => transform;
         public float MaxHealth => maxHealth;
         public float CurrentHealth => currentHealth;
         public float CurrentHealthProportion => (float)currentHealth / maxHealth;
-        public event Action<DamageModel> OnBeingDamaged;
+        public event Action<HealthModificationRequestModel> OnDamageReceiveRequest;
+        
         public event Action<IHealthController> OnDeath;
-        public event Action<float, Transform> OnHeal;
         public event Action OnDodged;
 
         private void OnEnable()
@@ -47,50 +51,78 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             currentHit = maxHit;
         }
 
-        public virtual void DealDamage(DamageModel damage)
+        public virtual void TryDealDamage(HealthModificationIntentModel healthModificationIntent)
         {
             // To remove
-            if(useHit)
+            if (useHit)
             {
                 DealHit();
                 return;
             }
 
-
             if (IsImmortal)
                 return;
-            
-            if(IsDead())
+           
+            if (IsDead())
                 return;
-
+           
             if (DodgeAttack())
             {
                 OnDodged?.Invoke();
                 return;
             }
+            
+           
+            healthModificationIntent.SetTarget(transform);
+            OnDamageReceiveRequest?.Invoke(new HealthModificationRequestModel(healthModificationIntent,this));
+            
 
-            var resultDamage = damage.Amount -
-                StatCalc.GetValueOfPercentage(damage.Amount, defence);
-            damage.ModifyAmount(resultDamage);
-            currentHealth -= resultDamage;
+        }
+
+        public void ModifyHealth(HealthModificationIntentModel modificationIntentModel)
+        {
+            if (modificationIntentModel.AttackType != AttackType.Healing)
+            {
+               var resultDamage = modificationIntentModel.Amount -
+                                   StatCalc.GetPercentage(modificationIntentModel.Amount, defence);
+                currentHealth -= resultDamage;
+            }
+            else
+            {
+                currentHealth +=  modificationIntentModel.Amount;
+                if (currentHealth > maxHealth)
+                    currentHealth = maxHealth;
+            }
+           
             heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
-            damage.SetTarget(transform);
-            OnBeingDamaged?.Invoke(damage);
-
+          
             if (IsDead())
                 ProcessDeath();
         }
 
-        public virtual void Heal(float amount)
+        public virtual void Heal(float amount, bool notify = true)
         {
             if (IsDead())
                 return;
-
-            currentHealth += amount;
-            if (currentHealth > maxHealth)
+            if (currentHealth >= maxHealth)
+            {
                 currentHealth = maxHealth;
-            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
-            OnHeal?.Invoke(amount, transform);
+                return;
+            }
+
+            if (notify)
+            {
+                var intent =new HealthModificationIntentModel(amount,
+                    DamageType.NoneCritical, AttackType.Healing, DamageCalculationType.Flat);
+                OnDamageReceiveRequest?.Invoke(new HealthModificationRequestModel(intent, this));
+            }
+            else
+            {
+                currentHealth += amount;
+                if (currentHealth > maxHealth)
+                    currentHealth = maxHealth;
+                heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+            }
         }
 
         public virtual bool IsDead()
@@ -101,7 +133,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public virtual void Reset()
         {
             Init();
-            OnBeingDamaged = null;
+            OnDamageReceiveRequest = null;
             OnDeath = null;
         }
 
@@ -117,13 +149,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected virtual void ProcessDeath()
         {
-           OnDeath?.Invoke(this);
+            OnDeath?.Invoke(this);
         }
 
-        protected void TriggerDamageMessage(DamageModel damage)
+        protected void TriggerDamageMessage(HealthModificationIntentModel healthModificationIntent)
         {
-            damage.SetTarget(transform);
-            OnBeingDamaged?.Invoke(damage);
+            healthModificationIntent.SetTarget(transform);
         }
 
         protected void SetMaxHealth(float health)
@@ -143,6 +174,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             --currentHit;
             OnBeingHitDamaged?.Invoke(transform);
+        }
+
+        public void DealHealthPercentageDamage(float percentage, DamageType damageType, AttackType attackType)
+        {
+            float damage = StatCalc.GetPercentage(maxHealth, percentage);
+            HealthModificationIntentModel healthModificationIntentModel = new HealthModificationIntentModel(damage, damageType, attackType,DamageCalculationType.Flat);
+            TryDealDamage(healthModificationIntentModel);
         }
     }
 }

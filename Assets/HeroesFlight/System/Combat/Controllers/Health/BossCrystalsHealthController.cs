@@ -33,9 +33,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             defence = value;
         }
 
-        public override void DealDamage(DamageModel damage)
+        public override void TryDealDamage(HealthModificationIntentModel healthModificationIntent)
         {
-            base.DealDamage(damage);
+            base.TryDealDamage(healthModificationIntent);
             skeletonAnimation.AnimationState.SetAnimation(1, hitAnimation, false);
             skeletonAnimation.AnimationState.AddEmptyAnimation(1, .2f, 0);
         }

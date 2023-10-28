@@ -8,6 +8,8 @@ using Spine.Unity;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.System.Combat.Enum;
+using Plugins.Audio_System;
 using UnityEngine;
 
 public class EffectMushroomHazard : EnironmentHazard
@@ -71,8 +73,9 @@ public class EffectMushroomHazard : EnironmentHazard
     {
         if (collider2D.TryGetComponent(out IHealthController healthController))
         {
-            float damage = StatCalc.GetValueOfPercentage(healthPercentageDecrease, healthController.CurrentHealth);
-            healthController.DealDamage(new DamageModel(damage, DamageType.NoneCritical, AttackType.Regular));
+            float damage = StatCalc.GetPercentage(healthPercentageDecrease, healthController.CurrentHealth);
+            healthController.TryDealDamage(new HealthModificationIntentModel(damage, 
+                DamageType.NoneCritical, AttackType.Regular,DamageCalculationType.Percentage));
         }
     }
 
@@ -82,7 +85,7 @@ public class EffectMushroomHazard : EnironmentHazard
         effectArea.SetActive(state);
         if (state)
         {
-            AudioManager.PlaySoundEffect("PoisonCloud");
+            AudioManager.PlaySoundEffect("PoisonCloud",SoundEffectCategory.Environment);
             mainfartingParticle.Play();
         }
         else
