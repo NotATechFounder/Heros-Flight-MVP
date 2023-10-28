@@ -16,7 +16,7 @@ Library/PackageCache/* filter=lfs diff=lfs merge=lfs -text
 *.pdf filter=lfs diff=lfs merge=lfs -text
 *.png filter=lfs diff=lfs merge=lfs -text
 /Library/ArtifactDB filter=lfs diff=lfs merge=lfs -text
-*.md !text !filter !merge !diff
-*.cs !text !filter !merge !diff
-*.fbx !text !filter !merge !diff
-.gitignore !text !filter !merge !diff
+!.gitignore
+!*.md
+!*.fbx
+!*.cs
