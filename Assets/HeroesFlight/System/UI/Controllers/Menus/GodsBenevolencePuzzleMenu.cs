@@ -26,9 +26,8 @@ namespace UISystem
         [SerializeField] private GridLayoutGroup gridLayoutGroup;
         [SerializeField] private PuzzlePiece[] puzzlePieces;
 
-        [Header("Debug")]
-        [SerializeField] private GodBenevolenceType selectedBenevolence;
-        [SerializeField] private GodsBenevolenceVisualData selectedBenevolenceVisual;
+        private GodBenevolenceType selectedBenevolence;
+        private GodsBenevolenceVisualData selectedBenevolenceVisual;
 
         private CountDownTimer countDownTimer;
         private JuicerRuntime countDownTextEffect;
