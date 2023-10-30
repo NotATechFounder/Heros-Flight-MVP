@@ -938,10 +938,16 @@ namespace HeroesFlight.System.Gameplay
 
         void ShowGodBenevolencePrompt()
         {
-            if (characterStatController.GetHealthPercentage() > 30) return;
-            uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
+            if (characterStatController.GetHealthPercentage() <= 30)
+            {
+                uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
                 uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,
                 ContinueGameLoop);
+            }
+            else
+            {
+                ContinueGameLoop();
+            }
         }
 
         void HandleGameLoopFinish()
