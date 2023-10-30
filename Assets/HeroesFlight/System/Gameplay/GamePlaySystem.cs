@@ -28,7 +28,6 @@ using Plugins.Audio_System;
 using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
-using UnityEngine.Rendering.VirtualTexturing;
 using UnityEngine.SceneManagement;
 
 namespace HeroesFlight.System.Gameplay
@@ -74,6 +73,8 @@ namespace HeroesFlight.System.Gameplay
 
         BaseCharacterAttackController characterAttackController;
 
+        CharacterStatController characterStatController;
+
         CharacterVFXController characterVFXController;
 
         CameraControllerInterface cameraController;
@@ -91,8 +92,6 @@ namespace HeroesFlight.System.Gameplay
 
         public Vector2 GetPlayerSpawnPosition => currentLevelEnvironment
             .GetSpawnpoint(SpawnType.Player).GetSpawnPosition();
-
-        float collectedHeroProgressionSp;
 
         float countDownDelay;
 
@@ -139,20 +138,20 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
 
             uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes += () =>
-                progressionSystem.Progression.HeroProgressionAttributeInfos;
+                progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent +=
-                progressionSystem.Progression.DecrementAttributeSP;
+                progressionSystem.HeroProgression.DecrementAttributeSP;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent +=
-                progressionSystem.Progression.IncrementAttributeSP;
+                progressionSystem.HeroProgression.IncrementAttributeSP;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=
-                progressionSystem.Progression.Confirm;
+                progressionSystem.HeroProgression.Confirm;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed +=
-                progressionSystem.Progression.ResetSP;
+                progressionSystem.HeroProgression.ResetSP;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=
                 HeroProgressionCompleted;
-            progressionSystem.Progression.OnEXPAdded +=
+            progressionSystem.HeroProgression.OnEXPAdded +=
                 uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
-            progressionSystem.Progression.OnSpChanged +=
+            progressionSystem.HeroProgression.OnSpChanged +=
                 uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved +=
                 godsBenevolence.ActivateGodsBenevolence;
@@ -257,20 +256,20 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
 
             uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -= () =>
-                progressionSystem.Progression.HeroProgressionAttributeInfos;
+                progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent -=
-                progressionSystem.Progression.DecrementAttributeSP;
+                progressionSystem.HeroProgression.DecrementAttributeSP;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent -=
-                progressionSystem.Progression.IncrementAttributeSP;
+                progressionSystem.HeroProgression.IncrementAttributeSP;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=
-                progressionSystem.Progression.Confirm;
+                progressionSystem.HeroProgression.Confirm;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -=
-                progressionSystem.Progression.ResetSP;
+                progressionSystem.HeroProgression.ResetSP;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=
                 HeroProgressionCompleted;
-            progressionSystem.Progression.OnEXPAdded -=
+            progressionSystem.HeroProgression.OnEXPAdded -=
                 uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
-            progressionSystem.Progression.OnSpChanged -=
+            progressionSystem.HeroProgression.OnSpChanged -=
                 uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =
                 godsBenevolence.GetRandomGodsBenevolenceVisualSO;
@@ -401,11 +400,11 @@ namespace HeroesFlight.System.Gameplay
             cameraController.SetTarget(characterController.CharacterTransform);
             npcSystem.InjectPlayer(characterController.CharacterTransform);
 
-            CharacterStatController characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
+            characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
             progressionSystem.BoosterManager.Initialize(characterStatController);
 
             environmentSystem.CurrencySpawner.SetPlayer(characterController.CharacterTransform);
-            progressionSystem.Progression.Initialise(characterStatController);
+            progressionSystem.HeroProgression.Initialise(characterStatController);
 
             shrine.Initialize( dataSystem.CurrencyManager, characterStatController);
         }    
@@ -471,10 +470,9 @@ namespace HeroesFlight.System.Gameplay
                 Quaternion.Euler(new Vector3(-90, 0, 0)));
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10,
                 position);
-            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Experience, 10,
+            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RunExperience, 10,
                 position);
-            progressionSystem.AddCurrency(CurrencyKeys.Experience,(int)container.HeroProgressionExpEarnedPerKill);
-            collectedHeroProgressionSp += container.HeroProgressionExpEarnedPerKill;
+            progressionSystem.AddCurrency(CurrencyKeys.RunExperience, (int)container.HeroProgressionExpEarnedPerKill);
 
             uiSystem.UpdateEnemiesCounter(enemiesToKill);
             if (currentState != GameState.Ongoing)
@@ -752,10 +750,7 @@ namespace HeroesFlight.System.Gameplay
             environmentSystem.CurrencySpawner.ActivateExpItems(() =>
             {
                 Debug.Log("EXP ITEMS ACTIVATED");
-               // progressionSystem.Progression.AddExp(collectedHeroProgressionSp);
-               //collectedHeroProgressionSp = 0;
-               progressionSystem.Progression.AddExp(progressionSystem.GetCurrency(CurrencyKeys.Experience));
-               progressionSystem.ResetCurrency(CurrencyKeys.Experience);
+                progressionSystem.CollectRunCurrency();
             });
         }
 
@@ -943,6 +938,7 @@ namespace HeroesFlight.System.Gameplay
 
         void ShowGodBenevolencePrompt()
         {
+            if (characterStatController.GetHealthPercentage() > 30) return;
             uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
                 uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,
                 ContinueGameLoop);
