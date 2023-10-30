@@ -397,8 +397,7 @@ namespace HeroesFlight.System.Gameplay
             characterHealthController.OnDodged += HandleCharacterDodged;
           
             characterSystem.SetCharacterControllerState(false);
-            cameraController.SetTarget(characterController.CharacterTransform
-                .GetComponentInChildren<CameraTargetController>().transform);
+            cameraController.SetTarget(characterController.CharacterTransform);
             npcSystem.InjectPlayer(characterController.CharacterTransform);
 
             var characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
