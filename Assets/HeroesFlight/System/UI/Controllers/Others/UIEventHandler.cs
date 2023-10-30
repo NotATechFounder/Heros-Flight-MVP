@@ -17,7 +17,7 @@ public class UIEventHandler : MonoBehaviour
     public ConfirmationMenu ConfirmationMenu { get; private set; }
     public ReviveMenu ReviveMenu { get; private set; }
     public SummaryMenu SummaryMenu { get; private set; }
-    public PuzzleMenu PuzzleMenu { get; private set; }
+    public GodsBenevolencePuzzleMenu GodsBenevolencePuzzleMenu { get; private set; }
     public AngelGambitMenu AngelGambitMenu { get; private set; }
     public AngelPermanetCardMenu AngelPermanetCardMenu { get; private set; }
     public HeroProgressionMenu HeroProgressionMenu { get; private set; }
@@ -36,7 +36,7 @@ public class UIEventHandler : MonoBehaviour
         PauseMenu = uIManager.InitMenu<PauseMenu>();
         ReviveMenu = uIManager.InitMenu<ReviveMenu>();
         SummaryMenu = uIManager.InitMenu<SummaryMenu>();
-        PuzzleMenu = uIManager.InitMenu<PuzzleMenu>();
+        GodsBenevolencePuzzleMenu = uIManager.InitMenu<GodsBenevolencePuzzleMenu>();
         AngelGambitMenu = uIManager.InitMenu<AngelGambitMenu>();
         AngelPermanetCardMenu = uIManager.InitMenu<AngelPermanetCardMenu>();
         HeroProgressionMenu = uIManager.InitMenu<HeroProgressionMenu>();

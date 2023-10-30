@@ -28,6 +28,7 @@ using Plugins.Audio_System;
 using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
+using UnityEngine.Rendering.VirtualTexturing;
 using UnityEngine.SceneManagement;
 
 namespace HeroesFlight.System.Gameplay
@@ -54,10 +55,10 @@ namespace HeroesFlight.System.Gameplay
         }
 
         CountDownTimer GameTimer;
-        AngelEffectManager EffectManager;
-        GodsBenevolence GodsBenevolence;
         GameEffectController GameEffectController;
-
+        
+        GodsBenevolence godsBenevolence;
+        Shrine shrine;  
 
         DataSystemInterface dataSystem;
         EnvironmentSystemInterface environmentSystem;
@@ -104,13 +105,16 @@ namespace HeroesFlight.System.Gameplay
         public void Init(Scene scene = default, Action OnComplete = null)
         {
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
-            EffectManager = scene.GetComponentInChildren<AngelEffectManager>();
+
+            shrine = scene.GetComponentInChildren<Shrine>();
+            godsBenevolence = scene.GetComponentInChildren<GodsBenevolence>();
+
             container = scene.GetComponentInChildren<GameplayContainer>();
             hitEffectsPlayer = container.GetComponent<StackableSoundPlayer>();
            
             progressionSystem.BoosterManager.OnBoosterActivated += HandleBoosterActivated;
             progressionSystem.BoosterManager.OnBoosterContainerCreated += HandleBoosterWithDurationActivated;
-            GodsBenevolence = scene.GetComponentInChildren<GodsBenevolence>();
+
             GameEffectController = scene.GetComponentInChildren<GameEffectController>();
 
             container.Init();
@@ -127,11 +131,11 @@ namespace HeroesFlight.System.Gameplay
 
             environmentSystem.BoosterSpawner.ActivateBooster =  progressionSystem.BoosterManager.ActivateBooster;
 
-            EffectManager.OnTrigger += uiSystem.UiEventHandler.AngelGambitMenu.Open;
-            EffectManager.OnPermanetCard +=
+            shrine.GetAngelEffectManager.OnTrigger += uiSystem.UiEventHandler.AngelGambitMenu.Open;
+            shrine.GetAngelEffectManager.OnPermanetCard +=
                 uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
-            uiSystem.UiEventHandler.AngelGambitMenu.CardExit += EffectManager.Exists;
-            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += EffectManager.AddAngelCardSO;
+            uiSystem.UiEventHandler.AngelGambitMenu.CardExit += shrine.GetAngelEffectManager.Exists;
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
 
             uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes += () =>
@@ -150,12 +154,12 @@ namespace HeroesFlight.System.Gameplay
                 uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
             progressionSystem.Progression.OnSpChanged +=
                 uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
-            uiSystem.UiEventHandler.PuzzleMenu.OnPuzzleSolved +=
-                GodsBenevolence.ActivateGodsBenevolence;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved +=
+                godsBenevolence.ActivateGodsBenevolence;
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += StoreRunReward;
             uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete += HandleSingleLevelUp;
             uiSystem.OnRestartLvlRequest += HandleLvlRestart;
-            uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed += ContinueGameLoop;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed += ContinueGameLoop;
             uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
             uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
 
@@ -245,11 +249,11 @@ namespace HeroesFlight.System.Gameplay
         /// </summary>
         void ResetConnections()
         {
-            EffectManager.OnTrigger -= uiSystem.UiEventHandler.AngelGambitMenu.Open;
-            EffectManager.OnPermanetCard -=
+            shrine.GetAngelEffectManager.OnTrigger -= uiSystem.UiEventHandler.AngelGambitMenu.Open;
+            shrine.GetAngelEffectManager.OnPermanetCard -=
                 uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
-            uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= EffectManager.Exists;
-            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= EffectManager.AddAngelCardSO;
+            uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= shrine.GetAngelEffectManager.Exists;
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
 
             uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -= () =>
@@ -268,11 +272,13 @@ namespace HeroesFlight.System.Gameplay
                 uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
             progressionSystem.Progression.OnSpChanged -=
                 uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
-            uiSystem.UiEventHandler.PuzzleMenu.OnPuzzleSolved -=
-                GodsBenevolence.ActivateGodsBenevolence;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =
+                godsBenevolence.GetRandomGodsBenevolenceVisualSO;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -=
+                godsBenevolence.ActivateGodsBenevolence;
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= StoreRunReward;
             uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= HandleSingleLevelUp;
-            uiSystem.UiEventHandler.PuzzleMenu.OnMenuClosed -= ContinueGameLoop;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed -= ContinueGameLoop;
             uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked -= HandleGameLoopFinish;
             uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted -= HandleGameLoopFinish;
 
@@ -378,17 +384,12 @@ namespace HeroesFlight.System.Gameplay
         /// </summary>
         void SetupCharacter()
         {
-            var characterController = characterSystem.CreateCharacter(GetPlayerSpawnPosition);
-            characterHealthController =
-                characterController.CharacterTransform.GetComponent<CharacterHealthController>();
-            characterAttackController =
-                characterController.CharacterTransform.GetComponent<BaseCharacterAttackController>();
+            CharacterControllerInterface characterController = characterSystem.CreateCharacter(GetPlayerSpawnPosition);
+            characterHealthController =  characterController.CharacterTransform.GetComponent<CharacterHealthController>();
+            characterAttackController =  characterController.CharacterTransform.GetComponent<BaseCharacterAttackController>();
 
-            combatSystem.RegisterEntity(new CombatEntityModel(characterHealthController, characterAttackController,
-                CombatEntityType.Player));
-            combatSystem.InitCharacterUltimate(characterController.CharacterSO.CharacterAnimations.UltAnimationsData,
-                characterController.CharacterSO.UltimateData.Charges);
-
+            combatSystem.RegisterEntity(new CombatEntityModel(characterHealthController, characterAttackController, CombatEntityType.Player));
+            combatSystem.InitCharacterUltimate(characterController.CharacterSO.CharacterAnimations.UltAnimationsData, characterController.CharacterSO.UltimateData.Charges);
 
             characterAttackController.OnHitTarget += OnEnemyHitSuccess;
 
@@ -400,15 +401,14 @@ namespace HeroesFlight.System.Gameplay
             cameraController.SetTarget(characterController.CharacterTransform);
             npcSystem.InjectPlayer(characterController.CharacterTransform);
 
-            var characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
-            EffectManager.Initialize(characterStatController);
+            CharacterStatController characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
             progressionSystem.BoosterManager.Initialize(characterStatController);
 
             environmentSystem.CurrencySpawner.SetPlayer(characterController.CharacterTransform);
             progressionSystem.Progression.Initialise(characterStatController);
-            GodsBenevolence.Initialize(characterStatController);
-        }
-        
+
+            shrine.Initialize( dataSystem.CurrencyManager, characterStatController);
+        }    
         
         void OnEnemyHitSuccess()
         {
@@ -646,7 +646,7 @@ namespace HeroesFlight.System.Gameplay
         void TriggerAngelsGambit()
         {
             characterSystem.SetCharacterControllerState(false);
-            EffectManager.TriggerAngelsGambit();
+            shrine.GetAngelEffectManager.TriggerAngelsGambit();
         }
 
         public Level PreloadLvl()
@@ -748,7 +748,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleHeroProgression()
         {
-            GodsBenevolence.DeactivateGodsBenevolence();
+            godsBenevolence.DeactivateGodsBenevolence();
             environmentSystem.CurrencySpawner.ActivateExpItems(() =>
             {
                 Debug.Log("EXP ITEMS ACTIVATED");
@@ -922,7 +922,7 @@ namespace HeroesFlight.System.Gameplay
             yield return new WaitUntil(() =>
                 uiSystem.UiEventHandler.HeroProgressionMenu.MenuStatus == UISystem.Menu.Status.Closed);
             yield return new WaitForSeconds(1f);
-            if (EffectManager.CompletedLevel())
+            if (shrine.GetAngelEffectManager.CompletedLevel())
             {
                 yield return new WaitUntil(() =>
                     uiSystem.UiEventHandler.AngelPermanetCardMenu.MenuStatus ==
@@ -944,7 +944,7 @@ namespace HeroesFlight.System.Gameplay
         void ShowGodBenevolencePrompt()
         {
             uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
-                uiSystem.UiEventHandler.PuzzleMenu.Open,
+                uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,
                 ContinueGameLoop);
         }
 
