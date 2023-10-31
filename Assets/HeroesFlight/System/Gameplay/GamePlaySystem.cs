@@ -153,6 +153,8 @@ namespace HeroesFlight.System.Gameplay
                 uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
             progressionSystem.HeroProgression.OnSpChanged +=
                 uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =
+            godsBenevolence.GetRandomGodsBenevolenceVisualSO;
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved +=
                 godsBenevolence.ActivateGodsBenevolence;
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += StoreRunReward;
@@ -271,8 +273,6 @@ namespace HeroesFlight.System.Gameplay
                 uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
             progressionSystem.HeroProgression.OnSpChanged -=
                 uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =
-                godsBenevolence.GetRandomGodsBenevolenceVisualSO;
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -=
                 godsBenevolence.ActivateGodsBenevolence;
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= StoreRunReward;
@@ -407,6 +407,7 @@ namespace HeroesFlight.System.Gameplay
             progressionSystem.HeroProgression.Initialise(characterStatController);
 
             shrine.Initialize( dataSystem.CurrencyManager, characterStatController);
+            godsBenevolence.Initialize(characterStatController);
         }    
         
         void OnEnemyHitSuccess()
@@ -938,7 +939,8 @@ namespace HeroesFlight.System.Gameplay
 
         void ShowGodBenevolencePrompt()
         {
-            if (characterStatController.GetHealthPercentage() <= 30)
+            //if (characterStatController.GetHealthPercentage() <= 30)
+            if (true)
             {
                 uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
                 uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,

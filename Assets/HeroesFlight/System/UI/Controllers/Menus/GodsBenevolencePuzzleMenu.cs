@@ -26,7 +26,7 @@ namespace UISystem
         [SerializeField] private GridLayoutGroup gridLayoutGroup;
         [SerializeField] private PuzzlePiece[] puzzlePieces;
 
-        private GodBenevolenceType selectedBenevolence;
+        private GodBenevolenceType selectedBenevolence = GodBenevolenceType.Ares;
         private GodsBenevolenceVisualData selectedBenevolenceVisual;
 
         private CountDownTimer countDownTimer;
@@ -75,13 +75,13 @@ namespace UISystem
                 return; 
             }
 
-            selectedBenevolenceVisual = GetRandomBenevolenceVisualSO(selectedBenevolence);
+            selectedBenevolenceVisual = GetRandomBenevolenceVisualSO.Invoke(selectedBenevolence);
             selectedBenevolence = selectedBenevolenceVisual.BenevolenceType;
-
+            Sprite[] benevolencePuzzle = selectedBenevolenceVisual.GetBenevolencePuzzle();
             for (int i = 0; i < puzzlePieces.Length; i++)
             {
                 puzzlePieces[i].ShuffleRotation();
-                puzzlePieces[i].SetSprite(selectedBenevolenceVisual.BenevolencePuzzle[i]);
+                puzzlePieces[i].SetSprite(benevolencePuzzle[i]);
             }
 
             blocker.SetActive(false);

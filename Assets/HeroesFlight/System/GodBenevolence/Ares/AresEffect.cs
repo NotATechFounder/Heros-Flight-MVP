@@ -58,7 +58,6 @@ public class AresEffect : MonoBehaviour
 
         clashFowardEffectBackward = swordHandle.JuicyLocalRotate(rotateBackwardDest, backwardSpeed);
         clashFowardEffectBackward.SetEase(backwardEase);
-        characterController = GameObject.FindWithTag("Player").GetComponent<CharacterControllerInterface>();
     }
 
     public IEnumerator AutoAttack()
@@ -77,11 +76,11 @@ public class AresEffect : MonoBehaviour
         }
     }
 
-    public void SetUp( float damage, Action OnHitEvent=null)
-    {
-        
+    public void SetUp(float damage, CharacterControllerInterface characterControllerInterface, Action OnHitEvent=null)
+    {       
         this.damage = damage;
         OnHitEnemy = OnHitEvent;
+        this.characterController = characterControllerInterface;
         characterController.OnFaceDirectionChange += Flip;
         StartCoroutine(AutoAttack());
     }
