@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1751a181f10630d42afc58a3510a335b
+guid: cea722e5ca4d80343983056b2cb6d7dc
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -136,13 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Ares God Of War Pic_0
+      name: ARES_GRID_V2_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 240
-        width: 180
-        height: 120
+        y: 1365.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,20 +150,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 13027659e745e3647ba34c77a0acf2b8
-      internalID: 828447066
+      spriteID: e8cc7c84cf277b947ac36dada6d27da3
+      internalID: 2091045707
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ares God Of War Pic_1
+      name: ARES_GRID_V2_1
       rect:
         serializedVersion: 2
-        x: 180
-        y: 240
-        width: 180
-        height: 120
+        x: 682
+        y: 1365.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -171,20 +171,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 901bdca894e9e9141956f54adb654394
-      internalID: -682045372
+      spriteID: a97f820b0f4e48242b520ac0a8e9b0c9
+      internalID: -587470110
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ares God Of War Pic_2
+      name: ARES_GRID_V2_2
       rect:
         serializedVersion: 2
-        x: 360
-        y: 240
-        width: 180
-        height: 120
+        x: 1364
+        y: 1365.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -192,83 +192,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 529eaf5162bd60b49ad978d5ea3df873
-      internalID: 874618276
+      spriteID: 64974fc4bc2cfc143b443223dde5a3a2
+      internalID: 706780375
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ares God Of War Pic_3
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 120
-        width: 180
-        height: 120
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e1cb2f9ff4efd84409266aa023239f46
-      internalID: -297083821
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Ares God Of War Pic_4
-      rect:
-        serializedVersion: 2
-        x: 180
-        y: 120
-        width: 180
-        height: 120
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b93ec344e27e13c48a338c088d253005
-      internalID: 1565233609
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Ares God Of War Pic_5
-      rect:
-        serializedVersion: 2
-        x: 360
-        y: 120
-        width: 180
-        height: 120
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 73d7d742d072eec41ad3bc5975719503
-      internalID: 1911284660
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Ares God Of War Pic_6
+      name: ARES_GRID_V2_3
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 180
-        height: 120
+        y: 683.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -276,20 +213,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7e18aa2c24a12da428befc76014f5dcd
-      internalID: -234090645
+      spriteID: cf0000c921591f54ab166e4cbceacbd1
+      internalID: 1932259847
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ares God Of War Pic_7
+      name: ARES_GRID_V2_4
       rect:
         serializedVersion: 2
-        x: 180
-        y: 0
-        width: 180
-        height: 120
+        x: 682
+        y: 683.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -297,20 +234,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 353a8f91b7686f34b9e3fe8a39ef8761
-      internalID: 1890582792
+      spriteID: 0fa9b50c7b05b4140ac408263b616713
+      internalID: -1469425012
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ares God Of War Pic_8
+      name: ARES_GRID_V2_5
       rect:
         serializedVersion: 2
-        x: 360
-        y: 0
-        width: 180
-        height: 120
+        x: 1364
+        y: 683.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -318,8 +255,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b61492020dc449240824beb99bad4300
-      internalID: -2044851538
+      spriteID: 850c5df9acaf59c48b9cf239032fadfe
+      internalID: 1700302138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARES_GRID_V2_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1.333313
+        width: 682.6667
+        height: 682.6667
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c7b2a6f1b7143c46ba52c97c1d7951e
+      internalID: -582049767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARES_GRID_V2_7
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 1.333313
+        width: 682.6667
+        height: 682.6667
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1899d01ffceedf4baccd632a5c5dae0
+      internalID: 1559163733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARES_GRID_V2_8
+      rect:
+        serializedVersion: 2
+        x: 1364
+        y: 1.333313
+        width: 682.6667
+        height: 682.6667
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f43a25a921eb0b1499aa7c71b4387575
+      internalID: 2003111231
       vertices: []
       indices: 
       edges: []
@@ -327,7 +327,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 35310f2164e378e49b7c158f6d293744
+    spriteID: be459f7db3c82d8468889015dd03064e
     internalID: 0
     vertices: []
     indices: 
@@ -335,15 +335,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Ares God Of War Pic_0: 828447066
-      Ares God Of War Pic_1: -682045372
-      Ares God Of War Pic_2: 874618276
-      Ares God Of War Pic_3: -297083821
-      Ares God Of War Pic_4: 1565233609
-      Ares God Of War Pic_5: 1911284660
-      Ares God Of War Pic_6: -234090645
-      Ares God Of War Pic_7: 1890582792
-      Ares God Of War Pic_8: -2044851538
+      ARES_GRID_V2_0: 2091045707
+      ARES_GRID_V2_1: -587470110
+      ARES_GRID_V2_2: 706780375
+      ARES_GRID_V2_3: 1932259847
+      ARES_GRID_V2_4: -1469425012
+      ARES_GRID_V2_5: 1700302138
+      ARES_GRID_V2_6: -582049767
+      ARES_GRID_V2_7: 1559163733
+      ARES_GRID_V2_8: 2003111231
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

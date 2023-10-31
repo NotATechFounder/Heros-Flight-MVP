@@ -11,18 +11,26 @@ public class EnergyManager : MonoBehaviour
 
     [Header("Properties")]
     [SerializeField] TimeType timeType;
-    [SerializeField] int currentEnergy;
     [SerializeField] int maxEnergy = 20;
     [SerializeField] int restoreDuration;
     [SerializeField] EnergyData energyData;
 
     private DateTime nextEnergyTime;
-    bool isRestoring = false;
+    private bool isRestoring = false;
+    private CurrencyManager currencyManager;
 
     public int MaxEnergy() => maxEnergy;
 
     private void Start()
     {
+        LoadDate();
+        LoadAccumulatedEnergyOffline();
+        StartCoroutine(RestoreEnergy());
+    }
+
+    public void Initialize(CurrencyManager currencyManager)
+    {
+        this.currencyManager = currencyManager;
         LoadDate();
         LoadAccumulatedEnergyOffline();
         StartCoroutine(RestoreEnergy());
@@ -44,7 +52,7 @@ public class EnergyManager : MonoBehaviour
 
     private void LoadAccumulatedEnergyOffline()
     {
-        if (currentEnergy < maxEnergy)
+        if (currencyManager.GetCurrencyAmount(CurrencyKeys.Energy) < maxEnergy)
         {
             DateTime lastTime = nextEnergyTime;
             TimeSpan time = InternetManager.Instance.GetCurrentDateTime() - lastTime;
@@ -59,10 +67,10 @@ public class EnergyManager : MonoBehaviour
                 _ => 0,
             };
 
-            if (ammountToAdd > 0 && currentEnergy < maxEnergy)
+            if (ammountToAdd > 0 && currencyManager.GetCurrencyAmount(CurrencyKeys.Energy) < maxEnergy)
             {
-                currentEnergy += ammountToAdd;
-                if (currentEnergy > maxEnergy) currentEnergy = maxEnergy;
+                currencyManager.AddCurency(CurrencyKeys.Energy, ammountToAdd);
+                if (currencyManager.GetCurrencyAmount(CurrencyKeys.Energy) > maxEnergy) currencyManager.SetCurencyAmount(CurrencyKeys.Energy, maxEnergy);
                 UpdateNextEnergyTime();
             }
         }
@@ -72,7 +80,7 @@ public class EnergyManager : MonoBehaviour
     {
         isRestoring = true;
 
-        while (currentEnergy < maxEnergy)
+        while (currencyManager.GetCurrencyAmount(CurrencyKeys.Energy) < maxEnergy)
         {
             TimeSpan time = nextEnergyTime - InternetManager.Instance.GetCurrentDateTime();
 
@@ -98,16 +106,16 @@ public class EnergyManager : MonoBehaviour
 
         if (isEnergyRestored)
         {
-            currentEnergy++;
+            currencyManager.AddCurency(CurrencyKeys.Energy, 1);
             UpdateNextEnergyTime();
         }
     }
 
     public bool UseEnergy(int amount)
     {
-        if (currentEnergy >= amount)
+        if (currencyManager.GetCurrencyAmount(CurrencyKeys.Energy) >= amount)
         {
-            currentEnergy -= amount;
+            currencyManager.ReduceCurency(CurrencyKeys.Energy, amount);
 
             if (!isRestoring)
             {

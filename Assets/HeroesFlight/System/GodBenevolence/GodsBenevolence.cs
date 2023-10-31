@@ -1,3 +1,4 @@
+using HeroesFlight.System.Character;
 using Pelumi.ObjectPool;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ public class GodsBenevolence : MonoBehaviour
 
                 float damageInc = godsBenevolence.GetValue("DamageInc");
                 damageInc = StatCalc.GetPercentage(characterStatController.CurrentPhysicalDamage, damageInc);
-                benevolenceEffect.GetComponent<AresEffect>().SetUp(damageInc, OnEnemyKilled);
+                benevolenceEffect.GetComponent<AresEffect>().SetUp(damageInc, characterStatController.GetComponent<CharacterControllerInterface>(), OnEnemyKilled);
                 break;
             case GodBenevolenceType.Apollo:
                 float damagePercentage = godsBenevolence.GetValue("DamagePercentage");
@@ -220,6 +221,16 @@ public class GodsBenevolence : MonoBehaviour
 
     public GodsBenevolenceVisualData GetRandomGodsBenevolenceVisualSO(GodBenevolenceType selectedBenevolence)
     {
+        if (godsBenevolenceArray.Length == 0)
+        {
+            return null;
+        }
+
+        if (godsBenevolenceArray.Length == 1)
+        {
+            return godsBenevolenceArray[0].BenevolenceVisualSO;
+        }
+
         GodBenevolenceType random = selectedBenevolence;
         do
         {
