@@ -29,7 +29,7 @@ namespace UISystem
                 menu = Instantiate(menu, transform);
                 spawnedMenuList.Add(menu);
             }
-            else Debug.LogError("Menu not found");
+            else Debug.LogError("Menu not found :" + typeof(T).Name);
         }
 
         public void ToggleVisibility(Visibility state)

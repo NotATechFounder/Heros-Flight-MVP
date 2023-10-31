@@ -1,0 +1,21 @@
+{
+    "name": "Shrine",
+    "rootNamespace": "",
+    "references": [
+        "GUID:08a53d9257730bf49bf6ac0661e17cb3",
+        "GUID:ccf6b2475aa39634897191f14568172a",
+        "GUID:f90407e589e19d54595a886adf7aabf5",
+        "GUID:a2e61b5434723e448917b1e201fea7eb",
+        "GUID:4aae0b6a871697848b151ea1f4cd345a",
+        "GUID:27377cbff5b029c42b4301d227252dcf"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

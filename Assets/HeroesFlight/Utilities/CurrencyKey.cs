@@ -6,4 +6,5 @@ public static class CurrencyKeys
     public const string BonusRoomKey = "BONUSROOMKEY";
     public const string RuneShard = "RUNESHARD";
     public const string Energy = "ENERGY";
+    public const string RunExperience = "RUNEXP";
 }

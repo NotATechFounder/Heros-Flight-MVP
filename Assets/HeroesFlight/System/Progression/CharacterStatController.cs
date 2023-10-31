@@ -179,7 +179,7 @@ public class CharacterStatController : MonoBehaviour
     {
         if (GetCurrentHealth != null)
         {
-            return (GetCurrentHealth() / playerCombatModel.Health) * 100;
+            return (GetCurrentHealth() / CurrentMaxHealth) * 100;
         }
         return 0;
     }
