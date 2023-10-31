@@ -18,11 +18,9 @@ namespace HeroesFlightProject.System.NPC.State
             GeneratePhaseReactionMap();
         }
 
-        public StateType Type;
-
+      
         protected StatePhase m_CurrentPhase;
-
-        protected StateType m_NextState;
+        protected Type m_NextState;
         protected IFSM m_StateMachine;
 
         Dictionary<StatePhase, Action> m_StateProcessMap = new ();
