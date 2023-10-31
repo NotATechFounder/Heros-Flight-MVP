@@ -21,7 +21,8 @@ public class AresEffect : MonoBehaviour
     [Header("Clash")]
     [SerializeField] private Transform visual;
     [SerializeField] private OverlapChecker overlapChecker;
- 
+    [SerializeField] private ParticleSystem hitEffect;
+
     [Header("Animation and Viusal Settings")]
     [SerializeField] SkeletonAnimation skeletonAnimation;
     [SerializeField] public const string idleAnimationName = "Idle";
@@ -72,21 +73,27 @@ public class AresEffect : MonoBehaviour
 
                 if(overlapChecker.TargetInRange())
                 {
-                    if (lastAttackIndex == 0)
-                    {
-                        skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
-                        lastAttackIndex = 1;
-                    }
-                    else
-                    {
-                        skeletonAnimation.AnimationState.SetAnimation(0, attack2Animation1Name, false);
-                        lastAttackIndex = 0;
-                    }
-                    overlapChecker.Detect();
+                    Attack();
                 }
             }
             yield return null;
         }
+    }
+
+    public void Attack()
+    {
+        if (lastAttackIndex == 0)
+        {
+            skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
+            lastAttackIndex = 1;
+        }
+        else
+        {
+            skeletonAnimation.AnimationState.SetAnimation(0, attack2Animation1Name, false);
+            lastAttackIndex = 0;
+        }
+        overlapChecker.Detect();
+        hitEffect.Play();
     }
 
     public void SetUp(float damage, CharacterControllerInterface characterControllerInterface, Action OnHitEvent=null)
