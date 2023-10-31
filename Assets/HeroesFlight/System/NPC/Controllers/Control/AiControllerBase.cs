@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using HeroesFlight.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Data;
 using HeroesFlightProject.System.NPC.Enum;
+using HeroesFlightProject.System.NPC.State;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.NPC.Controllers
@@ -10,6 +12,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
     {
         [SerializeField] protected SpriteRenderer buffDebuffIcon;
         [SerializeField] protected AiAgentModel m_Model;
+       //aw [SerializeField] protected List<AiSubControllerInterface> subControllers = new ();
         protected FlashEffect hitEffect;
         protected AiViewController viewController;
         protected AiAnimatorInterface animator;
@@ -28,7 +31,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected Rigidbody2D rigidBody;
         protected Transform currentTarget;
         protected bool isDisabled;
-        protected bool isAggravated;
         protected MonsterStatModifier statModifier;
         bool canAttack;
         Vector2 wanderPosition;
@@ -36,6 +38,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         protected int currentHealth;
         protected float currentDamage;
+        
+        protected   FSMachine stateMachine;
 
         public virtual void Init(Transform player,int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
@@ -45,6 +49,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
             animator = GetComponent<AiAnimatorInterface>();
             viewController = GetComponent<AiViewController>();
             hitEffect = GetComponentInChildren<FlashEffect>();
+            var mover = GetComponent<AiMoverInterface>();
+            mover.Init(m_Model);
             currentTarget = player;
             viewController.Init();
 
@@ -59,19 +65,20 @@ namespace HeroesFlightProject.System.NPC.Controllers
             Enable();
         }
 
-        void Update()
+       protected virtual void Update()
         {
-            if (isDisabled)
-                return;
-
-            if (!IsAggravated() || !canAttack)
-            {
-                ProcessWanderingState();
-            }
-            else
-            {
-                ProcessFollowingState();
-            }
+            stateMachine?.Process();
+            // if (isDisabled)
+            //     return;
+            //
+            // if (!IsAggravated() || !canAttack)
+            // {
+            //     ProcessWanderingState();
+            // }
+            // else
+            // {
+            //     ProcessFollowingState();
+            // }
 
             UpdateTimers();
         }
@@ -122,6 +129,27 @@ namespace HeroesFlightProject.System.NPC.Controllers
             });
         }
 
+        public bool TryGetController<T>(out T controller)
+        {
+            controller = default;
+            if (TryGetComponent<T>(out controller))
+            {
+                return true;
+            }
+
+            return false;
+            // foreach (var innerController in subControllers)
+            // {
+            //     if (innerController is T typeController)
+            //     {
+            //         controller = typeController;
+            //         return true;
+            //     }
+            // }
+            //
+            // return false;
+        }
+
 
         public virtual void ProcessWanderingState()
         {
@@ -131,7 +159,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
         }
 
-        protected bool IsAggravated()
+        public  bool IsAggravated()
         {
             var distance = Vector2.Distance(CurrentTarget.position, transform.position);
             return distance <= m_Model.AgroDistance ||

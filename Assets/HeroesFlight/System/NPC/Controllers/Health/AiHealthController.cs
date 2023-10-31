@@ -1,10 +1,11 @@
 using HeroesFlight.System.Gameplay.Model;
+using HeroesFlight.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class AiHealthController : HealthController
+    public class AiHealthController : HealthController,AiSubControllerInterface
     {
         AiControllerInterface aiController;
         
@@ -30,6 +31,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             aiController.Aggravate();
             aiController.ProcessKnockBack();
             
+        }
+
+        public void SetHealthStats(float maxHealth,float defence)
+        {
+            this.maxHealth = maxHealth;
+            this.defence = defence;
         }
     }
 }

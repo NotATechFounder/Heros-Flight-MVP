@@ -1,5 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using HeroesFlightProject.System.NPC.Enum;
+using HeroesFlightProject.System.NPC.State;
+using HeroesFlightProject.System.NPC.State.AIStates;
 using Pathfinding;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -11,8 +14,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         IAstarAI ai;
         AIDestinationSetter setter;
         Coroutine knockBackRoutine;
-
-
+      
         public override void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
             setter = GetComponent<AIDestinationSetter>();
@@ -20,6 +22,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
             ai = GetComponent<IAstarAI>();
             ai.canMove = false;
             ai.maxSpeed =m_Model.AiData.MoveSpeed;
+            stateMachine = new FSMachine();
+            stateMachine.AddStates(new List<FSMState>(){new AiWanderingState(this,GetComponent<AiAnimationController>(),stateMachine)});
+            stateMachine.SetState(typeof(AiWanderingState));
             base.Init(player, health, damage, monsterStatModifier, currentCardIcon);
         }
 
@@ -43,7 +48,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
             rigidBody.velocity = Vector2.zero;
             base.Disable();
         }
-
+        
+       
         void OnDestroy()
         {
             if (knockBackRoutine != null)

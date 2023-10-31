@@ -8,7 +8,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
     public interface AiControllerInterface
     {
         EnemyType EnemyType { get; }
-        event Action OnInitialized;
         event Action<AiControllerInterface> OnDisabled;
         AiAgentModel AgentModel { get; }
         Transform CurrentTarget { get; }
@@ -28,6 +27,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
         void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon);
         void Enable();
         void Disable();
+
+        bool TryGetController<T>(out T controller);
 
     }
 }

@@ -14,6 +14,7 @@ namespace HeroesFlightProject.System.NPC.State
        {
            foreach (var state in states)
            {
+               Debug.Log($"Adding state of type {state.GetType()}");
                m_StatesLookup.Add(state.GetType(),state);
            }
        }
@@ -39,8 +40,10 @@ namespace HeroesFlightProject.System.NPC.State
            if (m_CurrentState!=null && m_CurrentState.GetType() == newState)
                return;
            
+           Debug.Log($"looking for state of type {newState.GetType()}");
            if (m_StatesLookup.TryGetValue(newState, out var state))
            {
+               Debug.Log($"founded state of type {newState.GetType()}");
                m_CurrentState?.Exit();
                m_CurrentState = state;
                m_CurrentState.Enter();

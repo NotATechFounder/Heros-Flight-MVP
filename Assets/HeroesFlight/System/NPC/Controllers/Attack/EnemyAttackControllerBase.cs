@@ -4,13 +4,14 @@ using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
+using HeroesFlight.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class EnemyAttackControllerBase : MonoBehaviour, IAttackControllerInterface
+    public class EnemyAttackControllerBase : MonoBehaviour, AiSubControllerInterface, IAttackControllerInterface
     {
         protected AiControllerInterface aiController;
         protected IHealthController target;
