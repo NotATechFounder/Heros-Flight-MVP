@@ -27,35 +27,33 @@ public class AresEffect : MonoBehaviour
     [SerializeField] SkeletonAnimation skeletonAnimation;
     [SerializeField] public const string idleAnimationName = "Idle";
     [SerializeField] public const string attackAnimation1Name = "Attack";
-    [SerializeField] public const string attack2Animation1Name = "Attack2";
 
     private CharacterControllerInterface characterController;
     private float timer;
-    int lastAttackIndex = 0;
 
     private void Start()
     {
         overlapChecker.OnDetect += OnOverlap;
         skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
         skeletonAnimation.AnimationState.Event += AnimationState_Event;
+
+        skeletonAnimation.AnimationState.SetAnimation(0, idleAnimationName, true);
     }
 
     private void AnimationState_Event(TrackEntry trackEntry, Spine.Event e)
     {
         if (e.Data.Name == "Attack")
         {
-            overlapChecker.Detect();
+            Attack();
         }
     }
 
     private void AnimationState_Complete(TrackEntry trackEntry)
     {
+        Debug.Log(trackEntry.Animation.Name);
         switch (trackEntry.Animation.Name)
         {
             case attackAnimation1Name:
-                skeletonAnimation.AnimationState.SetAnimation(0, idleAnimationName, true);
-            break;
-            case attack2Animation1Name:
                 skeletonAnimation.AnimationState.SetAnimation(0, idleAnimationName, true);
             break;
             default: break;
@@ -73,7 +71,7 @@ public class AresEffect : MonoBehaviour
 
                 if(overlapChecker.TargetInRange())
                 {
-                    Attack();
+                    skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
                 }
             }
             yield return null;
@@ -82,16 +80,6 @@ public class AresEffect : MonoBehaviour
 
     public void Attack()
     {
-        if (lastAttackIndex == 0)
-        {
-            skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
-            lastAttackIndex = 1;
-        }
-        else
-        {
-            skeletonAnimation.AnimationState.SetAnimation(0, attack2Animation1Name, false);
-            lastAttackIndex = 0;
-        }
         overlapChecker.Detect();
         hitEffect.Play();
     }
