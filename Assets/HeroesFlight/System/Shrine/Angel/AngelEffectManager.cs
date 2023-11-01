@@ -16,11 +16,14 @@ public class AngelEffectManager : MonoBehaviour
 
     public bool EffectActive => currentAngelCard != null && currentAngelCard.angelCardSO != null;
 
+    private void Awake()
+    {
+        monsterStatController = FindAnyObjectByType<MonsterStatController>();
+    }
 
     public void Initialize(CharacterStatController characterStatController)
     {
         this.characterStatController = characterStatController;
-        monsterStatController = GetComponent<MonsterStatController>();
     }
 
     public bool CompletedLevel()

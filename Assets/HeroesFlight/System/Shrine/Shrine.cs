@@ -1,11 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Shrine : MonoBehaviour
 {
     [SerializeField] AngelEffectManager angelEffectManager;
     [SerializeField] Healer healer;
-
     [SerializeField] private ShrineNPCFee[] shrineNPCFees;
 
     private CurrencyManager currencyManager;
@@ -13,6 +13,15 @@ public class Shrine : MonoBehaviour
 
     public AngelEffectManager GetAngelEffectManager => angelEffectManager;
     public Healer GetHealer => healer;
+    public Dictionary<ShrineNPCType, ShrineNPCFee> ShrineNPCFeeCache  = new();
+
+    private void Awake()
+    {
+        foreach (ShrineNPCFee shrineNPCFee in shrineNPCFees)
+        {
+            ShrineNPCFeeCache.Add(shrineNPCFee.GetShrineNPCType, shrineNPCFee);
+        }
+    }
 
     public void Initialize(CurrencyManager currencyManager, CharacterStatController characterStatController)
     {
@@ -21,28 +30,6 @@ public class Shrine : MonoBehaviour
 
         angelEffectManager.Initialize(characterStatController);
         healer.Initialize(characterStatController);
-
-        AssignShrineEffects();
-    }
-
-    public void AssignShrineEffects()
-    {
-        //switch (shrineNPC.GetShrineNPCType())
-        //{
-        //    case ShrineNPCType.AngelsGambit:
-        //        shrineNPC.OnPurchaseSuccessful = () => angelEffectManager.TriggerAngelsGambit();
-        //        break;
-        //    case ShrineNPCType.ActiveAbilityReRoller:
-
-        //        break;
-        //    case ShrineNPCType.PassiveAbilityReRoller:
-
-        //        break;
-        //    case ShrineNPCType.HealingMagicRune:
-        //        shrineNPC.OnPurchaseSuccessful = () => healer.Heal();
-        //        break;
-        //    default: break;
-        //}
     }
 
     public void UnlockNpc(ShrineNPCType shrineNPCFeeType)
@@ -57,7 +44,7 @@ public class Shrine : MonoBehaviour
 
         if (shrineNPCFee.IsFree)
         {
-            // proceed;
+            shrineNPCFee.OnPurchaseSuccessful?.Invoke();
             return;
         }
 
@@ -68,7 +55,7 @@ public class Shrine : MonoBehaviour
                 if (currencyManager.GetCurrencyAmount(CurrencyKeys.RuneShard) >= shrineNPCFee.CurrentRuneShards)
                 {
                     currencyManager.ReduceCurency(CurrencyKeys.RuneShard, shrineNPCFee.CurrentRuneShards);
-                   // shrineNPC.OnPurchased();
+                    shrineNPCFee.OnPurchaseSuccessful?.Invoke();
                 }
 
                 break;
@@ -77,7 +64,7 @@ public class Shrine : MonoBehaviour
                 if (currencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= shrineNPCFee.CurrentGems)
                 {
                     currencyManager.ReduceCurency(CurrencyKeys.Gem, shrineNPCFee.CurrentGems);
-                    //shrineNPC.OnPurchased();
+                    shrineNPCFee.OnPurchaseSuccessful?.Invoke();
                 }
 
                 break;
@@ -86,7 +73,7 @@ public class Shrine : MonoBehaviour
                 if (shrineNPCFee.CurrentMaxAdsCount > 0)
                 {
                     shrineNPCFee.AdsWatched();
-                    //shrineNPC.OnPurchased();
+                    shrineNPCFee.OnPurchaseSuccessful?.Invoke();
                 }
 
                 break;
@@ -149,6 +136,7 @@ public class ShrineNPCFee
     private int currentGems;
     private int currentMaxAdsCount;
 
+    public Action OnPurchaseSuccessful;
     public ShrineNPCType GetShrineNPCType => shrineNPCType;
     public bool Unlocked => unlocked;
     public int CurrentRuneShards => currentRuneShards;
