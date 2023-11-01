@@ -45,7 +45,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             timeBetweenAttacks = aiController.GetMonsterStatModifier()
                 .CalculateAttackSpeed(aiController.AgentModel.AiData.AttackSpeed);
             attackRange = aiController.AgentModel.AiData.AttackRange;
-            aiController.SetAttackState(true);
             currentDamage = aiController.GetDamage;
         }
 
@@ -61,21 +60,17 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (target.IsDead())
             {
-                aiController.SetAttackState(false);
-                return;
+               return;
             }
 
             timeSinceLastAttack += Time.deltaTime;
-            if (timeSinceLastAttack >= timeBetweenAttacks)
-            {
-                aiController.SetAttackState(true);
-            }
         }
 
-        protected virtual void InitAttack()
+        protected virtual void InitAttack(Action onComplete)
         {
             timeSinceLastAttack = 0;
-            animator.StartAttackAnimation(null);
+            OnStateChange?.Invoke(AttackControllerState.Attacking);
+            animator.StartAttackAnimation(onComplete);
         }
 
         protected virtual void DealDamage(int i, Collider2D[] collider2Ds)
@@ -93,15 +88,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             var damageModel = new HealthModificationIntentModel(damageToDeal, type, 
                 AttackType.Regular,DamageCalculationType.Flat);
             target.TryDealDamage(damageModel);
-            aiController.SetAttackState(false);
             OnHitTarget?.Invoke();
         }
 
-        public virtual void AttackTargets()
+        public virtual void AttackTargets(Action OnComplete)
         {
-            if (timeSinceLastAttack >= timeBetweenAttacks)
+            if (CanAttack())
             {
-                InitAttack();
+                InitAttack(OnComplete);
             }
         }
 
@@ -113,8 +107,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
         }
 
+        public bool CanAttack()
+        {
+            return timeSinceLastAttack >= timeBetweenAttacks;
+        }
+
         protected virtual void HandleAnimationEvents(AttackAnimationEvent obj)
         {
+            OnStateChange?.Invoke(AttackControllerState.Cooldown);
             damageZone.Detect();
         }
     }

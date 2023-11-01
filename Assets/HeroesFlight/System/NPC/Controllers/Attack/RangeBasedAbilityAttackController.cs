@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -22,7 +23,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (target.IsDead())
             {
-                aiController.SetAttackState(false);
                 return;
             }
 
@@ -34,16 +34,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             distanceToPlayer = Vector2.Distance(transform.position, aiController.CurrentTarget.position);
             if (distanceToPlayer <= attackRange && timeSinceLastAttack >= timeBetweenAttacks)
             {
-                aiController.SetAttackState(true);
                 InitAttack();
             }
-            else
-            {
-                aiController.SetAttackState(false);
-            }
+         
         }
 
-        protected override void InitAttack()
+        protected override void InitAttack(Action onComplete=null)
         {
             timeSinceLastAttack = 0;
 

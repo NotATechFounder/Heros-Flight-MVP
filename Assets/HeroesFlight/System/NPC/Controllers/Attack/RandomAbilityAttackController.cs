@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeroesFlight.Common.Animation;
@@ -25,10 +26,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
        
         void HandlePlayerDetected(int arg1, Collider2D[] arg2)
         {
-            if (timeSinceLastAttack >= timeBetweenAttacks)
+            if (CanAttack())
             {
-                aiController.SetAttackState(true);
-                InitAttack();
+              InitAttack(null);
             }
         }
 
@@ -39,38 +39,30 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (target.IsDead())
             {
-                aiController.SetAttackState(false);
-                return;
+               return;
             }
 
 
             timeSinceLastAttack += Time.deltaTime;
-            rangeCheck.Detect();
-            if (timeSinceLastAttack < timeBetweenAttacks)
-            {
-                aiController.SetAttackState(false);
-            }
-            
+          //  rangeCheck.Detect();
         }
 
-        protected override void InitAttack()
+        protected override void InitAttack(Action onComplete=null)
         {
             timeSinceLastAttack = 0;
-
-            UseRandomAbility();
+            UseRandomAbility(onComplete);
         }
 
-        void UseRandomAbility()
+        void UseRandomAbility(Action onComplete)
         {
             var possibleAbilities = new List<int>();
             for (int i = 0; i < abilities.Length; i++)
             {
-                Debug.Log(abilities[i].ReadyToUse);
-                if (abilities[i].ReadyToUse)
+               if (abilities[i].ReadyToUse)
                     possibleAbilities.Add(i);
                    
             }
-            Debug.Log(possibleAbilities.Count);
+        
             if (possibleAbilities.Count > 0)
             {
                 var targetAbility =
@@ -78,15 +70,15 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 Debug.Log(targetAbility.name);
                 if (targetAbility.StopMovementOnUse)
                 {
-                    aiController.SetMovementState(false);
                     targetAbility.UseAbility(() =>
                     {
-                        aiController.SetMovementState(true);
+                       onComplete?.Invoke();
                     });
                 }
                 else
                 {
                     targetAbility.UseAbility();     
+                    onComplete?.Invoke();
                 }
 
                

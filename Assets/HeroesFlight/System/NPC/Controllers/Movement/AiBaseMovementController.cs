@@ -10,13 +10,14 @@ namespace HeroesFlight.System.NPC.Controllers.Movement
     {
         protected bool canMove;
         protected AiAgentModel model;
-
+        
         public virtual void Init(AiAgentModel model)
         {
             this.model = model;
         }
 
         public virtual void MoveToTargetPosition(Vector2 target) { }
+        public virtual void MoveToTarget(Transform target) { }
 
         public virtual void MoveToRandomPosition() { }
 

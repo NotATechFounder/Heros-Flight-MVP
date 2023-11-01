@@ -1,45 +1,44 @@
-﻿using HeroesFlightProject.System.NPC.Controllers;
-using UnityEngine;
+﻿using HeroesFlightProject.System.Gameplay.Controllers;
+using HeroesFlightProject.System.NPC.Controllers;
 
 namespace HeroesFlightProject.System.NPC.State.AIStates
 {
     public class AiWanderingState : AiStateBase
     {
-        private AiMoverInterface mover;
-
         public AiWanderingState(AiControllerBase aiController, AiAnimationController animatorController,
             IFSM stateMachine) : base(aiController, animatorController, stateMachine)
         {
-          
+            if (aiController.TryGetController<AiMoverInterface>(out mover)) { }
+            if (aiController.TryGetController<IAttackControllerInterface>(out attackController)) { }
         }
+
+        private AiMoverInterface mover;
+        private IAttackControllerInterface attackController;
 
         public override void Enter()
         {
-            Debug.Log("Entered wandering");
-            if (aiController.TryGetController<AiMoverInterface>(out mover))
-            {
-              mover.SetMovementState(true);
-            }
+            mover.MoveToTarget(null);
+            mover.SetMovementState(true);
             base.Enter();
         }
 
         protected override void Update()
         {
-            if (!aiController.IsAggravated())
-            {
-                Debug.Log("Moving");
-                mover.MoveToRandomPosition();
-                base.Update();
-            }
-            else
+            if (aiController.IsAggravated() && attackController.CanAttack())
             {
                 Exit();
             }
-
+            else
+            {
+                mover.MoveToRandomPosition();
+                base.Update();
+            
+            }
         }
 
         public override void Exit()
         {
+            m_StateMachine.SetState(typeof(AiChaseState));
             base.Exit();
         }
     }

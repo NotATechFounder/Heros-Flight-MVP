@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using HeroesFlight.System.NPC.Controllers;
+using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Data;
 using HeroesFlightProject.System.NPC.Enum;
 using HeroesFlightProject.System.NPC.State;
+using UnityEditor;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.NPC.Controllers
@@ -30,17 +32,18 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         protected Rigidbody2D rigidBody;
         protected Transform currentTarget;
-        protected bool isDisabled;
+       
         protected MonsterStatModifier statModifier;
-        bool canAttack;
         Vector2 wanderPosition;
         float timeSinceAggravated = Mathf.Infinity;
 
         protected int currentHealth;
         protected float currentDamage;
-        
+        protected bool isDisabled;
         protected   FSMachine stateMachine;
-
+        protected AiMoverInterface mover;
+        protected IAttackControllerInterface attacker;
+        protected IHealthController healthController;
         public virtual void Init(Transform player,int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
             statModifier = EnemyType == EnemyType.MiniBoss ? new MonsterStatModifier() : monsterStatModifier;
@@ -49,8 +52,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
             animator = GetComponent<AiAnimatorInterface>();
             viewController = GetComponent<AiViewController>();
             hitEffect = GetComponentInChildren<FlashEffect>();
-            var mover = GetComponent<AiMoverInterface>();
+            healthController = GetComponent<AiHealthController>();
+            healthController.OnDeath += HandleDeath;
+            mover = GetComponent<AiMoverInterface>();
             mover.Init(m_Model);
+            attacker = GetComponent<IAttackControllerInterface>();
             currentTarget = player;
             viewController.Init();
 
@@ -65,21 +71,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
             Enable();
         }
 
-       protected virtual void Update()
+        protected virtual void HandleDeath(IHealthController obj)
+        {
+           Disable();
+        }
+
+        protected virtual void Update()
         {
             stateMachine?.Process();
-            // if (isDisabled)
-            //     return;
-            //
-            // if (!IsAggravated() || !canAttack)
-            // {
-            //     ProcessWanderingState();
-            // }
-            // else
-            // {
-            //     ProcessFollowingState();
-            // }
-
             UpdateTimers();
         }
 
@@ -94,10 +93,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             return Vector2.zero;
         }
 
-        public void SetAttackState(bool attackState)
-        {
-            canAttack = attackState;
-        }
+      
 
         public virtual void ProcessKnockBack()
         {
@@ -138,16 +134,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             }
 
             return false;
-            // foreach (var innerController in subControllers)
-            // {
-            //     if (innerController is T typeController)
-            //     {
-            //         controller = typeController;
-            //         return true;
-            //     }
-            // }
-            //
-            // return false;
+         
         }
 
 
@@ -166,8 +153,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 timeSinceAggravated < m_Model.AgroDuration;
         }
 
-        protected bool InAttackRange()
+        public bool InAttackRange()
         {
+          
             return Vector2.Distance(CurrentTarget.position, transform.position)
                 <= m_Model.AiData.AttackRange;
         }
@@ -206,6 +194,16 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public virtual void SetMovementState(bool canMove)
         {
             animator.SetMovementAnimation(canMove);
+            mover.SetMovementState(canMove);
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (stateMachine != null && stateMachine.CurrentState != null)
+            {
+                Handles.Label(transform.position,stateMachine.CurrentState.GetType().ToString());
+            }
+          
         }
     }
 }

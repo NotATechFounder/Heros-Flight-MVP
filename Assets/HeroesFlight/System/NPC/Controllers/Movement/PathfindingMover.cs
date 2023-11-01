@@ -1,8 +1,8 @@
-﻿using HeroesFlight.System.NPC.Controllers.Movement;
+﻿using HeroesFlightProject.System.NPC.Data;
 using HeroesFlightProject.System.NPC.Enum;
 using Pathfinding;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
+
 
 namespace HeroesFlight.System.NPC.Controllers.Movement
 {
@@ -12,16 +12,20 @@ namespace HeroesFlight.System.NPC.Controllers.Movement
         AIDestinationSetter setter;
         Coroutine knockBackRoutine;
 
-        private void Awake()
+        public override void Init(AiAgentModel model)
         {
+            base.Init(model);
             setter = GetComponent<AIDestinationSetter>();
             ai = GetComponent<IAstarAI>();
             ai.canMove = false;
-          //  ai.maxSpeed =m_Model.AiData.MoveSpeed;
+            ai.maxSpeed =model.AiData.MoveSpeed;
         }
+
+      
 
         public override void MoveToTargetPosition(Vector2 target)
         {
+            
             if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath))
             {
                 ai.destination = target;
@@ -38,13 +42,26 @@ namespace HeroesFlight.System.NPC.Controllers.Movement
             }
         }
 
+        public override void MoveToTarget(Transform target)
+        {
+            if (setter.target == target)
+                return;
+            
+            setter.target = target;
+        }
+
         public override void SetMovementState(bool canMove)
         {
+            ai.isStopped = !canMove;
             ai.canMove = canMove;
-            base.SetMovementState(base.canMove);
         }
         
+        public override Vector2 GetVelocity()
+        {
+            return ai.velocity.normalized;
+        }
         
+      
         Vector2 GetRandomPosition2D()
         {
             var point = Random.insideUnitCircle * model.WanderingDistance;

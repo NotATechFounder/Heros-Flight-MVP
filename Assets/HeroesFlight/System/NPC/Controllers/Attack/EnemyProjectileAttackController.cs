@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HeroesFlight.Common.Animation;
 using UnityEngine;
@@ -39,26 +40,22 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (target.IsDead())
             {
-                aiController.SetAttackState(false);
-                return;
+               return;
             }
 
 
             timeSinceLastAttack += Time.deltaTime;
-            var distanceToPlayer = Vector2.Distance(transform.position, aiController.CurrentTarget.position);
-            if (distanceToPlayer <= attackRange && timeSinceLastAttack >= timeBetweenAttacks)
-            {
-                aiController.SetAttackState(true);
-                InitAttack();
-            }
+            // var distanceToPlayer = Vector2.Distance(transform.position, aiController.CurrentTarget.position);
+            // if (distanceToPlayer <= attackRange && timeSinceLastAttack >= timeBetweenAttacks)
+            // {
+            //   InitAttack();
+            // }
         }
 
 
-        protected override void InitAttack()
+        protected override void InitAttack(Action onComplete=null)
         {
             timeSinceLastAttack = 0;
-            aiController.SetAttackState(false);
-
             if (useWarningLines)
             {
                 for (int i = 0; i < lines.Count; i++)

@@ -20,7 +20,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         MonsterStatModifier GetMonsterStatModifier();
 
-        void SetAttackState(bool canAttack);
+      
         void ProcessKnockBack();
         void Aggravate();
         void SetMovementState(bool canMove);

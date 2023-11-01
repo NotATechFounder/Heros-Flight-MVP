@@ -19,18 +19,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-        protected override void ProcessDeath()
-        {        
-            base.ProcessDeath();
-            aiController.Disable();
-        }
+      
+        
 
-        public override void TryDealDamage(HealthModificationIntentModel healthModificationIntent)
+        public override void ModifyHealth(HealthModificationIntentModel modificationIntentModel)
         {
-            base.TryDealDamage(healthModificationIntent);
             aiController.Aggravate();
             aiController.ProcessKnockBack();
-            
+            base.ModifyHealth(modificationIntentModel);
         }
 
         public void SetHealthStats(float maxHealth,float defence)
