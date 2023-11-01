@@ -81,7 +81,7 @@ namespace HeroesFlight.System.Character
         {
             if (cosTime > cameraLagDelay)
             {
-                Debug.Log("Camera snap to target.");
+                //Debug.Log("Camera snap to target.");
                 activeSpeed = speed;
                 activeOffsetBounds = activeOffsetBounds - (activeOffsetBounds * activeSpeed * Time.deltaTime);
                 if (activeOffsetBounds.x < 0.1f)

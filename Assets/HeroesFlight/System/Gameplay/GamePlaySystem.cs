@@ -164,7 +164,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
             uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
 
-          
+            AssignShrineNPCActions();
 
             OnComplete?.Invoke();
         }
@@ -327,7 +327,6 @@ namespace HeroesFlight.System.Gameplay
             if (characterHealthController.IsDead())
                 return;
 
-
             combatSystem.UseCharacterUltimate(() =>
             {
                 cameraController.SetCameraState(GameCameraType.Skill);
@@ -342,7 +341,6 @@ namespace HeroesFlight.System.Gameplay
                 characterHealthController.SetInvulnerableState(false);
             });
         }
-
 
         void ReviveCharacter()
         {
@@ -698,11 +696,27 @@ namespace HeroesFlight.System.Gameplay
                     break;
 
                 case LevelType.Intermission:
-                    currentLevelEnvironment.AngelsGambitNPC.OnInteract = TriggerAngelsGambit;
+
+                    ShrineNPCHolder shrineNPCHolder = currentLevelEnvironment.GetComponent<ShrineNPCHolder>();
+
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.AngelsGambit].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.AngelsGambit],
+                    () =>
+                    {
+                        shrine.Purchase(ShrineNPCType.AngelsGambit);
+                    });
+     
+                    // assign other npcs here
+
                     container.EnablePortal(currentLevelEnvironment
                         .GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
                     break;
             }
+        }
+
+        void AssignShrineNPCActions()
+        {
+            shrine.ShrineNPCFeeCache[ShrineNPCType.AngelsGambit].OnPurchaseSuccessful = TriggerAngelsGambit;
+            // assign other npcs here
         }
 
         void HandleCrystalHit(Transform transform)

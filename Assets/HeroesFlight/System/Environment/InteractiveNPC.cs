@@ -14,7 +14,7 @@ public class InteractiveNPC : MonoBehaviour
         trigger2DObserver.OnEnter += OnEnter2D;
     }
 
-    protected virtual void OnEnter2D(Collider2D d)
+    protected void OnEnter2D(Collider2D d)
     {
         if (hasInteracted) return;
         hasInteracted = true;

@@ -41,10 +41,8 @@ namespace HeroesFlight.System.Stats
 
         public void SaveRunResults()
         {
-            dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Gold,
-                currencyHandler.GetCurrencyAmount(CurrencyKeys.Gold));
-            dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Experience,
-                currencyHandler.GetCurrencyAmount(CurrencyKeys.Experience));
+            dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Gold, currencyHandler.GetCurrencyAmount(CurrencyKeys.Gold));
+            dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Experience, currencyHandler.GetCurrencyAmount(CurrencyKeys.Experience));
             currencyHandler.ResetValues();
         }
 
