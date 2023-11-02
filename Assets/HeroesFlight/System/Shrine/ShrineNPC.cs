@@ -9,12 +9,12 @@ public class ShrineNPC : InteractiveNPC
 
     private ShrineNPCFee shrineNPCFee;
     public ShrineNPCType GetShrineNPCType ()=> shrineNPCType;
-    public ShrineNPCFee GetShrineNPCFee => shrineNPCFee;
 
     public void Initialize(ShrineNPCFee shrineNPCFee, Action OnInteract)
     {
         this.shrineNPCFee = shrineNPCFee;
-        this.OnInteract = OnInteract;
+        this.OnInteract += OnInteract;
+        shrineNPCFee.OnInteracted = InteractionComplected;
     }
 
     protected override void Interact()
