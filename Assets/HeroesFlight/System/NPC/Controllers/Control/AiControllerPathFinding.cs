@@ -1,32 +1,42 @@
 using System.Collections;
-using HeroesFlightProject.System.NPC.Enum;
+using System.Collections.Generic;
+using HeroesFlightProject.System.Gameplay.Controllers;
+using HeroesFlightProject.System.NPC.State;
+using HeroesFlightProject.System.NPC.State.AIStates;
 using Pathfinding;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.NPC.Controllers
 {
     public class AiControllerPathFinding : AiControllerBase
     {
-        IAstarAI ai;
         AIDestinationSetter setter;
         Coroutine knockBackRoutine;
+        IAstarAI ai;
 
-
-        public override void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
+        public override void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier,
+            Sprite currentCardIcon)
         {
             setter = GetComponent<AIDestinationSetter>();
             attackCollider = GetComponent<Collider2D>();
             ai = GetComponent<IAstarAI>();
-            ai.canMove = false;
-            ai.maxSpeed =m_Model.AiData.MoveSpeed;
+            stateMachine = new FSMachine();
+            var animator = GetComponent<AiAnimationController>();
+            stateMachine.AddStates(new List<FSMState>()
+            {
+                new AiWanderingState(this, animator, stateMachine),
+                new AiChaseState(this, animator, stateMachine),
+                new AiAttackState(this, animator, stateMachine),
+                new AiDeathState(this, animator, stateMachine)
+            });
             base.Init(player, health, damage, monsterStatModifier, currentCardIcon);
+            stateMachine.SetState(typeof(AiWanderingState));
         }
 
         public override void Enable()
         {
             base.Enable();
-            ai.canMove = true;
+            SetMovementState(true);
         }
 
         public override void Disable()
@@ -36,13 +46,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 StopCoroutine(knockBackRoutine);
             }
 
-            isDisabled = true;
+
             setter.target = null;
-            ai.canMove = false;
-            ai.isStopped = true;
+            SetMovementState(false);
+            ai.SetPath(null);
             rigidBody.velocity = Vector2.zero;
             base.Disable();
         }
+
 
         void OnDestroy()
         {
@@ -52,92 +63,58 @@ namespace HeroesFlightProject.System.NPC.Controllers
             }
         }
 
-        public override void ProcessFollowingState()
-        {
-            if(isDisabled)
-                return;
-            
-            if (isInknockback)
-                return;
-            
-            SetMovementState(!InAttackRange());
-            if (setter.target == null)
-                setter.target = CurrentTarget;
-        }
-
-        public override void ProcessWanderingState()
-        {
-            if (isDisabled)
-                return;
-            
-            if (isInknockback)
-                return;
-            if(setter.target!=null)
-                setter.target = null;
-            if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath))
-            {
-                ai.destination = GetRandomPosition2D();
-                ai.SearchPath();
-            }
-        }
-
         public override void ProcessKnockBack()
         {
-            animator.PlayHitAnimation(m_Model.AttacksInteruptable,() =>
-            {
-                SetMovementState(true);
-            });
-            hitEffect.Flash();
-            
             if (!m_Model.UseKnockBack)
-                return;
+            {
+                animator.PlayHitAnimation(m_Model.AttacksInteruptable);
+                hitEffect.Flash();
+            }
+            else
+            {
+                animator.PlayHitAnimation(m_Model.AttacksInteruptable, () =>
+                {
+                  SetMovementState(!isDisabled);
+                });
+                hitEffect.Flash();
 
-            if (isInknockback)
-                return;
-            isInknockback = true;
-            SetMovementState(false);
 
-             var forceVector = currentTarget.position.x >= transform.position.x ? Vector2.left : Vector2.right;
-            // var forceVector = (transform.position - currentTarget.position).normalized;
-            knockBackRoutine = StartCoroutine(KnockBackRoutine(forceVector));
+                if (isInknockback)
+                    return;
+                isInknockback = true;
+                SetMovementState(false);
+
+                var forceVector = currentTarget.position.x >= transform.position.x ? Vector2.left : Vector2.right;
+                // var forceVector = (transform.position - currentTarget.position).normalized;
+                knockBackRoutine = StartCoroutine(KnockBackRoutine(forceVector));
+            }
         }
 
-        public override Vector2 GetVelocity()
+        protected override Vector2 GetVelocity()
         {
-            if (!IsAggravated())
+            if (IsAggravated() && attacker.CanAttack())
             {
-                return ai.velocity.normalized;
+                var velocity = CurrentTarget.transform.position.x >= transform.position.x
+                    ? Vector2.right
+                    : Vector2.left;
+                return velocity;
             }
 
-            var velocity = CurrentTarget.transform.position.x >= transform.position.x
-                ? Vector2.right
-                : Vector2.left;
-            return velocity;
+            return mover.GetVelocity().normalized;
+        }
+
+        protected override void HandleDeath(IHealthController obj)
+        {
+            stateMachine.SetState(typeof(AiDeathState));
         }
 
         IEnumerator KnockBackRoutine(Vector2 forceVector)
         {
             yield return new WaitForEndOfFrame();
-            rigidBody.AddForce(forceVector*m_Model.KnockBackForce,ForceMode2D.Impulse);
-             yield return new WaitForSeconds(m_Model.KnockBackDuration);
+            rigidBody.AddForce(forceVector * m_Model.KnockBackForce, ForceMode2D.Impulse);
+            yield return new WaitForSeconds(m_Model.KnockBackDuration);
             isInknockback = false;
             rigidBody.velocity = Vector2.zero;
-        }
-
-        Vector2 GetRandomPosition2D()
-        {
-            var point = Random.insideUnitCircle * m_Model.WanderingDistance;
-            if (m_Model.EnemySpawmType == SpawnType.GroundMob)
-                point.y = 0;
-            point += (Vector2)ai.position;
-            return point;
-        }
-
-
-        public override void SetMovementState(bool canMove)
-        {
-            base.SetMovementState(canMove);
-            ai.canMove = canMove;
         }
     }
 }

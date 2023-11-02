@@ -18,6 +18,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected OverlapChecker reguarAttackOverlap;
         [SerializeField] protected OverlapChecker ultAttackOverlap;
         public event Action<AttackControllerState> OnStateChange;
+       
         public float Damage => characterController.CharacterStatController.CurrentPhysicalDamage;
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
@@ -107,9 +108,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-        public void AttackTargets()
+        public void AttackTargets(Action onComplete=null)
         {
-            if (m_TimeSinceLastAttack < attackDuration / statController.CurrentAttackSpeed)
+            if (!CanAttack())
             {
                 return;
             }
@@ -158,7 +159,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             visualController.DisableVisuals(isDisabled);
         }
 
-       
+        public  bool CanAttack()
+        {
+            return m_TimeSinceLastAttack > attackDuration / statController.CurrentAttackSpeed;
+        }
+
+
         protected virtual void DealUltDamage(int hits, Collider2D[] colliders)
         {
             var baseDamage = Damage * ultimateData.DamageMultiplier;

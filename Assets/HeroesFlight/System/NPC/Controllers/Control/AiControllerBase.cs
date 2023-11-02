@@ -1,7 +1,10 @@
 using System;
 using HeroesFlight.System.NPC.Controllers;
+using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Data;
 using HeroesFlightProject.System.NPC.Enum;
+using HeroesFlightProject.System.NPC.State;
+using UnityEditor;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.NPC.Controllers
@@ -9,12 +12,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
     public abstract class AiControllerBase : MonoBehaviour, AiControllerInterface
     {
         [SerializeField] protected SpriteRenderer buffDebuffIcon;
+
         [SerializeField] protected AiAgentModel m_Model;
-        protected FlashEffect hitEffect;
-        protected AiViewController viewController;
-        protected AiAnimatorInterface animator;
-        protected Collider2D attackCollider;
-        protected bool isInknockback;
+
+      
         public event Action OnInitialized;
         public event Action<AiControllerInterface> OnDisabled;
         public EnemyType EnemyType => m_Model.EnemyType;
@@ -25,19 +26,28 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public float GetDamage => currentDamage;
 
+        protected FlashEffect hitEffect;
+        protected AiViewController viewController;
+        protected AiAnimatorInterface animator;
+        protected Collider2D attackCollider;
+        protected bool isInknockback;
         protected Rigidbody2D rigidBody;
         protected Transform currentTarget;
-        protected bool isDisabled;
-        protected bool isAggravated;
         protected MonsterStatModifier statModifier;
-        bool canAttack;
-        Vector2 wanderPosition;
-        float timeSinceAggravated = Mathf.Infinity;
-
         protected int currentHealth;
         protected float currentDamage;
+        protected bool isDisabled;
+        protected FSMachine stateMachine;
+        protected AiMoverInterface mover;
+        protected EnemyAttackControllerBase attacker;
 
-        public virtual void Init(Transform player,int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
+        protected AiHealthController healthController;
+
+        float timeSinceAggravated = Mathf.Infinity;
+        Vector2 wanderPosition;
+      
+        public virtual void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier,
+            Sprite currentCardIcon)
         {
             statModifier = EnemyType == EnemyType.MiniBoss ? new MonsterStatModifier() : monsterStatModifier;
             rigidBody = GetComponent<Rigidbody2D>();
@@ -45,13 +55,22 @@ namespace HeroesFlightProject.System.NPC.Controllers
             animator = GetComponent<AiAnimatorInterface>();
             viewController = GetComponent<AiViewController>();
             hitEffect = GetComponentInChildren<FlashEffect>();
+            healthController = GetComponent<AiHealthController>();
+            healthController.SetHealthStats(health,
+                GetMonsterStatModifier().CalculateDefence(AgentModel.AiData.Defense));
+            healthController.OnDeath += HandleDeath;
+            mover = GetComponent<AiMoverInterface>();
+            mover.Init(m_Model);
+            attacker = GetComponent<EnemyAttackControllerBase>();
             currentTarget = player;
             viewController.Init();
 
             currentHealth = Mathf.RoundToInt(statModifier.CalculateAttack(health));
-            
-            currentDamage = statModifier.CalculateAttack(damage);
 
+            currentDamage = statModifier.CalculateAttack(damage);
+            attacker.SetAttackStats(statModifier.CalculateAttack(damage), m_Model.AiData.AttackRange,
+                m_Model.AiData.AttackSpeed, m_Model.AiData.CriticalHitChance);
+            attacker.SetTarget(player.GetComponent<IHealthController>());
             OnInit();
 
             // viewController.StartFadeIn(2f, Enable);
@@ -59,21 +78,16 @@ namespace HeroesFlightProject.System.NPC.Controllers
             Enable();
         }
 
-        void Update()
+        protected virtual void HandleDeath(IHealthController obj)
         {
-            if (isDisabled)
-                return;
+            Disable();
+        }
 
-            if (!IsAggravated() || !canAttack)
-            {
-                ProcessWanderingState();
-            }
-            else
-            {
-                ProcessFollowingState();
-            }
-
+        protected virtual void Update()
+        {
+            stateMachine?.Process();
             UpdateTimers();
+            animator.SetMovementDirection(GetVelocity());
         }
 
         void UpdateTimers()
@@ -82,15 +96,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
         }
 
 
-        public virtual Vector2 GetVelocity()
+        protected virtual Vector2 GetVelocity()
         {
             return Vector2.zero;
         }
 
-        public void SetAttackState(bool attackState)
-        {
-            canAttack = attackState;
-        }
 
         public virtual void ProcessKnockBack()
         {
@@ -110,7 +120,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             isDisabled = true;
             attackCollider.enabled = false;
-          //  rigidBody.bodyType = RigidbodyType2D.Static;
+            //  rigidBody.bodyType = RigidbodyType2D.Static;
             animator.PlayDeathAnimation(() =>
             {
                 if (gameObject != null)
@@ -122,27 +132,27 @@ namespace HeroesFlightProject.System.NPC.Controllers
             });
         }
 
-
-        public virtual void ProcessWanderingState()
+        public bool TryGetController<T>(out T controller)
         {
+            controller = default;
+            if (TryGetComponent<T>(out controller))
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        public virtual void ProcessFollowingState()
-        {
-        }
 
-        protected bool IsAggravated()
+        
+
+        public bool IsAggravated()
         {
             var distance = Vector2.Distance(CurrentTarget.position, transform.position);
             return distance <= m_Model.AgroDistance ||
-                timeSinceAggravated < m_Model.AgroDuration;
+                   timeSinceAggravated < m_Model.AgroDuration;
         }
 
-        protected bool InAttackRange()
-        {
-            return Vector2.Distance(CurrentTarget.position, transform.position)
-                <= m_Model.AiData.AttackRange;
-        }
 
         public void DisplayModifiyer(Sprite sprite)
         {
@@ -178,6 +188,15 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public virtual void SetMovementState(bool canMove)
         {
             animator.SetMovementAnimation(canMove);
+            mover.SetMovementState(canMove);
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (stateMachine != null && stateMachine.CurrentState != null)
+            {
+                Handles.Label(transform.position, stateMachine.CurrentState.GetType().ToString());
+            }
         }
     }
 }

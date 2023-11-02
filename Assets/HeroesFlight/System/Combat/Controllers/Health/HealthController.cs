@@ -79,7 +79,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         }
 
-        public void ModifyHealth(HealthModificationIntentModel modificationIntentModel)
+        public virtual void ModifyHealth(HealthModificationIntentModel modificationIntentModel)
         {
             if (modificationIntentModel.AttackType != AttackType.Healing)
             {

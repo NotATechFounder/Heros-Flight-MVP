@@ -5,9 +5,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 {
     public class AiJumpController : AiControllerBase
     {
-        AiMoverInterface mover;
-
-
+        
         public override void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
         {
             statModifier = monsterStatModifier;
@@ -29,17 +27,17 @@ namespace HeroesFlightProject.System.NPC.Controllers
         }
 
 
-        public override void ProcessFollowingState()
+        public  void ProcessFollowingState()
         {
             var directionToTarget = (Vector2)(CurrentTarget.position - transform.position);
-            mover.Move(directionToTarget);
+            mover.MoveToTargetPosition(directionToTarget);
         }
 
-        public override void ProcessWanderingState()
+        public  void ProcessWanderingState()
         {
             var random = Random.Range(0, 2);
             var directionToMove = random == 0 ? Vector2.left : Vector2.right;
-            mover.Move(directionToMove);
+            mover.MoveToTargetPosition(directionToMove);
         }
 
         public override void Enable()
@@ -63,9 +61,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
             rigidBody.AddForce(forceVector *m_Model.KnockBackForce,ForceMode2D.Impulse);
         }
 
-        public override Vector2 GetVelocity()
+        protected override Vector2 GetVelocity()
         {
-            return rigidBody.velocity.normalized;
+            return mover.GetVelocity();
         }
     }
 }

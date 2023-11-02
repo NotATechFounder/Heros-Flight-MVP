@@ -23,7 +23,6 @@ namespace HeroesFlight.System.NPC.Controllers.Control
         {
             setter = GetComponent<AIDestinationSetter>();
             attackController = GetComponent<EnemyAttackControllerBase>();
-            attackController.OnStateChange += HandleAttackStateChange;
             attackCollider = GetComponent<Collider2D>();
             ai = GetComponent<IAstarAI>();
             ai.canMove = false;
@@ -31,23 +30,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
             base.Init(player, health, damage, monsterStatModifier, currentCardIcon);
         }
 
-        void HandleAttackStateChange(AttackControllerState state)
-        {
-            switch (state)
-            {
-                case AttackControllerState.Attacking:
-                    SetMovementState(false);
-                    break;
-                case AttackControllerState.LookingForTarget:
-                    SetMovementState(true);
-                    break;
-                case AttackControllerState.Cooldown:
-                    SetMovementState(true);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
-            }
-        }
+    
 
         public override void Enable()
         {
@@ -62,7 +45,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
                 StopCoroutine(knockBackRoutine);
             }
 
-            isDisabled = true;
+          
             setter.target = null;
             ai.canMove = false;
             ai.isStopped = true;
@@ -78,34 +61,8 @@ namespace HeroesFlight.System.NPC.Controllers.Control
             }
         }
 
-        public override void ProcessFollowingState()
-        {
-            if (isDisabled)
-                return;
-
-            if (isInknockback)
-                return;
-
-            SetMovementState(!InAttackRange());
-            if (setter.target == null)
-                setter.target = CurrentTarget;
-        }
-
-        public override void ProcessWanderingState()
-        {
-            if (isDisabled)
-                return;
-
-            if (isInknockback)
-                return;
-            if (setter.target != null)
-                setter.target = null;
-            if (!ai.pathPending && (ai.reachedEndOfPath || !ai.hasPath))
-            {
-                ai.destination = GetRandomPosition2D();
-                ai.SearchPath();
-            }
-        }
+     
+      
 
         public override void ProcessKnockBack()
         {
@@ -129,7 +86,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
             knockBackRoutine = StartCoroutine(KnockBackRoutine(forceVector));
         }
 
-        public override Vector2 GetVelocity()
+        protected override Vector2 GetVelocity()
         {
             if (!IsAggravated())
             {

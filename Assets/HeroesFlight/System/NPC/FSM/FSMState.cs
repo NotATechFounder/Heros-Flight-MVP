@@ -18,11 +18,9 @@ namespace HeroesFlightProject.System.NPC.State
             GeneratePhaseReactionMap();
         }
 
-        public StateType Type;
-
+      
         protected StatePhase m_CurrentPhase;
-
-        protected StateType m_NextState;
+       
         protected IFSM m_StateMachine;
 
         Dictionary<StatePhase, Action> m_StateProcessMap = new ();
@@ -34,7 +32,7 @@ namespace HeroesFlightProject.System.NPC.State
             m_StateProcessMap.Add(StatePhase.Update, Update);
             m_StateProcessMap.Add(StatePhase.Exit, () =>
             {
-               m_StateMachine.SetState(m_NextState);
+              
             });
         }
         public virtual void Enter() { m_CurrentPhase = StatePhase.Update; }
