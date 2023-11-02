@@ -1,4 +1,5 @@
-﻿using HeroesFlightProject.System.NPC.Controllers;
+﻿using HeroesFlightProject.System.Gameplay.Controllers;
+using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.NPC.State.AIStates
@@ -8,16 +9,14 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
         public AiChaseState(AiControllerBase aiController, AiAnimationController animatorController,
             IFSM stateMachine) : base(aiController, animatorController, stateMachine)
         {
-            if (aiController.TryGetController<AiMoverInterface>(out mover)) { }
+            aiController.TryGetController(out mover);
+            aiController.TryGetController(out attackController);
         }
 
         private AiMoverInterface mover;
+        private EnemyAttackControllerBase attackController;
         
-        public override void Enter()
-        {
-            base.Enter();
-        }
-
+      
         protected override void Update()
         {
             if (!aiController.IsAggravated())
@@ -27,7 +26,7 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
                 return;
             }
             
-            if (!aiController.InAttackRange())
+            if (!attackController.InAttackRange())
             {
                 mover.MoveToTarget(aiController.CurrentTarget);
             }
@@ -40,10 +39,8 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
 
         public override void Exit()
         {
-          Debug.Log("Exiting Agrovated state");
-            mover.MoveToTarget(null);
-          
-            base.Exit();
+          mover.MoveToTarget(null);
+          base.Exit();
         }
     }
 }

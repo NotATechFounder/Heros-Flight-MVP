@@ -9,7 +9,7 @@ namespace HeroesFlight.System.NPC.Controllers.Movement
         [SerializeField] float jumpStrenght;
         Rigidbody2D rigidBody;
         float timeSinceLastJump;
-        bool canMove;
+       
 
         void Awake()
         {
@@ -23,15 +23,7 @@ namespace HeroesFlight.System.NPC.Controllers.Movement
             timeSinceLastJump += Time.deltaTime;
         }
 
-        public void SetSpeed(float speed)
-        {
-        }
-
-        public void SetMovementState(bool canMove)
-        {
-            this.canMove = canMove;
-        }
-
+     
         public override void MoveToTargetPosition(Vector2 targetDirection)
         {
             if (!canMove)

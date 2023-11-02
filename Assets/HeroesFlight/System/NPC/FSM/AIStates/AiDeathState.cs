@@ -7,7 +7,7 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
         public AiDeathState(AiControllerBase aiController, AiAnimationController animatorController,
             IFSM stateMachine) : base(aiController, animatorController, stateMachine)
         {
-           aiController.TryGetController<AiMoverInterface>(out mover);
+           aiController.TryGetController(out mover);
         }
 
         private AiMoverInterface mover;

@@ -11,8 +11,8 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
         public AiAttackState(AiControllerBase aiController, AiAnimationController animatorController, IFSM stateMachine)
             : base(aiController, animatorController, stateMachine)
         {
-            aiController.TryGetController<IAttackControllerInterface>(out attackController);
-            aiController.TryGetController<AiMoverInterface>(out mover);
+            aiController.TryGetController(out attackController);
+            aiController.TryGetController(out mover);
         }
 
         private IAttackControllerInterface attackController;

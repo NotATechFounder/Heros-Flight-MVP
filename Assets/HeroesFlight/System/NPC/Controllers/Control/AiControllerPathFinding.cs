@@ -74,8 +74,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             {
                 animator.PlayHitAnimation(m_Model.AttacksInteruptable, () =>
                 {
-                    if (!isDisabled)
-                        SetMovementState(true);
+                  SetMovementState(!isDisabled);
                 });
                 hitEffect.Flash();
 
@@ -91,7 +90,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             }
         }
 
-        public override Vector2 GetVelocity()
+        protected override Vector2 GetVelocity()
         {
             if (IsAggravated() && attacker.CanAttack())
             {

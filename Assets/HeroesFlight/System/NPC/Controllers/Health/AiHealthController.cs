@@ -1,7 +1,6 @@
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
-using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -12,14 +11,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public override void Init()
         {
             aiController = GetComponent<AiControllerInterface>();
-            maxHealth = aiController.GetHealth;
             heathBarUI?.ChangeType(HeathBarUI.HealthBarType.ToggleVisibilityOnHit);
-            defence = aiController.GetMonsterStatModifier().CalculateDefence(aiController.AgentModel.AiData.Defense);
             base.Init();
         }
-
-
-      
+     
         
 
         public override void ModifyHealth(HealthModificationIntentModel modificationIntentModel)

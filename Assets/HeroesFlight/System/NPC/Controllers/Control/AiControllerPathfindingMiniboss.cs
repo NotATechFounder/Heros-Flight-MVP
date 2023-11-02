@@ -86,7 +86,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
             knockBackRoutine = StartCoroutine(KnockBackRoutine(forceVector));
         }
 
-        public override Vector2 GetVelocity()
+        protected override Vector2 GetVelocity()
         {
             if (!IsAggravated())
             {

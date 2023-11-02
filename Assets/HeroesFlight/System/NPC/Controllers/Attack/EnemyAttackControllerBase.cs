@@ -13,7 +13,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class EnemyAttackControllerBase : MonoBehaviour, AiSubControllerInterface, IAttackControllerInterface
     {
-        protected AiControllerInterface aiController;
+     
         protected IHealthController target;
         protected float attackRange;
         protected float timeBetweenAttacks;
@@ -21,32 +21,30 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected AiAnimatorInterface animator;
         protected IHealthController health;
         protected float currentDamage;
+        protected float criticalChance;
         protected OverlapChecker damageZone;
-
+        protected bool isEnabled;
         public event Action OnHitTarget;
         public event Action<AttackControllerState> OnStateChange;
 
         public float Damage => currentDamage;
         public float TimeSinceLastAttack => timeSinceLastAttack;
 
-        protected virtual void Start()
+        public virtual void Init()
         {
-            aiController = GetComponent<AiControllerBase>();
+           
             animator = GetComponent<AiAnimatorInterface>();
             damageZone = GetComponentInChildren<OverlapChecker>();
             if (damageZone != null)
                 damageZone.OnDetect += DealDamage;
-            
+
             animator.OnAnimationEvent += HandleAnimationEvents;
             health = GetComponent<IHealthController>();
             health.OnDeath += HandleDeath;
-            target = aiController.CurrentTarget.GetComponent<IHealthController>();
-            timeSinceLastAttack = 0;
-            timeBetweenAttacks = aiController.GetMonsterStatModifier()
-                .CalculateAttackSpeed(aiController.AgentModel.AiData.AttackSpeed);
-            attackRange = aiController.AgentModel.AiData.AttackRange;
-            currentDamage = aiController.GetDamage;
+            isEnabled = true;
+
         }
+
 
         void HandleDeath(IHealthController obj)
         {
@@ -60,7 +58,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (target.IsDead())
             {
-               return;
+                return;
             }
 
             timeSinceLastAttack += Time.deltaTime;
@@ -76,17 +74,17 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected virtual void DealDamage(int i, Collider2D[] collider2Ds)
         {
             var baseDamage = Damage;
-            
-            float criticalChance = aiController.AgentModel.AiData.CriticalHitChance;
+
+           
             bool isCritical = Random.Range(0, 100) <= criticalChance;
 
             float damageToDeal = isCritical
-                ? baseDamage * aiController.AgentModel.AiData.CriticalHitChance
+                ? baseDamage * criticalChance
                 : baseDamage;
 
             var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
-            var damageModel = new HealthModificationIntentModel(damageToDeal, type, 
-                AttackType.Regular,DamageCalculationType.Flat);
+            var damageModel = new HealthModificationIntentModel(damageToDeal, type,
+                AttackType.Regular, DamageCalculationType.Flat);
             target.TryDealDamage(damageModel);
             OnHitTarget?.Invoke();
         }
@@ -99,23 +97,34 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
-        public void Init()
-        {
-        }
-
-        public virtual void ToggleControllerState(bool isEnabled)
-        {
-        }
+        public virtual void ToggleControllerState(bool isEnabled) { this.isEnabled = isEnabled; }
 
         public bool CanAttack()
         {
-            return timeSinceLastAttack >= timeBetweenAttacks;
+            return isEnabled && timeSinceLastAttack >= timeBetweenAttacks;
         }
 
         protected virtual void HandleAnimationEvents(AttackAnimationEvent obj)
         {
             OnStateChange?.Invoke(AttackControllerState.Cooldown);
             damageZone.Detect();
+        }
+
+        public void SetAttackStats(float damage, float attackRange, float attackSpeed,float criticalChance)
+        {
+            timeBetweenAttacks = attackSpeed;
+            this.attackRange = attackRange;
+            currentDamage = damage;
+            timeSinceLastAttack = timeBetweenAttacks;
+            this.criticalChance = criticalChance;
+        }
+
+        public void SetTarget(IHealthController target) => this.target = target;
+
+        public bool InAttackRange()
+        {
+            return Vector2.Distance(target.HealthTransform.position, transform.position)
+                   <= attackRange;
         }
     }
 }

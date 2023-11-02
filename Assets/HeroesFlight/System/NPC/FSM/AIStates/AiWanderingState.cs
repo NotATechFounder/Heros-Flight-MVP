@@ -8,8 +8,8 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
         public AiWanderingState(AiControllerBase aiController, AiAnimationController animatorController,
             IFSM stateMachine) : base(aiController, animatorController, stateMachine)
         {
-            if (aiController.TryGetController<AiMoverInterface>(out mover)) { }
-            if (aiController.TryGetController<IAttackControllerInterface>(out attackController)) { }
+            aiController.TryGetController(out mover);
+            aiController.TryGetController(out attackController);
         }
 
         private AiMoverInterface mover;
