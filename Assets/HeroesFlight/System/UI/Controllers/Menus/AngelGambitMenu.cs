@@ -12,14 +12,14 @@ namespace UISystem
 {
     public class AngelGambitMenu : BaseMenu<AngelGambitMenu>
     {
-        public Action<AngelCardSO> OnCardSelected;
+        public event Action<AngelCardSO> OnCardSelected;
         public Func<AngelCardSO,AngelCard> CardExit;
 
         [SerializeField] private Transform container;
 
         [Header("Card Buttons")]
-        [SerializeField] private AdvanceButton buffCardButton;
-        [SerializeField] private AdvanceButton debuffCardButton;
+        [SerializeField] private AngelGambitCard[] buffCards;
+        [SerializeField] private AngelGambitCard[] debuffCards;
         [SerializeField] private AdvanceButton blankCardButton;
         [SerializeField] private AdvanceButton continueButton;
 
@@ -52,9 +52,6 @@ namespace UISystem
         JuicerRuntime openEffectBG;
         JuicerRuntime openEffectContainer;
         JuicerRuntime closeEffectBG;
-
-        JuicerRuntime buffCardEffect;
-        JuicerRuntime debuffCardEffect;
         JuicerRuntime spinCardEffect;
 
         public override void OnCreated()
@@ -71,15 +68,18 @@ namespace UISystem
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
             closeEffectBG.SetOnCompleted(CloseMenu);
 
-            buffCardEffect = buffCardButton.transform.JuicyScale(Vector3.one * 1.2f, .5f).SetEase(Ease.EaseOutSine).SetLoop(-1);
-            debuffCardEffect = debuffCardButton.transform.JuicyScale(Vector3.one * 1.2f, .5f).SetEase(Ease.EaseOutSine).SetLoop(-1);
-
             spinCardEffect = cardToReveal.transform.JuicyRotate(Vector3.up * 360, .25f).SetEase(Ease.Linear).SetLoop(2, LoopType.Incremental);
             spinCardEffect.SetOnCompleted(() => ToggleCardRevealProperties(true));
 
-            buffCardButton.onClick.AddListener(() => GenerateRandomCards(AngelCardType.Buff));
+            foreach (AngelGambitCard buffCard in buffCards)
+            {
+                buffCard.Initialize(GenerateRandomCards);
+            }
 
-            debuffCardButton.onClick.AddListener(() => GenerateRandomCards(AngelCardType.Debuff));
+            foreach (AngelGambitCard debuffCard in debuffCards)
+            {
+                debuffCard.Initialize(GenerateRandomCards);
+            }
 
             blankCardButton.onClick.AddListener(Close);
 
@@ -95,8 +95,6 @@ namespace UISystem
         {
             cardRevealPanel.SetActive(false);
             openEffectBG.Start(() => canvasGroup.alpha = 0);
-            buffCardEffect.Start();
-            debuffCardEffect.Start();
             openEffectContainer.Start(() => container.localScale = Vector3.zero);
             cardSelectionPanel.SetActive(true);
         }
@@ -104,15 +102,20 @@ namespace UISystem
         public override void OnClosed()
         {
             closeEffectBG.Start();
-            buffCardEffect.Pause();
-            debuffCardEffect.Pause();
             ResetMenu();
         }
 
         public override void ResetMenu()
         {
-            buffCardButton.transform.localScale = Vector3.one;
-            debuffCardButton.transform.localScale = Vector3.one;
+            foreach (AngelGambitCard buffCard in buffCards)
+            {
+                buffCard.ResetCard ();
+            }
+
+            foreach (AngelGambitCard debuffCard in debuffCards)
+            {
+                debuffCard.ResetCard ();
+            }
         }
 
         public void GetValidCardSO(AngelCardType angelCardType)

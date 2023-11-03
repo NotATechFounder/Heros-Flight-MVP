@@ -1,8 +1,8 @@
+using System;
 using System.Collections.Generic;
 using HeroesFlight.Common.Animation;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
+
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -16,9 +16,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] WarningLine warningLinePrefab;
         [SerializeField] List<WarningLine> lines = new();
         [SerializeField] List<Vector3> offsets= new List<Vector3>();
-        protected override void Start()
+        
+     
+        public override void Init()
         {
-            base.Start();
+            base.Init();
             if (useWarningLines)
             {
                 for (int i = 0; i < projectileCount; i++)
@@ -39,31 +41,22 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (target.IsDead())
             {
-                aiController.SetAttackState(false);
-                return;
+               return;
             }
 
 
             timeSinceLastAttack += Time.deltaTime;
-            var distanceToPlayer = Vector2.Distance(transform.position, aiController.CurrentTarget.position);
-            if (distanceToPlayer <= attackRange && timeSinceLastAttack >= timeBetweenAttacks)
-            {
-                aiController.SetAttackState(true);
-                InitAttack();
-            }
         }
 
 
-        protected override void InitAttack()
+        protected override void InitAttack(Action onComplete=null)
         {
             timeSinceLastAttack = 0;
-            aiController.SetAttackState(false);
-
             if (useWarningLines)
             {
                 for (int i = 0; i < lines.Count; i++)
                 {
-                    Vector2 direction = aiController.CurrentTarget.position - transform.position;
+                    Vector2 direction = target.HealthTransform.position - transform.position;
                    
                     var final = Quaternion.Euler(offsets[i]) *direction ;
                     

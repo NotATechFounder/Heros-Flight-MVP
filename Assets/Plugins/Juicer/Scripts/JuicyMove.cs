@@ -6,8 +6,8 @@ using UnityEngine;
 public class JuicyMove : MonoBehaviour
 {
     [SerializeField] private float duration = 1f;
-    [SerializeField] private RectTransform start;
-    [SerializeField] private RectTransform target;
+    [SerializeField] private Transform start;
+    [SerializeField] private Transform target;
     [SerializeField] private Ease easeType = Ease.Linear;
     [SerializeField] LoopType loopType = LoopType.Yoyo;
     [SerializeField] private int loopCount = 0;

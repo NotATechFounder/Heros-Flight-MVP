@@ -14,4 +14,5 @@ public class ShrineNPCHolder : MonoBehaviour
             shrineNPCsCache.Add(shrineNPC.GetShrineNPCType(), shrineNPC);
         }
     }
+
 }

@@ -1,7 +1,9 @@
-﻿namespace HeroesFlightProject.System.NPC.State
+﻿using System;
+
+namespace HeroesFlightProject.System.NPC.State
 {
     public interface IFSM
     {
-        void SetState(StateType newState);
+        void SetState(Type newState);
     }
 }

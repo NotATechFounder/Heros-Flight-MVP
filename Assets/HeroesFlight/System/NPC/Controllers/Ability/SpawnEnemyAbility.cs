@@ -47,7 +47,8 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
             base.StopAbility();
             foreach (var mob in spawnedMobs)
             {
-                if(mob.gameObject.activeSelf)
+                
+                if(mob !=null && mob.gameObject.activeSelf)
                     mob.Disable();
             }
             spawnedMobs.Clear();

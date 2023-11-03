@@ -1,6 +1,7 @@
 using System;
 using HeroesFlight.Common.Animation;
 using Spine.Unity;
+using UnityEngine;
 
 namespace HeroesFlightProject.System.NPC.Controllers
 {
@@ -15,5 +16,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
         void PlayHitAnimation(bool interruptAttack,Action onCompleteAction=null);
         void PlayDynamicAnimation(AnimationReferenceAsset animationReference, Action onCompleteAction = null);
         void StopDynamicAnimation();
+        void SetMovementDirection(Vector2 velocity);
     }
 }
