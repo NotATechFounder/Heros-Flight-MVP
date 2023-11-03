@@ -6,8 +6,7 @@ namespace HeroesFlight.System.Stats.Feats.Enum
     public enum FeatType
     {
         StatBoost,
-        XpBoost,
-        GoldBoost,
+        CurrencyBoost,
         Revival,
         HealthRestore
     }
