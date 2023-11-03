@@ -4,7 +4,9 @@ using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Data;
 using HeroesFlightProject.System.NPC.Enum;
 using HeroesFlightProject.System.NPC.State;
+#if UNITY_EDITOR
 using UnityEditor;
+# endif
 using UnityEngine;
 
 namespace HeroesFlightProject.System.NPC.Controllers
@@ -191,6 +193,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             mover.SetMovementState(canMove);
         }
 
+        #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
             if (stateMachine != null && stateMachine.CurrentState != null)
@@ -198,5 +201,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 Handles.Label(transform.position, stateMachine.CurrentState.GetType().ToString());
             }
         }
+        #endif
     }
 }
