@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using HeroesFlight.System.Stats.Feats;
 using UnityEngine;
 
-namespace HeroesFlight.System.Stats.Feats
+namespace HeroesFlight.System.Stats.Handlers
 {
     public class FeatHandler
     {
@@ -11,11 +12,10 @@ namespace HeroesFlight.System.Stats.Feats
         {
             LoadCache();
         }
-        private const string LOAD_FOLDER = "/Feats/";
+        private const string LOAD_FOLDER = "Feats/";
         private Dictionary<string, Feat> unlockedFeats = new();
         private Dictionary<string, Feat> featMap = new();
-
-
+      
         public void UnlockFeat(string id)
         {
             if (unlockedFeats.ContainsKey(id))
@@ -36,7 +36,9 @@ namespace HeroesFlight.System.Stats.Feats
 
          void LoadCache()
          {
+             Debug.Log("Loading cache");
              var availableCache= Resources.LoadAll<Feat>( LOAD_FOLDER);
+             Debug.Log(availableCache.Length);
              foreach (var feat in availableCache)
              {
                  Debug.Log($"adding feat with id {feat.Id}");
