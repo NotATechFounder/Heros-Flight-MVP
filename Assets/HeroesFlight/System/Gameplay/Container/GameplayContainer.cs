@@ -51,7 +51,7 @@ namespace HeroesFlight.System.Gameplay.Container
             if (CurrentLvlIndex >= currentModel.SpawnModel.Levels.Length)
                 return null;
 
-            if(currentLevel != null && currentLevel.LevelType != LevelType.Intermission && CurrentLvlIndex % 2 != 0)
+            if(currentLevel != null && currentLevel.LevelType != LevelType.Shrine && CurrentLvlIndex % 2 != 0)
             {
                 return currentLevel = currentModel.AngelsGambitLevel;
             }

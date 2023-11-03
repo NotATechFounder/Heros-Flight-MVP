@@ -632,7 +632,7 @@ namespace HeroesFlight.System.Gameplay
                     characterSystem.SetCharacterControllerState(true);
 
                     break;
-                case LevelType.Intermission:
+                case LevelType.Shrine:
                     characterSystem.SetCharacterControllerState(true);
                     break;
                 case LevelType.WorldBoss:
@@ -663,7 +663,11 @@ namespace HeroesFlight.System.Gameplay
 
         void SetUpLevelEnvironment()
         {
-            if (currentLevelEnvironment != null) GameObject.DestroyImmediate(currentLevelEnvironment.gameObject);
+            if (currentLevelEnvironment != null)
+            {
+                GameObject.DestroyImmediate(currentLevelEnvironment.gameObject);
+            }
+
             currentLevelEnvironment = GameObject.Instantiate(currentLevel.LevelPrefab).GetComponent<LevelEnvironment>();
 
             foreach (var spawnPoint in currentLevelEnvironment.GetSpawnpoints(SpawnType.Crystal))
@@ -696,7 +700,7 @@ namespace HeroesFlight.System.Gameplay
                     container.DisablePortal();
                     break;
 
-                case LevelType.Intermission:
+                case LevelType.Shrine:
 
                     // When player gets in contact with the NPC
 
@@ -1070,6 +1074,11 @@ namespace HeroesFlight.System.Gameplay
 
         void MoveToNextLvl()
         {
+            if (currentLevel.LevelType == LevelType.Shrine)
+            {
+                shrine.OnShrineExit();
+            }
+
             characterSystem.SetCharacterControllerState(false);
 
             CoroutineUtility.WaitForSeconds(0.5f, () =>

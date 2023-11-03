@@ -70,7 +70,8 @@ public class Shrine : MonoBehaviour
                     return true;
                 } 
                 break;
-            case ShrineNPCCurrencyType.Ad:
+
+                      case ShrineNPCCurrencyType.Ad:
 
                 if (shrineNPCFee.CurrentMaxAdsCount > 0)
                 {
@@ -87,7 +88,7 @@ public class Shrine : MonoBehaviour
         return false;
     }
 
-    public void OnOpened()
+    public void OnShrineExit()
     {
         foreach (ShrineNPCFee shrineNPCFee in shrineNPCFees)
         {
@@ -176,7 +177,7 @@ public class ShrineNPCFee
     public void PurchaseSuccessful()
     {
         OnInteracted?.Invoke();
-        OnPurchaseSuccessful?.Invoke(); 
+        OnPurchaseSuccessful?.Invoke();
     }
 
     public void PurchaseFailed()
