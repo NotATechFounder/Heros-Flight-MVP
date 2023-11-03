@@ -29,6 +29,7 @@ using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static CurrencySO;
 
 namespace HeroesFlight.System.Gameplay
 {
@@ -130,9 +131,7 @@ namespace HeroesFlight.System.Gameplay
 
             environmentSystem.BoosterSpawner.ActivateBooster =  progressionSystem.BoosterManager.ActivateBooster;
 
-            shrine.GetAngelEffectManager.OnTrigger += uiSystem.UiEventHandler.AngelGambitMenu.Open;
-            shrine.GetAngelEffectManager.OnPermanetCard +=
-                uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
+            shrine.GetAngelEffectManager.OnPermanetCard += uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
             uiSystem.UiEventHandler.AngelGambitMenu.CardExit += shrine.GetAngelEffectManager.Exists;
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
@@ -164,7 +163,8 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
             uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
 
-            AssignShrineNPCActions();
+            RegisterShrineNPCUIEvents();
+            RegisterShrineNPCActions();
 
             OnComplete?.Invoke();
         }
@@ -250,7 +250,6 @@ namespace HeroesFlight.System.Gameplay
         /// </summary>
         void ResetConnections()
         {
-            shrine.GetAngelEffectManager.OnTrigger -= uiSystem.UiEventHandler.AngelGambitMenu.Open;
             shrine.GetAngelEffectManager.OnPermanetCard -=
                 uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
             uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= shrine.GetAngelEffectManager.Exists;
@@ -285,6 +284,9 @@ namespace HeroesFlight.System.Gameplay
             characterHealthController.OnDodged -= HandleCharacterDodged;
             characterAttackController = null;
             characterHealthController = null;
+
+            UnRegisterShrineNPCUIEvents();
+            UnRegisterShrineNPCActions();
         }
 
         /// <summary>
@@ -630,7 +632,7 @@ namespace HeroesFlight.System.Gameplay
                     characterSystem.SetCharacterControllerState(true);
 
                     break;
-                case LevelType.Intermission:
+                case LevelType.Shrine:
                     characterSystem.SetCharacterControllerState(true);
                     break;
                 case LevelType.WorldBoss:
@@ -640,10 +642,9 @@ namespace HeroesFlight.System.Gameplay
         }
 
 
-        void TriggerAngelsGambit()
+        void TogglePlayerMovement(bool state)
         {
-            characterSystem.SetCharacterControllerState(false);
-            shrine.GetAngelEffectManager.TriggerAngelsGambit();
+            characterSystem.SetCharacterControllerState(state);
         }
 
         public Level PreloadLvl()
@@ -662,7 +663,11 @@ namespace HeroesFlight.System.Gameplay
 
         void SetUpLevelEnvironment()
         {
-            if (currentLevelEnvironment != null) GameObject.DestroyImmediate(currentLevelEnvironment.gameObject);
+            if (currentLevelEnvironment != null)
+            {
+                GameObject.DestroyImmediate(currentLevelEnvironment.gameObject);
+            }
+
             currentLevelEnvironment = GameObject.Instantiate(currentLevel.LevelPrefab).GetComponent<LevelEnvironment>();
 
             foreach (var spawnPoint in currentLevelEnvironment.GetSpawnpoints(SpawnType.Crystal))
@@ -695,28 +700,86 @@ namespace HeroesFlight.System.Gameplay
                     container.DisablePortal();
                     break;
 
-                case LevelType.Intermission:
+                case LevelType.Shrine:
+
+                    // When player gets in contact with the NPC
 
                     ShrineNPCHolder shrineNPCHolder = currentLevelEnvironment.GetComponent<ShrineNPCHolder>();
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.AngelsGambit].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.AngelsGambit],
                     () =>
                     {
-                        shrine.Purchase(ShrineNPCType.AngelsGambit);
+                        uiSystem.UiEventHandler.AngelGambitMenu.Open();
+                        TogglePlayerMovement(false);
                     });
-     
-                    // assign other npcs here
 
-                    container.EnablePortal(currentLevelEnvironment
-                        .GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.ActiveAbilityReRoller].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller],
+                    () =>
+                    {
+
+                    });
+
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.PassiveAbilityReRoller].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller],
+                    () =>
+                    {
+
+                    });
+
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.HealingMagicRune].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune],
+                    () =>
+                    {
+                        uiSystem.UiEventHandler.HealingNPCMenu.Open();
+                        TogglePlayerMovement(false);
+                    });
+   
+                    container.EnablePortal(currentLevelEnvironment .GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
                     break;
             }
         }
 
-        void AssignShrineNPCActions()
+        void RegisterShrineNPCUIEvents()
         {
-            shrine.ShrineNPCFeeCache[ShrineNPCType.AngelsGambit].OnPurchaseSuccessful = TriggerAngelsGambit;
-            // assign other npcs here
+            uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
+            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested += (currencyType) =>
+            {
+                return shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType);
+            };
+
+            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += (angelCard) =>
+            {
+                 shrine.Purchase(ShrineNPCType.AngelsGambit);
+            };
+        }
+
+        void UnRegisterShrineNPCUIEvents()
+        {
+            uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed -= () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice -= shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
+            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested -= (currencyType) =>
+            {
+                return shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType);
+            };
+
+            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= (angelCard) =>
+            {
+                shrine.Purchase(ShrineNPCType.AngelsGambit);
+            };
+        }
+
+        void RegisterShrineNPCActions()
+        {
+            shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].OnPurchaseSuccessful += ()=> shrine.GetHealer.Heal();
+            // Register other npcs here
+        }
+
+
+        void UnRegisterShrineNPCActions()
+        {
+            shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].OnPurchaseSuccessful -= () => shrine.GetHealer.Heal();
+            // UnRegister other npcs here
         }
 
         void HandleCrystalHit(Transform transform)
@@ -1011,6 +1074,11 @@ namespace HeroesFlight.System.Gameplay
 
         void MoveToNextLvl()
         {
+            if (currentLevel.LevelType == LevelType.Shrine)
+            {
+                shrine.OnShrineExit();
+            }
+
             characterSystem.SetCharacterControllerState(false);
 
             CoroutineUtility.WaitForSeconds(0.5f, () =>

@@ -25,6 +25,8 @@ public class UIEventHandler : MonoBehaviour
     public ConfirmationUISO PuzzleConfirmation => puzzleConfirmation;
     public RewardPopupController RewardPopup { get; private set; }
 
+    public HealingNPCMenu HealingNPCMenu { get; private set; }
+
     public void Init(Action OnComplecte = null)
     {
         uIManager = GetComponent<UIManager>();
@@ -41,6 +43,7 @@ public class UIEventHandler : MonoBehaviour
         AngelPermanetCardMenu = uIManager.InitMenu<AngelPermanetCardMenu>();
         HeroProgressionMenu = uIManager.InitMenu<HeroProgressionMenu>();
         RewardPopup = uIManager.InitMenu<RewardPopupController>();
+        HealingNPCMenu = uIManager.InitMenu<HealingNPCMenu>();
         OnComplecte?.Invoke();
     }
 }

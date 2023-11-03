@@ -88,7 +88,7 @@ namespace HeroesFlight.System.NPC.Model
     public enum LevelType
     {
         NormalCombat,
-        Intermission,
+        Shrine,
         WorldBoss
     }
 }

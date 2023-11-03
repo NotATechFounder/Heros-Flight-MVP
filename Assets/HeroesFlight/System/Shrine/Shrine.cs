@@ -19,6 +19,7 @@ public class Shrine : MonoBehaviour
     {
         foreach (ShrineNPCFee shrineNPCFee in shrineNPCFees)
         {
+            shrineNPCFee.Init();
             ShrineNPCFeeCache.Add(shrineNPCFee.GetShrineNPCType, shrineNPCFee);
         }
     }
@@ -38,50 +39,56 @@ public class Shrine : MonoBehaviour
         shrineNPCFee.Unlock();
     }
 
-    public void Purchase(ShrineNPCType shrineNPCFeeType, ShrineNPCCurrencyType shrineNPCFeeTypeFeeType = ShrineNPCCurrencyType.RuneShards)
+    public bool Purchase(ShrineNPCType shrineNPCFeeType, ShrineNPCCurrencyType shrineNPCFeeTypeFeeType = ShrineNPCCurrencyType.RuneShard)
     {
         ShrineNPCFee shrineNPCFee = GetShrineNPCFee(shrineNPCFeeType);
 
         if (shrineNPCFee.IsFree)
         {
-            shrineNPCFee.OnPurchaseSuccessful?.Invoke();
-            return;
+            shrineNPCFee.PurchaseSuccessful();
+            return true;
         }
 
         switch (shrineNPCFeeTypeFeeType)
         {
-            case ShrineNPCCurrencyType.RuneShards:
+            case ShrineNPCCurrencyType.RuneShard:
 
                 if (currencyManager.GetCurrencyAmount(CurrencyKeys.RuneShard) >= shrineNPCFee.CurrentRuneShards)
                 {
                     currencyManager.ReduceCurency(CurrencyKeys.RuneShard, shrineNPCFee.CurrentRuneShards);
-                    shrineNPCFee.OnPurchaseSuccessful?.Invoke();
+                    shrineNPCFee.PurchaseSuccessful();
+                    return true;
                 }
 
                 break;
-            case ShrineNPCCurrencyType.Gems:
+            case ShrineNPCCurrencyType.Gem:
 
                 if (currencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= shrineNPCFee.CurrentGems)
                 {
                     currencyManager.ReduceCurency(CurrencyKeys.Gem, shrineNPCFee.CurrentGems);
-                    shrineNPCFee.OnPurchaseSuccessful?.Invoke();
-                }
-
+                    shrineNPCFee.PurchaseSuccessful();
+                    return true;
+                } 
                 break;
-            case ShrineNPCCurrencyType.AdsCount:
+
+                      case ShrineNPCCurrencyType.Ad:
 
                 if (shrineNPCFee.CurrentMaxAdsCount > 0)
                 {
                     shrineNPCFee.AdsWatched();
-                    shrineNPCFee.OnPurchaseSuccessful?.Invoke();
+                    shrineNPCFee.PurchaseSuccessful();
+                    return true;
                 }
 
                 break;
             default: break;
         }
+
+        shrineNPCFee.PurchaseFailed();
+        return false;
     }
 
-    public void OnOpened()
+    public void OnShrineExit()
     {
         foreach (ShrineNPCFee shrineNPCFee in shrineNPCFees)
         {
@@ -107,14 +114,15 @@ public enum ShrineNPCType
     AngelsGambit,
     ActiveAbilityReRoller,
     PassiveAbilityReRoller,
-    HealingMagicRune
+    HealingMagicRune,
+    Blacksmith
 }
 
 public enum ShrineNPCCurrencyType
 {
-    RuneShards,
-    Gems,
-    AdsCount
+    RuneShard,
+    Gem,
+    Ad
 }
 
 [Serializable]
@@ -134,22 +142,47 @@ public class ShrineNPCFee
 
     private int currentRuneShards;
     private int currentGems;
-    private int currentMaxAdsCount;
+    private int currentAdsCount;
 
-    public Action OnPurchaseSuccessful;
+    public event Action OnPurchaseSuccessful;
+    public event Action OnPurchaseFailed;
+    public Action OnInteracted;
+
     public ShrineNPCType GetShrineNPCType => shrineNPCType;
     public bool Unlocked => unlocked;
     public int CurrentRuneShards => currentRuneShards;
     public int CurrentGems => currentGems;
-    public int CurrentMaxAdsCount => currentMaxAdsCount;
+    public int CurrentMaxAdsCount => currentAdsCount;
 
-    public bool IsFree => currentRuneShards == 0 && currentGems == 0 && currentMaxAdsCount == 0;    
+    public bool IsFree => currentRuneShards == 0 && currentGems == 0 && currentAdsCount == 0;    
 
-    public ShrineNPCFee()
+    public void Init()
     {
         currentRuneShards = startingRuneShards;
         currentGems = startingGems;
-        currentMaxAdsCount = adsCount;
+        currentAdsCount = adsCount;
+    }
+
+    public int GetPrice(ShrineNPCCurrencyType shrineNPCCurrencyType)
+    {
+        return shrineNPCCurrencyType switch
+        {
+            ShrineNPCCurrencyType.RuneShard => currentRuneShards,
+            ShrineNPCCurrencyType.Gem => currentGems,
+            ShrineNPCCurrencyType.Ad => currentAdsCount,
+            _ => 0,
+        };
+    }
+
+    public void PurchaseSuccessful()
+    {
+        OnInteracted?.Invoke();
+        OnPurchaseSuccessful?.Invoke();
+    }
+
+    public void PurchaseFailed()
+    {
+        OnPurchaseFailed?.Invoke();
     }
 
     public void VisitIncrement()
@@ -170,13 +203,13 @@ public class ShrineNPCFee
         currentGems += gemIncrement;
     }
 
-    public void  Unlock()
+    public void Unlock()
     {
         unlocked = true;
     }
 
     public void AdsWatched()
     {
-        currentMaxAdsCount--;
+        currentAdsCount--;
     }
 }
