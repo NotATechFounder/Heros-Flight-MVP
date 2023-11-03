@@ -6,12 +6,16 @@ namespace HeroesFlight.System.Stats.Feats
     [CreateAssetMenu(fileName = "NewFeat", menuName = "Feats/Feat", order = 100)]
     public class Feat : ScriptableObject
     {
+        [Header("Logical data")]
         [SerializeField] private string id;
+        [SerializeField] private int requiredCharacterLvl;
+        [SerializeField] private string blockingFeatId;
+        [SerializeField] private FeatEffect effect;
+
+        [Header("Ui data")]
         [SerializeField] private Sprite image;
         [TextArea]
         [SerializeField] private string description;
-        [SerializeField] private string blockingFeatId;
-        [SerializeField] private FeatEffect effect;
 
 
         public string Id => id;
@@ -19,5 +23,6 @@ namespace HeroesFlight.System.Stats.Feats
         public string Description => description;
         public FeatEffect Effect => effect;
         public string DependantId => blockingFeatId;
+        public int RequiredLvl => requiredCharacterLvl;
     }
 }

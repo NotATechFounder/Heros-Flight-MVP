@@ -6,20 +6,16 @@ namespace HeroesFlight.System.Stats.Feats
 {
     public class FeatHandler
     {
+
+        public FeatHandler()
+        {
+            LoadCache();
+        }
         private const string LOAD_FOLDER = "/Feats/";
         private Dictionary<string, Feat> unlockedFeats = new();
         private Dictionary<string, Feat> featMap = new();
 
-        public void LoadCache()
-        {
-            var availableCache= Resources.LoadAll<Feat>( LOAD_FOLDER);
-            foreach (var feat in availableCache)
-            {
-                featMap.Add(feat.Id,feat);
-            }
-        }
-        
-        
+
         public void UnlockFeat(string id)
         {
             if (unlockedFeats.ContainsKey(id))
@@ -37,5 +33,15 @@ namespace HeroesFlight.System.Stats.Feats
 
 
         public List<Feat> GetUnlockedFeats() => unlockedFeats.Values.ToList();
+
+         void LoadCache()
+         {
+             var availableCache= Resources.LoadAll<Feat>( LOAD_FOLDER);
+             foreach (var feat in availableCache)
+             {
+                 Debug.Log($"adding feat with id {feat.Id}");
+                 featMap.Add(feat.Id,feat);
+             }
+         }
     }
 }
