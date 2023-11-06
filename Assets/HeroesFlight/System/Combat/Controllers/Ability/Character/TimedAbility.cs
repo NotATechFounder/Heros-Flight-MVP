@@ -5,17 +5,17 @@ using UnityEngine;
 
 
 [Serializable]
-public class CharacterTimedSKill
+public class TimedAbility
 {
-    public Action OnSkillActivated;
-    public Action<float> OnSkillRuntime;
-    public Action OnSkillDeactivated;
-    public Action<float> OnSkillCoolDown;
-    public Action OnSkillReady;
+    public Action OnActivated;
+    public Action<float> OnRuntime;
+    public Action OnDeactivated;
+    public Action<float> OnCoolDown;
+    public Action OnReady;
     public bool IsActive { get; private set; }
-    public float SkillDuration => skillDuration;
+    public float Duration => duration;
 
-    [SerializeField] private float skillDuration;
+    [SerializeField] private float duration;
     [SerializeField] private float coolDownTime;
     [SerializeField] private MonoBehaviour owner;
 
@@ -25,14 +25,14 @@ public class CharacterTimedSKill
     public void Init (MonoBehaviour targetOwner)
     {
         owner = targetOwner;
-        OnSkillCoolDown?.Invoke(0);
+        OnCoolDown?.Invoke(0);
     }
 
     public virtual void ActivateAbility()
     {
         if (!canUseAbility)
             return;
-        OnSkillActivated?.Invoke();
+        OnActivated?.Invoke();
         owner.StartCoroutine(Runtime());
     }
 
@@ -40,11 +40,11 @@ public class CharacterTimedSKill
     {
         IsActive = true;
         canUseAbility = false;
-        currentTime = skillDuration;
+        currentTime = duration;
         while (currentTime > 0)
         {
             currentTime -= Time.deltaTime;
-            OnSkillRuntime?.Invoke(currentTime / skillDuration);
+            OnRuntime?.Invoke(currentTime / duration);
             yield return null;
         }
         IsActive = false;
@@ -53,7 +53,7 @@ public class CharacterTimedSKill
 
     public virtual void DeactivateAbility()
     {
-        OnSkillDeactivated?.Invoke();
+        OnDeactivated?.Invoke();
         owner.StartCoroutine(CoolDown());
     }
 
@@ -63,10 +63,10 @@ public class CharacterTimedSKill
         while (currentTime > 0)
         {
             currentTime -= Time.deltaTime;
-            OnSkillCoolDown?.Invoke(currentTime / coolDownTime);
+            OnCoolDown?.Invoke(currentTime / coolDownTime);
             yield return null;
         }
         canUseAbility = true;
-        OnSkillReady?.Invoke();
+        OnReady?.Invoke();
     }
 }

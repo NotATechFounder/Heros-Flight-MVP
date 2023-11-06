@@ -60,9 +60,9 @@ namespace HeroesFlight.System.Combat
                 characterSkillHandler =
                     new CharacterSkillHandler(
                         model.HealthController.HealthTransform.GetComponent<CharacterAbilityInterface>(),
-                        model.HealthController.HealthTransform.GetComponent<ISkillControllerInterface>());
-                characterSkillHandler.CharacterAbility.SkillOne.OnSkillRuntime += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
-                characterSkillHandler.CharacterAbility.SkillOne.OnSkillCoolDown += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
+                        model.HealthController.HealthTransform.GetComponent<IActiveAbilityInterface>());
+                characterSkillHandler.CharacterAbility.PassiveAbilityOne.OnRuntime += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
+                characterSkillHandler.CharacterAbility.PassiveAbilityOne.OnCoolDown += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
             }
         }
 
@@ -178,7 +178,7 @@ namespace HeroesFlight.System.Combat
 
         void UseCharacterAbility()
         {
-            characterSkillHandler.CharacterAbility.SkillOne.ActivateAbility();
+            characterSkillHandler.CharacterAbility.PassiveAbilityOne.ActivateAbility();
         }
     }
 }

@@ -11,15 +11,15 @@ using HeroesFlight.System.Combat.Enum;
 using HeroesFlightProject.System.Combat.Controllers;
 using UnityEngine;
 
-public class ValSkillController : MonoBehaviour, ISkillControllerInterface
+public class ValSkillController : MonoBehaviour, IActiveAbilityInterface
 {
     [Header("Skill One")] [SerializeField] private float damageMultiplier = 1;
     [SerializeField] private ParticleSystem chargeEffect;
     [SerializeField] private ParticleSystem explosionEffect;
-    [SerializeField] private CharacterTimedSKill skillOne;
+    [SerializeField] private TimedAbility skillOne;
     [SerializeField] private OverlapChecker overlapChecker;
 
-    public CharacterTimedSKill SkillOne => skillOne;
+    public TimedAbility PassiveAbilityOne => skillOne;
 
     private CharacterStatController characterStatController;
     private CharacterSimpleController characterSystem;
@@ -33,8 +33,8 @@ public class ValSkillController : MonoBehaviour, ISkillControllerInterface
         characterHealthController = GetComponent<HealthController>();
         characterAttackController = GetComponent<BaseCharacterAttackController>();
 
-        skillOne.OnSkillActivated = OnActivateSkillOne;
-        skillOne.OnSkillDeactivated = OnDeactivateSkillOne;
+        skillOne.OnActivated = OnActivateSkillOne;
+        skillOne.OnDeactivated = OnDeactivateSkillOne;
 
         overlapChecker.OnDetect = Explode;
     }
@@ -54,11 +54,11 @@ public class ValSkillController : MonoBehaviour, ISkillControllerInterface
 
         if (characterHealthController.CurrentHealth == characterHealthController.MaxHealth)
         {
-            StartCoroutine(FullHealth(skillOne.SkillDuration));
+            StartCoroutine(FullHealth(skillOne.Duration));
         }
         else
         {
-            StartCoroutine(HealthRegen(skillOne.SkillDuration));
+            StartCoroutine(HealthRegen(skillOne.Duration));
         }
     }
 

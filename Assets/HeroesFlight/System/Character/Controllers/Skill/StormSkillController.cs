@@ -2,12 +2,12 @@ using HeroesFlightProject.System.Combat.Controllers;
 using Plugins.Audio_System;
 using UnityEngine;
 
-public class StormSkillController : MonoBehaviour, ISkillControllerInterface
+public class StormSkillController : MonoBehaviour, IActiveAbilityInterface
 {
-    [SerializeField] private CharacterTimedSKill skillOne;
+    [SerializeField] private TimedAbility skillOne;
     [SerializeField] private SkillOrb skillOrbPrefab;
 
-    public CharacterTimedSKill SkillOne => skillOne;
+    public TimedAbility PassiveAbilityOne => skillOne;
 
     private SkillOrb skillOrb;
     private CharacterStatController characterStatController;
@@ -16,8 +16,8 @@ public class StormSkillController : MonoBehaviour, ISkillControllerInterface
     {
         characterStatController = GetComponent<CharacterStatController>();
 
-        skillOne.OnSkillActivated = OnActivateSkillOne;
-        skillOne.OnSkillDeactivated = OnDeactivateSkillOne;
+        skillOne.OnActivated = OnActivateSkillOne;
+        skillOne.OnDeactivated = OnDeactivateSkillOne;
     }
 
     private void Start()
