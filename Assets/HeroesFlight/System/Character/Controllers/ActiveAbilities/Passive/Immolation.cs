@@ -25,4 +25,9 @@ public class Immolation : PassiveActiveAbility
     {
         base.LevelUp();
     }
+
+    public void Initialize(int level)
+    {
+        this.level = level;
+    }
 }

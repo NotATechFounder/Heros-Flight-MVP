@@ -11,14 +11,6 @@ public class KnifeFluffy : PassiveActiveAbility
     [SerializeField] private float radious;
     [SerializeField] private ProjectileControllerBase projectileController;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            OnActivated();
-        }
-    }
-
     public override void OnActivated()
     {
         SpawnProjectiles(numberOfProjectiles, radious);
@@ -32,6 +24,11 @@ public class KnifeFluffy : PassiveActiveAbility
     public override void OnCoolDownEnded()
     {
 
+    }
+
+    public void Initialize(int level)
+    {
+        this.level = level;
     }
 
     private void SpawnProjectiles(int numberOfProjectiles, float radious)
@@ -60,7 +57,6 @@ public class KnifeFluffy : PassiveActiveAbility
         Gizmos.color = Color.red;
         for (int i = 0; i < numberOfProjectiles; i++)
         {
-            // spawn projectile in a circle around the player
             float angle = i * Mathf.PI * 2 / numberOfProjectiles;
             Vector3 pos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * radious;
             Gizmos.DrawWireSphere(transform.position + pos, 0.1f);

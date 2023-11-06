@@ -9,6 +9,5 @@ namespace HeroesFlight.System.Combat.Handlers
             CharacterUltimate = mainAbility;
         }
         public CharacterAbilityInterface CharacterUltimate { get; }
-        public IActiveAbilityInterface CharacterAbility { get; }
     }
 }

@@ -61,7 +61,7 @@ namespace HeroesFlight.System.Gameplay
         
         GodsBenevolence godsBenevolence;
         Shrine shrine;
-        IActiveAbilityInterface activeAbilityManager;
+        ActiveAbilityManager activeAbilityManager;
 
         DataSystemInterface dataSystem;
         EnvironmentSystemInterface environmentSystem;
@@ -110,7 +110,7 @@ namespace HeroesFlight.System.Gameplay
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
 
             shrine = scene.GetComponentInChildren<Shrine>();
-            activeAbilityManager = scene.GetComponentInChildren<IActiveAbilityInterface>();
+            activeAbilityManager = scene.GetComponentInChildren<ActiveAbilityManager>();
             godsBenevolence = scene.GetComponentInChildren<GodsBenevolence>();
 
             container = scene.GetComponentInChildren<GameplayContainer>();
@@ -169,6 +169,7 @@ namespace HeroesFlight.System.Gameplay
 
             activeAbilityManager.PassiveAbilityOneController.OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
             activeAbilityManager.PassiveAbilityOneController.OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
+            uiSystem.OnPassiveAbilityButtonClicked += activeAbilityManager.UseCharacterAbility;
 
             RegisterShrineNPCUIEvents();
             RegisterShrineNPCActions();
@@ -294,6 +295,7 @@ namespace HeroesFlight.System.Gameplay
 
             activeAbilityManager.PassiveAbilityOneController.OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
             activeAbilityManager.PassiveAbilityOneController.OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
+            uiSystem.OnPassiveAbilityButtonClicked -= activeAbilityManager.UseCharacterAbility;
 
             UnRegisterShrineNPCUIEvents();
             UnRegisterShrineNPCActions();

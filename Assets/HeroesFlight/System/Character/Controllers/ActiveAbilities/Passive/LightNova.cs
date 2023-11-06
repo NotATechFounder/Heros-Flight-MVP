@@ -29,8 +29,9 @@ public class LightNova : PassiveActiveAbility
         overlapChecker.OnDetect = Explode;
     }
 
-    public void Initialize(CharacterStatController characterStatController, CharacterSimpleController characterSystem,  HealthController characterHealthController, BaseCharacterAttackController characterAttackController)
+    public void Initialize(int level,  CharacterStatController characterStatController, CharacterSimpleController characterSystem,  HealthController characterHealthController, BaseCharacterAttackController characterAttackController)
     {
+        this.level = level;
         this.characterStatController = characterStatController;
         this.characterSystem = characterSystem;
         this.characterHealthController = characterHealthController;

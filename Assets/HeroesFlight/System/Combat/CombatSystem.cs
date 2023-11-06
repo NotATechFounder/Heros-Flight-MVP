@@ -20,7 +20,6 @@ namespace HeroesFlight.System.Combat
         {
             environmentSystem = environmentSystemInterface;
             this.uiSystem=uiSystem;
-            uiSystem.OnSkillOneButtonClicked += UseCharacterAbility;
             comboHandler = new CharacterComboHandler();
             comboHandler.OnComboUpdated += UpdateCharacterComboUi;
         }
@@ -168,11 +167,6 @@ namespace HeroesFlight.System.Combat
         void UpdateCharacterComboUi(int value)
         {
             uiSystem.UpdateComboUI(value);
-        }
-
-        void UseCharacterAbility()
-        {
-            characterSkillHandler.CharacterAbility.PassiveAbilityOneController.ActivateAbility();
         }
     }
 }

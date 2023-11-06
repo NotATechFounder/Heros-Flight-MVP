@@ -1,11 +1,13 @@
+using HeroesFlight.System.Character;
 using HeroesFlightProject.System.Combat.Controllers;
+using HeroesFlightProject.System.Gameplay.Controllers;
 using Pelumi.ObjectPool;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveAbilityManager : MonoBehaviour, IActiveAbilityInterface
+public class ActiveAbilityManager : MonoBehaviour
 {
     [SerializeField] private Transform playerTransform;
     [SerializeField] private ActiveAbilitySO[] passiveActiveAbilities;
@@ -24,6 +26,12 @@ public class ActiveAbilityManager : MonoBehaviour, IActiveAbilityInterface
     private Dictionary<PassiveActiveAbilityType, TimedAbilityController> passiveAbiltyAndControllerDic = new Dictionary<PassiveActiveAbilityType, TimedAbilityController>();
     private Dictionary<PassiveActiveAbilityType, PassiveActiveAbility> activePassiveActivities = new Dictionary<PassiveActiveAbilityType, PassiveActiveAbility>();
 
+    private CharacterStatController characterStatController;
+    private CharacterSimpleController characterSystem;
+    private HealthController characterHealthController;
+    private BaseCharacterAttackController characterAttackController;
+
+
     private void Awake()
     {
         Cache();
@@ -39,12 +47,31 @@ public class ActiveAbilityManager : MonoBehaviour, IActiveAbilityInterface
         if (Input.GetKeyDown(KeyCode.A))
         {
             EquippedAbility(PassiveActiveAbilityType.KnifeFluffy);
+            EquippedAbility(PassiveActiveAbilityType.OrbOfLightning);
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
             DetachAbility(passiveAbiltyAndControllerDic[PassiveActiveAbilityType.KnifeFluffy], activePassiveActivities[PassiveActiveAbilityType.KnifeFluffy]);
         }
+
+        if (Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            UseCharacterAbility(0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            UseCharacterAbility(1);
+        }
+    }
+
+    public void Initialize(CharacterStatController characterStatController, CharacterSimpleController characterSystem, HealthController characterHealthController, BaseCharacterAttackController characterAttackController)
+    {
+        this.characterStatController = characterStatController;
+        this.characterSystem = characterSystem;
+        this.characterHealthController = characterHealthController;
+        this.characterAttackController = characterAttackController;
     }
 
     public void Cache()
@@ -60,12 +87,11 @@ public class ActiveAbilityManager : MonoBehaviour, IActiveAbilityInterface
         timedAbilitySlots.Add(passiveAbilityThreeController);
     }
 
-    public void EquippedAbility(PassiveActiveAbilityType passiveActiveAbilityType)
+    public void EquippedAbility(PassiveActiveAbilityType passiveActiveAbilityType, int level = 1)
     {
         if (AbilityAlreadyEquipped(passiveActiveAbilityType))
         {
-            UpgradeAbility(passiveActiveAbilityType);
-            Debug.Log("Ability Upgraded");  
+            UpgradeAbility(passiveActiveAbilityType); 
             return;
         }
 
@@ -73,13 +99,13 @@ public class ActiveAbilityManager : MonoBehaviour, IActiveAbilityInterface
         {
             if (!timedAbilityController.IsValid)
             {
-                InitialiseAbility (passiveActiveAbilityType, timedAbilityController);
+                InitialiseAbility (passiveActiveAbilityType, timedAbilityController, level);
                 return;
             }
         }
     }
 
-    public void InitialiseAbility(PassiveActiveAbilityType passiveActiveAbilityType, TimedAbilityController timedAbilityController)
+    public void InitialiseAbility(PassiveActiveAbilityType passiveActiveAbilityType, TimedAbilityController timedAbilityController, int level)
     {
         PassiveActiveAbility passiveActiveAbility = passiveActiveAbilitiesDic[passiveActiveAbilityType].GetAbility(playerTransform.position);
         AttachAbility(timedAbilityController, passiveActiveAbility);
@@ -88,15 +114,23 @@ public class ActiveAbilityManager : MonoBehaviour, IActiveAbilityInterface
         switch (passiveActiveAbilityType)
         {
             case PassiveActiveAbilityType.HeavenStab:
+                (passiveActiveAbility as OrbOfLightning).Initialize(level, characterStatController);
                 break;
             case PassiveActiveAbilityType.OrbOfLightning:
+                (passiveActiveAbility as OrbOfLightning).Initialize(level, characterStatController);
                 break;
             case PassiveActiveAbilityType.MagicShield:
+                (passiveActiveAbility as MagicShield).Initialize(level);
                 break;
             case PassiveActiveAbilityType.KnifeFluffy:
+                (passiveActiveAbility as KnifeFluffy).Initialize(level);
                 break;
             case PassiveActiveAbilityType.Immolation:
+                (passiveActiveAbility as Immolation).Initialize(level);
                 break;
+            case PassiveActiveAbilityType.LightNova:
+                (passiveActiveAbility as LightNova).Initialize(level, characterStatController, characterSystem, characterHealthController, characterAttackController);
+                break;      
             default:  break;
         }
     }
@@ -149,6 +183,12 @@ public class ActiveAbilityManager : MonoBehaviour, IActiveAbilityInterface
             avaliableAbilities.RemoveAt(randomIndex);
         }
         return randomAbilities;
+    }
+
+    public void UseCharacterAbility(int slotIndex)
+    {
+        TimedAbilityController timedAbilityController = timedAbilitySlots[slotIndex];
+        timedAbilityController.ActivateAbility();
     }
 }
 

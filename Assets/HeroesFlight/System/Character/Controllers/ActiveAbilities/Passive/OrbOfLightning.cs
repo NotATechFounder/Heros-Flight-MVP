@@ -12,8 +12,9 @@ public class OrbOfLightning : PassiveActiveAbility
     private SkillOrb skillOrb;
     private CharacterStatController characterStatController;
 
-    public void Initialize(CharacterStatController characterStatController)
+    public void Initialize(int level, CharacterStatController characterStatController)
     {
+        this.level = level;
         this.characterStatController = characterStatController;
     }
 

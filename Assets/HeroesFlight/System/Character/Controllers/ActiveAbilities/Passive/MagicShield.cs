@@ -18,4 +18,9 @@ public class MagicShield : PassiveActiveAbility
     {
 
     }
+
+    public void Initialize(int level)
+    {
+        this.level = level;
+    }
 }
