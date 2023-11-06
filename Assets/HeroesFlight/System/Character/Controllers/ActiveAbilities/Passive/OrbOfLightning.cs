@@ -2,30 +2,20 @@ using HeroesFlightProject.System.Combat.Controllers;
 using Plugins.Audio_System;
 using UnityEngine;
 
-public class StormSkillController : MonoBehaviour, IActiveAbilityInterface
+public class OrbOfLightning : PassiveActiveAbility
 {
-    [SerializeField] private TimedAbility skillOne;
+    [SerializeField] private int damage;
     [SerializeField] private SkillOrb skillOrbPrefab;
-
-    public TimedAbility PassiveAbilityOne => skillOne;
 
     private SkillOrb skillOrb;
     private CharacterStatController characterStatController;
 
-    private void Awake()
-    {
-        characterStatController = GetComponent<CharacterStatController>();
-
-        skillOne.OnActivated = OnActivateSkillOne;
-        skillOne.OnDeactivated = OnDeactivateSkillOne;
-    }
-
     private void Start()
     {
-        skillOne.Init(this);
+        characterStatController = GetComponent<CharacterStatController>();
     }
 
-    public void OnActivateSkillOne()
+    public override void OnActivated()
     {
         AudioManager.PlaySoundEffect("StormSkillActivation", SoundEffectCategory.Hero);
 
@@ -33,7 +23,7 @@ public class StormSkillController : MonoBehaviour, IActiveAbilityInterface
         {
             skillOrb = Instantiate(skillOrbPrefab, transform.position, Quaternion.identity);
             skillOrb.SetTarget(transform);
-            if(skillOrb.TryGetComponent(out AutoShooter autoShooter))
+            if (skillOrb.TryGetComponent(out AutoShooter autoShooter))
             {
                 autoShooter.SetDamage((int)characterStatController.CurrentMagicDamage);
             }
@@ -42,8 +32,18 @@ public class StormSkillController : MonoBehaviour, IActiveAbilityInterface
         skillOrb.Activate();
     }
 
-    public void OnDeactivateSkillOne()
+    public override void OnCoolDownStarted()
     {
         skillOrb.Deactivate();
+    }
+
+    public override void OnCoolDownEnded()
+    {
+
+    }
+
+    public override void LevelUp()
+    {
+        base.LevelUp();
     }
 }

@@ -11,15 +11,15 @@ using HeroesFlight.System.Combat.Enum;
 using HeroesFlightProject.System.Combat.Controllers;
 using UnityEngine;
 
-public class ValSkillController : MonoBehaviour, IActiveAbilityInterface
+public class ValSkillController : MonoBehaviour
 {
     [Header("Skill One")] [SerializeField] private float damageMultiplier = 1;
     [SerializeField] private ParticleSystem chargeEffect;
     [SerializeField] private ParticleSystem explosionEffect;
-    [SerializeField] private TimedAbility skillOne;
+    [SerializeField] private TimedAbilityController skillOne;
     [SerializeField] private OverlapChecker overlapChecker;
 
-    public TimedAbility PassiveAbilityOne => skillOne;
+    public TimedAbilityController PassiveAbilityOne => skillOne;
 
     private CharacterStatController characterStatController;
     private CharacterSimpleController characterSystem;
@@ -33,15 +33,15 @@ public class ValSkillController : MonoBehaviour, IActiveAbilityInterface
         characterHealthController = GetComponent<HealthController>();
         characterAttackController = GetComponent<BaseCharacterAttackController>();
 
-        skillOne.OnActivated = OnActivateSkillOne;
-        skillOne.OnDeactivated = OnDeactivateSkillOne;
+        skillOne.OnActivated += OnActivateSkillOne;
+        skillOne.OnCoolDownStarted += OnDeactivateSkillOne;
 
         overlapChecker.OnDetect = Explode;
     }
 
     private void Start()
     {
-        skillOne.Init(this);
+        //skillOne.Init(this);
     }
 
     public void OnActivateSkillOne()

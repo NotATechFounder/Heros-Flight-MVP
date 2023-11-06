@@ -8,14 +8,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using Plugins.Audio_System;
 
-public class TagonSkillController : SkillAnimationEventHandler, IActiveAbilityInterface
+public class TagonSkillController : SkillAnimationEventHandler
 {
     [Header("Skill One")]
-    [SerializeField] private TimedAbility skillOne;
+    [SerializeField] private TimedAbilityController skillOne;
     [SerializeField] private SkillOrb skillOrbPrefab;
     [SerializeField] private float lifeStealPercentage = 0.1f;
 
-    public TimedAbility PassiveAbilityOne => skillOne;
+    public TimedAbilityController PassiveAbilityOne => skillOne;
 
     private SkillOrb skillOrb;
     private CharacterStatController characterStatController;
@@ -26,14 +26,14 @@ public class TagonSkillController : SkillAnimationEventHandler, IActiveAbilityIn
         characterStatController = GetComponent<CharacterStatController>();
         attackControllerInterface = GetComponent<IAttackControllerInterface>();
 
-        skillOne.OnActivated = OnActivateSkillOne;
-        skillOne.OnDeactivated = OnDeactivateSkillOne;
+        skillOne.OnActivated += OnActivateSkillOne;
+        skillOne.OnCoolDownStarted += OnDeactivateSkillOne;
         base.Awake();
     }
 
     private void Start()
     {
-        skillOne.Init(this);
+        //skillOne.Init(this);
     }
 
     public void OnActivateSkillOne()

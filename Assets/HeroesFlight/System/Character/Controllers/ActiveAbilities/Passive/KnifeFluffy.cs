@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KnifeFluffy : MonoBehaviour
+public class KnifeFluffy : PassiveActiveAbility
 {
     [SerializeField] private int numberOfProjectiles;
     [SerializeField] private float radious;
@@ -15,15 +15,29 @@ public class KnifeFluffy : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            SpawnProjectiles(numberOfProjectiles, radious);
+            OnActivated();
         }
+    }
+
+    public override void OnActivated()
+    {
+        SpawnProjectiles(numberOfProjectiles, radious);
+    }
+
+    public override void OnCoolDownStarted()
+    {
+
+    }
+
+    public override void OnCoolDownEnded()
+    {
+
     }
 
     private void SpawnProjectiles(int numberOfProjectiles, float radious)
     {
         for (int i = 0; i < numberOfProjectiles; i++)
         {
-            // spawn projectile in a circle around the player
             float angle = i * Mathf.PI * 2 / numberOfProjectiles;
             Vector3 pos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * radious;
             ProjectileControllerBase bullet = ObjectPoolManager.SpawnObject(projectileController, transform.position + pos, Quaternion.identity);
@@ -51,5 +65,10 @@ public class KnifeFluffy : MonoBehaviour
             Vector3 pos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * radious;
             Gizmos.DrawWireSphere(transform.position + pos, 0.1f);
         }
+    }
+
+    public override void LevelUp()
+    {
+        base.LevelUp();
     }
 }

@@ -47,9 +47,7 @@ namespace HeroesFlight.System.Combat
         public void RegisterEntity(CombatEntityModel model)
         {
             if (combatEntities.TryGetValue(model.HealthController, out var combatModel)) return;
-            
-            
-            
+                
             combatEntities.Add(model.HealthController,model);
             model.HealthController.Init();
             model.AttackController?.Init();
@@ -61,8 +59,8 @@ namespace HeroesFlight.System.Combat
                     new CharacterSkillHandler(
                         model.HealthController.HealthTransform.GetComponent<CharacterAbilityInterface>(),
                         model.HealthController.HealthTransform.GetComponent<IActiveAbilityInterface>());
-                characterSkillHandler.CharacterAbility.PassiveAbilityOne.OnRuntime += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
-                characterSkillHandler.CharacterAbility.PassiveAbilityOne.OnCoolDown += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
+                characterSkillHandler.CharacterAbility.PassiveAbilityOneController.OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
+                characterSkillHandler.CharacterAbility.PassiveAbilityOneController.OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
             }
         }
 
@@ -178,7 +176,7 @@ namespace HeroesFlight.System.Combat
 
         void UseCharacterAbility()
         {
-            characterSkillHandler.CharacterAbility.PassiveAbilityOne.ActivateAbility();
+            characterSkillHandler.CharacterAbility.PassiveAbilityOneController.ActivateAbility();
         }
     }
 }
