@@ -80,7 +80,7 @@ public class AresEffect : MonoBehaviour
 
     public void Attack()
     {
-        overlapChecker.Detect();
+        overlapChecker.DetectOverlap();
         hitEffect.Play();
     }
 

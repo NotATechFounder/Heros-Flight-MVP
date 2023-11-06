@@ -7,31 +7,22 @@ using UnityEngine;
 public class OrbOfLightning : PassiveActiveAbility
 {
     [SerializeField] private float damageMultiplier = 1;
-    [SerializeField] private SkillOrb skillOrbPrefab;
+    [SerializeField] private SkillOrb skillOrb;
 
-    private SkillOrb skillOrb;
-    private CharacterStatController characterStatController;
-
-    public void Initialize(int level, CharacterStatController characterStatController)
+    public void Initialize(int level, int baseDamage)
     {
-        this.level = level;
-        this.characterStatController = characterStatController;
+        this.currentLevel = level;
+
+        skillOrb.SetTarget(transform);
+        if (skillOrb.TryGetComponent(out AutoShooter autoShooter))
+        {
+            autoShooter.SetDamage((int)(baseDamage * damageMultiplier));
+        }
     }
 
     public override void OnActivated()
     {
         AudioManager.PlaySoundEffect("StormSkillActivation", SoundEffectCategory.Hero);
-
-        if (skillOrb == null)
-        {
-            skillOrb = Instantiate(skillOrbPrefab, transform.position, Quaternion.identity);
-            skillOrb.SetTarget(transform);
-            if (skillOrb.TryGetComponent(out AutoShooter autoShooter))
-            {
-                autoShooter.SetDamage((int)(characterStatController.CurrentMagicDamage * damageMultiplier));
-            }
-        }
-
         skillOrb.Activate();
     }
 
@@ -48,5 +39,10 @@ public class OrbOfLightning : PassiveActiveAbility
     public override void LevelUp()
     {
         base.LevelUp();
+    }
+
+    public override void LevelUpIncreaseEffect()
+    {
+
     }
 }

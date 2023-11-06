@@ -37,7 +37,7 @@ public class HerculesEffect : MonoBehaviour
                 if (overlapChecker.TargetInRange())
                 {
                     Debug.Log("HerulesEffect AutoAttack");
-                    overlapChecker.Detect();
+                    overlapChecker.DetectOverlap();
                 }
             }
             yield return null;

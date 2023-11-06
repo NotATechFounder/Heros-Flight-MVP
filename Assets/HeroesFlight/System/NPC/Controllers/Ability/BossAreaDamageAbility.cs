@@ -68,7 +68,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 zone.ZoneVisual.Trigger(() =>
                 {
                     cameraShaker?.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,.5f);
-                    zone.ZoneChecker.Detect();
+                    zone.ZoneChecker.DetectOverlap();
                 },preDamageDelay,zoneWidth);
             }
 

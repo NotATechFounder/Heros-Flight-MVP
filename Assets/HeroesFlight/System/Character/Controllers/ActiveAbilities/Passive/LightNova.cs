@@ -31,7 +31,7 @@ public class LightNova : PassiveActiveAbility
 
     public void Initialize(int level,  CharacterStatController characterStatController, CharacterSimpleController characterSystem,  HealthController characterHealthController, BaseCharacterAttackController characterAttackController)
     {
-        this.level = level;
+        this.currentLevel = level;
         this.characterStatController = characterStatController;
         this.characterSystem = characterSystem;
         this.characterHealthController = characterHealthController;
@@ -91,7 +91,7 @@ public class LightNova : PassiveActiveAbility
 
         chargeEffect.Stop();
         explosionEffect.Play();
-        overlapChecker.Detect();
+        overlapChecker.DetectOverlap();
         AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Hero);
     }
 
@@ -112,7 +112,7 @@ public class LightNova : PassiveActiveAbility
 
         chargeEffect.Stop();
         explosionEffect.Play();
-        overlapChecker.Detect();
+        overlapChecker.DetectOverlap();
         AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Hero);
     }
 
@@ -127,5 +127,10 @@ public class LightNova : PassiveActiveAbility
                     DamageType.NoneCritical, AttackType.Regular, DamageCalculationType.Flat));
             }
         }
+    }
+
+    public override void LevelUpIncreaseEffect()
+    {
+        throw new NotImplementedException();
     }
 }

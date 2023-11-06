@@ -41,4 +41,5 @@ public enum PassiveActiveAbilityType
     KnifeFluffy,
     Immolation,
     LightNova,
+    SwordWhirlwind
 }

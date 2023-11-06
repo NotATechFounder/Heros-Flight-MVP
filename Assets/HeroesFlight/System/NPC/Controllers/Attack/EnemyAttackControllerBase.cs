@@ -107,7 +107,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected virtual void HandleAnimationEvents(AttackAnimationEvent obj)
         {
             OnStateChange?.Invoke(AttackControllerState.Cooldown);
-            damageZone.Detect();
+            damageZone.DetectOverlap();
         }
 
         public void SetAttackStats(float damage, float attackRange, float attackSpeed,float criticalChance)

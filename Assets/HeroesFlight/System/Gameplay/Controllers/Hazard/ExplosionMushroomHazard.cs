@@ -69,7 +69,7 @@ public class ExplosionMushroomHazard : MonoBehaviour
         AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Environment);
         visual.SetActive(false);
         particleCallbackTrigger.Play();
-        damageOverlap.Detect();
+        damageOverlap.DetectOverlap();
     }
 
     private void OnDetect(int arg1, Collider2D[] collider2D)

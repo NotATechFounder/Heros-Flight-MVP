@@ -7,13 +7,20 @@ using UnityEngine;
 
 public class KnifeFluffy : PassiveActiveAbility
 {
-    [SerializeField] private int numberOfProjectiles;
-    [SerializeField] private float radious;
+    [SerializeField] private int baseNumberOfProjectiles;
+    [SerializeField] private float baseRadious;
+    [SerializeField] private int numberOfProjectilesPerLevel;
+    [SerializeField] private float radiousPerLevel;
     [SerializeField] private ProjectileControllerBase projectileController;
+
+    private int currentNumberOfProjectiles;
+    private float currentRadious;
 
     public override void OnActivated()
     {
-        SpawnProjectiles(numberOfProjectiles, radious);
+        currentNumberOfProjectiles = GetValueByLevel(baseNumberOfProjectiles, numberOfProjectilesPerLevel);
+        currentRadious = GetValueByLevel(baseRadious, radiousPerLevel);
+        SpawnProjectiles(baseNumberOfProjectiles, baseRadious);
     }
 
     public override void OnCoolDownStarted()
@@ -28,7 +35,7 @@ public class KnifeFluffy : PassiveActiveAbility
 
     public void Initialize(int level)
     {
-        this.level = level;
+        this.currentLevel = level;
     }
 
     private void SpawnProjectiles(int numberOfProjectiles, float radious)
@@ -53,12 +60,12 @@ public class KnifeFluffy : PassiveActiveAbility
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireSphere(transform.position, radious);
+        Gizmos.DrawWireSphere(transform.position, currentRadious);
         Gizmos.color = Color.red;
-        for (int i = 0; i < numberOfProjectiles; i++)
+        for (int i = 0; i < currentNumberOfProjectiles; i++)
         {
-            float angle = i * Mathf.PI * 2 / numberOfProjectiles;
-            Vector3 pos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * radious;
+            float angle = i * Mathf.PI * 2 / currentNumberOfProjectiles;
+            Vector3 pos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * currentRadious;
             Gizmos.DrawWireSphere(transform.position + pos, 0.1f);
         }
     }
@@ -66,5 +73,10 @@ public class KnifeFluffy : PassiveActiveAbility
     public override void LevelUp()
     {
         base.LevelUp();
+    }
+
+    public override void LevelUpIncreaseEffect()
+    {
+
     }
 }

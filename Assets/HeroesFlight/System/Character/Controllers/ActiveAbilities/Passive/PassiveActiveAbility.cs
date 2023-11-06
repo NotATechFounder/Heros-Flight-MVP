@@ -5,12 +5,12 @@ using UnityEngine;
 
 public abstract class PassiveActiveAbility : MonoBehaviour
 {
-    [SerializeField] protected int level;
+    [SerializeField] protected int currentLevel = 1;
 
     private ActiveAbilitySO activeAbilitySO;
 
     public PassiveActiveAbilityType PassiveActiveAbilityType => activeAbilitySO.PassiveActiveAbilityType;
-    public int Level => level;
+    public int Level => currentLevel;
     public ActiveAbilitySO ActiveAbilitySO => activeAbilitySO;
 
     public void Init(ActiveAbilitySO activeAbilitySO)
@@ -22,8 +22,24 @@ public abstract class PassiveActiveAbility : MonoBehaviour
     public abstract void OnCoolDownStarted();
     public abstract void OnCoolDownEnded();
 
+    public abstract void LevelUpIncreaseEffect();
+
     public virtual void LevelUp()
     {
-        level++;
+        currentLevel++;
+        if (currentLevel % 5 == 0)
+        {
+            LevelUpIncreaseEffect();
+        }
+    }
+
+    public int GetValueByLevel(int baseValue, int increasePerLevel)
+    {
+        return baseValue + (Mathf.FloorToInt((currentLevel) / 5) * increasePerLevel);
+    }
+
+    public float GetValueByLevel(float baseValue, float increasePerLevel)
+    {
+        return baseValue + (Mathf.FloorToInt((currentLevel) / 5) * increasePerLevel);
     }
 }

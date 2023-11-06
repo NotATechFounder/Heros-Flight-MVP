@@ -35,11 +35,18 @@ public class ActiveAbilityManager : MonoBehaviour
     private void Awake()
     {
         Cache();
+
+        Test();
     }
 
     private void Start()
     {
 
+    }
+
+    void Test()
+    {
+        characterStatController = GetComponent<CharacterStatController>();
     }
 
     private void Update()
@@ -114,23 +121,26 @@ public class ActiveAbilityManager : MonoBehaviour
         switch (passiveActiveAbilityType)
         {
             case PassiveActiveAbilityType.HeavenStab:
-                (passiveActiveAbility as OrbOfLightning).Initialize(level, characterStatController);
+                (passiveActiveAbility as OrbOfLightning).Initialize(level, (int)characterStatController.CurrentMagicDamage);
                 break;
             case PassiveActiveAbilityType.OrbOfLightning:
-                (passiveActiveAbility as OrbOfLightning).Initialize(level, characterStatController);
+                (passiveActiveAbility as OrbOfLightning).Initialize(level, (int)characterStatController.CurrentMagicDamage);
                 break;
             case PassiveActiveAbilityType.MagicShield:
-                (passiveActiveAbility as MagicShield).Initialize(level);
+                (passiveActiveAbility as MagicShield).Initialize(level , characterHealthController);
                 break;
             case PassiveActiveAbilityType.KnifeFluffy:
                 (passiveActiveAbility as KnifeFluffy).Initialize(level);
                 break;
             case PassiveActiveAbilityType.Immolation:
-                (passiveActiveAbility as Immolation).Initialize(level);
+                (passiveActiveAbility as Immolation).Initialize(level, (int)characterStatController.CurrentMagicDamage);
                 break;
             case PassiveActiveAbilityType.LightNova:
                 (passiveActiveAbility as LightNova).Initialize(level, characterStatController, characterSystem, characterHealthController, characterAttackController);
-                break;      
+                break;
+            case PassiveActiveAbilityType.SwordWhirlwind:
+                (passiveActiveAbility as SwordWhirlwind).Initialize(level, (int)characterStatController.CurrentPhysicalDamage);
+                break;
             default:  break;
         }
     }
