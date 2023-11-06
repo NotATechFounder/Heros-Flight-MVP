@@ -4,10 +4,9 @@ namespace HeroesFlight.System.Combat.Handlers
 {
     public class CharacterSkillHandler
     {
-        public CharacterSkillHandler(CharacterAbilityInterface mainAbility, IActiveAbilityInterface offAbility)
+        public CharacterSkillHandler(CharacterAbilityInterface mainAbility)
         {
             CharacterUltimate = mainAbility;
-            CharacterAbility = offAbility;
         }
         public CharacterAbilityInterface CharacterUltimate { get; }
         public IActiveAbilityInterface CharacterAbility { get; }

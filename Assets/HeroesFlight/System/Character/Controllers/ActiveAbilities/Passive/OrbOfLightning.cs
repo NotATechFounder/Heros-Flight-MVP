@@ -1,18 +1,20 @@
+using HeroesFlight.System.Character;
 using HeroesFlightProject.System.Combat.Controllers;
+using HeroesFlightProject.System.Gameplay.Controllers;
 using Plugins.Audio_System;
 using UnityEngine;
 
 public class OrbOfLightning : PassiveActiveAbility
 {
-    [SerializeField] private int damage;
+    [SerializeField] private float damageMultiplier = 1;
     [SerializeField] private SkillOrb skillOrbPrefab;
 
     private SkillOrb skillOrb;
     private CharacterStatController characterStatController;
 
-    private void Start()
+    public void Initialize(CharacterStatController characterStatController)
     {
-        characterStatController = GetComponent<CharacterStatController>();
+        this.characterStatController = characterStatController;
     }
 
     public override void OnActivated()
@@ -25,7 +27,7 @@ public class OrbOfLightning : PassiveActiveAbility
             skillOrb.SetTarget(transform);
             if (skillOrb.TryGetComponent(out AutoShooter autoShooter))
             {
-                autoShooter.SetDamage((int)characterStatController.CurrentMagicDamage);
+                autoShooter.SetDamage((int)(characterStatController.CurrentMagicDamage * damageMultiplier));
             }
         }
 

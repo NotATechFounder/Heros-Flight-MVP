@@ -11,15 +11,13 @@ using HeroesFlight.System.Combat.Enum;
 using HeroesFlightProject.System.Combat.Controllers;
 using UnityEngine;
 
-public class ValSkillController : MonoBehaviour
+public class LightNova : PassiveActiveAbility
 {
-    [Header("Skill One")] [SerializeField] private float damageMultiplier = 1;
+    [Header("LightNova")] 
+    [SerializeField] private float damageMultiplier = 1;
     [SerializeField] private ParticleSystem chargeEffect;
     [SerializeField] private ParticleSystem explosionEffect;
-    [SerializeField] private TimedAbilityController skillOne;
     [SerializeField] private OverlapChecker overlapChecker;
-
-    public TimedAbilityController PassiveAbilityOne => skillOne;
 
     private CharacterStatController characterStatController;
     private CharacterSimpleController characterSystem;
@@ -28,23 +26,18 @@ public class ValSkillController : MonoBehaviour
 
     private void Awake()
     {
-        characterStatController = GetComponent<CharacterStatController>();
-        characterSystem = GetComponent<CharacterSimpleController>();
-        characterHealthController = GetComponent<HealthController>();
-        characterAttackController = GetComponent<BaseCharacterAttackController>();
-
-        skillOne.OnActivated += OnActivateSkillOne;
-        skillOne.OnCoolDownStarted += OnDeactivateSkillOne;
-
         overlapChecker.OnDetect = Explode;
     }
 
-    private void Start()
+    public void Initialize(CharacterStatController characterStatController, CharacterSimpleController characterSystem,  HealthController characterHealthController, BaseCharacterAttackController characterAttackController)
     {
-        //skillOne.Init(this);
+        this.characterStatController = characterStatController;
+        this.characterSystem = characterSystem;
+        this.characterHealthController = characterHealthController;
+        this.characterAttackController = characterAttackController;
     }
 
-    public void OnActivateSkillOne()
+    public override void OnActivated()
     {
         if (characterHealthController.CurrentHealth <= 0) return;
 
@@ -54,19 +47,24 @@ public class ValSkillController : MonoBehaviour
 
         if (characterHealthController.CurrentHealth == characterHealthController.MaxHealth)
         {
-            StartCoroutine(FullHealth(skillOne.Duration));
+            StartCoroutine(FullHealth(ActiveAbilitySO.Duration));
         }
         else
         {
-            StartCoroutine(HealthRegen(skillOne.Duration));
+            StartCoroutine(HealthRegen(ActiveAbilitySO.Duration));
         }
     }
 
-    public void OnDeactivateSkillOne()
+    public override void OnCoolDownStarted()
     {
         characterHealthController.SetInvulnerableState(false);
         characterSystem.SetActionState(true);
         characterAttackController.ToggleControllerState(true);
+    }
+
+    public override void OnCoolDownEnded()
+    {
+
     }
 
     private IEnumerator HealthRegen(float regenTime)

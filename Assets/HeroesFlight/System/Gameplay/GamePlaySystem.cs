@@ -6,6 +6,7 @@ using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Combat;
 using HeroesFlight.System.Combat.Enum;
+using HeroesFlight.System.Combat.Handlers;
 using HeroesFlight.System.Combat.Model;
 using HeroesFlight.System.Environment;
 using HeroesFlight.System.FileManager.Enum;
@@ -20,6 +21,7 @@ using HeroesFlight.System.NPC.Controllers.Control;
 using HeroesFlight.System.NPC.Model;
 using HeroesFlight.System.Stats;
 using HeroesFlight.System.UI;
+using HeroesFlightProject.System.Combat.Controllers;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
@@ -58,7 +60,8 @@ namespace HeroesFlight.System.Gameplay
         GameEffectController GameEffectController;
         
         GodsBenevolence godsBenevolence;
-        Shrine shrine;  
+        Shrine shrine;
+        IActiveAbilityInterface activeAbilityManager;
 
         DataSystemInterface dataSystem;
         EnvironmentSystemInterface environmentSystem;
@@ -107,6 +110,7 @@ namespace HeroesFlight.System.Gameplay
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
 
             shrine = scene.GetComponentInChildren<Shrine>();
+            activeAbilityManager = scene.GetComponentInChildren<IActiveAbilityInterface>();
             godsBenevolence = scene.GetComponentInChildren<GodsBenevolence>();
 
             container = scene.GetComponentInChildren<GameplayContainer>();
@@ -162,6 +166,9 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed += ContinueGameLoop;
             uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
             uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
+
+            activeAbilityManager.PassiveAbilityOneController.OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
+            activeAbilityManager.PassiveAbilityOneController.OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
 
             RegisterShrineNPCUIEvents();
             RegisterShrineNPCActions();
@@ -284,6 +291,9 @@ namespace HeroesFlight.System.Gameplay
             characterHealthController.OnDodged -= HandleCharacterDodged;
             characterAttackController = null;
             characterHealthController = null;
+
+            activeAbilityManager.PassiveAbilityOneController.OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
+            activeAbilityManager.PassiveAbilityOneController.OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
 
             UnRegisterShrineNPCUIEvents();
             UnRegisterShrineNPCActions();

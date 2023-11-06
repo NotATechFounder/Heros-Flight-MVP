@@ -43,7 +43,7 @@ public class ActiveAbilityManager : MonoBehaviour, IActiveAbilityInterface
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            Detach(passiveAbiltyAndControllerDic[PassiveActiveAbilityType.KnifeFluffy], activePassiveActivities[PassiveActiveAbilityType.KnifeFluffy]);
+            DetachAbility(passiveAbiltyAndControllerDic[PassiveActiveAbilityType.KnifeFluffy], activePassiveActivities[PassiveActiveAbilityType.KnifeFluffy]);
         }
     }
 
@@ -54,10 +54,6 @@ public class ActiveAbilityManager : MonoBehaviour, IActiveAbilityInterface
             passiveActiveAbilityTypes.Add(passiveActiveAbilities[i].PassiveActiveAbilityType);
             passiveActiveAbilitiesDic.Add(passiveActiveAbilities[i].PassiveActiveAbilityType, passiveActiveAbilities[i]);
         }
-
-        //PassiveAbilityOneController = new TimedAbilityController();
-        //PassiveAbilityTwoController = new TimedAbilityController();
-        //PassiveAbilityThreeController = new TimedAbilityController();
 
         timedAbilitySlots.Add(passiveAbilityOneController);
         timedAbilitySlots.Add(passiveAbilityTwoController);
@@ -77,15 +73,35 @@ public class ActiveAbilityManager : MonoBehaviour, IActiveAbilityInterface
         {
             if (!timedAbilityController.IsValid)
             {
-                PassiveActiveAbility passiveActiveAbility = passiveActiveAbilitiesDic[passiveActiveAbilityType].GetAbility(playerTransform.position);
-                Init(timedAbilityController, passiveActiveAbility);
-                passiveAbiltyAndControllerDic.CreateOrAdd(passiveActiveAbilityType, timedAbilityController);
+                InitialiseAbility (passiveActiveAbilityType, timedAbilityController);
                 return;
             }
         }
     }
 
-    public void Init(TimedAbilityController timedAbilityController, PassiveActiveAbility passiveActiveAbility)
+    public void InitialiseAbility(PassiveActiveAbilityType passiveActiveAbilityType, TimedAbilityController timedAbilityController)
+    {
+        PassiveActiveAbility passiveActiveAbility = passiveActiveAbilitiesDic[passiveActiveAbilityType].GetAbility(playerTransform.position);
+        AttachAbility(timedAbilityController, passiveActiveAbility);
+        passiveAbiltyAndControllerDic.CreateOrAdd(passiveActiveAbilityType, timedAbilityController);
+
+        switch (passiveActiveAbilityType)
+        {
+            case PassiveActiveAbilityType.HeavenStab:
+                break;
+            case PassiveActiveAbilityType.OrbOfLightning:
+                break;
+            case PassiveActiveAbilityType.MagicShield:
+                break;
+            case PassiveActiveAbilityType.KnifeFluffy:
+                break;
+            case PassiveActiveAbilityType.Immolation:
+                break;
+            default:  break;
+        }
+    }
+
+    public void AttachAbility(TimedAbilityController timedAbilityController, PassiveActiveAbility passiveActiveAbility)
     {
         timedAbilityController.Init(this, passiveActiveAbility.ActiveAbilitySO.Duration, passiveActiveAbility.ActiveAbilitySO.Cooldown);
         timedAbilityController.OnActivated += passiveActiveAbility.OnActivated;
@@ -95,7 +111,7 @@ public class ActiveAbilityManager : MonoBehaviour, IActiveAbilityInterface
         activePassiveActivities.CreateOrAdd(passiveActiveAbility.PassiveActiveAbilityType, passiveActiveAbility);
     }
 
-    public void Detach(TimedAbilityController timedAbilityController, PassiveActiveAbility passiveActiveAbility)
+    public void DetachAbility(TimedAbilityController timedAbilityController, PassiveActiveAbility passiveActiveAbility)
     {
         timedAbilityController.OnActivated -= passiveActiveAbility.OnActivated;
         timedAbilityController.OnCoolDownStarted -= passiveActiveAbility.OnCoolDownStarted;
@@ -108,8 +124,8 @@ public class ActiveAbilityManager : MonoBehaviour, IActiveAbilityInterface
 
     public void SwapAbility(PassiveActiveAbilityType currentAbility, PassiveActiveAbilityType newAbility)
     {
-        Detach(passiveAbiltyAndControllerDic[currentAbility], activePassiveActivities[currentAbility]);
-        Init(passiveAbiltyAndControllerDic[currentAbility], activePassiveActivities[newAbility]);
+        DetachAbility(passiveAbiltyAndControllerDic[currentAbility], activePassiveActivities[currentAbility]);
+        AttachAbility(passiveAbiltyAndControllerDic[currentAbility], activePassiveActivities[newAbility]);
     }
 
     public void UpgradeAbility(PassiveActiveAbilityType passiveActiveAbilityType)

@@ -13,11 +13,6 @@ public abstract class PassiveActiveAbility : MonoBehaviour
     public int Level => level;
     public ActiveAbilitySO ActiveAbilitySO => activeAbilitySO;
 
-    private void Awake()
-    {
-        Init (activeAbilitySO);
-    }
-
     public void Init(ActiveAbilitySO activeAbilitySO)
     {
         this.activeAbilitySO = activeAbilitySO;

@@ -56,11 +56,7 @@ namespace HeroesFlight.System.Combat
             if (model.EntityType == CombatEntityType.Player)
             {
                 characterSkillHandler =
-                    new CharacterSkillHandler(
-                        model.HealthController.HealthTransform.GetComponent<CharacterAbilityInterface>(),
-                        model.HealthController.HealthTransform.GetComponent<IActiveAbilityInterface>());
-                characterSkillHandler.CharacterAbility.PassiveAbilityOneController.OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
-                characterSkillHandler.CharacterAbility.PassiveAbilityOneController.OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
+                    new CharacterSkillHandler(model.HealthController.HealthTransform.GetComponent<CharacterAbilityInterface>());    
             }
         }
 

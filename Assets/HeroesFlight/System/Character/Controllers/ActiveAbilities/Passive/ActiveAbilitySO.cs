@@ -39,5 +39,6 @@ public enum PassiveActiveAbilityType
     OrbOfLightning,
     MagicShield,
     KnifeFluffy,
-    Immolation
+    Immolation,
+    LightNova,
 }
