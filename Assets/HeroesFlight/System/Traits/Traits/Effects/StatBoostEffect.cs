@@ -7,8 +7,7 @@ namespace HeroesFlight.System.Stats.Traits.Effects
     public class StatBoostEffect : TraitEffect
     {
         [SerializeField] private HeroProgressionAttribute targetStat;
-        [SerializeField] private int boostValue;
         public HeroProgressionAttribute TargetStat => targetStat;
-        public int Value => boostValue;
+       
     }
 }

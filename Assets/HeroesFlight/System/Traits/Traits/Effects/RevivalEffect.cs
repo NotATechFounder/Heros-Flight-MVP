@@ -6,10 +6,7 @@ namespace HeroesFlight.System.Stats.Traits.Effects
     public class RevivalEffect : TraitEffect
     {
         [SerializeField] private int revivalCount;
-        [SerializeField] private float revivalHealthPercentage;
-
-
         public int RevivalCount => revivalCount;
-        public float RevivalHealthPercentage => revivalHealthPercentage;
+      
     }
 }

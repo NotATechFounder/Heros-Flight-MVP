@@ -11,9 +11,11 @@ namespace HeroesFlight.System.Stats.Traits
         [SerializeField] private TraitTreeMenu menu;
         private void Awake()
         {
-            traitHandler = new TraitHandler();
+            traitHandler = new TraitHandler(new Vector2Int(6,4));
              traitHandler.TryUnlockFeat("HpBoost");
              traitHandler.TryUnlockFeat("SomeTrait");
+             traitHandler.ModifyTraitValue("HpBoost",3);
+       
             menu.InitTree(traitHandler.GetFeatTreeData());
           //  menu.Show();
             menu.Open();

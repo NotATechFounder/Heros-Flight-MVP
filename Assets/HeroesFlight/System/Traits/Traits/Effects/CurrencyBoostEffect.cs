@@ -6,9 +6,8 @@ namespace HeroesFlight.System.Stats.Traits.Effects
     public class CurrencyBoostEffect : TraitEffect
     {
         [SerializeField] private CurrencySO.CurrencyType targetType;
-        [SerializeField] private float boostPercentageAmount;
-
+     
         public CurrencySO.CurrencyType CurrencyType => targetType;
-        public float BoostPercentageAmount => boostPercentageAmount;
+       
     }
 }

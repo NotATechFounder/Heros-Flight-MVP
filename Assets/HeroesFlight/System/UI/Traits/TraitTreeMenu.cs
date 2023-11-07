@@ -7,6 +7,7 @@ using HeroesFlight.System.Utility.UI;
 using TMPro;
 using UISystem;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace HeroesFlight.System.UI.Traits
@@ -30,21 +31,20 @@ namespace HeroesFlight.System.UI.Traits
 
         [SerializeField] private GameObject TierSlotPrefab;
         [SerializeField] private Transform TierSlotsParent;
-        [SerializeField] private List<TREE_UI_DATA> treeUIData = new List<TREE_UI_DATA>();
         [SerializeField] private GameObject TreeNodeLinePrefab;
 
-        [SerializeField] private float nodeXStartOffset = 0.35f;
-        [SerializeField] private float nodeDistanceOffset = 0.95f;
-        [SerializeField] private float nodeDistanceOffsetBonusPerTier = 0.25f;
-        [SerializeField] private float nodeOffsetWhenAbove = 0.25f;
-        [SerializeField] private float nodeDistanceOffsetWhenAbove = 0.95f;
-        [SerializeField] private float nodeDistanceOffsetBonusPerTierWhenAbove = 0.25f;
+        private float nodeStartOffset = 0.35f;
+        private float nodeDistanceOffsetX = 0.95f;
+        private float nodeDistanceOffsetY = 0.95f;
+        private float nodeDistanceOffsetBonusPerTier = 0.25f;
 
 
-        private readonly List<GameObject> curTreesTiersSlots = new ();
-        private readonly List<GameObject> curNodeSlots = new ();
+        private List<TREE_UI_DATA> treeUIData = new();
+        private readonly List<GameObject> curTreesTiersSlots = new();
+        private readonly List<GameObject> curNodeSlots = new();
         private TraitTreeModel currentTree;
-
+        private GridLayoutGroup tierLayout;
+        private GridLayoutGroup contentLayout;
 
         private void ClearAllTiersData()
         {
@@ -62,6 +62,7 @@ namespace HeroesFlight.System.UI.Traits
 
         public void InitTree(TraitTreeModel tree)
         {
+            OnCreated();
             if (tree == null) return;
 
             currentTree = tree;
@@ -100,12 +101,12 @@ namespace HeroesFlight.System.UI.Traits
 
                 curNodeSlots.Add(newAb);
             }
-         
+
             InitTalentTreeLines(tree);
         }
 
 
-         void InitTalentTreeLines(TraitTreeModel tree)
+        void InitTalentTreeLines(TraitTreeModel tree)
         {
             foreach (var t in treeUIData)
                 for (var x = 0; x < t.nodesREF.Count; x++)
@@ -113,43 +114,39 @@ namespace HeroesFlight.System.UI.Traits
                         InitTalentTreeNodeLines(tree, t.slotsDATA[x], t.nodesREF[x].transform);
         }
 
-         void InitTalentTreeNodeLines(TraitTreeModel tree, TraitModel traitModel, Transform nodeTransform)
+        void InitTalentTreeNodeLines(TraitTreeModel tree, TraitModel traitModel, Transform nodeTransform)
         {
-         
             var isAbilityNotNull = traitModel.Id != string.Empty;
 
             foreach (var t in tree.Data)
             {
-               
                 if (t.Value.BlockingId == string.Empty) continue;
                 TreeNodeHolder otherNodeREF;
-           
+
                 if (isAbilityNotNull && t.Value.BlockingId == traitModel.Id)
                 {
                     otherNodeREF = GetAbilityNodeREF(traitModel.Id);
-                 
+
                     if (otherNodeREF != null)
                     {
-                      
                         GenerateLine(t.Value, traitModel, nodeTransform, t.Value.IsFeatUnlocked);
                     }
-                  
                 }
             }
         }
 
-         void GenerateLine(TraitModel traitModel, TraitModel traitModel1, Transform nodeTransform,
+        void GenerateLine(TraitModel traitModel, TraitModel traitModel1, Transform nodeTransform,
             bool tIsFeatUnlocked)
         {
             var otherTierSlot = GetNodeTierSlotIndex(traitModel);
             var thisTierSlot = GetNodeTierSlotIndex(traitModel1);
-           
+
             var otherAbTier = otherTierSlot[0];
             var otherAbSlot = otherTierSlot[1];
             var thisAbTier = thisTierSlot[0];
             var thisAbSlot = thisTierSlot[1];
 
-            
+
             var tierDifference = GetTierDifference(otherAbTier - thisAbTier);
 
 
@@ -158,16 +155,11 @@ namespace HeroesFlight.System.UI.Traits
             if (otherAbSlot != thisAbSlot)
             {
                 slotDifference = otherAbSlot - thisAbSlot;
-              
+
                 if (slotDifference < 0)
                 {
-                   // slotDifference = Mathf.Abs(slotDifference);
                     otherNodeIsLeft = true;
                 }
-                // else
-                // {
-                //     slotDifference = -slotDifference;
-                // }
             }
             else
             {
@@ -176,8 +168,9 @@ namespace HeroesFlight.System.UI.Traits
 
             var newTreeNodeLine = Instantiate(TreeNodeLinePrefab, nodeTransform);
             var lineREF = newTreeNodeLine.GetComponent<UILineRenderer>();
-            
-            Debug.Log($"Tier difference {tierDifference } , slotdifference {slotDifference} and other node is left {otherNodeIsLeft} from {traitModel.Id}");
+
+            Debug.Log(
+                $"Tier difference {tierDifference} , slotdifference {slotDifference} and other node is left {otherNodeIsLeft} from {traitModel.Id}");
             HandleLine(tierDifference, slotDifference, lineREF, thisAbTier, otherAbTier, otherNodeIsLeft);
 
             lineREF.color = tIsFeatUnlocked ? MaxRankColor : NotUnlockableColor;
@@ -186,82 +179,111 @@ namespace HeroesFlight.System.UI.Traits
         void HandleLine(int tierDifference, int slotDifference, UILineRenderer lineREF, int thisTier, int otherTier,
             bool isLeft)
         {
-            if (slotDifference == 0  )
+            if (slotDifference == 0)
             {
-                // straight line
+                // straight line up
                 lineREF.points.Clear();
-                if (thisTier < otherTier)
+                Debug.Log(tierDifference);
+                lineREF.points.Add(new Vector2(0, nodeStartOffset));
+                var yOffset = nodeDistanceOffsetY * tierDifference;
+                if (tierDifference < -1)
                 {
-                    lineREF.points.Add(new Vector2(0, nodeXStartOffset));
-                    var yOffset = nodeDistanceOffset * tierDifference;
-                    yOffset += tierDifference * nodeDistanceOffsetBonusPerTier;
-                    if (yOffset < 0)
-                        yOffset = Mathf.Abs(yOffset);
-                    else
-                        yOffset = -yOffset;
-                    lineREF.points.Add(new Vector2(0, yOffset));
+                    yOffset += tierDifference * nodeDistanceOffsetBonusPerTier + nodeStartOffset * (tierDifference + 1);
                 }
                 else
                 {
-                    var y = nodeXStartOffset;
-                    y += nodeOffsetWhenAbove;
-                    y = -y;
-                    lineREF.points.Add(new Vector2(y, 0));
-
-                    var YOffset = nodeDistanceOffsetWhenAbove * tierDifference;
-                    YOffset += tierDifference * nodeDistanceOffsetBonusPerTierWhenAbove;
-                    if (YOffset < 0)
-                        YOffset = Mathf.Abs(YOffset);
-                    else
-                        YOffset = -YOffset;
-                    lineREF.points.Add(new Vector2(YOffset, 0));
+                    yOffset += tierDifference * nodeDistanceOffsetBonusPerTier;
                 }
+
+                if (yOffset < 0)
+                    yOffset = Mathf.Abs(yOffset);
+                else
+                    yOffset = -yOffset;
+                lineREF.points.Add(new Vector2(0, yOffset));
             }
             else
             {
                 lineREF.points.Clear();
                 if (tierDifference == 0)
                 {
+                    var secondXOffset = nodeDistanceOffsetX * Mathf.Abs(slotDifference);
+                    if (Mathf.Abs(slotDifference) > 0)
+                    {
+                        secondXOffset += nodeStartOffset * 2 * Mathf.Abs(slotDifference);
+                    }
+
+                    // straight line lef or right
                     if (isLeft)
-                        lineREF.points.Add(new Vector2(-nodeXStartOffset, 0));
+                    {
+                        lineREF.points.Add(new Vector2(-nodeStartOffset, 0));
+
+
+                        lineREF.points.Add(new Vector2(-secondXOffset, 0));
+                    }
                     else
-                        lineREF.points.Add(new Vector2(nodeXStartOffset, 0));
-                    var XOffset = nodeDistanceOffset * slotDifference;
-                    if (XOffset < 0)
-                        XOffset = Mathf.Abs(XOffset);
-                    else
-                        XOffset = -XOffset;
-                    var YOffset = nodeDistanceOffset * tierDifference;
-                    YOffset += tierDifference * nodeDistanceOffsetBonusPerTier;
-                    if (YOffset < 0)
-                        YOffset = Mathf.Abs(YOffset);
-                    else
-                        YOffset = -YOffset;
-                    lineREF.points.Add(new Vector2(-XOffset, YOffset));
+                    {
+                        lineREF.points.Add(new Vector2(nodeStartOffset, 0));
+
+                        lineREF.points.Add(new Vector2(secondXOffset, 0));
+                    }
                 }
                 else
                 {
-                    if (isLeft)
-                        lineREF.points.Add(new Vector2(-nodeXStartOffset, 0));
-                    else
-                        lineREF.points.Add(new Vector2(nodeXStartOffset, 0));
-                    var XOffset = nodeDistanceOffset * 1.5f * slotDifference;
-                    if (XOffset < 0)
-                        XOffset = Mathf.Abs(XOffset);
-                    else
-                        XOffset = -XOffset;
-                    lineREF.points.Add(new Vector2(-XOffset, 0));
-                    var YOffset = nodeDistanceOffset * tierDifference;
-                    YOffset += tierDifference * nodeDistanceOffsetBonusPerTier;
-                    if (YOffset < 0)
-                        YOffset = Mathf.Abs(YOffset);
-                    else
-                        YOffset = -YOffset;
-                    lineREF.points.Add(new Vector2(-XOffset, YOffset));
-                }
-              
+                    var secondXOffset = nodeDistanceOffsetX * Mathf.Abs(slotDifference);
+                    if (Mathf.Abs(slotDifference) > 0)
+                    {
+                        secondXOffset += nodeStartOffset * 2 * Mathf.Abs(slotDifference);
+                    }
 
-              
+                    //3 points 
+                    if (isLeft)
+                    {
+                        lineREF.points.Add(new Vector2(-nodeStartOffset, 0));
+
+                        lineREF.points.Add(new Vector2(-secondXOffset, 0));
+
+
+                        var yOffset = nodeDistanceOffsetY * tierDifference;
+                        if (tierDifference < -1)
+                        {
+                            yOffset += tierDifference * nodeDistanceOffsetBonusPerTier +
+                                       nodeStartOffset * (tierDifference + 1);
+                        }
+                        else
+                        {
+                            yOffset += tierDifference * nodeDistanceOffsetBonusPerTier;
+                        }
+
+                        if (yOffset < 0)
+                            yOffset = Mathf.Abs(yOffset);
+                        else
+                            yOffset = -yOffset;
+                        lineREF.points.Add(new Vector2(-secondXOffset, yOffset));
+                    }
+
+                    else
+                    {
+                        lineREF.points.Add(new Vector2(nodeStartOffset, 0));
+
+                        lineREF.points.Add(new Vector2(secondXOffset, 0));
+                        var yOffset = nodeDistanceOffsetY * tierDifference;
+                        if (tierDifference < -1)
+                        {
+                            yOffset += tierDifference * nodeDistanceOffsetBonusPerTier +
+                                       nodeStartOffset * (tierDifference + 1);
+                        }
+                        else
+                        {
+                            yOffset += tierDifference * nodeDistanceOffsetBonusPerTier;
+                        }
+
+                        if (yOffset < 0)
+                            yOffset = Mathf.Abs(yOffset);
+                        else
+                            yOffset = -yOffset;
+                        lineREF.points.Add(new Vector2(secondXOffset, yOffset));
+                    }
+                }
             }
         }
 
@@ -297,7 +319,7 @@ namespace HeroesFlight.System.UI.Traits
             return null;
         }
 
-        public  void Show()
+        public void Show()
         {
             ToggleCanvasGroup(thisCG, true);
             transform.SetAsLastSibling();
@@ -325,12 +347,26 @@ namespace HeroesFlight.System.UI.Traits
             }
         }
 
-        public override void ResetMenu() { }
+        public override void ResetMenu()
+        {
+        }
 
-        public override void OnCreated() { }
+        public override void OnCreated()
+        {
+            contentLayout = TierSlotsParent.GetComponent<GridLayoutGroup>();
+            tierLayout = TierSlotPrefab.GetComponent<GridLayoutGroup>();
+            nodeStartOffset = tierLayout.cellSize.x / 200;
+            nodeDistanceOffsetX = tierLayout.spacing.x / 100;
+            nodeDistanceOffsetY = tierLayout.spacing.y / 100;
+            nodeDistanceOffsetBonusPerTier = contentLayout.spacing.y / 100;
+            // nodeOffsetWhenAbove = 0.25f;
+            // nodeDistanceOffsetWhenAbove = 0.95f;
+            // nodeDistanceOffsetBonusPerTierWhenAbove = 0.25f;
+        }
 
         public override void OnOpened()
         {
+            // OnCreated();
             Show();
         }
 
