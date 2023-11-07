@@ -5,7 +5,7 @@ namespace HeroesFlight.System.Character
 {
     public class AttackRangeVisualsController : MonoBehaviour
     {
-        [SerializeField] Canvas visualsCanvas;
+        Canvas visualsCanvas;
         RectTransform rectTransform;
         Transform canvasTransform;
         float realSizeX;
@@ -13,6 +13,7 @@ namespace HeroesFlight.System.Character
 
         public void Init(float damageZoneSizeX)
         {
+            visualsCanvas = GetComponentInChildren<Canvas>();
             rectTransform = visualsCanvas.GetComponent<RectTransform>();
 
             //rectTransform.sizeDelta = new Vector2(attackRange*1.3f, attackRange*1.3f);
