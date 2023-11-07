@@ -11,15 +11,13 @@ using HeroesFlight.System.Combat.Enum;
 using HeroesFlightProject.System.Combat.Controllers;
 using UnityEngine;
 
-public class ValSkillController : MonoBehaviour, ISkillControllerInterface
+public class LightNova : PassiveActiveAbility
 {
-    [Header("Skill One")] [SerializeField] private float damageMultiplier = 1;
+    [Header("LightNova")] 
+    [SerializeField] private float damageMultiplier = 1;
     [SerializeField] private ParticleSystem chargeEffect;
     [SerializeField] private ParticleSystem explosionEffect;
-    [SerializeField] private CharacterTimedSKill skillOne;
     [SerializeField] private OverlapChecker overlapChecker;
-
-    public CharacterTimedSKill SkillOne => skillOne;
 
     private CharacterStatController characterStatController;
     private CharacterSimpleController characterSystem;
@@ -28,23 +26,19 @@ public class ValSkillController : MonoBehaviour, ISkillControllerInterface
 
     private void Awake()
     {
-        characterStatController = GetComponent<CharacterStatController>();
-        characterSystem = GetComponent<CharacterSimpleController>();
-        characterHealthController = GetComponent<HealthController>();
-        characterAttackController = GetComponent<BaseCharacterAttackController>();
-
-        skillOne.OnSkillActivated = OnActivateSkillOne;
-        skillOne.OnSkillDeactivated = OnDeactivateSkillOne;
-
         overlapChecker.OnDetect = Explode;
     }
 
-    private void Start()
+    public void Initialize(int level,  CharacterStatController characterStatController, CharacterSimpleController characterSystem,  HealthController characterHealthController, BaseCharacterAttackController characterAttackController)
     {
-        skillOne.Init(this);
+        this.currentLevel = level;
+        this.characterStatController = characterStatController;
+        this.characterSystem = characterSystem;
+        this.characterHealthController = characterHealthController;
+        this.characterAttackController = characterAttackController;
     }
 
-    public void OnActivateSkillOne()
+    public override void OnActivated()
     {
         if (characterHealthController.CurrentHealth <= 0) return;
 
@@ -54,19 +48,24 @@ public class ValSkillController : MonoBehaviour, ISkillControllerInterface
 
         if (characterHealthController.CurrentHealth == characterHealthController.MaxHealth)
         {
-            StartCoroutine(FullHealth(skillOne.SkillDuration));
+            StartCoroutine(FullHealth(ActiveAbilitySO.Duration));
         }
         else
         {
-            StartCoroutine(HealthRegen(skillOne.SkillDuration));
+            StartCoroutine(HealthRegen(ActiveAbilitySO.Duration));
         }
     }
 
-    public void OnDeactivateSkillOne()
+    public override void OnCoolDownStarted()
     {
         characterHealthController.SetInvulnerableState(false);
         characterSystem.SetActionState(true);
         characterAttackController.ToggleControllerState(true);
+    }
+
+    public override void OnCoolDownEnded()
+    {
+
     }
 
     private IEnumerator HealthRegen(float regenTime)
@@ -92,7 +91,7 @@ public class ValSkillController : MonoBehaviour, ISkillControllerInterface
 
         chargeEffect.Stop();
         explosionEffect.Play();
-        overlapChecker.Detect();
+        overlapChecker.DetectOverlap();
         AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Hero);
     }
 
@@ -113,7 +112,7 @@ public class ValSkillController : MonoBehaviour, ISkillControllerInterface
 
         chargeEffect.Stop();
         explosionEffect.Play();
-        overlapChecker.Detect();
+        overlapChecker.DetectOverlap();
         AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Hero);
     }
 
@@ -128,5 +127,10 @@ public class ValSkillController : MonoBehaviour, ISkillControllerInterface
                     DamageType.NoneCritical, AttackType.Regular, DamageCalculationType.Flat));
             }
         }
+    }
+
+    public override void LevelUpIncreaseEffect()
+    {
+        throw new NotImplementedException();
     }
 }

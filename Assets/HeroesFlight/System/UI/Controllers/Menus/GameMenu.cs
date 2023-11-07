@@ -28,7 +28,7 @@ namespace UISystem
         public event Action<int> OnLevelUpComplete;
         public event Action OnUpdateXpBarCompleted;
 
-        public event Action OnSkillOneButtonClicked;
+        public event Action<int> OnPassiveAbilityButtonClicked;
 
         private Action OnEndTransitionHalfComplete;
         private Action OnEndTransitionComplete;
@@ -375,7 +375,7 @@ namespace UISystem
         private void SkillOneButtonClicked()
         {
             if (skillOneButtonFill.fillAmount < 1) return;
-            OnSkillOneButtonClicked?.Invoke();
+            OnPassiveAbilityButtonClicked?.Invoke(1);
         }
 
         public void UpdateSkillOneFill(float normalisedValue)

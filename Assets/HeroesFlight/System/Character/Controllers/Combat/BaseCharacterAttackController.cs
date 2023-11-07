@@ -134,12 +134,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (data.AttackType == AttackType.Regular)
             {
-                reguarAttackOverlap.Detect();
+               reguarAttackOverlap.DetectOverlap();
             }
             else
             {
-                ultAttackOverlap.Detect();
-            }
+                ultAttackOverlap.DetectOverlap();
+            }        
         }
 
         protected void ApplyLifeSteal()

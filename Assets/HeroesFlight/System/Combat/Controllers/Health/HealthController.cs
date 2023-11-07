@@ -35,7 +35,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public float CurrentHealth => currentHealth;
         public float CurrentHealthProportion => (float)currentHealth / maxHealth;
         public event Action<HealthModificationRequestModel> OnDamageReceiveRequest;
-        
+        public event Action<HealthModificationIntentModel> OnHitWhileImmortal;
         public event Action<IHealthController> OnDeath;
         public event Action OnDodged;
 
@@ -61,7 +61,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
 
             if (IsImmortal)
+            {
+                OnHitWhileImmortal?.Invoke(healthModificationIntent);
                 return;
+            }
+  
            
             if (IsDead())
                 return;

@@ -55,7 +55,7 @@ public class ApolloEffect : MonoBehaviour
                 timer = 0;
                 if (overlapChecker.TargetInRange())
                 {
-                    overlapChecker.Detect();
+                    overlapChecker.DetectOverlap();
                 }
             }
             yield return null;

@@ -36,7 +36,7 @@ public class AutoShooter : MonoBehaviour
 
     private void Shoot()
     {
-        overlapChecker.Detect();
+        overlapChecker.DetectOverlap();
     }
 
     private void Explode(int arg1, Collider2D[] arg2)

@@ -34,7 +34,7 @@ namespace HeroesFlight.System.UI
 
         public event Action OnSpecialButtonClicked;
 
-        public event Action OnSkillOneButtonClicked;
+        public event Action<int> OnPassiveAbilityButtonClicked;
 
         public UIEventHandler UiEventHandler { get; private set; }
 
@@ -73,7 +73,7 @@ namespace HeroesFlight.System.UI
 
                 UiEventHandler.GameMenu.OnSpecialAttackButtonClicked += () => { OnSpecialButtonClicked?.Invoke(); };
 
-                UiEventHandler.GameMenu.OnSkillOneButtonClicked += () => { OnSkillOneButtonClicked?.Invoke(); };
+                UiEventHandler.GameMenu.OnPassiveAbilityButtonClicked += (index) => { OnPassiveAbilityButtonClicked?.Invoke(index); };
 
                 UiEventHandler.GameMenu.OnLevelUpComplete += UiEventHandler.HeroProgressionMenu.OnLevelUp;
 
