@@ -19,12 +19,14 @@ public class HeavenStab : PassiveActiveAbility
 
     public override void OnActivated()
     {
+        GetEffectParticleByLevel().SetActive(true);
         currentDamagePercentage = GetValueByLevel(damagePercentage, damagePercentagePerIncrease);
         currentDamage = (int)StatCalc.GetPercentage(baseDamage, currentDamagePercentage);
     }
 
     public override void OnCoolDownStarted()
     {
+        GetEffectParticleByLevel().SetActive(false);
         overlapChecker.DetectOverlap();
     }
 

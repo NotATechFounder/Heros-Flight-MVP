@@ -22,6 +22,7 @@ public class Immolation : PassiveActiveAbility
 
     public override void OnActivated()
     {
+        GetEffectParticleByLevel().SetActive(true);
         currentDamagePercentage = GetValueByLevel(damagePercentage, damagePercentagePerIncrease);
         currentDamage = (int)StatCalc.GetPercentage (baseDamage, currentDamagePercentage);
         isOn = true;
@@ -29,6 +30,7 @@ public class Immolation : PassiveActiveAbility
 
     public override void OnCoolDownStarted()
     {
+        GetEffectParticleByLevel().SetActive(false);
         isOn = false;
     }
 
@@ -69,7 +71,6 @@ public class Immolation : PassiveActiveAbility
             }
         }
     }
-
 
     private void OnDetect(int arg1, Collider2D[] collider2D)
     {

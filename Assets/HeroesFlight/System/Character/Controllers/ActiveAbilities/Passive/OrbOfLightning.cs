@@ -9,14 +9,14 @@ public class OrbOfLightning : PassiveActiveAbility
     [SerializeField] private float damageMultiplier = 1;
     [SerializeField] private SkillOrb skillOrb;
 
-    public void Initialize(int level, int baseDamage)
+    public void Initialize(int level, CharacterStatController characterStatController)
     {
         this.currentLevel = level;
 
-        skillOrb.SetTarget(transform);
+        skillOrb.SetTarget(characterStatController.transform);
         if (skillOrb.TryGetComponent(out AutoShooter autoShooter))
         {
-            autoShooter.SetDamage((int)(baseDamage * damageMultiplier));
+            autoShooter.SetDamage((int)((int)characterStatController.CurrentMagicDamage * damageMultiplier));
         }
     }
 

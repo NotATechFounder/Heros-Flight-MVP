@@ -18,6 +18,7 @@ public class KnifeFluffy : PassiveActiveAbility
 
     public override void OnActivated()
     {
+        GetEffectParticleByLevel().SetActive(true);
         currentNumberOfProjectiles = GetValueByLevel(baseNumberOfProjectiles, numberOfProjectilesPerLevel);
         currentRadious = GetValueByLevel(baseRadious, radiousPerLevel);
         SpawnProjectiles(baseNumberOfProjectiles, baseRadious);
@@ -25,7 +26,7 @@ public class KnifeFluffy : PassiveActiveAbility
 
     public override void OnCoolDownStarted()
     {
-
+        GetEffectParticleByLevel().SetActive (false);
     }
 
     public override void OnCoolDownEnded()

@@ -121,10 +121,10 @@ public class ActiveAbilityManager : MonoBehaviour
         switch (passiveActiveAbilityType)
         {
             case PassiveActiveAbilityType.HeavenStab:
-                (passiveActiveAbility as OrbOfLightning).Initialize(level, (int)characterStatController.CurrentMagicDamage);
+                (passiveActiveAbility as OrbOfLightning).Initialize(level, characterStatController);
                 break;
             case PassiveActiveAbilityType.OrbOfLightning:
-                (passiveActiveAbility as OrbOfLightning).Initialize(level, (int)characterStatController.CurrentMagicDamage);
+                (passiveActiveAbility as OrbOfLightning).Initialize(level, characterStatController);
                 break;
             case PassiveActiveAbilityType.MagicShield:
                 (passiveActiveAbility as MagicShield).Initialize(level , characterHealthController);

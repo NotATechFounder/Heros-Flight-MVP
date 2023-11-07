@@ -6,6 +6,8 @@ using UnityEngine;
 public abstract class PassiveActiveAbility : MonoBehaviour
 {
     [SerializeField] protected int currentLevel = 1;
+    [SerializeField] GameObject[] effectParticle;
+    protected int maxLevel = 15;
 
     private ActiveAbilitySO activeAbilitySO;
 
@@ -26,6 +28,11 @@ public abstract class PassiveActiveAbility : MonoBehaviour
 
     public virtual void LevelUp()
     {
+        if (currentLevel >= maxLevel)
+        {
+            return;
+        }
+
         currentLevel++;
         if (currentLevel % 5 == 0)
         {
@@ -41,5 +48,10 @@ public abstract class PassiveActiveAbility : MonoBehaviour
     public float GetValueByLevel(float baseValue, float increasePerLevel)
     {
         return baseValue + (Mathf.FloorToInt((currentLevel) / 5) * increasePerLevel);
+    }
+
+    public GameObject GetEffectParticleByLevel()
+    {
+        return effectParticle[Mathf.FloorToInt((currentLevel) / 5)];
     }
 }

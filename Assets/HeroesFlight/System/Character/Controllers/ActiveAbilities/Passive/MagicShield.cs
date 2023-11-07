@@ -12,21 +12,32 @@ public class MagicShield : PassiveActiveAbility
 
     private int currentHealthAbsorption;
     private HealthController characterHealthController;
+    bool forceEnd = false;
 
     public override void OnActivated()
     {
+        forceEnd = false;
+
+        GetEffectParticleByLevel().SetActive(true);
+
         currentHealthAbsorption = GetValueByLevel (baseHealthAbsorption, healthAbsorptionPerIncrease);
         characterHealthController.SetInvulnerableState (true);
         characterHealthController.OnHitWhileImmortal += OnHitWhileImmortal;
     }
 
-    public override void OnCoolDownEnded()
+    public override void OnCoolDownStarted()
     {
+        if (forceEnd)
+        {
+            return;
+        }
+        GetEffectParticleByLevel().SetActive(false);
         characterHealthController.SetInvulnerableState(false);
         characterHealthController.OnHitWhileImmortal -= OnHitWhileImmortal;
     }
 
-    public override void OnCoolDownStarted()
+
+    public override void OnCoolDownEnded()
     {
 
     }
@@ -43,8 +54,8 @@ public class MagicShield : PassiveActiveAbility
 
         if (currentHealthAbsorption <= 0)
         {
-            characterHealthController.SetInvulnerableState(false);
-            characterHealthController.OnHitWhileImmortal -= OnHitWhileImmortal;
+            OnCoolDownEnded();
+            forceEnd = true;
         }
     }
 
