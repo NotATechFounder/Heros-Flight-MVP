@@ -13,9 +13,10 @@ namespace HeroesFlight.System.Stats.Traits
         {
             traitHandler = new TraitHandler();
              traitHandler.TryUnlockFeat("HpBoost");
-            // traitHandler.TryUnlockFeat("SomeTrait");
+             traitHandler.TryUnlockFeat("SomeTrait");
             menu.InitTree(traitHandler.GetFeatTreeData());
-            menu.Show();
+          //  menu.Show();
+            menu.Open();
         }
     }
 }

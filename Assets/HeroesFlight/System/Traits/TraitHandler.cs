@@ -68,7 +68,7 @@ namespace HeroesFlight.System.Stats.Handlers
                  featTreeData.Add(pair.Key,GenerateFeatModel(pair.Value));
              }
 
-             return  new TraitTreeModel(3,3,featTreeData);
+             return  new TraitTreeModel(4,3,featTreeData);
          }
     }
 }

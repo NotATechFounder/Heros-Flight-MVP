@@ -5,6 +5,7 @@ using HeroesFlight.System.FileManager.Model;
 using HeroesFlight.System.UI.FeatsTree;
 using HeroesFlight.System.Utility.UI;
 using TMPro;
+using UISystem;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +19,7 @@ namespace HeroesFlight.System.UI.Traits
         public List<TreeNodeHolder> nodesREF = new();
     }
 
-    public class TraitTreeMenu : MonoBehaviour
+    public class TraitTreeMenu : BaseMenu<TraitTreeMenu>
     {
         [SerializeField] private CanvasGroup thisCG, requirementsCG, errorMessageCG;
         [SerializeField] private TextMeshProUGUI TreeNameText, requirementsText, errorMessageText, availablePointsText;
@@ -40,8 +41,8 @@ namespace HeroesFlight.System.UI.Traits
         [SerializeField] private float nodeDistanceOffsetBonusPerTierWhenAbove = 0.25f;
 
 
-        private readonly List<GameObject> curTreesTiersSlots = new List<GameObject>();
-        private readonly List<GameObject> curNodeSlots = new List<GameObject>();
+        private readonly List<GameObject> curTreesTiersSlots = new ();
+        private readonly List<GameObject> curNodeSlots = new ();
         private TraitTreeModel currentTree;
 
 
@@ -99,10 +100,7 @@ namespace HeroesFlight.System.UI.Traits
 
                 curNodeSlots.Add(newAb);
             }
-
-            // availablePointsText.text =
-            //     "Points: " + Character.Instance.getTreePointsAmountByPoint(tree.treePointAcceptedID);
-
+         
             InitTalentTreeLines(tree);
         }
 
@@ -143,10 +141,9 @@ namespace HeroesFlight.System.UI.Traits
          void GenerateLine(TraitModel traitModel, TraitModel traitModel1, Transform nodeTransform,
             bool tIsFeatUnlocked)
         {
-            var otherTierSlot = getNodeTierSlotIndex(traitModel);
-            var thisTierSlot = getNodeTierSlotIndex(traitModel1);
-            Debug.Log($"Slot index for {traitModel1.Id} is {thisTierSlot[0]}:{thisTierSlot[1]}");
-            Debug.Log($"Slot index for {traitModel.Id} is {otherTierSlot[0]}:{otherTierSlot[1]}");
+            var otherTierSlot = GetNodeTierSlotIndex(traitModel);
+            var thisTierSlot = GetNodeTierSlotIndex(traitModel1);
+           
             var otherAbTier = otherTierSlot[0];
             var otherAbSlot = otherTierSlot[1];
             var thisAbTier = thisTierSlot[0];
@@ -161,7 +158,7 @@ namespace HeroesFlight.System.UI.Traits
             if (otherAbSlot != thisAbSlot)
             {
                 slotDifference = otherAbSlot - thisAbSlot;
-                Debug.Log($"Slot difference {slotDifference}");
+              
                 if (slotDifference < 0)
                 {
                    // slotDifference = Mathf.Abs(slotDifference);
@@ -171,7 +168,6 @@ namespace HeroesFlight.System.UI.Traits
                 // {
                 //     slotDifference = -slotDifference;
                 // }
-                Debug.Log($"Slot difference {slotDifference}");
             }
             else
             {
@@ -190,20 +186,20 @@ namespace HeroesFlight.System.UI.Traits
         void HandleLine(int tierDifference, int slotDifference, UILineRenderer lineREF, int thisTier, int otherTier,
             bool isLeft)
         {
-            if (slotDifference == 0)
+            if (slotDifference == 0  )
             {
                 // straight line
                 lineREF.points.Clear();
                 if (thisTier < otherTier)
                 {
                     lineREF.points.Add(new Vector2(0, nodeXStartOffset));
-                    var YOffset = nodeDistanceOffset * tierDifference;
-                    YOffset += tierDifference * nodeDistanceOffsetBonusPerTier;
-                    if (YOffset < 0)
-                        YOffset = Mathf.Abs(YOffset);
+                    var yOffset = nodeDistanceOffset * tierDifference;
+                    yOffset += tierDifference * nodeDistanceOffsetBonusPerTier;
+                    if (yOffset < 0)
+                        yOffset = Mathf.Abs(yOffset);
                     else
-                        YOffset = -YOffset;
-                    lineREF.points.Add(new Vector2(0, YOffset));
+                        yOffset = -yOffset;
+                    lineREF.points.Add(new Vector2(0, yOffset));
                 }
                 else
                 {
@@ -223,30 +219,53 @@ namespace HeroesFlight.System.UI.Traits
             }
             else
             {
-                // line requires 3 points
                 lineREF.points.Clear();
+                if (tierDifference == 0)
+                {
+                    if (isLeft)
+                        lineREF.points.Add(new Vector2(-nodeXStartOffset, 0));
+                    else
+                        lineREF.points.Add(new Vector2(nodeXStartOffset, 0));
+                    var XOffset = nodeDistanceOffset * slotDifference;
+                    if (XOffset < 0)
+                        XOffset = Mathf.Abs(XOffset);
+                    else
+                        XOffset = -XOffset;
+                    var YOffset = nodeDistanceOffset * tierDifference;
+                    YOffset += tierDifference * nodeDistanceOffsetBonusPerTier;
+                    if (YOffset < 0)
+                        YOffset = Mathf.Abs(YOffset);
+                    else
+                        YOffset = -YOffset;
+                    lineREF.points.Add(new Vector2(-XOffset, YOffset));
+                }
+                else
+                {
+                    if (isLeft)
+                        lineREF.points.Add(new Vector2(-nodeXStartOffset, 0));
+                    else
+                        lineREF.points.Add(new Vector2(nodeXStartOffset, 0));
+                    var XOffset = nodeDistanceOffset * 1.5f * slotDifference;
+                    if (XOffset < 0)
+                        XOffset = Mathf.Abs(XOffset);
+                    else
+                        XOffset = -XOffset;
+                    lineREF.points.Add(new Vector2(-XOffset, 0));
+                    var YOffset = nodeDistanceOffset * tierDifference;
+                    YOffset += tierDifference * nodeDistanceOffsetBonusPerTier;
+                    if (YOffset < 0)
+                        YOffset = Mathf.Abs(YOffset);
+                    else
+                        YOffset = -YOffset;
+                    lineREF.points.Add(new Vector2(-XOffset, YOffset));
+                }
+              
 
-                if (isLeft)
-                    lineREF.points.Add(new Vector2(-nodeXStartOffset, 0));
-                else
-                    lineREF.points.Add(new Vector2(nodeXStartOffset, 0));
-                var XOffset = nodeDistanceOffset * slotDifference;
-                if (XOffset < 0)
-                    XOffset = Mathf.Abs(XOffset);
-                else
-                    XOffset = -XOffset;
-                lineREF.points.Add(new Vector2(-XOffset, 0));
-                var YOffset = nodeDistanceOffset * tierDifference;
-                YOffset += tierDifference * nodeDistanceOffsetBonusPerTier;
-                if (YOffset < 0)
-                    YOffset = Mathf.Abs(YOffset);
-                else
-                    YOffset = -YOffset;
-                lineREF.points.Add(new Vector2(-XOffset, YOffset));
+              
             }
         }
 
-        private int[] getNodeTierSlotIndex(TraitModel nodeDATA)
+        private int[] GetNodeTierSlotIndex(TraitModel nodeDATA)
         {
             var tierSlot = new int[2];
             for (var i = 0; i < treeUIData.Count; i++)
@@ -304,6 +323,20 @@ namespace HeroesFlight.System.UI.Traits
                 cg.interactable = false;
                 cg.blocksRaycasts = false;
             }
+        }
+
+        public override void ResetMenu() { }
+
+        public override void OnCreated() { }
+
+        public override void OnOpened()
+        {
+            Show();
+        }
+
+        public override void OnClosed()
+        {
+            Hide();
         }
     }
 }

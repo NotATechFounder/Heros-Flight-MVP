@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.Common.Progression;
 using UnityEngine;
 
 public class HeroProgression : MonoBehaviour
@@ -352,14 +353,7 @@ public class HeroProgressionAttributeInfo
     }
 }
 
-public enum HeroProgressionAttribute
-{
-    Power,
-    Vitality,
-    Agility,
-    Defense,
-    CriticalHit,
-}
+
 
 [System.Serializable]
 public class HeroProgressionAttributeKeyValue
