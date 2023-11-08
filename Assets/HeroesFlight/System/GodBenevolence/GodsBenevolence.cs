@@ -37,9 +37,6 @@ public class GodsBenevolence : MonoBehaviour
 
         switch (godsBenevolence.BenevolenceType)
         {
-            case GodBenevolenceType.Zeus:
-
-                break;
             case GodBenevolenceType.Ares:
                 benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolence.EffectPrefab, benevolenceSocket.TopSocket);
 
@@ -53,7 +50,7 @@ public class GodsBenevolence : MonoBehaviour
                 float damagePercentage = godsBenevolence.GetValue("DamagePercentage");
                 float damage = StatCalc.GetPercentage(characterStatController.CurrentPhysicalDamage, damagePercentage);
                 benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolence.EffectPrefab, benevolenceSocket.TopSocket);
-                benevolenceEffect.GetComponent<ApolloEffect>().SetUp(damage);
+                benevolenceEffect.GetComponent<ApolloEffect>().SetUp(damage, characterStatController.GetComponent<CharacterControllerInterface>());
                 break;
             case GodBenevolenceType.Hercules:
                 float damagePerc = godsBenevolence.GetValue("DamagePercentage");
@@ -88,9 +85,6 @@ public class GodsBenevolence : MonoBehaviour
 
         switch (currentBenevolenceSO.BenevolenceType)
         {
-            case GodBenevolenceType.Zeus:
-
-                break;
             case GodBenevolenceType.Ares:
 
                 CurrentLifeSteal -= currentBenevolenceSO.GetValue("LifeSteal");
@@ -151,9 +145,6 @@ public class GodsBenevolence : MonoBehaviour
 
         switch (currentBenevolenceSO.BenevolenceType)
         {
-            case GodBenevolenceType.Zeus:
-
-                break;
             case GodBenevolenceType.Ares:
                 characterStatController.ModifyLifeSteal(godsBenevolenceAfterEffectInfo.GetValue("LifeSteal"), true);
                 break;
@@ -181,9 +172,6 @@ public class GodsBenevolence : MonoBehaviour
         {
             switch (benevolenceAfterEffectInfo.GodBenevolenceType)
             {
-                case GodBenevolenceType.Zeus:
-
-                    break;
                 case GodBenevolenceType.Ares:
                     characterStatController.ModifyLifeSteal(benevolenceAfterEffectInfo.GetTotalValue("LifeSteal"), false);
                     break;

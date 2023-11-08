@@ -19,7 +19,7 @@ public class SwordWhirlwind : PassiveActiveAbility
 
     public override void OnActivated()
     {
-        currentDamagePercentage = GetValueByLevel(damagePercentage, damagePercentagePerIncrease);
+        currentDamagePercentage = GetMajorValueByLevel(damagePercentage, damagePercentagePerIncrease);
         currentDamage = (int)StatCalc.GetPercentage(baseDamage, currentDamagePercentage);
     }
 

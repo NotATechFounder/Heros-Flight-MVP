@@ -50,7 +50,6 @@ public class AresEffect : MonoBehaviour
 
     private void AnimationState_Complete(TrackEntry trackEntry)
     {
-        Debug.Log(trackEntry.Animation.Name);
         switch (trackEntry.Animation.Name)
         {
             case attackAnimation1Name:
