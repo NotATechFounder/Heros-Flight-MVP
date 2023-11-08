@@ -18,6 +18,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected OverlapChecker reguarAttackOverlap;
         [SerializeField] protected OverlapChecker ultAttackOverlap;
         public event Action<AttackControllerState> OnStateChange;
+
         public float Damage => characterController.CharacterStatController.CurrentPhysicalDamage;
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
@@ -30,12 +31,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected PlayerStatData playerStatData = null;
         protected UltimateData ultimateData;
         protected AttackData attackData;
-      
+
         float m_TimeSinceLastAttack = 0;
-        Vector2 attackPointOffset ;
+        Vector2 attackPointOffset;
 
         Vector2 attackPoint;
-       
+
         bool isDisabled;
         float attackDuration = 0;
 
@@ -55,7 +56,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             enemiesToHitPerAttack = attackData.EnemiesPerAttack;
             attackPointOffset = reguarAttackOverlap.Offset;
             m_TimeSinceLastAttack = playerStatData.AttackSpeed;
-            attackPoint = (Vector2)transform.position +  (  new Vector2(-1.5f,1) * attackPointOffset);
+            attackPoint = (Vector2)transform.position + (new Vector2(-1.5f, 1) * attackPointOffset);
             visualController.Init(reguarAttackOverlap.GetSizeX());
             // visualController.SetPosition(attackPoint);
             isDisabled = false;
@@ -63,10 +64,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             attackDuration = 999;
             reguarAttackOverlap.OnDetect += DealNormalDamage;
             ultAttackOverlap.OnDetect += DealUltDamage;
-           
         }
 
-      
 
         void Update()
         {
@@ -78,13 +77,15 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             m_TimeSinceLastAttack += Time.deltaTime;
 
-          
+
             attackPoint = characterController.IsFacingLeft
-                ?  new Vector2(-1f,1) * attackPointOffset
-                :  new Vector2(1f,1) * attackPointOffset;
-            // visualController.SetPosition(attackPoint);
-            var direction = characterController.IsFacingLeft ? OverlapChecker.Direction.Left : OverlapChecker.Direction.Right;
-            visualController.SetFacing(characterController.IsFacingLeft);
+                ? new Vector2(-1f, 1) * attackPointOffset
+                : new Vector2(1f, 1) * attackPointOffset;
+            visualController.SetPosition(attackPoint);
+            var direction = characterController.IsFacingLeft
+                ? OverlapChecker.Direction.Left
+                : OverlapChecker.Direction.Right;
+            //visualController.SetFacing(characterController.IsFacingLeft);
             reguarAttackOverlap.SetDirection(direction);
             ultAttackOverlap.SetDirection(direction);
             ProcessAttackLogic();
@@ -93,7 +94,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void ProcessAttackLogic()
         {
-
             if (reguarAttackOverlap.TargetInRange())
             {
                 AttackTargets();
@@ -102,20 +102,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 ResetAttack();
             }
-            
-           
         }
 
 
-        public void AttackTargets()
+        public void AttackTargets(Action onComplete = null)
         {
-            if (m_TimeSinceLastAttack < attackDuration / statController.CurrentAttackSpeed)
+            if (!CanAttack())
             {
                 return;
             }
 
 
-            attackDuration=  m_CharacterAnimationController.PlayAttackSequence(statController.CurrentAttackSpeed);
+            attackDuration = m_CharacterAnimationController.PlayAttackSequence(statController.CurrentAttackSpeed);
             m_TimeSinceLastAttack = 0;
         }
 
@@ -136,11 +134,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (data.AttackType == AttackType.Regular)
             {
-               reguarAttackOverlap.Detect();
+               reguarAttackOverlap.DetectOverlap();
             }
             else
             {
-                ultAttackOverlap.Detect();
+                ultAttackOverlap.DetectOverlap();
             }        
         }
 
@@ -148,7 +146,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (characterController.CharacterStatController.CurrentLifeSteal <= 0)
                 return;
-            float healthInc = StatCalc.GetPercentage(characterController.CharacterStatController.PlayerStatData.Health, characterController.CharacterStatController.CurrentLifeSteal);
+            float healthInc = StatCalc.GetPercentage(characterController.CharacterStatController.PlayerStatData.Health,
+                characterController.CharacterStatController.CurrentLifeSteal);
             characterController.CharacterStatController.ModifyHealth(healthInc, true);
         }
 
@@ -158,7 +157,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             visualController.DisableVisuals(isDisabled);
         }
 
-       
+        public bool CanAttack()
+        {
+            return m_TimeSinceLastAttack > attackDuration / statController.CurrentAttackSpeed;
+        }
+
+
         protected virtual void DealUltDamage(int hits, Collider2D[] colliders)
         {
             var baseDamage = Damage * ultimateData.DamageMultiplier;
@@ -175,17 +179,16 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
                     var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
                     health.TryDealDamage(new HealthModificationIntentModel(damageToDeal,
-                        type,AttackType.Ultimate,DamageCalculationType.Flat));
+                        type, AttackType.Ultimate, DamageCalculationType.Flat));
                     ApplyLifeSteal();
                     OnHitTarget?.Invoke();
                 }
             }
-           
         }
 
         protected virtual void DealNormalDamage(int hits, Collider2D[] colliders)
         {
-            var baseDamage = Damage ;
+            var baseDamage = Damage;
             for (int i = 0; i < hits; i++)
             {
                 if (colliders[i].TryGetComponent<IHealthController>(out var health))
@@ -198,14 +201,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                         : baseDamage;
 
                     var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
-                    health.TryDealDamage(new HealthModificationIntentModel(damageToDeal, 
-                        type,AttackType.Regular,DamageCalculationType.Flat));
+                    health.TryDealDamage(new HealthModificationIntentModel(damageToDeal,
+                        type, AttackType.Regular, DamageCalculationType.Flat));
                     ApplyLifeSteal();
                     OnHitTarget?.Invoke();
                 }
             }
         }
-        
-     
     }
 }

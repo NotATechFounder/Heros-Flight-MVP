@@ -1,0 +1,1 @@
+With Apollo, we have an 'Arrow prefab' as a separate arrow for you to control, and an 'Effect on Bow' to attach when shooting. The name of the bow for the Archer is 'Attack_One_Bow' in the Apollo JSON file in a directory similar to Ares' JSON files.

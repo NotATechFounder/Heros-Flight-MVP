@@ -6,11 +6,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     public interface IAttackControllerInterface
     {
         public event Action OnHitTarget;
-        event Action<AttackControllerState> OnStateChange; 
+        event Action<AttackControllerState> OnStateChange;
         float Damage { get; }
         float TimeSinceLastAttack { get; }
-        void AttackTargets();
+        void AttackTargets(Action onComplete=null);
         void Init();
         void ToggleControllerState(bool isEnabled);
+        bool CanAttack();
     }
 }

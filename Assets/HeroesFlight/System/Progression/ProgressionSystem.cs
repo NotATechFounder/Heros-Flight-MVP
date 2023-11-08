@@ -15,12 +15,12 @@ namespace HeroesFlight.System.Stats
 
         DataSystemInterface dataSystem;
         InRunCurrencyHandler currencyHandler;
-        public HeroProgression Progression { get; private set; }
+        public HeroProgression HeroProgression { get; private set; }
         public BoosterManager BoosterManager { get; private set; }
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
-            Progression = scene.GetComponentInChildren<HeroProgression>();
+            HeroProgression = scene.GetComponentInChildren<HeroProgression>();
             BoosterManager = scene.GetComponentInChildren<BoosterManager>();
         }
 
@@ -41,16 +41,20 @@ namespace HeroesFlight.System.Stats
 
         public void SaveRunResults()
         {
-            dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Gold,
-                currencyHandler.GetCurrencyAmount(CurrencyKeys.Gold));
-            dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Experience,
-                currencyHandler.GetCurrencyAmount(CurrencyKeys.Experience));
+            dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Gold, currencyHandler.GetCurrencyAmount(CurrencyKeys.Gold));
+            dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Experience, currencyHandler.GetCurrencyAmount(CurrencyKeys.Experience));
             currencyHandler.ResetValues();
         }
 
         public void ResetCurrency(string experience)
         {
             currencyHandler.ResetValue(experience);
+        }
+
+        public void CollectRunCurrency()
+        {
+            HeroProgression.AddExp(GetCurrency(CurrencyKeys.RunExperience));
+            ResetCurrency(CurrencyKeys.RunExperience);
         }
     }
 }

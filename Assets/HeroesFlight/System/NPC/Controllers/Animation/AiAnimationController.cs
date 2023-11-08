@@ -34,16 +34,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
         }
 
 
-        void Update()
-        {
-            if (changeSkeletonScale)
-                UpdateSkeletonScale();
-        }
+    
 
-        void UpdateSkeletonScale()
+        void UpdateSkeletonScale(Vector2 velocity)
         {
-            var velocity = aiController.GetVelocity();
-            skeletonAnimation.Skeleton.ScaleX = velocity.x >= 0 ? 1f : -1f;
+           skeletonAnimation.Skeleton.ScaleX = velocity.x >= 0 ? 1f : -1f;
         }
 
 
@@ -134,6 +129,12 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public void StopDynamicAnimation()
         {
             skeletonAnimation.AnimationState.SetEmptyAnimation(dynamicTrackIndex,0.1f);
+        }
+
+        public void SetMovementDirection(Vector2 velocity)
+        {
+            if (changeSkeletonScale)
+                UpdateSkeletonScale(velocity);
         }
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
