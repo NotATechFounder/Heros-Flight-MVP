@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using HeroesFlight.System.FileManager.Enum;
 using HeroesFlight.System.FileManager.Model;
 using HeroesFlight.System.Stats.Traits;
 using HeroesFlight.System.Stats.Traits.Model;
@@ -23,8 +24,9 @@ namespace HeroesFlight.System.Stats.Handlers
 
         public bool TryUnlockFeat(string id)
         {
-            if (traitMap.TryGetValue(id, out var targetFeat))
+            if (traitMap.TryGetValue(id, out var targetFeat) && !unlockedTraits.ContainsKey(targetFeat.Id))
             {
+                Debug.Log($"Unlocking trait{targetFeat.Id}");
                 unlockedTraits.Add(targetFeat.Id, new TraitStateModel(targetFeat, new IntValue(0)));
                 return true;
             }
@@ -32,16 +34,27 @@ namespace HeroesFlight.System.Stats.Handlers
             return false;
         }
 
-        public void ModifyTraitValue(string traitId, int value)
+        public bool ModifyTraitValue(string traitId, int value)
         {
             if (unlockedTraits.TryGetValue(traitId, out var stateValue))
             {
                 stateValue.ModifyValue(new IntValue(value));
+                return true;
             }
-            else
+
+            Debug.LogError($"{traitId} is not unlocked");
+            return false;
+        }
+
+        public Vector2Int GetFeatEffectRange(string id)
+        {
+            if (traitMap.TryGetValue(id, out var model))
             {
-                Debug.LogError($"{traitId} is not unlocked");
+               return  model.Effect.ValueRange;
             }
+            
+            Debug.LogError($"Trait with id {id} not found");
+            return new Vector2Int(0, 0);
         }
 
         IntValue GetFeatModificationValue(string traitId)
@@ -81,10 +94,25 @@ namespace HeroesFlight.System.Stats.Handlers
 
         TraitModel GenerateFeatModel(Trait targetTrait)
         {
+            TraitModelState state;
+            if (IsFeatUnlocked(targetTrait.DependantId))
+            {
+                state = TraitModelState.UnlockPossible;
+            }
+            else
+            {
+                state = TraitModelState.UnlockBlocked;
+            }
+
+            if (IsFeatUnlocked(targetTrait.Id))
+            {
+                state = TraitModelState.Unlocked;
+            }
+            
+          
             return new TraitModel(targetTrait.Id, targetTrait.Tier, targetTrait.Slot, targetTrait.RequiredLvl,
-                targetTrait.DependantId, targetTrait.GoldCost, IsFeatUnlocked(targetTrait.Id),
-                IsFeatUnlocked(targetTrait.DependantId), targetTrait.Icon, targetTrait.Effect.Value,
-                GetFeatModificationValue(targetTrait.Id).Value);
+                targetTrait.DependantId, targetTrait.Cost,targetTrait.Currency, state, targetTrait.Icon, targetTrait.Effect.Value,
+                GetFeatModificationValue(targetTrait.Id).Value, targetTrait.Description,targetTrait.Effect.CanBeRerolled);
         }
 
         public TraitTreeModel GetFeatTreeData()

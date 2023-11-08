@@ -1,4 +1,7 @@
-﻿using HeroesFlight.System.FileManager.Model;
+﻿using System;
+using HeroesFlight.System.FileManager.Enum;
+using HeroesFlight.System.FileManager.Model;
+using HeroesFlight.System.UI.Traits;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -21,14 +24,15 @@ namespace HeroesFlight.System.UI.FeatsTree
             MaxRankImage;
            
 
-        private TraitModel currentModel;
-
+        public TraitModel currentModel;
+        private RectTransform rect;
         public bool used;
-
+        public event Action<TreeNodeClickedEvent> OnCLicked;
         public void Init(TraitModel model)
         {
+            currentModel = model;
             used = true;
-
+            rect = GetComponent<RectTransform>();
             EnableAllElements();
             var unlockCost = 0;
             var rank = -1;
@@ -38,14 +42,14 @@ namespace HeroesFlight.System.UI.FeatsTree
 
             icon.sprite = model.Visual;
             background.sprite = null;
-            rank = model.IsFeatUnlocked ? 1 : 0;
-            isKnown = model.IsFeatUnlocked;
-            unlockCost = model.GoldCost;
+            rank = model.State==TraitModelState.Unlocked ? 1 : 0;
+            isKnown = model.State==TraitModelState.Unlocked;
+            unlockCost = model.Cost;
            
 
-            HandleBorders(model.IsFeatUnlocked,model.IsFeatUnlockable);
-            HandleRank(model.IsFeatUnlocked, unlockCost,
-                model.IsFeatUnlockable, rank);
+            HandleBorders(model.State==TraitModelState.Unlocked,model.State==TraitModelState.UnlockPossible);
+            HandleRank(model.State==TraitModelState.Unlocked, unlockCost,
+                model.State==TraitModelState.UnlockPossible, rank);
           //  SetCurRankText(displayRank + " / " + maxRank);
         }
 
@@ -138,14 +142,7 @@ namespace HeroesFlight.System.UI.FeatsTree
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            // if (eventData.button == PointerEventData.InputButton.Right)
-            // {
-            //     RankDown();
-            // }
-            // else
-            // {
-            //     RankUp();
-            // }
+            OnCLicked?.Invoke(new TreeNodeClickedEvent(currentModel,rect.position));
         }
 
    

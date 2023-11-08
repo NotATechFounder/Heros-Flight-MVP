@@ -1,4 +1,6 @@
-﻿using HeroesFlight.Common.Progression;
+﻿using System;
+using HeroesFlight.Common.Progression;
+using HeroesFlight.System.Stats.Traits.Enum;
 using UnityEngine;
 
 namespace HeroesFlight.System.Stats.Traits.Effects
@@ -8,6 +10,10 @@ namespace HeroesFlight.System.Stats.Traits.Effects
     {
         [SerializeField] private HeroProgressionAttribute targetStat;
         public HeroProgressionAttribute TargetStat => targetStat;
-       
+
+        private void Awake()
+        {
+            traitType = TraitType.StatBoost;
+        }
     }
 }

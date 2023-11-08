@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using HeroesFlight.System.Stats.Traits.Enum;
+using UnityEngine;
 
 namespace HeroesFlight.System.Stats.Traits.Effects
 {
@@ -7,6 +9,10 @@ namespace HeroesFlight.System.Stats.Traits.Effects
     {
         [SerializeField] private int revivalCount;
         public int RevivalCount => revivalCount;
-      
+
+        private void Awake()
+        {
+            traitType = TraitType.Revival;
+        }
     }
 }

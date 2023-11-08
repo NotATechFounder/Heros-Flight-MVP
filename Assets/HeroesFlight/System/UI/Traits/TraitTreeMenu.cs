@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeroesFlight.Common.Feat;
+using HeroesFlight.System.FileManager.Enum;
 using HeroesFlight.System.FileManager.Model;
 using HeroesFlight.System.UI.FeatsTree;
 using HeroesFlight.System.Utility.UI;
 using TMPro;
 using UISystem;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace HeroesFlight.System.UI.Traits
@@ -24,49 +26,49 @@ namespace HeroesFlight.System.UI.Traits
     {
         [SerializeField] private CanvasGroup thisCG, requirementsCG, errorMessageCG;
         [SerializeField] private TextMeshProUGUI TreeNameText, requirementsText, errorMessageText, availablePointsText;
-
         [SerializeField] private Color NotUnlockableColor, MaxRankColor;
-
         [SerializeField] private GameObject NodeSlotPrefabActive;
-
         [SerializeField] private GameObject TierSlotPrefab;
         [SerializeField] private Transform TierSlotsParent;
         [SerializeField] private GameObject TreeNodeLinePrefab;
-
+        [Header("Hooks")] [SerializeField] private Button exitButton;
+        [SerializeField] private TraitPopup popup;
+        [SerializeField] private ScrollRect scroll;
         private float nodeStartOffset = 0.35f;
         private float nodeDistanceOffsetX = 0.95f;
         private float nodeDistanceOffsetY = 0.95f;
         private float nodeDistanceOffsetBonusPerTier = 0.25f;
 
 
-        private List<TREE_UI_DATA> treeUIData = new();
+        [SerializeField] private List<TREE_UI_DATA> treeUIData = new();
         private readonly List<GameObject> curTreesTiersSlots = new();
         private readonly List<GameObject> curNodeSlots = new();
         private TraitTreeModel currentTree;
         private GridLayoutGroup tierLayout;
         private GridLayoutGroup contentLayout;
+        private TraitModel selectedModel;
+        public event Action<TraitModificationEventModel> OnTraitModificationRequest;
 
-        private void ClearAllTiersData()
+
+        protected override void Awake()
         {
-            foreach (var t in curNodeSlots)
-                Destroy(t);
-
-            curNodeSlots.Clear();
-
-            foreach (var t in curTreesTiersSlots)
-                Destroy(t);
-
-            curTreesTiersSlots.Clear();
-            treeUIData.Clear();
+            base.Awake();
+            scroll.onValueChanged.AddListener(HandleScroll);
+            popup.OnTraitModificationRequest += TransferTraitModificationRequest;
         }
 
-        public void InitTree(TraitTreeModel tree)
+        private void TransferTraitModificationRequest(TraitModificationEventModel request)
+        {
+            OnTraitModificationRequest?.Invoke(request);
+        }
+
+
+        public void UpdateTreeView(TraitTreeModel tree)
         {
             OnCreated();
             if (tree == null) return;
 
             currentTree = tree;
-            Show();
             ClearAllTiersData();
 
             // TreeNameText.text = tree.entryDisplayName;
@@ -95,7 +97,10 @@ namespace HeroesFlight.System.UI.Traits
                 var holder = newAb.GetComponent<TreeNodeHolder>();
                 t.nodesREF.Add(holder);
                 if (t1.Id != string.Empty)
+                {
                     holder.Init(t1);
+                    holder.OnCLicked += HandleNodeClicked;
+                }
                 else
                     holder.InitHide();
 
@@ -103,6 +108,61 @@ namespace HeroesFlight.System.UI.Traits
             }
 
             InitTalentTreeLines(tree);
+            if (selectedModel != null)
+            {
+                Debug.Log("Popup was open before update");
+                Debug.Log(tree.Data[selectedModel.Id].State);
+                popup.ShowPopup(Vector2.zero,TraitPopupState.Enabled,
+                    tree.Data[selectedModel.Id]);
+            }
+        }
+
+      
+
+        public override void ResetMenu()
+        {
+        }
+
+        public override void OnCreated()
+        {
+            contentLayout = TierSlotsParent.GetComponent<GridLayoutGroup>();
+            tierLayout = TierSlotPrefab.GetComponent<GridLayoutGroup>();
+            nodeStartOffset = tierLayout.cellSize.x / 200;
+            nodeDistanceOffsetX = tierLayout.spacing.x / 100;
+            nodeDistanceOffsetY = tierLayout.spacing.y / 100;
+            nodeDistanceOffsetBonusPerTier = contentLayout.spacing.y / 100;
+            exitButton.onClick.AddListener(Close);
+        }
+
+        public override void OnOpened()
+        {
+            Show();
+        }
+
+        public override void OnClosed()
+        {
+            selectedModel = null;
+            Hide();
+        }
+
+        void ClearAllTiersData()
+        {
+            foreach (var t in curNodeSlots)
+                Destroy(t);
+
+            curNodeSlots.Clear();
+
+            foreach (var t in curTreesTiersSlots)
+                Destroy(t);
+
+            curTreesTiersSlots.Clear();
+            treeUIData.Clear();
+        }
+
+        void HandleNodeClicked(TreeNodeClickedEvent eventData)
+        {
+            selectedModel = eventData.TargetModel;
+            popup.ShowPopup(eventData.Position, TraitPopupState.Enabled, eventData.TargetModel);
         }
 
 
@@ -129,7 +189,7 @@ namespace HeroesFlight.System.UI.Traits
 
                     if (otherNodeREF != null)
                     {
-                        GenerateLine(t.Value, traitModel, nodeTransform, t.Value.IsFeatUnlocked);
+                        GenerateLine(t.Value, traitModel, nodeTransform, t.Value.State == TraitModelState.Unlocked);
                     }
                 }
             }
@@ -183,7 +243,6 @@ namespace HeroesFlight.System.UI.Traits
             {
                 // straight line up
                 lineREF.points.Clear();
-                Debug.Log(tierDifference);
                 lineREF.points.Add(new Vector2(0, nodeStartOffset));
                 var yOffset = nodeDistanceOffsetY * tierDifference;
                 if (tierDifference < -1)
@@ -206,13 +265,14 @@ namespace HeroesFlight.System.UI.Traits
                 lineREF.points.Clear();
                 if (tierDifference == 0)
                 {
+                    // straight line lef or right
                     var secondXOffset = nodeDistanceOffsetX * Mathf.Abs(slotDifference);
-                    if (Mathf.Abs(slotDifference) > 0)
+                    if (Mathf.Abs(slotDifference) >0)
                     {
-                        secondXOffset += nodeStartOffset * 2 * Mathf.Abs(slotDifference);
+                       secondXOffset += nodeStartOffset  *2* Mathf.Abs(slotDifference);
+                       secondXOffset -= nodeStartOffset;
                     }
 
-                    // straight line lef or right
                     if (isLeft)
                     {
                         lineREF.points.Add(new Vector2(-nodeStartOffset, 0));
@@ -319,13 +379,13 @@ namespace HeroesFlight.System.UI.Traits
             return null;
         }
 
-        public void Show()
+        void Show()
         {
             ToggleCanvasGroup(thisCG, true);
             transform.SetAsLastSibling();
         }
 
-        public void Hide()
+        void Hide()
         {
             transform.SetAsFirstSibling();
             ToggleCanvasGroup(thisCG, false);
@@ -347,32 +407,11 @@ namespace HeroesFlight.System.UI.Traits
             }
         }
 
-        public override void ResetMenu()
-        {
-        }
 
-        public override void OnCreated()
+        private void HandleScroll(Vector2 arg0)
         {
-            contentLayout = TierSlotsParent.GetComponent<GridLayoutGroup>();
-            tierLayout = TierSlotPrefab.GetComponent<GridLayoutGroup>();
-            nodeStartOffset = tierLayout.cellSize.x / 200;
-            nodeDistanceOffsetX = tierLayout.spacing.x / 100;
-            nodeDistanceOffsetY = tierLayout.spacing.y / 100;
-            nodeDistanceOffsetBonusPerTier = contentLayout.spacing.y / 100;
-            // nodeOffsetWhenAbove = 0.25f;
-            // nodeDistanceOffsetWhenAbove = 0.95f;
-            // nodeDistanceOffsetBonusPerTierWhenAbove = 0.25f;
-        }
-
-        public override void OnOpened()
-        {
-            // OnCreated();
-            Show();
-        }
-
-        public override void OnClosed()
-        {
-            Hide();
+            if (popup.State != TraitPopupState.Disabled)
+                popup.HidePopup();
         }
     }
 }

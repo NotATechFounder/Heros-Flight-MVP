@@ -48,14 +48,14 @@ namespace HeroesFlight.System.Utility.UI
             }
         }
 
-        public float GetAngle(Vector2 me, Vector2 target)
+        float GetAngle(Vector2 me, Vector2 target)
         {
             //panel resolution go there in place of 9 and 16
 
             return Mathf.Atan2(9f * (target.y - me.y), 16f * (target.x - me.x)) * (180 / Mathf.PI);
         }
 
-        private void DrawVerticesForPoint(Vector2 point, Vector2 point2, float angle, VertexHelper vh)
+         void DrawVerticesForPoint(Vector2 point, Vector2 point2, float angle, VertexHelper vh)
         {
             var vertex = UIVertex.simpleVert;
             vertex.color = color;

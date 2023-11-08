@@ -1,5 +1,7 @@
 ﻿using System;
+using HeroesFlight.System.FileManager.Enum;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace HeroesFlight.System.FileManager.Model
 {
@@ -10,31 +12,35 @@ namespace HeroesFlight.System.FileManager.Model
         {
             Id = string.Empty;
         }
-        public TraitModel(string id, int tier, int slot, int requiredLvl, string blockingId, int goldCost,
-            bool isFeatUnlocked, bool isFeatUnlockable, Sprite visual, int baseValue,int currentValue)
+        public TraitModel(string id, int tier, int slot, int requiredLvl, string blockingId, int cost,CurrencySO targetCurrency,
+            TraitModelState currentState, Sprite visual, int baseValue,int currentValue,string description,bool canBeRerolled)
         {
             Id = id;
             Tier = tier;
             Slot = slot;
             RequiredLvl = requiredLvl;
             BlockingId = blockingId;
-            GoldCost = goldCost;
-            IsFeatUnlocked = isFeatUnlocked;
-            IsFeatUnlockable = isFeatUnlockable;
+            Cost = cost;
+            State = currentState;
             Visual = visual;
+            BaseValue = baseValue;
+            CurrentValue = currentValue;
+            CanBeRerolled = canBeRerolled;
+            TargetCurrency = targetCurrency;
         }
 
-        public string Id{ get; }
-        public int BaseValue { get; }
-
-        public int CurrentValue { get; }
+        public string Id { get; }
+        public int BaseValue{ get; }
+        public int CurrentValue{ get; }
         public int RequiredLvl{ get; }
         public string BlockingId{ get; }
         public int Tier{ get; }
         public int Slot{ get; }
-        public int GoldCost{ get; }
-        public bool IsFeatUnlocked{ get; }
-        public bool IsFeatUnlockable{ get; }
+        public int Cost{ get; }
+        public TraitModelState State{ get; }
         public Sprite Visual{ get; }
+        public string Description{ get; }
+        public bool CanBeRerolled{ get; }
+        public CurrencySO TargetCurrency { get; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using HeroesFlight.System.Stats.Traits.Effects;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace HeroesFlight.System.Stats.Traits
 {
@@ -16,10 +17,11 @@ namespace HeroesFlight.System.Stats.Traits
         [SerializeField] private int tier;
         [SerializeField] private int slot;
         [Header("Cost data")] 
-        [SerializeField] private int goldCost;
+        [SerializeField] private CurrencySO currency;
+        [SerializeField] private int cost;
       
-        [Header("Logical data")] [SerializeField]
-        private TraitEffect effect;
+        [Header("Logical data")] 
+        [SerializeField] private TraitEffect effect;
 
 
         public string Id => id;
@@ -28,11 +30,11 @@ namespace HeroesFlight.System.Stats.Traits
         public TraitEffect Effect => effect;
         public string DependantId => blockingFeatId;
         public int RequiredLvl => requiredCharacterLvl;
-
         public int Tier => tier;
         public int Slot => slot;
-        public int GoldCost => goldCost;
-       
+        public int Cost => cost;
+        public CurrencySO Currency => currency;
 
-       }
+
+    }
 }
