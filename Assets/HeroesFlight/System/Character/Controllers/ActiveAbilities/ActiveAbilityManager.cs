@@ -9,7 +9,6 @@ using UnityEngine;
 
 public class ActiveAbilityManager : MonoBehaviour
 {
-    [SerializeField] private Transform playerTransform;
     [SerializeField] private ActiveAbilitySO[] passiveActiveAbilities;
 
     public TimedAbilityController PassiveAbilityOneController => passiveAbilityOneController;
@@ -35,7 +34,6 @@ public class ActiveAbilityManager : MonoBehaviour
     private void Awake()
     {
         Cache();
-
         Test();
     }
 
@@ -54,7 +52,8 @@ public class ActiveAbilityManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A))
         {
             EquippedAbility(PassiveActiveAbilityType.KnifeFluffy);
-            EquippedAbility(PassiveActiveAbilityType.OrbOfLightning);
+            EquippedAbility(PassiveActiveAbilityType.HeavenStab);
+
         }
 
         if (Input.GetKeyDown(KeyCode.D))
@@ -73,12 +72,12 @@ public class ActiveAbilityManager : MonoBehaviour
         }
     }
 
-    public void Initialize(CharacterStatController characterStatController, CharacterSimpleController characterSystem, HealthController characterHealthController, BaseCharacterAttackController characterAttackController)
+    public void Initialize(CharacterStatController characterStatController)
     {
         this.characterStatController = characterStatController;
-        this.characterSystem = characterSystem;
-        this.characterHealthController = characterHealthController;
-        this.characterAttackController = characterAttackController;
+        this.characterSystem = characterStatController.GetComponent<CharacterSimpleController>();
+        this.characterHealthController = characterStatController.GetComponent<HealthController>();
+        this.characterAttackController = characterStatController.GetComponent<BaseCharacterAttackController>();
     }
 
     public void Cache()
@@ -114,14 +113,16 @@ public class ActiveAbilityManager : MonoBehaviour
 
     public void InitialiseAbility(PassiveActiveAbilityType passiveActiveAbilityType, TimedAbilityController timedAbilityController, int level)
     {
-        PassiveActiveAbility passiveActiveAbility = passiveActiveAbilitiesDic[passiveActiveAbilityType].GetAbility(playerTransform.position);
+        PassiveActiveAbility passiveActiveAbility = passiveActiveAbilitiesDic[passiveActiveAbilityType].GetAbility(characterStatController.transform.position);
+        passiveActiveAbility.transform.SetParent(characterStatController.transform);
+
         AttachAbility(timedAbilityController, passiveActiveAbility);
         passiveAbiltyAndControllerDic.CreateOrAdd(passiveActiveAbilityType, timedAbilityController);
 
         switch (passiveActiveAbilityType)
         {
             case PassiveActiveAbilityType.HeavenStab:
-                (passiveActiveAbility as OrbOfLightning).Initialize(level, characterStatController);
+                (passiveActiveAbility as HeavenStab).Initialize(level, (int)characterStatController.CurrentPhysicalDamage, characterSystem);
                 break;
             case PassiveActiveAbilityType.OrbOfLightning:
                 (passiveActiveAbility as OrbOfLightning).Initialize(level, characterStatController);

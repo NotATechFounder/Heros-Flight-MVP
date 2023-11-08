@@ -420,6 +420,8 @@ namespace HeroesFlight.System.Gameplay
 
             shrine.Initialize( dataSystem.CurrencyManager, characterStatController);
             godsBenevolence.Initialize(characterStatController);
+
+            activeAbilityManager.Initialize(characterStatController);
         }    
         
         void OnEnemyHitSuccess()

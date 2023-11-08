@@ -20,7 +20,7 @@ public class MagicShield : PassiveActiveAbility
 
         GetEffectParticleByLevel().SetActive(true);
 
-        currentHealthAbsorption = GetValueByLevel (baseHealthAbsorption, healthAbsorptionPerIncrease);
+        currentHealthAbsorption = GetMajorValueByLevel (baseHealthAbsorption, healthAbsorptionPerIncrease);
         characterHealthController.SetInvulnerableState (true);
         characterHealthController.OnHitWhileImmortal += OnHitWhileImmortal;
     }
