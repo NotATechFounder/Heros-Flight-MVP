@@ -167,11 +167,20 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
             uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
 
-            activeAbilityManager.PassiveAbilityOneController.OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
-            activeAbilityManager.PassiveAbilityOneController.OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[0].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[0].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[1].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[1].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[1].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[1].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[2].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[2].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[2].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[2].UpdateSkillOneFillCoolDown;
             uiSystem.OnPassiveAbilityButtonClicked += activeAbilityManager.UseCharacterAbility;
 
-            uiSystem.UiEventHandler.AbilitySelectMenu.OnAbilitySelected += activeAbilityManager.EquippedAbility;
+            activeAbilityManager.OnActiveAbilityEquipped += uiSystem.UiEventHandler.GameMenu.ActiveAbilityEqquiped;
+
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnRegularAbilitySelected += activeAbilityManager.EquippedAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected += activeAbilityManager.AddPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility += activeAbilityManager.GetRandomActiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility += activeAbilityManager.GetRandomPassiveAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += ContinueGameLoop;
@@ -303,11 +312,20 @@ namespace HeroesFlight.System.Gameplay
             characterAttackController = null;
             characterHealthController = null;
 
-            activeAbilityManager.PassiveAbilityOneController.OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
-            activeAbilityManager.PassiveAbilityOneController.OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[0].OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[0].OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[1].OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[1].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[1].OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[1].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[2].OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[2].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[2].OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[2].UpdateSkillOneFillCoolDown;
             uiSystem.OnPassiveAbilityButtonClicked -= activeAbilityManager.UseCharacterAbility;
 
-            uiSystem.UiEventHandler.AbilitySelectMenu.OnAbilitySelected -= activeAbilityManager.EquippedAbility;
+            activeAbilityManager.OnActiveAbilityEquipped -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityEqquiped;
+
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnRegularAbilitySelected -= activeAbilityManager.EquippedAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected -= activeAbilityManager.AddPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility -= activeAbilityManager.GetRandomActiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData -= activeAbilityManager.GetActiveAbilityVisualData;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility -= activeAbilityManager.GetRandomPassiveAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData -= activeAbilityManager.GetPassiveAbilityVisualData;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed -= ContinueGameLoop;

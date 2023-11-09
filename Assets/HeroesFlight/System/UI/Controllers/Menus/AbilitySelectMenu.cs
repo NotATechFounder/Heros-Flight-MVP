@@ -8,11 +8,21 @@ namespace UISystem
 {
     public class AbilitySelectMenu : BaseMenu<AbilitySelectMenu>
     {
-        public event Func<int, List<PassiveActiveAbilityType>> GetRandomPassiveAbility;
-        public event Func<PassiveActiveAbilityType, AbilityVisualData> GetRandomPassiveAbilityVisualData;
-        public event Action<PassiveActiveAbilityType> OnAbilitySelected;
+        public event Func<RegularActiveAbilityType,RegularActiveAbilityType> GetRandomActiveAbility;
+        public event Func<int, List<PassiveAbilityType>, List<PassiveAbilityType>> GetRandomPassiveAbility;
+
+        public event Func<RegularActiveAbilityType, RegularAbilityVisualData> GetRandomActiveAbilityVisualData;
+        public event Func<PassiveAbilityType, PassiveAbilityVisualData> GetRandomPassiveAbilityVisualData;
+
+        public event Action<RegularActiveAbilityType> OnRegularAbilitySelected;
+        public event Action<PassiveAbilityType> OnPassiveAbilitySelected;
+        public event Action<RegularActiveAbilityType, RegularActiveAbilityType> OnActiveAbilitySwapped;
 
         [SerializeField] private AbilityButtonUI[] abilityButtonUIs;
+        [SerializeField] private AdvanceButton reRollButton;
+
+        List<PassiveAbilityType> currentPassiveDisplayed = new List<PassiveAbilityType>();
+        RegularActiveAbilityType currentActiveDisplayed = RegularActiveAbilityType.None;
 
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
@@ -23,6 +33,8 @@ namespace UISystem
 
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
             closeEffectBG.SetOnCompleted(CloseMenu);
+
+            reRollButton.onClick.AddListener(ReRoll);
         }
 
         public override void OnOpened()
@@ -36,11 +48,6 @@ namespace UISystem
         public override void OnClosed()
         {
             closeEffectBG.Start();
-
-            for (int i = 0; i < abilityButtonUIs.Length; i++)
-            {
-                abilityButtonUIs[i].GetAdvanceButton.onClick.RemoveAllListeners();
-            }
         }
 
         public override void ResetMenu()
@@ -50,16 +57,55 @@ namespace UISystem
 
         public void GenerateAbilities()
         {
-            List<PassiveActiveAbilityType> passiveActiveAbilityTypes = GetRandomPassiveAbility.Invoke(3);
+            RefreshAbilities();
 
-            for (int i = 0; i < passiveActiveAbilityTypes.Count; i++)
+            // bool activeAbilityChance = UnityEngine.Random.Range(0, 100) < 50;
+
+            bool activeAbilityChance = true;
+
+            List<PassiveAbilityType> passiveAbilityTypes = GetRandomPassiveAbility.Invoke(3, currentPassiveDisplayed);
+
+            currentPassiveDisplayed.Clear();
+
+            for (int i = 0; i < passiveAbilityTypes.Count; i++)
             {
-                AbilityVisualData abilityVisualData = GetRandomPassiveAbilityVisualData.Invoke(passiveActiveAbilityTypes[i]);
-                abilityButtonUIs[i].SetInfo(abilityVisualData, OnAbilitySelected);
-                abilityButtonUIs[i].GetAdvanceButton.onClick.AddListener(() =>
+                if (activeAbilityChance && i == 2)
                 {
-                    AbilitySelected();
-                });
+                    RegularActiveAbilityType passiveActiveAbilityType = GetRandomActiveAbility.Invoke(currentActiveDisplayed);
+                    currentActiveDisplayed = passiveActiveAbilityType;
+                    RegularAbilityVisualData regularAbilityVisualData = GetRandomActiveAbilityVisualData.Invoke(passiveActiveAbilityType);
+                    abilityButtonUIs[i].SetInfo(regularAbilityVisualData.Icon, regularAbilityVisualData.DisplayName, regularAbilityVisualData.Description);
+                    abilityButtonUIs[i].GetAdvanceButton.onClick.AddListener(() =>
+                    {
+                        OnRegularAbilitySelected?.Invoke(passiveActiveAbilityType);
+                        AbilitySelected();
+                    });
+                }
+                else
+                {
+                    currentPassiveDisplayed.Add(passiveAbilityTypes[i]);
+                    PassiveAbilityVisualData abilityVisualData = GetRandomPassiveAbilityVisualData.Invoke(passiveAbilityTypes[i]);
+                    abilityButtonUIs[i].SetInfo(abilityVisualData.Icon, abilityVisualData.DisplayName, abilityVisualData.Description);
+                    PassiveAbilityType passiveAbilityType = passiveAbilityTypes[i];
+                    abilityButtonUIs[i].GetAdvanceButton.onClick.AddListener(() =>
+                    {
+                        OnPassiveAbilitySelected?.Invoke(passiveAbilityType);
+                        AbilitySelected();
+                    });
+                }
+            }
+        }
+
+        public void ReRoll()
+        {
+            GenerateAbilities();
+        }
+
+        public void RefreshAbilities()
+        {
+            for (int i = 0; i < abilityButtonUIs.Length; i++)
+            {
+                abilityButtonUIs[i].GetAdvanceButton.onClick.RemoveAllListeners();
             }
         }
 

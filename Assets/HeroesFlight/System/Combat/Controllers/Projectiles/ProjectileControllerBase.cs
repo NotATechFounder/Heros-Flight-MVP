@@ -33,7 +33,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             transform.Translate(currentDirection.normalized * speed * Time.deltaTime);
         }
 
-        void DisableProjectile()
+        public virtual void DisableProjectile()
         {
             disabled = true;
             OnEnded?.Invoke(this);
@@ -53,7 +53,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-        void OnTriggerEnter2D(Collider2D col)
+        public virtual void OnTriggerEnter2D(Collider2D col)
         {
             if (collisionMask != (collisionMask | (1 << col.gameObject.layer)))
                 return;
