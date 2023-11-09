@@ -6,21 +6,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Passive Ability", menuName = "Active Ability/Regular Ability")]
 public class ActiveAbilitySO : ScriptableObject
 {
-    [SerializeField] protected PassiveActiveAbilityType passiveActiveAbilityType;
-
-    [Header("UI")]
-    [SerializeField] protected Sprite icon;
-    [TextArea(3, 5)]
-    [SerializeField] protected string description;
-
-    [Header("PROPERTIES")]
+    [SerializeField] AbilityVisualData abilityVisualData;
     [SerializeField] protected float duration;
     [SerializeField] protected int cooldown;
     [SerializeField] PassiveActiveAbility passiveActiveAbility;
 
-    public PassiveActiveAbilityType PassiveActiveAbilityType => passiveActiveAbilityType;
-    public Sprite Icon => icon;
-    public string Description => description;
+    public AbilityVisualData GetAbilityVisualData => abilityVisualData;
     public float Duration => duration;
     public int Cooldown => cooldown;
 
@@ -30,16 +21,4 @@ public class ActiveAbilitySO : ScriptableObject
         ability.Init(this);
         return ability;
     }
-}
-
-
-public enum PassiveActiveAbilityType
-{
-    HeavenStab,
-    OrbOfLightning,
-    MagicShield,
-    KnifeFluffy,
-    Immolation,
-    LightNova,
-    SwordWhirlwind
 }

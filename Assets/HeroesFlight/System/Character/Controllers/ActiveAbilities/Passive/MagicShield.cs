@@ -54,7 +54,7 @@ public class MagicShield : PassiveActiveAbility
 
         if (currentHealthAbsorption <= 0)
         {
-            OnCoolDownEnded();
+            OnCoolDownStarted();
             forceEnd = true;
         }
     }

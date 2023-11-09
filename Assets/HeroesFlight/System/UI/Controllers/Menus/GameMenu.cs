@@ -375,7 +375,7 @@ namespace UISystem
         private void SkillOneButtonClicked()
         {
             if (skillOneButtonFill.fillAmount < 1) return;
-            OnPassiveAbilityButtonClicked?.Invoke(1);
+            OnPassiveAbilityButtonClicked?.Invoke(0);
         }
 
         public void UpdateSkillOneFill(float normalisedValue)

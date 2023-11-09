@@ -27,6 +27,8 @@ public class UIEventHandler : MonoBehaviour
 
     public HealingNPCMenu HealingNPCMenu { get; private set; }
 
+    public AbilitySelectMenu AbilitySelectMenu { get; private set; }
+
     public void Init(Action OnComplecte = null)
     {
         uIManager = GetComponent<UIManager>();
@@ -44,6 +46,7 @@ public class UIEventHandler : MonoBehaviour
         HeroProgressionMenu = uIManager.InitMenu<HeroProgressionMenu>();
         RewardPopup = uIManager.InitMenu<RewardPopupController>();
         HealingNPCMenu = uIManager.InitMenu<HealingNPCMenu>();
+        AbilitySelectMenu = uIManager.InitMenu<AbilitySelectMenu>();
         OnComplecte?.Invoke();
     }
 }

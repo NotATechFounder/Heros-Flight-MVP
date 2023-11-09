@@ -9,6 +9,8 @@ using UnityEngine;
 
 public class ActiveAbilityManager : MonoBehaviour
 {
+    public bool test;
+
     [SerializeField] private ActiveAbilitySO[] passiveActiveAbilities;
 
     public TimedAbilityController PassiveAbilityOneController => passiveAbilityOneController;
@@ -34,6 +36,8 @@ public class ActiveAbilityManager : MonoBehaviour
     private void Awake()
     {
         Cache();
+
+        if (test)
         Test();
     }
 
@@ -53,7 +57,6 @@ public class ActiveAbilityManager : MonoBehaviour
         {
             EquippedAbility(PassiveActiveAbilityType.KnifeFluffy);
             EquippedAbility(PassiveActiveAbilityType.HeavenStab);
-
         }
 
         if (Input.GetKeyDown(KeyCode.D))
@@ -84,8 +87,8 @@ public class ActiveAbilityManager : MonoBehaviour
     {
         for (int i = 0; i < passiveActiveAbilities.Length; i++)
         {
-            passiveActiveAbilityTypes.Add(passiveActiveAbilities[i].PassiveActiveAbilityType);
-            passiveActiveAbilitiesDic.Add(passiveActiveAbilities[i].PassiveActiveAbilityType, passiveActiveAbilities[i]);
+            passiveActiveAbilityTypes.Add(passiveActiveAbilities[i].GetAbilityVisualData.PassiveActiveAbilityType);
+            passiveActiveAbilitiesDic.Add(passiveActiveAbilities[i].GetAbilityVisualData.PassiveActiveAbilityType, passiveActiveAbilities[i]);
         }
 
         timedAbilitySlots.Add(passiveAbilityOneController);
@@ -93,7 +96,7 @@ public class ActiveAbilityManager : MonoBehaviour
         timedAbilitySlots.Add(passiveAbilityThreeController);
     }
 
-    public void EquippedAbility(PassiveActiveAbilityType passiveActiveAbilityType, int level = 1)
+    public void EquippedAbility(PassiveActiveAbilityType passiveActiveAbilityType)
     {
         if (AbilityAlreadyEquipped(passiveActiveAbilityType))
         {
@@ -105,13 +108,13 @@ public class ActiveAbilityManager : MonoBehaviour
         {
             if (!timedAbilityController.IsValid)
             {
-                InitialiseAbility (passiveActiveAbilityType, timedAbilityController, level);
+                InitialiseAbility (passiveActiveAbilityType, timedAbilityController);
                 return;
             }
         }
     }
 
-    public void InitialiseAbility(PassiveActiveAbilityType passiveActiveAbilityType, TimedAbilityController timedAbilityController, int level)
+    public void InitialiseAbility(PassiveActiveAbilityType passiveActiveAbilityType, TimedAbilityController timedAbilityController, int level = 1)
     {
         PassiveActiveAbility passiveActiveAbility = passiveActiveAbilitiesDic[passiveActiveAbilityType].GetAbility(characterStatController.transform.position);
         passiveActiveAbility.transform.SetParent(characterStatController.transform);
@@ -183,22 +186,29 @@ public class ActiveAbilityManager : MonoBehaviour
         return activePassiveActivities.ContainsKey(passiveActiveAbilityType);
     }
 
-    public List<PassiveActiveAbilityType> RandomAbility(int amount)
+    public List<PassiveActiveAbilityType> GetRandomPassiveAbility(int amount)
     {
         List<PassiveActiveAbilityType> avaliableAbilities = new List<PassiveActiveAbilityType>(passiveActiveAbilityTypes);
         List<PassiveActiveAbilityType> randomAbilities = new List<PassiveActiveAbilityType>();
         for (int i = 0; i < amount; i++)
         {
             int randomIndex = UnityEngine.Random.Range(0, avaliableAbilities.Count);
-            randomAbilities.Add(passiveActiveAbilityTypes[randomIndex]);
+            randomAbilities.Add(avaliableAbilities[randomIndex]);
             avaliableAbilities.RemoveAt(randomIndex);
         }
         return randomAbilities;
     }
 
+    public AbilityVisualData GetPassiveAbilityVisualData(PassiveActiveAbilityType passiveActiveAbilityType)
+    {
+        return passiveActiveAbilitiesDic[passiveActiveAbilityType].GetAbilityVisualData;
+    }
+
     public void UseCharacterAbility(int slotIndex)
     {
         TimedAbilityController timedAbilityController = timedAbilitySlots[slotIndex];
+        if (timedAbilityController.IsActive)
+            return;
         timedAbilityController.ActivateAbility();
     }
 }

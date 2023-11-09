@@ -171,10 +171,20 @@ namespace HeroesFlight.System.Gameplay
             activeAbilityManager.PassiveAbilityOneController.OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
             uiSystem.OnPassiveAbilityButtonClicked += activeAbilityManager.UseCharacterAbility;
 
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnAbilitySelected += activeAbilityManager.EquippedAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility += activeAbilityManager.GetRandomPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += ContinueGameLoop;
+
             RegisterShrineNPCUIEvents();
             RegisterShrineNPCActions();
 
             OnComplete?.Invoke();
+        }
+
+        private void AbilitySelectMenu_OnMenuClosed()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -296,6 +306,11 @@ namespace HeroesFlight.System.Gameplay
             activeAbilityManager.PassiveAbilityOneController.OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
             activeAbilityManager.PassiveAbilityOneController.OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
             uiSystem.OnPassiveAbilityButtonClicked -= activeAbilityManager.UseCharacterAbility;
+
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnAbilitySelected -= activeAbilityManager.EquippedAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility -= activeAbilityManager.GetRandomPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData -= activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed -= ContinueGameLoop;
 
             UnRegisterShrineNPCUIEvents();
             UnRegisterShrineNPCActions();
@@ -872,7 +887,6 @@ namespace HeroesFlight.System.Gameplay
             }
         }
 
-
         void HandleGameStateChanged(GameState newState)
         {
             switch (newState)
@@ -1031,16 +1045,19 @@ namespace HeroesFlight.System.Gameplay
         void ShowGodBenevolencePrompt()
         {
             //if (characterStatController.GetHealthPercentage() <= 30)
-            if (true)
-            {
-                uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
-                uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,
-                ContinueGameLoop);
-            }
-            else
-            {
-                ContinueGameLoop();
-            }
+
+            //if (true)
+            //{
+            //    uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
+            //    uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,
+            //    ContinueGameLoop);
+            //}
+            //else
+            //{
+            //    ContinueGameLoop();
+            //}
+
+            uiSystem.UiEventHandler.AbilitySelectMenu.Open();   
         }
 
         void HandleGameLoopFinish()

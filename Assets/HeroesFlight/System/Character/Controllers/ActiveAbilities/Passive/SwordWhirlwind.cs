@@ -19,13 +19,15 @@ public class SwordWhirlwind : PassiveActiveAbility
 
     public override void OnActivated()
     {
+        GetEffectParticleByLevel().SetActive(true);
         currentDamagePercentage = GetMajorValueByLevel(damagePercentage, damagePercentagePerIncrease);
         currentDamage = (int)StatCalc.GetPercentage(baseDamage, currentDamagePercentage);
+        overlapChecker.DetectOverlap();
     }
 
     public override void OnCoolDownStarted()
     {
-        overlapChecker.DetectOverlap();
+        GetEffectParticleByLevel().SetActive(false);
     }
 
     public override void OnCoolDownEnded()

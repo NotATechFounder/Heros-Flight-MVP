@@ -26,8 +26,8 @@ public class ApolloEffect : MonoBehaviour
     [Header("Animation and Viusal Settings")]
     [SerializeField] SkeletonAnimation skeletonAnimation;
     [SerializeField] public const string idleAnimationName = "Idle";
-    [SerializeField] public const string attackAnimation1Name = "Attack_Multi_Arrow";
-    [SerializeField] public const string attackAnimation2Name = "Attack_One_Arrow";
+    [SerializeField] public const string attackAnimation1Name = "Attack_Multi_Bow";
+    [SerializeField] public const string attackAnimation2Name = "Attack_One_Bow";
 
     private CharacterControllerInterface characterController;
     private float timer;
