@@ -6,6 +6,7 @@ using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Input;
 using HeroesFlight.System.NPC;
 using HeroesFlight.System.Stats;
+using HeroesFlight.System.Stats.Handlers;
 using HeroesFlight.System.UI;
 using StansAssets.Foundation.Patterns;
 using UnityEngine;
@@ -39,6 +40,7 @@ namespace HeroesFlight.Core.Bootstrapper
             ProgressionSystemInterface progressionSystem = new ProgressionSystem(dataSystem);
             GamePlaySystemInterface gamePlaySystem =
                 new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem);
+            TraitSystemInterface traitSystem = new TraitsSystem(dataSystem, uiSystem);
 
             m_ServiceLocator.Register(dataSystem);
             m_ServiceLocator.Register(uiSystem);
@@ -49,6 +51,7 @@ namespace HeroesFlight.Core.Bootstrapper
             m_ServiceLocator.Register(environmentSystem);
             m_ServiceLocator.Register(combatSystem);
             m_ServiceLocator.Register(progressionSystem);
+            m_ServiceLocator.Register(traitSystem);
             return m_ServiceLocator;
         }
     }

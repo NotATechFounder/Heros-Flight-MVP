@@ -2,6 +2,7 @@
 using HeroesFlight.Common.Enum;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Stats.Handlers;
 using HeroesFlight.System.UI;
 using JetBrains.Annotations;
 using StansAssets.Foundation.Async;
@@ -30,11 +31,13 @@ namespace HeroesFlight.StateStack.State
                     progressReporter.SetDone();
                     var uiSystem = GetService<IUISystem>();
                     var dataSystem = GetService<DataSystemInterface>();
-
+                    TraitSystemInterface traitSystemInterface = GetService<TraitSystemInterface>();
+                    Debug.Log("Initing trait system");
+                    traitSystemInterface.Init();
                     uiSystem.UiEventHandler.MainMenu.Open();
 
                     uiSystem.UiEventHandler.MainMenu.OnCharacterSelected += dataSystem.CharacterManager.ToggleCharacterSelected;
-
+                    
                     void HandleGameStartRequest()
                     {
                         uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;

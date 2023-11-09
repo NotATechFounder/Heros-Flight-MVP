@@ -1,4 +1,5 @@
 using System;
+using HeroesFlight.System.UI.Traits;
 using UISystem;
 using UnityEngine;
 
@@ -26,6 +27,7 @@ public class UIEventHandler : MonoBehaviour
     public RewardPopupController RewardPopup { get; private set; }
 
     public HealingNPCMenu HealingNPCMenu { get; private set; }
+    public TraitTreeMenu TraitTreeMenu { get; private set; }
 
     public void Init(Action OnComplecte = null)
     {
@@ -44,6 +46,7 @@ public class UIEventHandler : MonoBehaviour
         HeroProgressionMenu = uIManager.InitMenu<HeroProgressionMenu>();
         RewardPopup = uIManager.InitMenu<RewardPopupController>();
         HealingNPCMenu = uIManager.InitMenu<HealingNPCMenu>();
+        TraitTreeMenu = uIManager.InitMenu<TraitTreeMenu>();
         OnComplecte?.Invoke();
     }
 }
