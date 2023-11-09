@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.Common.Feat;
+using HeroesFlight.System.Stats.Traits.Effects;
+using HeroesFlight.System.Stats.Traits.Enum;
+using HeroesFlight.System.Stats.Traits.Model;
 using HeroesFlight.System.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,7 +17,6 @@ namespace HeroesFlight.System.Stats.Handlers
 
         public TraitsSystem(DataSystemInterface dataSystem, IUISystem uiSystem)
         {
-            Debug.Log("created");
             data = dataSystem;
             this.uiSystem = uiSystem;
             traitHandler = new TraitHandler(new Vector2Int(5,3));
@@ -28,7 +31,6 @@ namespace HeroesFlight.System.Stats.Handlers
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
-            Debug.Log("Inited");
             uiSystem.UiEventHandler.MainMenu.OnTraitButtonPressed += HandleTraitButtonPressed;
             uiSystem.UiEventHandler.TraitTreeMenu.OnTraitModificationRequest += HandleRequest;
         }
@@ -37,8 +39,7 @@ namespace HeroesFlight.System.Stats.Handlers
 
          void HandleTraitButtonPressed()
         {
-            Debug.Log("TraitButtonPRessed");
-            uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetFeatTreeData());
+            uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
             uiSystem.UiEventHandler.TraitTreeMenu.Open();
         }
 
@@ -48,22 +49,38 @@ namespace HeroesFlight.System.Stats.Handlers
             switch (request.ModificationType)
             {
                 case TraitModificationType.Unlock:
-                    if (traitHandler.TryUnlockFeat(request.Model.Id))
+                    if (traitHandler.TryUnlockTrait(request.Model.Id))
                     {
-                        uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetFeatTreeData());
+                        uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
                     }
                    
                     break;
                 case TraitModificationType.Reroll:
-                    var effect = traitHandler.GetFeatEffect(request.Model.Id);
+                    var effect = traitHandler.GetTraitEffect(request.Model.Id);
                     var rng = Random.Range(effect.ValueRange.x, effect.ValueRange.y);
                     if (traitHandler.TryModifyTraitValue(request.Model.Id, rng))
                     {
-                        uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetFeatTreeData());
+                        uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
                     }
                     break;
                
             }
+        }
+
+       
+        public bool HasTraitOfType(TraitType targetType, out string id)
+        {
+            return traitHandler.HasTraitOfType(targetType, out id);
+        }
+
+        public TraitEffect GetTraitEffect(string id)
+        {
+            return traitHandler.GetTraitEffect(id);
+        }
+
+        public List<TraitStateModel> GetUnlockedEffects()
+        {
+            return traitHandler.GetUnlockedTraits();
         }
     }
 }

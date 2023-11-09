@@ -388,6 +388,7 @@ namespace HeroesFlight.System.UI.Traits
         void Hide()
         {
             transform.SetAsFirstSibling();
+            popup.HidePopup();
             ToggleCanvasGroup(thisCG, false);
         }
 

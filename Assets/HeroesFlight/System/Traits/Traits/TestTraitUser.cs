@@ -16,7 +16,7 @@ namespace HeroesFlight.System.Stats.Traits
             traitHandler = new TraitHandler(new Vector2Int(6,4));
             menu.OnTraitModificationRequest += HandleRequest;
           
-            menu.UpdateTreeView(traitHandler.GetFeatTreeData());
+            menu.UpdateTreeView(traitHandler.GetTraitTreeData());
             menu.Open();
         }
 
@@ -26,18 +26,18 @@ namespace HeroesFlight.System.Stats.Traits
             switch (request.ModificationType)
             {
                 case TraitModificationType.Unlock:
-                    if (traitHandler.TryUnlockFeat(request.Model.Id))
+                    if (traitHandler.TryUnlockTrait(request.Model.Id))
                     {
-                        menu.UpdateTreeView(traitHandler.GetFeatTreeData());
+                        menu.UpdateTreeView(traitHandler.GetTraitTreeData());
                     }
                    
                     break;
                 case TraitModificationType.Reroll:
-                    var effect = traitHandler.GetFeatEffect(request.Model.Id);
+                    var effect = traitHandler.GetTraitEffect(request.Model.Id);
                     var rng = Random.Range(effect.ValueRange.x, effect.ValueRange.y);
                     if (traitHandler.TryModifyTraitValue(request.Model.Id, rng))
                     {
-                        menu.UpdateTreeView(traitHandler.GetFeatTreeData());
+                        menu.UpdateTreeView(traitHandler.GetTraitTreeData());
                     }
                     break;
                

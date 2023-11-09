@@ -24,7 +24,7 @@ namespace HeroesFlight.System.Stats.Handlers
 
         private Vector2Int size;
 
-        public bool TryUnlockFeat(string id)
+        public bool TryUnlockTrait(string id)
         {
             if (traitMap.TryGetValue(id, out var targetFeat) && !unlockedTraits.ContainsKey(targetFeat.Id))
             {
@@ -65,7 +65,7 @@ namespace HeroesFlight.System.Stats.Handlers
             return hasTrait;
         }
 
-        public TraitEffect GetFeatEffect(string id)
+        public TraitEffect GetTraitEffect(string id)
         {
             if (traitMap.TryGetValue(id, out var model))
             {
@@ -76,7 +76,7 @@ namespace HeroesFlight.System.Stats.Handlers
             return null;
         }
 
-        IntValue GetFeatModificationValue(string traitId)
+        IntValue GetTraitModificationValue(string traitId)
         {
             if (unlockedTraits.TryGetValue(traitId, out var stateValue))
             {
@@ -96,10 +96,10 @@ namespace HeroesFlight.System.Stats.Handlers
         }
 
 
-        public List<TraitStateModel> GetUnlockedFeats() => unlockedTraits.Values.ToList();
+        public List<TraitStateModel> GetUnlockedTraits() => unlockedTraits.Values.ToList();
 
 
-        public TraitTreeModel GetFeatTreeData()
+        public TraitTreeModel GetTraitTreeData()
         {
             var featTreeData = new Dictionary<string, TraitModel>();
             foreach (var pair in traitMap)
@@ -144,7 +144,7 @@ namespace HeroesFlight.System.Stats.Handlers
             return new TraitModel(targetTrait.Id, targetTrait.Tier, targetTrait.Slot, targetTrait.RequiredLvl,
                 targetTrait.DependantId, targetTrait.Cost, targetTrait.Currency, state, targetTrait.Icon,
                 targetTrait.Effect.Value,
-                GetFeatModificationValue(targetTrait.Id).Value, targetTrait.Description,
+                GetTraitModificationValue(targetTrait.Id).Value, targetTrait.Description,
                 targetTrait.Effect.CanBeRerolled);
         }
     }
