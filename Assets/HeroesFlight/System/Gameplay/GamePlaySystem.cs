@@ -140,32 +140,26 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
 
-            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes += () =>
-                progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent +=
-                progressionSystem.HeroProgression.DecrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent +=
-                progressionSystem.HeroProgression.IncrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=
-                progressionSystem.HeroProgression.Confirm;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed +=
-                progressionSystem.HeroProgression.ResetSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=
-                HeroProgressionCompleted;
-            progressionSystem.HeroProgression.OnEXPAdded +=
-                uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
-            progressionSystem.HeroProgression.OnSpChanged +=
-                uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =
-            godsBenevolence.GetRandomGodsBenevolenceVisualSO;
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved +=
-                godsBenevolence.ActivateGodsBenevolence;
+            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes += () =>     progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent +=  progressionSystem.HeroProgression.DecrementAttributeSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent +=   progressionSystem.HeroProgression.IncrementAttributeSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=    progressionSystem.HeroProgression.Confirm;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed +=    progressionSystem.HeroProgression.ResetSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=    HeroProgressionCompleted;
+            progressionSystem.HeroProgression.OnEXPAdded += uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
+            progressionSystem.HeroProgression.OnSpChanged += uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
+
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =  godsBenevolence.GetRandomGodsBenevolenceVisualSO;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved +=    godsBenevolence.ActivateGodsBenevolence;
+
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += StoreRunReward;
             uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete += HandleSingleLevelUp;
             uiSystem.OnRestartLvlRequest += HandleLvlRestart;
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed += ContinueGameLoop;
             uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
             uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
+
+            activeAbilityManager.OnEXPAdded += uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
 
             activeAbilityManager.TimedAbilityControllers[0].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFill;
             activeAbilityManager.TimedAbilityControllers[0].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFillCoolDown;
@@ -176,6 +170,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.OnPassiveAbilityButtonClicked += activeAbilityManager.UseCharacterAbility;
 
             activeAbilityManager.OnActiveAbilityEquipped += uiSystem.UiEventHandler.GameMenu.ActiveAbilityEqquiped;
+            activeAbilityManager.OnPassiveAbilityEquipped += uiSystem.UiEventHandler.GameMenu.VisualisePaasiveAbility;
 
             uiSystem.UiEventHandler.AbilitySelectMenu.OnRegularAbilitySelected += activeAbilityManager.EquippedAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected += activeAbilityManager.AddPassiveAbility;
@@ -283,24 +278,17 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
 
-            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -= () =>
-                progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent -=
-                progressionSystem.HeroProgression.DecrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent -=
-                progressionSystem.HeroProgression.IncrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=
-                progressionSystem.HeroProgression.Confirm;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -=
-                progressionSystem.HeroProgression.ResetSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=
-                HeroProgressionCompleted;
-            progressionSystem.HeroProgression.OnEXPAdded -=
-                uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
-            progressionSystem.HeroProgression.OnSpChanged -=
-                uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -=
-                godsBenevolence.ActivateGodsBenevolence;
+            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -= () =>   progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent -=   progressionSystem.HeroProgression.DecrementAttributeSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent -=  progressionSystem.HeroProgression.IncrementAttributeSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=   progressionSystem.HeroProgression.Confirm;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -=   progressionSystem.HeroProgression.ResetSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -= HeroProgressionCompleted;
+
+            progressionSystem.HeroProgression.OnEXPAdded -= uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
+            progressionSystem.HeroProgression.OnSpChanged -= uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
+
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -=  godsBenevolence.ActivateGodsBenevolence;
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= StoreRunReward;
             uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= HandleSingleLevelUp;
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed -= ContinueGameLoop;
@@ -321,6 +309,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.OnPassiveAbilityButtonClicked -= activeAbilityManager.UseCharacterAbility;
 
             activeAbilityManager.OnActiveAbilityEquipped -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityEqquiped;
+            activeAbilityManager.OnPassiveAbilityEquipped -= uiSystem.UiEventHandler.GameMenu.VisualisePaasiveAbility;
 
             uiSystem.UiEventHandler.AbilitySelectMenu.OnRegularAbilitySelected -= activeAbilityManager.EquippedAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected -= activeAbilityManager.AddPassiveAbility;

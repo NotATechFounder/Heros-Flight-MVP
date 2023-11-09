@@ -75,7 +75,9 @@ namespace HeroesFlight.System.UI
 
                 UiEventHandler.GameMenu.OnPassiveAbilityButtonClicked += (index) => { OnPassiveAbilityButtonClicked?.Invoke(index); };
 
-                UiEventHandler.GameMenu.OnLevelUpComplete += UiEventHandler.HeroProgressionMenu.OnLevelUp;
+                // UiEventHandler.GameMenu.OnLevelUpComplete += UiEventHandler.HeroProgressionMenu.OnLevelUp;
+
+                UiEventHandler.GameMenu.OnLevelUpComplete += (level) => { UiEventHandler.AbilitySelectMenu.Open(); };
 
                 //UiEventHandler.GameMenu.GetCoinText = () =>
                 //{

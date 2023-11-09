@@ -11,8 +11,15 @@ public class ActiveAbilityManager : MonoBehaviour
 {
     public bool test;
 
+    public event Action<int> OnSpChanged;
+    public event Action<int, int, float> OnEXPAdded;
+
+    [SerializeField] private int spPerLevel;
+    [SerializeField] private float expToNextLevelBase;
+    [SerializeField] private float expToNextLevelMultiplier;
+
     public Action<int, RegularAbilityVisualData> OnActiveAbilityEquipped;
-    public Action<int, PassiveAbilityVisualData> OnPassiveAbilityEquipped;
+    public Action<PassiveAbilityVisualData> OnPassiveAbilityEquipped;
 
     [SerializeField] private RegularActiveAbilityDatabase allActiveAbilities;
     [SerializeField] private PassiveAbilityDatabase allPassiveAbilities;
@@ -43,6 +50,10 @@ public class ActiveAbilityManager : MonoBehaviour
     private CharacterSimpleController characterSystem;
     private HealthController characterHealthController;
     private BaseCharacterAttackController characterAttackController;
+
+    [SerializeField] private int currentLevel;
+    [SerializeField] private float currentExp;
+    [SerializeField] private float expToNextLevel;
 
 
     private void Awake()
@@ -251,7 +262,7 @@ public class ActiveAbilityManager : MonoBehaviour
     public void UseCharacterAbility(int slotIndex)
     {
         TimedAbilityController timedAbilityController = timedAbilitySlots[slotIndex];
-        if (timedAbilityController.IsActive)
+        if (!timedAbilityController.IsValid)
             return;
         timedAbilityController.ActivateAbility();
     }
@@ -272,6 +283,7 @@ public class ActiveAbilityManager : MonoBehaviour
         }
 
         PassiveAbilityAction(passiveAbilityType, isFirstLevel);
+        OnPassiveAbilityEquipped?.Invoke(GetPassiveAbilityVisualData(passiveAbilityType));
     }
 
     public void PassiveAbilityAction(PassiveAbilityType passiveAbilityType, bool isFirstLevel)
@@ -325,6 +337,39 @@ public class ActiveAbilityManager : MonoBehaviour
                 break;
             default: break;
         }
+    }
+
+    public void AddExp(float exp)
+    {
+        currentExp += exp;
+        if (currentExp >= expToNextLevel)
+        {
+            LevelUp();
+        }
+        else
+        {
+            OnEXPAdded?.Invoke(0, 0, currentExp / expToNextLevel);
+        }
+    }
+
+    private void LevelUpOnce()
+    {
+        currentLevel++;
+        currentExp -= expToNextLevel;
+        expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
+    }
+
+    private void LevelUp()
+    {
+        int currentLvl = currentLevel;
+        int numberOfLevelsGained = 0;
+        do
+        {
+            LevelUpOnce();
+            ++numberOfLevelsGained;
+        } while (currentExp >= expToNextLevel);
+
+        OnEXPAdded?.Invoke(currentLvl, numberOfLevelsGained, currentExp / expToNextLevel);
     }
 }
 

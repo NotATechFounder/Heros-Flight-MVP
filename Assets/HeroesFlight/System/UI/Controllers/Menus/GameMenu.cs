@@ -8,6 +8,7 @@ using HeroesFlight.Common.Enum;
 using Plugins.Audio_System;
 using StansAssets.Foundation.Async;
 using UnityEngine.Serialization;
+using System.Collections.Generic;
 
 namespace UISystem
 {
@@ -80,6 +81,9 @@ namespace UISystem
 
         [Header("Abilities")]
         [SerializeField] private AbilityTriggerButton[] activeAbilityButtons;
+        [SerializeField] private Transform passiveAbilityHolder;
+        [SerializeField] private PassiveAbilityDisplayUI passiveAbilityDisplayUIPrefab; 
+
 
         [Header("Boosters")]
         [SerializeField] private BoosterUI[] boosterButtons;
@@ -88,8 +92,11 @@ namespace UISystem
         [SerializeField] private GameObject transitionPanel;
         [SerializeField] private CanvasGroup transitionCanvasGroup;
 
+        private List<PassiveAbilityType> currentPassiveDisplayed = new List<PassiveAbilityType>();
+
         public TextMeshProUGUI CoinText => coinText;
         public AbilityTriggerButton[] ActiveAbilityTriggerButtons => activeAbilityButtons;
+
 
         JuicerRuntime openEffect;
         JuicerRuntime closeEffect;
@@ -395,6 +402,18 @@ namespace UISystem
         public void ActiveAbilityEqquiped(int index, RegularAbilityVisualData data)
         {
             activeAbilityButtons[index].SetIcon(data.Icon);
+        }
+
+        public void VisualisePaasiveAbility(PassiveAbilityVisualData passiveAbility)
+        {
+            if (currentPassiveDisplayed.Contains(passiveAbility.PassiveActiveAbilityType))
+            {
+                Debug.Log("Passive Ability Already Displayed");
+                return;
+            }
+            currentPassiveDisplayed.Add(passiveAbility.PassiveActiveAbilityType);
+            PassiveAbilityDisplayUI passiveAbilityDisplayUI = Instantiate(passiveAbilityDisplayUIPrefab, passiveAbilityHolder);
+            passiveAbilityDisplayUI.Initialize(passiveAbility);
         }
     }
 }
