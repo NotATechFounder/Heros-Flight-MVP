@@ -27,6 +27,7 @@ namespace HeroesFlight.System.FileManager.Model
             CurrentValue = currentValue;
             CanBeRerolled = canBeRerolled;
             TargetCurrency = targetCurrency;
+            Description = description;
         }
 
         public string Id { get; }

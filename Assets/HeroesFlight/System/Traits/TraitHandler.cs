@@ -3,6 +3,8 @@ using System.Linq;
 using HeroesFlight.System.FileManager.Enum;
 using HeroesFlight.System.FileManager.Model;
 using HeroesFlight.System.Stats.Traits;
+using HeroesFlight.System.Stats.Traits.Effects;
+using HeroesFlight.System.Stats.Traits.Enum;
 using HeroesFlight.System.Stats.Traits.Model;
 using UnityEngine;
 
@@ -34,7 +36,7 @@ namespace HeroesFlight.System.Stats.Handlers
             return false;
         }
 
-        public bool ModifyTraitValue(string traitId, int value)
+        public bool TryModifyTraitValue(string traitId, int value)
         {
             if (unlockedTraits.TryGetValue(traitId, out var stateValue))
             {
@@ -46,15 +48,32 @@ namespace HeroesFlight.System.Stats.Handlers
             return false;
         }
 
-        public Vector2Int GetFeatEffectRange(string id)
+        public bool HasTraitOfType(TraitType targetType, out string id)
+        {
+            var hasTrait = false;
+            id = string.Empty;
+            foreach (var traitEntry in unlockedTraits)
+            {
+                if (traitEntry.Value.TargetTrait.Effect.TraitType == targetType)
+                {
+                    id = traitEntry.Key;
+                    hasTrait = true;
+                }
+            }
+
+
+            return hasTrait;
+        }
+
+        public TraitEffect GetFeatEffect(string id)
         {
             if (traitMap.TryGetValue(id, out var model))
             {
-               return  model.Effect.ValueRange;
+                return model.Effect;
             }
-            
+
             Debug.LogError($"Trait with id {id} not found");
-            return new Vector2Int(0, 0);
+            return null;
         }
 
         IntValue GetFeatModificationValue(string traitId)
@@ -78,6 +97,18 @@ namespace HeroesFlight.System.Stats.Handlers
 
 
         public List<TraitStateModel> GetUnlockedFeats() => unlockedTraits.Values.ToList();
+
+
+        public TraitTreeModel GetFeatTreeData()
+        {
+            var featTreeData = new Dictionary<string, TraitModel>();
+            foreach (var pair in traitMap)
+            {
+                featTreeData.Add(pair.Key, GenerateFeatModel(pair.Value));
+            }
+
+            return new TraitTreeModel(size.x, size.y, featTreeData);
+        }
 
         void LoadCache()
         {
@@ -108,22 +139,13 @@ namespace HeroesFlight.System.Stats.Handlers
             {
                 state = TraitModelState.Unlocked;
             }
-            
-          
+
+
             return new TraitModel(targetTrait.Id, targetTrait.Tier, targetTrait.Slot, targetTrait.RequiredLvl,
-                targetTrait.DependantId, targetTrait.Cost,targetTrait.Currency, state, targetTrait.Icon, targetTrait.Effect.Value,
-                GetFeatModificationValue(targetTrait.Id).Value, targetTrait.Description,targetTrait.Effect.CanBeRerolled);
-        }
-
-        public TraitTreeModel GetFeatTreeData()
-        {
-            var featTreeData = new Dictionary<string, TraitModel>();
-            foreach (var pair in traitMap)
-            {
-                featTreeData.Add(pair.Key, GenerateFeatModel(pair.Value));
-            }
-
-            return new TraitTreeModel(size.x, size.y, featTreeData);
+                targetTrait.DependantId, targetTrait.Cost, targetTrait.Currency, state, targetTrait.Icon,
+                targetTrait.Effect.Value,
+                GetFeatModificationValue(targetTrait.Id).Value, targetTrait.Description,
+                targetTrait.Effect.CanBeRerolled);
         }
     }
 }

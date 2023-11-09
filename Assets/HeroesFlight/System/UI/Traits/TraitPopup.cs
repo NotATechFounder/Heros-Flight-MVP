@@ -14,7 +14,6 @@ namespace HeroesFlight.System.UI.Traits
     public class TraitPopup : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private TextMeshProUGUI titleText;
-        [SerializeField] private TextMeshProUGUI statusText;
         [SerializeField] private TextMeshProUGUI DescriptionText;
         [SerializeField] private GameObject unlockBlock;
         [SerializeField] private GameObject rerollBlock;
@@ -55,11 +54,7 @@ namespace HeroesFlight.System.UI.Traits
             state = newState;
             // rect.anchoredPosition3D = position;
             titleText.text = targetModel.Id;
-            statusText.gameObject.SetActive(model.CanBeRerolled);
-            statusText.text = $"+{targetModel.BaseValue} (+{targetModel.CurrentValue})";
-
-
-            DescriptionText.text = targetModel.Description;
+            DescriptionText.text =  ModifyDescription(model);
             switch (targetModel.State)
             {
                 case TraitModelState.UnlockBlocked:
@@ -94,6 +89,22 @@ namespace HeroesFlight.System.UI.Traits
             }
 
             ToggleCanvasGroup(canvasGroup, true);
+        }
+
+        private string ModifyDescription(TraitModel traitModel)
+        {
+            var description = traitModel.Description;
+            if (description.Contains("{0}"))
+            {
+                description = description.Replace("{0}", $"{targetModel.BaseValue}");
+            }
+
+            if (description.Contains("{1}"))
+            {
+                description = description.Replace("{1}", $"{targetModel.CurrentValue}");
+            }
+
+            return description;
         }
 
         public void UpdatePopup()

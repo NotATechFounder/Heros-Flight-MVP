@@ -1,5 +1,4 @@
-﻿using System;
-using HeroesFlight.Common.Enum;
+﻿using HeroesFlight.Common.Enum;
 using HeroesFlight.Common.Feat;
 using HeroesFlight.System.Stats.Handlers;
 using HeroesFlight.System.UI.Traits;
@@ -34,9 +33,9 @@ namespace HeroesFlight.System.Stats.Traits
                    
                     break;
                 case TraitModificationType.Reroll:
-                    var range = traitHandler.GetFeatEffectRange(request.Model.Id);
-                    var rng = Random.Range(range.x, range.y);
-                    if (traitHandler.ModifyTraitValue(request.Model.Id, rng))
+                    var effect = traitHandler.GetFeatEffect(request.Model.Id);
+                    var rng = Random.Range(effect.ValueRange.x, effect.ValueRange.y);
+                    if (traitHandler.TryModifyTraitValue(request.Model.Id, rng))
                     {
                         menu.UpdateTreeView(traitHandler.GetFeatTreeData());
                     }

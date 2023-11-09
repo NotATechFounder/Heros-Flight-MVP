@@ -3,17 +3,9 @@ using UnityEditor;
 
 namespace HeroesFlight.System.Stats.Traits.Editor
 {
-    [CustomEditor(typeof(CurrencyBoostEffect))]
-    public class CurrencyBoostEffectEditor : TraitEffectEditor
+    [CustomEditor(typeof(HealthRestoreEffect))]
+    public class HealthRestoreEffectEditor : TraitEffectEditor
     {
-        private SerializedProperty e;
-
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-            e = serializedObject.FindProperty("targetType");
-        }
-
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
@@ -24,7 +16,7 @@ namespace HeroesFlight.System.Stats.Traits.Editor
             {
                 EditorGUILayout.PropertyField(d);
             }
-            EditorGUILayout.PropertyField(e);
+
             serializedObject.ApplyModifiedProperties();
         }
     }
