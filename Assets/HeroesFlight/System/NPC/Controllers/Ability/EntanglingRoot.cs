@@ -23,7 +23,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public override void StartDetection(Action onComplete)
         {
             playerRigidBody=null;
-            if (overlap.Detect())
+            if (overlap.DetectOverlap())
             {
                 overlap.OnDetect += NotifyTargetDetected;
                 skeletonAnimation.gameObject.SetActive(true);

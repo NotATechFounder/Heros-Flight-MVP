@@ -20,7 +20,6 @@ namespace HeroesFlight.System.Combat
         {
             environmentSystem = environmentSystemInterface;
             this.uiSystem=uiSystem;
-            uiSystem.OnSkillOneButtonClicked += UseCharacterAbility;
             comboHandler = new CharacterComboHandler();
             comboHandler.OnComboUpdated += UpdateCharacterComboUi;
         }
@@ -47,9 +46,7 @@ namespace HeroesFlight.System.Combat
         public void RegisterEntity(CombatEntityModel model)
         {
             if (combatEntities.TryGetValue(model.HealthController, out var combatModel)) return;
-            
-            
-            
+                
             combatEntities.Add(model.HealthController,model);
             model.HealthController.Init();
             model.AttackController?.Init();
@@ -58,11 +55,7 @@ namespace HeroesFlight.System.Combat
             if (model.EntityType == CombatEntityType.Player)
             {
                 characterSkillHandler =
-                    new CharacterSkillHandler(
-                        model.HealthController.HealthTransform.GetComponent<CharacterAbilityInterface>(),
-                        model.HealthController.HealthTransform.GetComponent<ISkillControllerInterface>());
-                characterSkillHandler.CharacterAbility.SkillOne.OnSkillRuntime += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
-                characterSkillHandler.CharacterAbility.SkillOne.OnSkillCoolDown += uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
+                    new CharacterSkillHandler(model.HealthController.HealthTransform.GetComponent<CharacterAbilityInterface>());    
             }
         }
 
@@ -174,11 +167,6 @@ namespace HeroesFlight.System.Combat
         void UpdateCharacterComboUi(int value)
         {
             uiSystem.UpdateComboUI(value);
-        }
-
-        void UseCharacterAbility()
-        {
-            characterSkillHandler.CharacterAbility.SkillOne.ActivateAbility();
         }
     }
 }

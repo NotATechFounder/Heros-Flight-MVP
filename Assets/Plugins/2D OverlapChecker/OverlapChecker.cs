@@ -48,7 +48,7 @@ public abstract class OverlapChecker : MonoBehaviour
         return HasDetected();
     }
 
-    public bool Detect()
+    public bool DetectOverlap()
     {
         pos = transform.position + transform.rotation * (localOffset * facingVector);
         if (HasDetected())

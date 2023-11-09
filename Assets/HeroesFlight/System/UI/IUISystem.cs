@@ -10,7 +10,7 @@ namespace HeroesFlight.System.UI
         event Action OnRestartLvlRequest;
         event Action OnReviveCharacterRequest;
         event Action OnSpecialButtonClicked;
-        event Action OnSkillOneButtonClicked;
+        event Action<int> OnPassiveAbilityButtonClicked;
         public UIEventHandler UiEventHandler { get; }
         void ShowDamageText(float damage, Transform target,
             bool isCritical, bool targetIsPlayer, bool isHeal = false);

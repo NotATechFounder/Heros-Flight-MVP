@@ -48,7 +48,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             float currentDuration = 0;
             while (currentDuration < duration)
             {
-                overlap.Detect();
+                overlap.DetectOverlap();
                 yield return tickWait;
                 currentDuration += tick;
             }

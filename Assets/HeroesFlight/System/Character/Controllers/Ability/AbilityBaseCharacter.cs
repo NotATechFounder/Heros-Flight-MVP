@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class AbilityBaseCharacter : MonoBehaviour,CharacterAbilityInterface
+    public class AbilityBaseCharacter : MonoBehaviour, CharacterAbilityInterface
     {
         [SerializeField] float coolDown;
         [SerializeField] bool stopOnUse;

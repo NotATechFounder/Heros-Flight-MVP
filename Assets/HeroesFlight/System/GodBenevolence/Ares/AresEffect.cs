@@ -50,7 +50,6 @@ public class AresEffect : MonoBehaviour
 
     private void AnimationState_Complete(TrackEntry trackEntry)
     {
-        Debug.Log(trackEntry.Animation.Name);
         switch (trackEntry.Animation.Name)
         {
             case attackAnimation1Name:
@@ -80,7 +79,7 @@ public class AresEffect : MonoBehaviour
 
     public void Attack()
     {
-        overlapChecker.Detect();
+        overlapChecker.DetectOverlap();
         hitEffect.Play();
     }
 
