@@ -53,7 +53,7 @@ namespace HeroesFlight.System.Stats
 
         public void CollectRunCurrency()
         {
-            HeroProgression.AddExp(GetCurrency(CurrencyKeys.RunExperience));
+            //HeroProgression.AddExp(GetCurrency(CurrencyKeys.RunExperience));
             ResetCurrency(CurrencyKeys.RunExperience);
         }
     }

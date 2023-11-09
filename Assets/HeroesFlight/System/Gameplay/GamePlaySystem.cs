@@ -178,7 +178,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility += activeAbilityManager.GetRandomPassiveAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
-            uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += ContinueGameLoop;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += HeroProgressionCompleted;
 
             RegisterShrineNPCUIEvents();
             RegisterShrineNPCActions();
@@ -317,7 +317,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData -= activeAbilityManager.GetActiveAbilityVisualData;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility -= activeAbilityManager.GetRandomPassiveAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData -= activeAbilityManager.GetPassiveAbilityVisualData;
-            uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed -= ContinueGameLoop;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed -= HeroProgressionCompleted;
 
             UnRegisterShrineNPCUIEvents();
             UnRegisterShrineNPCActions();
@@ -864,6 +864,7 @@ namespace HeroesFlight.System.Gameplay
             environmentSystem.CurrencySpawner.ActivateExpItems(() =>
             {
                 Debug.Log("EXP ITEMS ACTIVATED");
+                activeAbilityManager.AddExp(progressionSystem.GetCurrency(CurrencyKeys.RunExperience));
                 progressionSystem.CollectRunCurrency();
             });
         }
@@ -1028,7 +1029,7 @@ namespace HeroesFlight.System.Gameplay
         IEnumerator ContinueAfterXpBarUpdate()
         {
             yield return new WaitUntil(() =>
-                uiSystem.UiEventHandler.HeroProgressionMenu.MenuStatus == UISystem.Menu.Status.Closed);
+                uiSystem.UiEventHandler.AbilitySelectMenu.MenuStatus == UISystem.Menu.Status.Closed);
             yield return new WaitForSeconds(1f);
             if (shrine.GetAngelEffectManager.CompletedLevel())
             {
@@ -1053,18 +1054,16 @@ namespace HeroesFlight.System.Gameplay
         {
             //if (characterStatController.GetHealthPercentage() <= 30)
 
-            //if (true)
-            //{
-            //    uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
-            //    uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,
-            //    ContinueGameLoop);
-            //}
-            //else
-            //{
-            //    ContinueGameLoop();
-            //}
-
-            uiSystem.UiEventHandler.AbilitySelectMenu.Open();   
+            if (true)
+            {
+                uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
+                uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,
+                ContinueGameLoop);
+            }
+            else
+            {
+                ContinueGameLoop();
+            }
         }
 
         void HandleGameLoopFinish()
