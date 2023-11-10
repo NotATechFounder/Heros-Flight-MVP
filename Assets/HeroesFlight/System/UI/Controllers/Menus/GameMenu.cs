@@ -200,6 +200,8 @@ namespace UISystem
             {
                 button.Disable();
             }
+            
+            ToggleSpecialAttackButton(false);
         }
 
         public void DisplayInfoMessage(InfoMessageType infoMessageType, float duration = 1.5f)
