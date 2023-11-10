@@ -25,6 +25,8 @@ public class OrbOfLightning : RegularActiveAbility
 
     public override void OnActivated()
     {
+        GetEffectParticleByLevel().SetActive(true);
+
         currentDamagePercentage = damagePercentageCurve.GetCurrentValueFloat(currentLevel);
         int currentDamage = (int)StatCalc.GetPercentage(baseDamage, currentDamagePercentage);
         autoShooter.SetDamage(currentDamage);
@@ -36,6 +38,7 @@ public class OrbOfLightning : RegularActiveAbility
     public override void OnDeactivated()
     {
         skillOrb.Deactivate();
+        GetEffectParticleByLevel().SetActive(false);
     }
 
     public override void OnCoolDownEnded()

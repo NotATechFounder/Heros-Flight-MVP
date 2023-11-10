@@ -1,5 +1,6 @@
 using System;
 using HeroesFlight.System.Gameplay.Enum;
+using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -13,5 +14,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void Init();
         void ToggleControllerState(bool isEnabled);
         bool CanAttack();
+        public WorldBarUI specialBar { get; }
+
     }
 }

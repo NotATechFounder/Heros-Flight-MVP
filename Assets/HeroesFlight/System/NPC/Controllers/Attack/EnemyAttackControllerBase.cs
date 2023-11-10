@@ -30,6 +30,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public float Damage => currentDamage;
         public float TimeSinceLastAttack => timeSinceLastAttack;
 
+        public WorldBarUI specialBar => throw new NotImplementedException();
+
         public virtual void Init()
         {
            

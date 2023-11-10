@@ -127,8 +127,6 @@ namespace HeroesFlight.System.Gameplay
 
             npcSystem.NpcContainer.SetMobDifficultyHolder(container.CurrentModel.MobDifficulty);
 
-            uiSystem.UpdateUltimateButtonFill(0);
-
             GameTimer = new CountDownTimer(container);
 
             environmentSystem.CurrencySpawner.OnCollected = HandleCurrencyCollected;

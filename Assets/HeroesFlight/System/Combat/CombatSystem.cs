@@ -35,6 +35,7 @@ namespace HeroesFlight.System.Combat
 
         CharacterSkillHandler characterSkillHandler;
         CharacterComboHandler comboHandler;
+        WorldBarUI specialBar;
 
         Dictionary<IHealthController,CombatEntityModel>  combatEntities= new ();
 
@@ -55,7 +56,9 @@ namespace HeroesFlight.System.Combat
             if (model.EntityType == CombatEntityType.Player)
             {
                 characterSkillHandler =
-                    new CharacterSkillHandler(model.HealthController.HealthTransform.GetComponent<CharacterAbilityInterface>());    
+                    new CharacterSkillHandler(model.HealthController.HealthTransform.GetComponent<CharacterAbilityInterface>());
+                specialBar = model.AttackController.specialBar;
+                specialBar.ChangeValue(characterSkillHandler.CharacterUltimate.CurrentCharge);
             }
         }
 
@@ -106,7 +109,8 @@ namespace HeroesFlight.System.Combat
                 case AttackType.Regular:
 
                     characterSkillHandler.CharacterUltimate.UpdateAbilityCharges(5);
-                    uiSystem.UpdateUltimateButtonFill(characterSkillHandler.CharacterUltimate.CurrentCharge);
+                    specialBar.ChangeValue(characterSkillHandler.CharacterUltimate.CurrentCharge);
+                    uiSystem.UpdateUltimateButton(characterSkillHandler.CharacterUltimate.CurrentCharge);
                     break;
             }
         }
@@ -146,6 +150,7 @@ namespace HeroesFlight.System.Combat
         {
             onBeforeUse?.Invoke();
             characterSkillHandler.CharacterUltimate.UseAbility(onComplete);
+            specialBar.ChangeValue(0);
         }
 
         public void StartCharacterComboCheck()
