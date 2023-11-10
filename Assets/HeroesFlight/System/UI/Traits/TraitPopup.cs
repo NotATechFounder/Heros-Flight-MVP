@@ -5,13 +5,12 @@ using HeroesFlight.System.FileManager.Enum;
 using HeroesFlight.System.FileManager.Model;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
 namespace HeroesFlight.System.UI.Traits
 {
-    public class TraitPopup : MonoBehaviour, IPointerClickHandler
+    public class TraitPopup : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI titleText;
         [SerializeField] private TextMeshProUGUI DescriptionText;
@@ -20,7 +19,7 @@ namespace HeroesFlight.System.UI.Traits
         [SerializeField] private GameObject blockedBlock;
         [SerializeField] private Button reRollButton;
         [SerializeField] private Button unlockButton;
-
+        [SerializeField] private Button closeButton;
         [SerializeField] private Image currencyIcon;
         [SerializeField] private TextMeshProUGUI currencyText;
 
@@ -45,6 +44,7 @@ namespace HeroesFlight.System.UI.Traits
                 OnTraitModificationRequest?.Invoke(
                     new TraitModificationEventModel(targetModel, TraitModificationType.Unlock));
             });
+            closeButton.onClick.AddListener(HidePopup);
         }
 
 
@@ -113,6 +113,7 @@ namespace HeroesFlight.System.UI.Traits
 
         public void HidePopup()
         {
+            state = TraitPopupState.Disabled;
             ToggleCanvasGroup(canvasGroup, false);
         }
 
@@ -133,9 +134,6 @@ namespace HeroesFlight.System.UI.Traits
             }
         }
 
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            HidePopup();
-        }
+       
     }
 }
