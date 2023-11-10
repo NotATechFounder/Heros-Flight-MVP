@@ -20,6 +20,7 @@ public class ActiveAbilityManager : MonoBehaviour
 
     public Action<int, RegularAbilityVisualData> OnActiveAbilityEquipped;
     public Action<PassiveAbilityVisualData> OnPassiveAbilityEquipped;
+    public Action<PassiveAbilityType> OnPassiveAbilityRemoved;
 
     [SerializeField] private RegularActiveAbilityDatabase allActiveAbilities;
     [SerializeField] private PassiveAbilityDatabase allPassiveAbilities;
@@ -70,8 +71,14 @@ public class ActiveAbilityManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            EquippedAbility(RegularActiveAbilityType.MagicShield);
-            //EquippedAbility(PassiveActiveAbilityType.HeavenStab);
+            //EquippedAbility(RegularActiveAbilityType.MagicShield);
+            //EquippedAbility(RegularActiveAbilityType.Immolation);
+            //EquippedAbility(RegularActiveAbilityType.OrbOfLightning);
+
+            AddPassiveAbility(PassiveAbilityType.Flex);
+            AddPassiveAbility(PassiveAbilityType.DuckDodgeDip);
+            AddPassiveAbility(PassiveAbilityType.LuckyHit);
+
         }
 
         if (Input.GetKeyDown(KeyCode.D))
@@ -206,10 +213,11 @@ public class ActiveAbilityManager : MonoBehaviour
         Destroy(passiveActiveAbility.gameObject);
     }
 
-    public void SwapAbility(RegularActiveAbilityType currentAbility, RegularActiveAbilityType newAbility)
+    public void SwapActiveAbility(RegularActiveAbilityType currentAbility, RegularActiveAbilityType newAbility)
     {
+        int levelOfCurrentAbility = eqquipedRegularActivities[currentAbility].Level;
         DetachAbility(regularAbiltyAndControllerDic[currentAbility], eqquipedRegularActivities[currentAbility]);
-        AttachAbility(regularAbiltyAndControllerDic[currentAbility], eqquipedRegularActivities[newAbility]);
+        InitialiseAbility (newAbility, regularAbiltyAndControllerDic[currentAbility], levelOfCurrentAbility);
     }
 
     public void UpgradeAbility(RegularActiveAbilityType passiveActiveAbilityType)
@@ -230,7 +238,28 @@ public class ActiveAbilityManager : MonoBehaviour
         return avaliableAbilities[randomIndex];
     }
 
-    public List<PassiveAbilityType> GetRandomPassiveAbility(int amount, List<PassiveAbilityType> passiveActiveAbilityTypeExeption)
+    public List<RegularActiveAbilityType> GetRandomMultipleActiveAbility(int amount, List<RegularActiveAbilityType> passiveActiveAbilityTypeExeption)
+    {
+        List<RegularActiveAbilityType> randomAbilities = new List<RegularActiveAbilityType>();
+        List<RegularActiveAbilityType> avaliableAbilities = new List<RegularActiveAbilityType>(regularActiveAbilityTypes);
+
+        for (int i = 0; i < passiveActiveAbilityTypeExeption.Count; i++)
+        {
+            avaliableAbilities.Remove(passiveActiveAbilityTypeExeption[i]);
+        }
+
+        for (int i = 0; i < amount; i++)
+        {
+            if (avaliableAbilities.Count == 0)
+                break;
+            int randomIndex = UnityEngine.Random.Range(0, avaliableAbilities.Count);
+            randomAbilities.Add(avaliableAbilities[randomIndex]);
+            avaliableAbilities.RemoveAt(randomIndex);
+        }
+        return randomAbilities;
+    }
+
+    public List<PassiveAbilityType> GetRandomMultiplePassiveAbility(int amount, List<PassiveAbilityType> passiveActiveAbilityTypeExeption)
     {
         List<PassiveAbilityType> randomAbilities = new List<PassiveAbilityType>();
         List<PassiveAbilityType> avaliableAbilities = new List<PassiveAbilityType>(passiveActiveAbilityTypes);
@@ -242,7 +271,11 @@ public class ActiveAbilityManager : MonoBehaviour
 
         for (int i = 0; i < amount; i++)
         {
+            if (avaliableAbilities.Count == 0)
+                break;
+
             int randomIndex = UnityEngine.Random.Range(0, avaliableAbilities.Count);
+
             randomAbilities.Add(avaliableAbilities[randomIndex]);
             avaliableAbilities.RemoveAt(randomIndex);
         }
@@ -267,23 +300,50 @@ public class ActiveAbilityManager : MonoBehaviour
         timedAbilityController.ActivateAbility();
     }
 
+    public List<RegularActiveAbilityType> GetEqqipedActiveAbilities()
+    {
+        return new List<RegularActiveAbilityType>(eqquipedRegularActivities.Keys);
+    }
+
     public void AddPassiveAbility(PassiveAbilityType passiveAbilityType)
+    {
+        EquipPassiveAbility (passiveAbilityType);
+    }
+
+    public void EquipPassiveAbility(PassiveAbilityType passiveAbilityType, int level = 1) 
     {
         bool isFirstLevel = false;
         if (eqquipedPassiveAbilities.ContainsKey(passiveAbilityType))
         {
             if (allPassiveAbilitiesDic[passiveAbilityType].IsMaxLevel(eqquipedPassiveAbilities[passiveAbilityType]))
+            {
+                Debug.LogError("Max level reached");
                 return;
+            }
+                
             eqquipedPassiveAbilities[passiveAbilityType]++;
         }
         else
         {
+            if (eqquipedPassiveAbilities.Count >= 3)
+            {
+                return;
+            }
+
             isFirstLevel = true;
-            eqquipedPassiveAbilities.Add(passiveAbilityType, 1);
+            eqquipedPassiveAbilities.Add(passiveAbilityType, level);
         }
 
         PassiveAbilityAction(passiveAbilityType, isFirstLevel);
+
         OnPassiveAbilityEquipped?.Invoke(GetPassiveAbilityVisualData(passiveAbilityType));
+    }
+
+    public void SwapPassiveAbility(PassiveAbilityType currentAbility, PassiveAbilityType newAbility)
+    {
+        int levelOfCurrentAbility  = eqquipedPassiveAbilities[currentAbility];
+        RemovePassiveAbility(currentAbility);
+        EquipPassiveAbility(newAbility , levelOfCurrentAbility);
     }
 
     public void PassiveAbilityAction(PassiveAbilityType passiveAbilityType, bool isFirstLevel)
@@ -306,16 +366,16 @@ public class ActiveAbilityManager : MonoBehaviour
 
                 break;
             case PassiveAbilityType.HeartThief:
-                characterStatController.ModifyLifeSteal(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("LifeSteal", isFirstLevel), true);
+                characterStatController.ModifyLifeSteal(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("LifeSteal", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]), true);
                 break;
             case PassiveAbilityType.Reflect:
 
                 break;
             case PassiveAbilityType.LuckyHit:
-                characterStatController.ModifyCriticalHitChance(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("CriticalHitChance", isFirstLevel), true);
+                characterStatController.ModifyCriticalHitChance(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("CriticalHitChance", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]), true);
                 break;
             case PassiveAbilityType.Flex:
-                characterStatController.ModifyDefense(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("Defense", isFirstLevel), true);
+                characterStatController.ModifyDefense(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("Defense", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]), true);
                 break;
             case PassiveAbilityType.Multicast:
 
@@ -330,13 +390,77 @@ public class ActiveAbilityManager : MonoBehaviour
 
                 break;
             case PassiveAbilityType.DuckDodgeDip:
-                characterStatController.ModifyDodgeChance(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("DodgeChance", isFirstLevel), true);
+                characterStatController.ModifyDodgeChance(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("DodgeChance", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]), true);
                 break;
             case PassiveAbilityType.FullCounter:
 
                 break;
             default: break;
         }
+    }
+
+    public void RemovePassiveAbility(PassiveAbilityType passiveAbilityType)
+    {
+        switch (passiveAbilityType)
+        {
+            case PassiveAbilityType.FrostStrike:
+
+                break;
+            case PassiveAbilityType.FlameStrike:
+
+                break;
+            case PassiveAbilityType.LightningStrike:
+
+                break;
+            case PassiveAbilityType.LichArmor:
+
+                break;
+            case PassiveAbilityType.IfritsArmor:
+
+                break;
+            case PassiveAbilityType.HeartThief:
+                characterStatController.ModifyLifeSteal(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("LifeSteal", eqquipedPassiveAbilities[passiveAbilityType]), false);
+                break;
+            case PassiveAbilityType.Reflect:
+
+                break;
+            case PassiveAbilityType.LuckyHit:
+                characterStatController.ModifyCriticalHitChance(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("CriticalHitChance", eqquipedPassiveAbilities[passiveAbilityType]), false);
+                break;
+            case PassiveAbilityType.Flex:
+                characterStatController.ModifyDefense(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("Defense", eqquipedPassiveAbilities[passiveAbilityType]), false);    
+                break;
+            case PassiveAbilityType.Multicast:
+
+                break;
+            case PassiveAbilityType.Sacrifice:
+
+                break;
+            case PassiveAbilityType.BoilingPoint:
+
+                break;
+            case PassiveAbilityType.GreedIsGood:
+
+                break;
+            case PassiveAbilityType.DuckDodgeDip:
+                characterStatController.ModifyDodgeChance(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("DodgeChance", eqquipedPassiveAbilities[passiveAbilityType]), false);
+                break;
+            case PassiveAbilityType.FullCounter:
+
+                break;
+            default: break;
+        }
+
+        if (eqquipedPassiveAbilities.ContainsKey(passiveAbilityType))
+        {
+            eqquipedPassiveAbilities.Remove(passiveAbilityType);
+            OnPassiveAbilityRemoved?.Invoke(passiveAbilityType);
+        }
+    }
+
+    public List<PassiveAbilityType> GetEqquipedPassiveAbilities()
+    {
+        return new List<PassiveAbilityType>(eqquipedPassiveAbilities.Keys);
     }
 
     public void AddExp(float exp)

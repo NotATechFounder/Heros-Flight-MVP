@@ -170,18 +170,18 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.OnPassiveAbilityButtonClicked += activeAbilityManager.UseCharacterAbility;
 
             activeAbilityManager.OnActiveAbilityEquipped += uiSystem.UiEventHandler.GameMenu.ActiveAbilityEqquiped;
-            activeAbilityManager.OnPassiveAbilityEquipped += uiSystem.UiEventHandler.GameMenu.VisualisePaasiveAbility;
+            activeAbilityManager.OnPassiveAbilityEquipped += uiSystem.UiEventHandler.GameMenu.VisualisePassiveAbility;
+            activeAbilityManager.OnPassiveAbilityRemoved += uiSystem.UiEventHandler.GameMenu.RemovePassiveAbility;
 
             uiSystem.UiEventHandler.AbilitySelectMenu.OnRegularAbilitySelected += activeAbilityManager.EquippedAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected += activeAbilityManager.AddPassiveAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility += activeAbilityManager.GetRandomActiveAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility += activeAbilityManager.GetRandomPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility += activeAbilityManager.GetRandomMultiplePassiveAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += HeroProgressionCompleted;
 
             RegisterShrineNPCUIEvents();
-            RegisterShrineNPCActions();
 
             OnComplete?.Invoke();
         }
@@ -309,18 +309,18 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.OnPassiveAbilityButtonClicked -= activeAbilityManager.UseCharacterAbility;
 
             activeAbilityManager.OnActiveAbilityEquipped -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityEqquiped;
-            activeAbilityManager.OnPassiveAbilityEquipped -= uiSystem.UiEventHandler.GameMenu.VisualisePaasiveAbility;
+            activeAbilityManager.OnPassiveAbilityEquipped -= uiSystem.UiEventHandler.GameMenu.VisualisePassiveAbility;
+            activeAbilityManager.OnPassiveAbilityRemoved -= uiSystem.UiEventHandler.GameMenu.RemovePassiveAbility;
 
             uiSystem.UiEventHandler.AbilitySelectMenu.OnRegularAbilitySelected -= activeAbilityManager.EquippedAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected -= activeAbilityManager.AddPassiveAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility -= activeAbilityManager.GetRandomActiveAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData -= activeAbilityManager.GetActiveAbilityVisualData;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility -= activeAbilityManager.GetRandomPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility -= activeAbilityManager.GetRandomMultiplePassiveAbility;
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData -= activeAbilityManager.GetPassiveAbilityVisualData;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed -= HeroProgressionCompleted;
 
             UnRegisterShrineNPCUIEvents();
-            UnRegisterShrineNPCActions();
         }
 
         /// <summary>
@@ -752,13 +752,15 @@ namespace HeroesFlight.System.Gameplay
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.ActiveAbilityReRoller].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller],
                     () =>
                     {
-
+                        uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.Open();
+                        TogglePlayerMovement(false);
                     });
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.PassiveAbilityReRoller].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller],
                     () =>
                     {
-
+                        uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.Open();
+                        TogglePlayerMovement(false);
                     });
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.HealingMagicRune].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune],
@@ -767,7 +769,13 @@ namespace HeroesFlight.System.Gameplay
                         uiSystem.UiEventHandler.HealingNPCMenu.Open();
                         TogglePlayerMovement(false);
                     });
-   
+
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.Blacksmith].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.Blacksmith],
+                    () =>
+                    {
+
+                    });
+
                     container.EnablePortal(currentLevelEnvironment .GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
                     break;
             }
@@ -775,47 +783,87 @@ namespace HeroesFlight.System.Gameplay
 
         void RegisterShrineNPCUIEvents()
         {
+            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += (angelCard) =>
+            {
+                shrine.Purchase(ShrineNPCType.AngelsGambit);
+            };
+
+
             uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
             uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
             uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested += (currencyType) =>
             {
                 return shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType);
             };
-
-            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += () => TogglePlayerMovement(true);
-            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += (angelCard) =>
+            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted += () =>
             {
-                 shrine.Purchase(ShrineNPCType.AngelsGambit);
+                shrine.GetHealer.Heal();
             };
+
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
+            {
+                return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
+            };
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes += activeAbilityManager.GetEqqipedActiveAbilities;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetRandomActiveAbilityTypes += activeAbilityManager.GetRandomMultipleActiveAbility;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped += activeAbilityManager.SwapActiveAbility;
+
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
+            {
+                return shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
+            };
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes += activeAbilityManager.GetEqquipedPassiveAbilities;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetRandomPassiveAbilityTypes += activeAbilityManager.GetRandomMultiplePassiveAbility;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped += activeAbilityManager.SwapPassiveAbility;
         }
 
         void UnRegisterShrineNPCUIEvents()
         {
+            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= (angelCard) =>
+            {
+                shrine.Purchase(ShrineNPCType.AngelsGambit);
+            };
+
             uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed -= () => TogglePlayerMovement(true);
             uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice -= shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
             uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested -= (currencyType) =>
             {
                 return shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType);
             };
-
-            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= () => TogglePlayerMovement(true);
-            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= (angelCard) =>
+            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted -= () =>
             {
-                shrine.Purchase(ShrineNPCType.AngelsGambit);
+                shrine.GetHealer.Heal();
             };
-        }
 
-        void RegisterShrineNPCActions()
-        {
-            shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].OnPurchaseSuccessful += ()=> shrine.GetHealer.Heal();
-            // Register other npcs here
-        }
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
+            {
+                return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
+            };
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes += activeAbilityManager.GetEqqipedActiveAbilities;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetRandomActiveAbilityTypes += activeAbilityManager.GetRandomMultipleActiveAbility;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped += activeAbilityManager.SwapActiveAbility;
 
-
-        void UnRegisterShrineNPCActions()
-        {
-            shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].OnPurchaseSuccessful -= () => shrine.GetHealer.Heal();
-            // UnRegister other npcs here
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
+            {
+                return shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
+            };
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes -= activeAbilityManager.GetEqquipedPassiveAbilities;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetRandomPassiveAbilityTypes -= activeAbilityManager.GetRandomMultiplePassiveAbility;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityVisualData -= activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped -= activeAbilityManager.SwapPassiveAbility;
         }
 
         void HandleCrystalHit(Transform transform)

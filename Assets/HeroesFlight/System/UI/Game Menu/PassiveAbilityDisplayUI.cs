@@ -19,6 +19,8 @@ public class PassiveAbilityDisplayUI : MonoBehaviour
     private JuicerRuntime infoHolderOpenEffect;
     private JuicerRuntime infoHolderCloseEffect;
     private Coroutine viewInfoCoroutine;
+
+    public bool Occupied => content.activeSelf;
  
 
     private void Awake()

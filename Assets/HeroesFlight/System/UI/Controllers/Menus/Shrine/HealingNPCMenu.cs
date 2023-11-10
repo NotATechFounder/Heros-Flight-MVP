@@ -11,7 +11,10 @@ public class HealingNPCMenu : BaseMenu<HealingNPCMenu>
     public event Func<ShrineNPCCurrencyType, int> GetCurrencyPrice;
     public event Func<ShrineNPCCurrencyType, bool> OnPurchaseRequested;
 
-    [Header("Buttons")]
+    public event Action OnPurchaseCompleted;
+
+
+   [Header("Buttons")]
     [SerializeField] private Transform container;
     [SerializeField] private Transform currencyHolder;
     [SerializeField] private AdvanceButton runeShardsButton;
@@ -77,7 +80,8 @@ public class HealingNPCMenu : BaseMenu<HealingNPCMenu>
     {
         if(OnPurchaseRequested?.Invoke(curencyType) == true)
         {
-            currencyHolder.gameObject.SetActive(false);
+            OnPurchaseCompleted?.Invoke();
+            Close();
         }
     }
 }

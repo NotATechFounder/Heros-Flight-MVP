@@ -9,6 +9,7 @@ using Plugins.Audio_System;
 using StansAssets.Foundation.Async;
 using UnityEngine.Serialization;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UISystem
 {
@@ -82,7 +83,7 @@ namespace UISystem
         [Header("Abilities")]
         [SerializeField] private AbilityTriggerButton[] activeAbilityButtons;
         [SerializeField] private Transform passiveAbilityHolder;
-        [SerializeField] private PassiveAbilityDisplayUI passiveAbilityDisplayUIPrefab; 
+        [SerializeField] private PassiveAbilityDisplayUI[] passiveAbilityDisplayUIs; 
 
 
         [Header("Boosters")]
@@ -92,7 +93,7 @@ namespace UISystem
         [SerializeField] private GameObject transitionPanel;
         [SerializeField] private CanvasGroup transitionCanvasGroup;
 
-        private List<PassiveAbilityType> currentPassiveDisplayed = new List<PassiveAbilityType>();
+        private Dictionary<PassiveAbilityType, PassiveAbilityDisplayUI> currentPassiveDisplayed = new Dictionary<PassiveAbilityType, PassiveAbilityDisplayUI>();
 
         public TextMeshProUGUI CoinText => coinText;
         public AbilityTriggerButton[] ActiveAbilityTriggerButtons => activeAbilityButtons;
@@ -404,16 +405,27 @@ namespace UISystem
             activeAbilityButtons[index].SetIcon(data.Icon);
         }
 
-        public void VisualisePaasiveAbility(PassiveAbilityVisualData passiveAbility)
+        public void VisualisePassiveAbility(PassiveAbilityVisualData passiveAbility)
         {
-            if (currentPassiveDisplayed.Contains(passiveAbility.PassiveActiveAbilityType))
+            if (currentPassiveDisplayed.ContainsKey(passiveAbility.PassiveActiveAbilityType))
             {
                 Debug.Log("Passive Ability Already Displayed");
                 return;
             }
-            currentPassiveDisplayed.Add(passiveAbility.PassiveActiveAbilityType);
-            PassiveAbilityDisplayUI passiveAbilityDisplayUI = Instantiate(passiveAbilityDisplayUIPrefab, passiveAbilityHolder);
-            passiveAbilityDisplayUI.Initialize(passiveAbility);
+
+            PassiveAbilityDisplayUI emptyUI = passiveAbilityDisplayUIs.First( (x) => !x.Occupied);
+
+            currentPassiveDisplayed.Add(passiveAbility.PassiveActiveAbilityType, emptyUI);
+            emptyUI.Initialize(passiveAbility);
+        }
+
+        public void RemovePassiveAbility(PassiveAbilityType passiveAbilityType)
+        {
+            if (currentPassiveDisplayed.ContainsKey(passiveAbilityType))
+            {
+                currentPassiveDisplayed[passiveAbilityType].Disable();
+                currentPassiveDisplayed.Remove(passiveAbilityType);
+            }
         }
     }
 }
