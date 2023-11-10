@@ -71,14 +71,17 @@ namespace HeroesFlight.System.Stats.Handlers
 
                     break;
                 case TraitModificationType.Reroll:
-                    var effect = traitHandler.GetTraitEffect(request.Model.Id);
-                    diceSystem.RollDice(effect.ValueRange.x,effect.ValueRange.y, (rolledValue) =>
+                    uiSystem.UiEventHandler.DiceMenu.ShowDiceMenu(() =>
                     {
-                        if (traitHandler.TryModifyTraitValue(request.Model.Id, rolledValue))
+                        diceSystem.RollDice( (rolledValue) =>
                         {
-                            uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
-                        }
+                            if (traitHandler.TryModifyTraitValue(request.Model.Id, rolledValue))
+                            {
+                                uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
+                            }
+                        });
                     });
+                
                  
 
                     break;

@@ -1,4 +1,5 @@
 using System;
+using HeroesFlight.System.UI.DIce;
 using HeroesFlight.System.UI.Traits;
 using UISystem;
 using UnityEngine;
@@ -30,6 +31,7 @@ public class UIEventHandler : MonoBehaviour
     public ActiveAbilityRerollerNPCMenu ActiveAbilityRerollerNPCMenu { get; private set; }
     public PassiveAbilityRerollerNPCMenu PassiveAbilityRerollerNPCMenu { get; private set; }
     public TraitTreeMenu TraitTreeMenu { get; private set; }
+    public DiceMenu DiceMenu { get; private set; }
 
     public AbilitySelectMenu AbilitySelectMenu { get; private set; }
 
@@ -54,6 +56,7 @@ public class UIEventHandler : MonoBehaviour
         ActiveAbilityRerollerNPCMenu = uIManager.InitMenu<ActiveAbilityRerollerNPCMenu>();
         AbilitySelectMenu = uIManager.InitMenu<AbilitySelectMenu>();
         PassiveAbilityRerollerNPCMenu = uIManager.InitMenu<PassiveAbilityRerollerNPCMenu>();
+        DiceMenu=uIManager.InitMenu<DiceMenu>();
         OnComplecte?.Invoke();
     }
 }

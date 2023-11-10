@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HeroesFlight.System.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -8,13 +9,15 @@ namespace HeroesFlight.System.Dice
 {
     public class DiceSystem : DiceSystemInterface
     {
-        public DiceSystem()
+        public DiceSystem(IUISystem uiSystem)
         {
             totalWeight = PoorThreshHold + AverageThreshHold + GreatThreshHold + PoorThreshHold+PowerFulThreshHold;
             rollCache.Add(RollType.Poor,PoorThreshHold);
             rollCache.Add(RollType.Average,AverageThreshHold);
             rollCache.Add(RollType.Great,GreatThreshHold);
             rollCache.Add(RollType.PowerFul,PowerFulThreshHold);
+
+            this.uiSystem = uiSystem;
         }
         private const int PoorThreshHold = 15;
         private const int AverageThreshHold = 60;
@@ -22,11 +25,13 @@ namespace HeroesFlight.System.Dice
         private const int PowerFulThreshHold = 5;
         private Dictionary<RollType, int> rollCache = new();
         private int totalWeight;
+
+        private IUISystem uiSystem;
         public void Init(Scene scene = default, Action onComplete = null) {}
 
         public void Reset() { }
 
-        public void RollDice(int min, int max, Action<int> onComplete )
+        public void RollDice(Action<int> onComplete )
         {
             var diceRoll = Random.Range(0, totalWeight);
             var currentRollType = RollType.Poor;
@@ -59,8 +64,11 @@ namespace HeroesFlight.System.Dice
                     break;
             }
             
+            uiSystem.UiEventHandler.DiceMenu.RollDiceUi(resultRoll,ConvertDiceRollToColor(currentRollType), () =>
+            {
+                onComplete?.Invoke(resultRoll);    
+            });
             
-            onComplete?.Invoke(resultRoll);
            
         }
 
