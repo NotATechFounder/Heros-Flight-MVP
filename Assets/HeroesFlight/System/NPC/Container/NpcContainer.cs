@@ -211,12 +211,12 @@ public class MobDifficultyHolder
 
     public int GetHealth(int level, EnemyType enemyType)
     {
-       return mobDifficulties.FirstOrDefault(x => x.EnemyType == enemyType).HealthStat.GetCurrentValue(level);
+       return mobDifficulties.FirstOrDefault(x => x.EnemyType == enemyType).HealthStat.GetCurrentValueInt(level);
     }
 
     public int GetDamage(int level, EnemyType enemyType)
     {
-        return mobDifficulties.FirstOrDefault(x => x.EnemyType == enemyType).DamageStat.GetCurrentValue(level);
+        return mobDifficulties.FirstOrDefault(x => x.EnemyType == enemyType).DamageStat.GetCurrentValueInt(level);
     }
 }
 

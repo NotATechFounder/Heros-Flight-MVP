@@ -8,6 +8,8 @@ using HeroesFlight.Common.Enum;
 using Plugins.Audio_System;
 using StansAssets.Foundation.Async;
 using UnityEngine.Serialization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace UISystem
 {
@@ -78,9 +80,11 @@ namespace UISystem
         [SerializeField] private Image specialAttackButtonFill;
         [SerializeField] private Image specialAttackIcon;
 
-        [Header("Skills")]
-        [SerializeField] private AdvanceButton skillOneButton;
-        [SerializeField] private Image skillOneButtonFill;
+        [Header("Abilities")]
+        [SerializeField] private AbilityTriggerButton[] activeAbilityButtons;
+        [SerializeField] private Transform passiveAbilityHolder;
+        [SerializeField] private PassiveAbilityDisplayUI[] passiveAbilityDisplayUIs; 
+
 
         [Header("Boosters")]
         [SerializeField] private BoosterUI[] boosterButtons;
@@ -89,7 +93,11 @@ namespace UISystem
         [SerializeField] private GameObject transitionPanel;
         [SerializeField] private CanvasGroup transitionCanvasGroup;
 
+        private Dictionary<PassiveAbilityType, PassiveAbilityDisplayUI> currentPassiveDisplayed = new Dictionary<PassiveAbilityType, PassiveAbilityDisplayUI>();
+
         public TextMeshProUGUI CoinText => coinText;
+        public AbilityTriggerButton[] ActiveAbilityTriggerButtons => activeAbilityButtons;
+
 
         JuicerRuntime openEffect;
         JuicerRuntime closeEffect;
@@ -100,7 +108,6 @@ namespace UISystem
         JuicerRuntime specialIconEffect;
         JuicerRuntimeCore<float> levelProgressEffect;
         JuicerRuntime transitionEffect;
-        JuicerRuntime skillOneEffect;
 
         public override void OnCreated()
         {
@@ -143,11 +150,13 @@ namespace UISystem
                 transitionPanel.gameObject.SetActive(false);
             });
 
-            skillOneButton.onClick.AddListener(SkillOneButtonClicked);
-
-            skillOneEffect = skillOneButtonFill.JuicyAlpha(0, 0.25f);
-            skillOneEffect.SetEase(Ease.EaseInBounce);
-            skillOneEffect.SetLoop(-1);
+            foreach (AbilityTriggerButton abilityTriggerButton in activeAbilityButtons)
+            {
+                abilityTriggerButton.OnAbilityButtonClicked += (index) =>
+                {
+                    OnPassiveAbilityButtonClicked?.Invoke(index);
+                };
+            }
 
             ResetMenu();
         }
@@ -372,34 +381,6 @@ namespace UISystem
             OnSpecialAttackButtonClicked?.Invoke();
         }
 
-        private void SkillOneButtonClicked()
-        {
-            if (skillOneButtonFill.fillAmount < 1) return;
-            OnPassiveAbilityButtonClicked?.Invoke(1);
-        }
-
-        public void UpdateSkillOneFill(float normalisedValue)
-        {
-            skillOneButtonFill.fillAmount = normalisedValue;
-
-            if (!skillOneEffect.IsPaused)
-            {
-                skillOneEffect.Pause();
-                skillOneButtonFill.color = new Color(skillOneButtonFill.color.r, skillOneButtonFill.color.g, skillOneButtonFill.color.b, 1);
-            }
-        }
-
-        public void UpdateSkillOneFillCoolDown(float normalisedValue)
-        {
-            skillOneButtonFill.fillAmount = 1 - normalisedValue;
-
-            if (skillOneButtonFill.fillAmount >= 1)
-            {
-                skillOneButtonFill.color = new Color(skillOneButtonFill.color.r, skillOneButtonFill.color.g, skillOneButtonFill.color.b, 1);
-                skillOneEffect.Start();
-            }
-        }
-
         public void ShowTransition(Action OntransitionHalf, Action OnEndTransition = null)
         {
             OnEndTransitionHalfComplete = OntransitionHalf;
@@ -416,6 +397,34 @@ namespace UISystem
                     boosterButton.Initialize(boosterContainer);
                     break;
                 }
+            }
+        }
+
+        public void ActiveAbilityEqquiped(int index, RegularAbilityVisualData data)
+        {
+            activeAbilityButtons[index].SetIcon(data.Icon);
+        }
+
+        public void VisualisePassiveAbility(PassiveAbilityVisualData passiveAbility)
+        {
+            if (currentPassiveDisplayed.ContainsKey(passiveAbility.PassiveActiveAbilityType))
+            {
+                Debug.Log("Passive Ability Already Displayed");
+                return;
+            }
+
+            PassiveAbilityDisplayUI emptyUI = passiveAbilityDisplayUIs.First( (x) => !x.Occupied);
+
+            currentPassiveDisplayed.Add(passiveAbility.PassiveActiveAbilityType, emptyUI);
+            emptyUI.Initialize(passiveAbility);
+        }
+
+        public void RemovePassiveAbility(PassiveAbilityType passiveAbilityType)
+        {
+            if (currentPassiveDisplayed.ContainsKey(passiveAbilityType))
+            {
+                currentPassiveDisplayed[passiveAbilityType].Disable();
+                currentPassiveDisplayed.Remove(passiveAbilityType);
             }
         }
     }

@@ -14,7 +14,7 @@ using UnityEngine;
 public class ApolloEffect : MonoBehaviour
 {
     [SerializeField] private float autoAttackSpeed = 3f;
-    [SerializeField] private float linesOfDamage = 3;
+    [SerializeField] private int linesOfDamage = 3;
     [SerializeField] private float firstAttackDelay = 0.1f;
     [SerializeField] private float lineDamageDelay = 0.25f;
 
@@ -26,8 +26,8 @@ public class ApolloEffect : MonoBehaviour
     [Header("Animation and Viusal Settings")]
     [SerializeField] SkeletonAnimation skeletonAnimation;
     [SerializeField] public const string idleAnimationName = "Idle";
-    [SerializeField] public const string attackAnimation1Name = "Attack_Multi_Arrow";
-    [SerializeField] public const string attackAnimation2Name = "Attack_One_Arrow";
+    [SerializeField] public const string attackAnimation1Name = "Attack_Multi_Bow";
+    [SerializeField] public const string attackAnimation2Name = "Attack_One_Bow";
 
     private CharacterControllerInterface characterController;
     private float timer;
@@ -111,27 +111,18 @@ public class ApolloEffect : MonoBehaviour
 
     private void OnDamgeOverlap(int count, Collider2D[] colliders)
     {
-        StartCoroutine(LineDamage(count, colliders));
-    }
-
-    public IEnumerator LineDamage(int count, Collider2D[] colliders)
-    {
-        yield return new WaitForSeconds(firstAttackDelay);
-        float currentDamage = damage / linesOfDamage;
         for (int i = 0; i < linesOfDamage; i++)
         {
             for (int z = 0; z < count; z++)
             {
                 if (colliders[z].TryGetComponent(out IHealthController healthController))
                 {
-                    healthController.TryDealDamage(new HealthModificationIntentModel(damage,
+                    healthController.TryDealLineDamage(linesOfDamage, lineDamageDelay, new HealthModificationIntentModel(damage,
                         DamageType.Critical, AttackType.Regular, DamageCalculationType.Flat));
                 }
             }
-            yield return new WaitForSeconds(lineDamageDelay);
         }
     }
-
 
     private void OnDisable()
     {

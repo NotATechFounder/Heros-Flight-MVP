@@ -148,26 +148,18 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
 
-            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes += () =>
-                progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent +=
-                progressionSystem.HeroProgression.DecrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent +=
-                progressionSystem.HeroProgression.IncrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=
-                progressionSystem.HeroProgression.Confirm;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed +=
-                progressionSystem.HeroProgression.ResetSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=
-                HeroProgressionCompleted;
-            progressionSystem.HeroProgression.OnEXPAdded +=
-                uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
-            progressionSystem.HeroProgression.OnSpChanged +=
-                uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =
-                godsBenevolence.GetRandomGodsBenevolenceVisualSO;
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved +=
-                godsBenevolence.ActivateGodsBenevolence;
+            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes += () =>     progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent +=  progressionSystem.HeroProgression.DecrementAttributeSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent +=   progressionSystem.HeroProgression.IncrementAttributeSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=    progressionSystem.HeroProgression.Confirm;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed +=    progressionSystem.HeroProgression.ResetSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=    HeroProgressionCompleted;
+            progressionSystem.HeroProgression.OnEXPAdded += uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
+            progressionSystem.HeroProgression.OnSpChanged += uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
+
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =  godsBenevolence.GetRandomGodsBenevolenceVisualSO;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved +=    godsBenevolence.ActivateGodsBenevolence;
+
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += StoreRunReward;
             uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete += HandleSingleLevelUp;
             uiSystem.OnRestartLvlRequest += HandleLvlRestart;
@@ -175,15 +167,36 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
             uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
 
-            activeAbilityManager.PassiveAbilityOneController.OnRuntimeActive +=
-                uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
-            activeAbilityManager.PassiveAbilityOneController.OnCoolDownActive +=
-                uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
+            activeAbilityManager.OnEXPAdded += uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
+
+            activeAbilityManager.TimedAbilityControllers[0].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[0].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[1].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[1].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[1].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[1].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[2].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[2].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[2].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[2].UpdateSkillOneFillCoolDown;
             uiSystem.OnPassiveAbilityButtonClicked += activeAbilityManager.UseCharacterAbility;
 
+            activeAbilityManager.OnActiveAbilityEquipped += uiSystem.UiEventHandler.GameMenu.ActiveAbilityEqquiped;
+            activeAbilityManager.OnPassiveAbilityEquipped += uiSystem.UiEventHandler.GameMenu.VisualisePassiveAbility;
+            activeAbilityManager.OnPassiveAbilityRemoved += uiSystem.UiEventHandler.GameMenu.RemovePassiveAbility;
+
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnRegularAbilitySelected += activeAbilityManager.EquippedAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected += activeAbilityManager.AddPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility += activeAbilityManager.GetRandomActiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility += activeAbilityManager.GetRandomMultiplePassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += HeroProgressionCompleted;
+
             RegisterShrineNPCUIEvents();
-            RegisterShrineNPCActions();
+
             OnComplete?.Invoke();
+        }
+
+        private void AbilitySelectMenu_OnMenuClosed()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -274,24 +287,17 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
 
-            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -= () =>
-                progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent -=
-                progressionSystem.HeroProgression.DecrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent -=
-                progressionSystem.HeroProgression.IncrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=
-                progressionSystem.HeroProgression.Confirm;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -=
-                progressionSystem.HeroProgression.ResetSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=
-                HeroProgressionCompleted;
-            progressionSystem.HeroProgression.OnEXPAdded -=
-                uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
-            progressionSystem.HeroProgression.OnSpChanged -=
-                uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -=
-                godsBenevolence.ActivateGodsBenevolence;
+            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -= () =>   progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent -=   progressionSystem.HeroProgression.DecrementAttributeSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent -=  progressionSystem.HeroProgression.IncrementAttributeSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=   progressionSystem.HeroProgression.Confirm;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -=   progressionSystem.HeroProgression.ResetSP;
+            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -= HeroProgressionCompleted;
+
+            progressionSystem.HeroProgression.OnEXPAdded -= uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
+            progressionSystem.HeroProgression.OnSpChanged -= uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
+
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -=  godsBenevolence.ActivateGodsBenevolence;
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= StoreRunReward;
             uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= HandleSingleLevelUp;
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed -= ContinueGameLoop;
@@ -303,14 +309,27 @@ namespace HeroesFlight.System.Gameplay
             characterAttackController = null;
             characterHealthController = null;
 
-            activeAbilityManager.PassiveAbilityOneController.OnRuntimeActive -=
-                uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFill;
-            activeAbilityManager.PassiveAbilityOneController.OnCoolDownActive -=
-                uiSystem.UiEventHandler.GameMenu.UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[0].OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[0].OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[1].OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[1].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[1].OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[1].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[2].OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[2].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[2].OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[2].UpdateSkillOneFillCoolDown;
             uiSystem.OnPassiveAbilityButtonClicked -= activeAbilityManager.UseCharacterAbility;
 
+            activeAbilityManager.OnActiveAbilityEquipped -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityEqquiped;
+            activeAbilityManager.OnPassiveAbilityEquipped -= uiSystem.UiEventHandler.GameMenu.VisualisePassiveAbility;
+            activeAbilityManager.OnPassiveAbilityRemoved -= uiSystem.UiEventHandler.GameMenu.RemovePassiveAbility;
+
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnRegularAbilitySelected -= activeAbilityManager.EquippedAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected -= activeAbilityManager.AddPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility -= activeAbilityManager.GetRandomActiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData -= activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility -= activeAbilityManager.GetRandomMultiplePassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData -= activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed -= HeroProgressionCompleted;
+
             UnRegisterShrineNPCUIEvents();
-            UnRegisterShrineNPCActions();
         }
 
         /// <summary>
@@ -764,29 +783,47 @@ namespace HeroesFlight.System.Gameplay
                             TogglePlayerMovement(false);
                         });
 
-                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.ActiveAbilityReRoller].Initialize(
-                        shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller],
-                        () => { });
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.ActiveAbilityReRoller].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller],
+                    () =>
+                    {
+                        uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.Open();
+                        TogglePlayerMovement(false);
+                    });
 
-                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.PassiveAbilityReRoller].Initialize(
-                        shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller],
-                        () => { });
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.PassiveAbilityReRoller].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller],
+                    () =>
+                    {
+                        uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.Open();
+                        TogglePlayerMovement(false);
+                    });
 
-                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.HealingMagicRune].Initialize(
-                        shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune],
-                        () =>
-                        {
-                            uiSystem.UiEventHandler.HealingNPCMenu.Open();
-                            TogglePlayerMovement(false);
-                        });
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.HealingMagicRune].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune],
+                    () =>
+                    {
+                        uiSystem.UiEventHandler.HealingNPCMenu.Open();
+                        TogglePlayerMovement(false);
+                    });
 
-                    container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.Blacksmith].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.Blacksmith],
+                    () =>
+                    {
+
+                    });
+
+                    container.EnablePortal(currentLevelEnvironment .GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
                     break;
             }
         }
 
         void RegisterShrineNPCUIEvents()
         {
+            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += (angelCard) =>
+            {
+                shrine.Purchase(ShrineNPCType.AngelsGambit);
+            };
+
+
             uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
             uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice +=
                 shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
@@ -794,16 +831,42 @@ namespace HeroesFlight.System.Gameplay
             {
                 return shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType);
             };
-
-            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += () => TogglePlayerMovement(true);
-            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += (angelCard) =>
+            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted += () =>
             {
-                shrine.Purchase(ShrineNPCType.AngelsGambit);
+                shrine.GetHealer.Heal();
             };
+
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
+            {
+                return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
+            };
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes += activeAbilityManager.GetEqqipedActiveAbilities;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetRandomActiveAbilityTypes += activeAbilityManager.GetRandomMultipleActiveAbility;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped += activeAbilityManager.SwapActiveAbility;
+
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
+            {
+                return shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
+            };
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes += activeAbilityManager.GetEqquipedPassiveAbilities;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetRandomPassiveAbilityTypes += activeAbilityManager.GetRandomMultiplePassiveAbility;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped += activeAbilityManager.SwapPassiveAbility;
         }
 
         void UnRegisterShrineNPCUIEvents()
         {
+            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= (angelCard) =>
+            {
+                shrine.Purchase(ShrineNPCType.AngelsGambit);
+            };
+
             uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed -= () => TogglePlayerMovement(true);
             uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice -=
                 shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
@@ -811,27 +874,32 @@ namespace HeroesFlight.System.Gameplay
             {
                 return shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType);
             };
-
-            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= () => TogglePlayerMovement(true);
-            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= (angelCard) =>
+            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted -= () =>
             {
-                shrine.Purchase(ShrineNPCType.AngelsGambit);
+                shrine.GetHealer.Heal();
             };
-        }
 
-        void RegisterShrineNPCActions()
-        {
-            shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].OnPurchaseSuccessful +=
-                () => shrine.GetHealer.Heal();
-            // Register other npcs here
-        }
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
+            {
+                return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
+            };
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes += activeAbilityManager.GetEqqipedActiveAbilities;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetRandomActiveAbilityTypes += activeAbilityManager.GetRandomMultipleActiveAbility;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped += activeAbilityManager.SwapActiveAbility;
 
-
-        void UnRegisterShrineNPCActions()
-        {
-            shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].OnPurchaseSuccessful -=
-                () => shrine.GetHealer.Heal();
-            // UnRegister other npcs here
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
+            {
+                return shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
+            };
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes -= activeAbilityManager.GetEqquipedPassiveAbilities;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetRandomPassiveAbilityTypes -= activeAbilityManager.GetRandomMultiplePassiveAbility;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityVisualData -= activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped -= activeAbilityManager.SwapPassiveAbility;
         }
 
         void HandleCrystalHit(Transform transform)
@@ -880,6 +948,7 @@ namespace HeroesFlight.System.Gameplay
             environmentSystem.CurrencySpawner.ActivateExpItems(() =>
             {
                 Debug.Log("EXP ITEMS ACTIVATED");
+                activeAbilityManager.AddExp(progressionSystem.GetCurrency(CurrencyKeys.RunExperience));
                 progressionSystem.CollectRunCurrency();
             });
         }
@@ -909,7 +978,6 @@ namespace HeroesFlight.System.Gameplay
                     break;
             }
         }
-
 
         void HandleGameStateChanged(GameState newState)
         {
@@ -1048,7 +1116,7 @@ namespace HeroesFlight.System.Gameplay
         IEnumerator ContinueAfterXpBarUpdate()
         {
             yield return new WaitUntil(() =>
-                uiSystem.UiEventHandler.HeroProgressionMenu.MenuStatus == UISystem.Menu.Status.Closed);
+                uiSystem.UiEventHandler.AbilitySelectMenu.MenuStatus == UISystem.Menu.Status.Closed);
             yield return new WaitForSeconds(1f);
             if (shrine.GetAngelEffectManager.CompletedLevel())
             {
@@ -1072,6 +1140,7 @@ namespace HeroesFlight.System.Gameplay
         void ShowGodBenevolencePrompt()
         {
             //if (characterStatController.GetHealthPercentage() <= 30)
+
             if (true)
             {
                 uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,

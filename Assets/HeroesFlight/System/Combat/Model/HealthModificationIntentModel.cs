@@ -8,7 +8,7 @@ namespace HeroesFlight.System.Gameplay.Model
 {
     public class HealthModificationIntentModel
     {
-        public HealthModificationIntentModel(float damage,DamageType type,AttackType attackType,
+        public HealthModificationIntentModel(float damage,DamageType type, AttackType attackType,
             DamageCalculationType calculationType)
         {
             Amount = damage;
