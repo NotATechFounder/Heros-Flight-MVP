@@ -26,6 +26,10 @@ public class UIEventHandler : MonoBehaviour
     public RewardPopupController RewardPopup { get; private set; }
 
     public HealingNPCMenu HealingNPCMenu { get; private set; }
+    public ActiveAbilityRerollerNPCMenu ActiveAbilityRerollerNPCMenu { get; private set; }
+    public PassiveAbilityRerollerNPCMenu PassiveAbilityRerollerNPCMenu { get; private set; }
+
+    public AbilitySelectMenu AbilitySelectMenu { get; private set; }
 
     public void Init(Action OnComplecte = null)
     {
@@ -44,6 +48,9 @@ public class UIEventHandler : MonoBehaviour
         HeroProgressionMenu = uIManager.InitMenu<HeroProgressionMenu>();
         RewardPopup = uIManager.InitMenu<RewardPopupController>();
         HealingNPCMenu = uIManager.InitMenu<HealingNPCMenu>();
+        ActiveAbilityRerollerNPCMenu = uIManager.InitMenu<ActiveAbilityRerollerNPCMenu>();
+        AbilitySelectMenu = uIManager.InitMenu<AbilitySelectMenu>();
+        PassiveAbilityRerollerNPCMenu = uIManager.InitMenu<PassiveAbilityRerollerNPCMenu>();
         OnComplecte?.Invoke();
     }
 }

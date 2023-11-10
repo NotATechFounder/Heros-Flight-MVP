@@ -17,7 +17,7 @@ public class StatSO : ScriptableObject
         }
     }
 
-    public int GetCurrentValue(int level) => statCurve.GetCurrentValue(level);
+    public int GetCurrentValue(int level) => statCurve.GetCurrentValueInt(level);
 }
 
 [Serializable]
@@ -58,7 +58,8 @@ public class CustomAnimationCurve
         }
     }
 
-    public int GetCurrentValue(int level) { return Mathf.RoundToInt(animationCurve.Evaluate(level)); }
+    public int GetCurrentValueInt(int level) { return Mathf.RoundToInt(animationCurve.Evaluate(level)); }
+    public float GetCurrentValueFloat(int level) { return animationCurve.Evaluate(level); }
 
     public int GetTotalValue(int level)
     {

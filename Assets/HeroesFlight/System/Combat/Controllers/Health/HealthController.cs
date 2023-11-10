@@ -6,6 +6,7 @@ using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.Model;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using System.Collections;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -15,7 +16,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected bool autoInit;
         [SerializeField] protected float maxHealth;
         [SerializeField] protected float currentHealth;
-        [SerializeField] protected HeathBarUI heathBarUI;
+        [SerializeField] protected WorldBarUI heathBarUI;
         [SerializeField] protected float defence;
         [SerializeField] protected float dodgeChance;
 
@@ -27,15 +28,15 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public int MaxHit => maxHit;
         public int CurrentHit => currentHit;
-
         public bool IsImmortal { get; protected set; }
+        public bool IsShielded { get; protected set; }
         public HealthType HealthType => healthType;
         public Transform HealthTransform => transform;
         public float MaxHealth => maxHealth;
         public float CurrentHealth => currentHealth;
         public float CurrentHealthProportion => (float)currentHealth / maxHealth;
         public event Action<HealthModificationRequestModel> OnDamageReceiveRequest;
-        public event Action<HealthModificationIntentModel> OnHitWhileImmortal;
+        public event Action<HealthModificationIntentModel> OnHitWhileIsShielded;
         public event Action<IHealthController> OnDeath;
         public event Action OnDodged;
 
@@ -60,9 +61,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 return;
             }
 
+            if (IsShielded)
+            {
+                OnHitWhileIsShielded?.Invoke(healthModificationIntent);
+                return;
+            }
+
             if (IsImmortal)
             {
-                OnHitWhileImmortal?.Invoke(healthModificationIntent);
                 return;
             }
   
@@ -151,6 +157,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             IsImmortal = isImmortal;
         }
 
+        public virtual void SetShieldedState(bool isShielded)
+        {
+            IsShielded = isShielded;
+        }
+
         protected virtual void ProcessDeath()
         {
             OnDeath?.Invoke(this);
@@ -186,5 +197,19 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             HealthModificationIntentModel healthModificationIntentModel = new HealthModificationIntentModel(damage, damageType, attackType,DamageCalculationType.Flat);
             TryDealDamage(healthModificationIntentModel);
         }
+
+        public void TryDealLineDamage(int numberOfLines, float delayBetweenLines, HealthModificationIntentModel healthModificationIntent)
+        {
+            StartCoroutine(LineDamageRoutine(numberOfLines, delayBetweenLines, healthModificationIntent));
+        }
+
+        public IEnumerator LineDamageRoutine(int numberOfLines, float delayBetweenLines, HealthModificationIntentModel healthModificationIntent)
+        {
+            for (int i = 0; i < numberOfLines; i++)
+            {
+                TryDealDamage(healthModificationIntent);
+                yield return new WaitForSeconds(delayBetweenLines);
+            }
+        }   
     }
 }

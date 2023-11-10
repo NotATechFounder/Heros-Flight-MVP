@@ -1,11 +1,9 @@
 using Pelumi.Juicer;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 using System.Text;
-using System;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class BoosterUI : MonoBehaviour
 {
@@ -23,12 +21,14 @@ public class BoosterUI : MonoBehaviour
     private JuicerRuntime infoHolderCloseEffect;
     private Coroutine viewInfoCoroutine;
     private StringBuilder infoBuilder;
+    private CanvasGroup canvasGroup;
     BoosterContainer boosterContainer;
 
     public BoosterSO GetBoosterSO => boosterSO;
 
     private void Awake()
     {
+        canvasGroup = GetComponent<CanvasGroup>();
         infoBuilder = new StringBuilder();
         infoHolder.transform.localScale = new Vector3(0, 1, 1);
         infoHolderOpenEffect = infoHolder.JuicyScaleX(1, .15f);
@@ -38,10 +38,12 @@ public class BoosterUI : MonoBehaviour
         {
             ShowInfo();
         });
+        canvasGroup.alpha = 0;
     }
 
     public void Initialize(BoosterContainer boosterContainer)
     {
+        canvasGroup.alpha = 1;
         this.boosterContainer = boosterContainer;
         boosterContainer.OnTick = UpdateDurationBar;
         boosterContainer.OnEnd = Disable;
@@ -57,7 +59,6 @@ public class BoosterUI : MonoBehaviour
 
         infoHolderText.text = infoBuilder.ToString();
         content.SetActive(true);
-        ShowInfo();
     }
 
     private void ShowInfo()
@@ -78,7 +79,7 @@ public class BoosterUI : MonoBehaviour
 
     public void OpenInfoHolder()
     {
-        infoHolderOpenEffect.Start(()=>infoHolder.gameObject.SetActive(true));
+        infoHolderOpenEffect.Start(() => infoHolder.gameObject.SetActive(true));
     }
 
     public void CloseInfoHolder()
@@ -94,6 +95,7 @@ public class BoosterUI : MonoBehaviour
 
     public void Disable()
     {
+        canvasGroup.alpha = 0;
         content.SetActive(false);
         boosterSO = null;
     }

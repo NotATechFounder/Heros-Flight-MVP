@@ -11,7 +11,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public override void Init()
         {
             aiController = GetComponent<AiControllerInterface>();
-            heathBarUI?.ChangeType(HeathBarUI.HealthBarType.ToggleVisibilityOnHit);
+            heathBarUI?.ChangeType(WorldBarUI.BarType.ToggleVisibilityOnHit);
             base.Init();
         }
      
