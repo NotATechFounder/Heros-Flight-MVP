@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.Common.Feat;
+using HeroesFlight.System.Dice;
 using HeroesFlight.System.Stats.Traits.Effects;
 using HeroesFlight.System.Stats.Traits.Enum;
 using HeroesFlight.System.Stats.Traits.Model;
@@ -14,15 +15,16 @@ namespace HeroesFlight.System.Stats.Handlers
 {
     public class TraitsSystem : TraitSystemInterface
     {
-        public TraitsSystem(DataSystemInterface dataSystem, IUISystem uiSystem)
+        public TraitsSystem(DataSystemInterface dataSystem, IUISystem uiSystem, DiceSystemInterface diceSystemInterface)
         {
             data = dataSystem;
             this.uiSystem = uiSystem;
+            diceSystem = diceSystemInterface;
             traitHandler = new TraitHandler(new Vector2Int(4,8));
         }
 
         private DataSystemInterface data;
-
+        private DiceSystemInterface diceSystem;
         private IUISystem uiSystem;
 
         private TraitHandler traitHandler;
@@ -70,11 +72,14 @@ namespace HeroesFlight.System.Stats.Handlers
                     break;
                 case TraitModificationType.Reroll:
                     var effect = traitHandler.GetTraitEffect(request.Model.Id);
-                    var rng = Random.Range(effect.ValueRange.x, effect.ValueRange.y);
-                    if (traitHandler.TryModifyTraitValue(request.Model.Id, rng))
+                    diceSystem.RollDice(effect.ValueRange.x,effect.ValueRange.y, (rolledValue) =>
                     {
-                        uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
-                    }
+                        if (traitHandler.TryModifyTraitValue(request.Model.Id, rolledValue))
+                        {
+                            uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
+                        }
+                    });
+                 
 
                     break;
             }

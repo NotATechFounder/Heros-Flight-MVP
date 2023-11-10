@@ -1,6 +1,7 @@
 ﻿using HeroesFlight.Core.Application;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Combat;
+using HeroesFlight.System.Dice;
 using HeroesFlight.System.Environment;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Input;
@@ -38,7 +39,9 @@ namespace HeroesFlight.Core.Bootstrapper
             CharacterSystemInterface characterSystem = new CharacterSystem(inputSystem);
             NpcSystemInterface npcSystem = new NpcSystem();
             ProgressionSystemInterface progressionSystem = new ProgressionSystem(dataSystem);
-            TraitSystemInterface traitSystem = new TraitsSystem(dataSystem, uiSystem);
+            DiceSystemInterface diceSystem = new DiceSystem();
+            TraitSystemInterface traitSystem = new TraitsSystem(dataSystem, uiSystem,diceSystem);
+            
             GamePlaySystemInterface gamePlaySystem =
                 new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem,traitSystem);
 
@@ -52,6 +55,7 @@ namespace HeroesFlight.Core.Bootstrapper
             m_ServiceLocator.Register(combatSystem);
             m_ServiceLocator.Register(progressionSystem);
             m_ServiceLocator.Register(traitSystem);
+            m_ServiceLocator.Register(diceSystem);
             return m_ServiceLocator;
         }
     }
