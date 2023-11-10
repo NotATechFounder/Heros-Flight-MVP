@@ -52,12 +52,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             base.Reset();
         }
 
-        public override void Revive()
+        public override void Revive(float healthPercentage)
         {
             controller.SetActionState(true);
             attackController.ToggleControllerState(true);
-            animator.PlayDeathAnimation();
-            base.Revive();
+            animator.PlayIdleAnimation();
+            base.Revive(healthPercentage);
         }
 
         public override void TryDealDamage(HealthModificationIntentModel healthModificationIntent)

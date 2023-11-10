@@ -10,7 +10,7 @@ namespace HeroesFlight.System.Combat
         event Action<EntityDamageReceivedModel> OnEntityReceivedDamage;
         event Action<EntityDeathModel> OnEntityDied;
         void RegisterEntity(CombatEntityModel model);
-        void RevivePlayer();
+        void RevivePlayer(float healthPercentage);
         void InitCharacterUltimate(List<AnimationData> animations, int charges);
         void UseCharacterUltimate(Action onBeforeUse=null,Action onComplete = null);
         void StartCharacterComboCheck();

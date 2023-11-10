@@ -58,7 +58,7 @@ namespace HeroesFlight.System.Gameplay
             this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
             this.combatSystem.OnEntityDied += HandleEntityDied;
             this.uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
-            this.uiSystem.OnReviveCharacterRequest += ReviveCharacter;
+            this.uiSystem.OnReviveCharacterRequest += () => { ReviveCharacter(100f); };
         }
 
         CountDownTimer GameTimer;
@@ -110,6 +110,7 @@ namespace HeroesFlight.System.Gameplay
         Level currentLevel;
 
         List<Environment.Objects.Crystal> crystals = new();
+        private bool revivedByFeatThisRun = false;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -209,6 +210,7 @@ namespace HeroesFlight.System.Gameplay
             ResetLogic();
             ResetConnections();
             container.SetStartingIndex(0);
+            revivedByFeatThisRun = false;
         }
 
         /// <summary>
@@ -333,6 +335,7 @@ namespace HeroesFlight.System.Gameplay
             GameTimer.Stop();
             ChangeState(GameState.Ended);
             uiSystem.ToggleSpecialEnemyHealthBar(false);
+            
         }
 
         /// <summary>
@@ -366,9 +369,11 @@ namespace HeroesFlight.System.Gameplay
             });
         }
 
-        void ReviveCharacter()
+        void ReviveCharacter(float healthPercentage)
         {
-            combatSystem.RevivePlayer();
+            environmentSystem.ParticleManager.Spawn("CharacterRevival",
+                characterSystem.CurrentCharacter.CharacterTransform.position);
+            combatSystem.RevivePlayer(healthPercentage);
             GameTimer.Resume();
             ChangeState(GameState.Ongoing);
             uiSystem.UiEventHandler.ReviveMenu.Close();
@@ -552,11 +557,25 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleCharacterDeath()
         {
+          
             Debug.LogError($"character died and game state is {currentState}");
             if (currentState != GameState.Ongoing)
                 return;
             characterAttackController.GetComponent<CharacterAnimationController>().StopUltSequence();
 
+            
+            if (!revivedByFeatThisRun && traitSystem.HasTraitOfType(TraitType.Revival, out var traitId))
+            {
+                revivedByFeatThisRun = true;
+                var traitValue = traitSystem.GetTraitEffect(traitId);
+                CoroutineUtility.WaitForSeconds(2f, () =>
+                {
+                   ReviveCharacter(traitValue.Value);
+                });
+                
+                return;
+            }
+            
             //freezes engine?  
             // GameTimer.Pause();
             CoroutineUtility.WaitForSeconds(1f, () => { ChangeState(GameState.Died); });
@@ -1177,10 +1196,19 @@ namespace HeroesFlight.System.Gameplay
                 if (trait.TargetTrait.Effect.TraitType == TraitType.StatBoost)
                 {
                     var effect = trait.TargetTrait.Effect as StatBoostEffect;
+                    var modificationValue = effect.Value + trait.Value.Value;
                     Debug.Log($"Gona update {effect.TargetStat} with value {effect.Value + trait.Value.Value}");
-                    modifiedStatsMap.Add(effect.TargetStat,effect.Value + trait.Value.Value);
+                    if (modifiedStatsMap.TryGetValue(effect.TargetStat, out var currentValue))
+                    {
+                        modifiedStatsMap[effect.TargetStat] += modificationValue;
+                    }
+                    else
+                    {
+                        modifiedStatsMap.Add(effect.TargetStat, modificationValue);
+                    }
                 }
             }
+
             progressionSystem.HeroProgression.AddStatsModifiers(modifiedStatsMap);
         }
     }

@@ -126,13 +126,13 @@ namespace HeroesFlight.System.Combat
             }
         }
 
-        public void RevivePlayer()
+        public void RevivePlayer(float healthPercentage)
         {
             foreach (var data in combatEntities)
             {
                 if (data.Value.EntityType == CombatEntityType.Player)
                 {
-                    data.Key.Revive();
+                    data.Key.Revive(healthPercentage);
                 }
             }
         }
