@@ -63,7 +63,18 @@ namespace HeroesFlight.System.Combat
         {
             if (combatEntities.TryGetValue(obj.RequestOwner, out var data))
             {
-                obj.RequestOwner.ModifyHealth(obj.IntentModel);
+                if (obj.IntentModel.CalculationType == DamageCalculationType.Flat)
+                {
+                    obj.RequestOwner.ModifyHealth(obj.IntentModel);      
+                }
+                else
+                {
+                    var modificationValue = obj.RequestOwner.MaxHealth / 100 * obj.IntentModel.Amount;
+                    obj.IntentModel.ModifyAmount(modificationValue);
+                    obj.RequestOwner.ModifyHealth(obj.IntentModel); 
+                }
+                
+              
                 switch (data.EntityType)
                 {
                     case CombatEntityType.Player:

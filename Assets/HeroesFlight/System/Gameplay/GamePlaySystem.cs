@@ -557,6 +557,13 @@ namespace HeroesFlight.System.Gameplay
 
                     return;
                 }
+                
+                if ( traitSystem.HasTraitOfType(TraitType.HealthRestore, out var traitId))
+                {
+                    var traitValue = traitSystem.GetTraitEffect(traitId);
+                    characterSystem.CurrentCharacter.CharacterTransform.GetComponent<IHealthController>().TryDealDamage(
+                        new HealthModificationIntentModel(traitValue.Value,DamageType.NoneCritical,AttackType.Healing,DamageCalculationType.Percentage));
+                }
 
                 ChangeState(GameState.WaitingPortal);
             });
