@@ -10,11 +10,13 @@ namespace HeroesFlight.System.Stats
         public ProgressionSystem(DataSystemInterface dataSystem)
         {
             currencyHandler = new InRunCurrencyHandler();
+          //  traitHandler = new TraitHandler();
             this.dataSystem = dataSystem;
         }
 
         DataSystemInterface dataSystem;
         InRunCurrencyHandler currencyHandler;
+       // private TraitHandler traitHandler;
         public HeroProgression HeroProgression { get; private set; }
         public BoosterManager BoosterManager { get; private set; }
 

@@ -157,7 +157,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public void ToggleControllerState(bool isEnabled)
         {
             isDisabled = !isEnabled;
-            visualController.DisableVisuals(isDisabled);
+          //  visualController.DisableVisuals(isDisabled);
         }
 
         public bool CanAttack()

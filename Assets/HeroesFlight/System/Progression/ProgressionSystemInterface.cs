@@ -10,7 +10,7 @@ namespace HeroesFlight.System.Stats
         int GetCurrency(string key);
         void SaveRunResults();
         void ResetCurrency(string experience);
-
         void CollectRunCurrency();
+        
     }
 }

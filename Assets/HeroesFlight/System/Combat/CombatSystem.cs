@@ -66,7 +66,18 @@ namespace HeroesFlight.System.Combat
         {
             if (combatEntities.TryGetValue(obj.RequestOwner, out var data))
             {
-                obj.RequestOwner.ModifyHealth(obj.IntentModel);
+                if (obj.IntentModel.CalculationType == DamageCalculationType.Flat)
+                {
+                    obj.RequestOwner.ModifyHealth(obj.IntentModel);      
+                }
+                else
+                {
+                    var modificationValue = obj.RequestOwner.MaxHealth / 100 * obj.IntentModel.Amount;
+                    obj.IntentModel.ModifyAmount(modificationValue);
+                    obj.RequestOwner.ModifyHealth(obj.IntentModel); 
+                }
+                
+              
                 switch (data.EntityType)
                 {
                     case CombatEntityType.Player:
@@ -130,13 +141,13 @@ namespace HeroesFlight.System.Combat
             }
         }
 
-        public void RevivePlayer()
+        public void RevivePlayer(float healthPercentage)
         {
             foreach (var data in combatEntities)
             {
                 if (data.Value.EntityType == CombatEntityType.Player)
                 {
-                    data.Key.Revive();
+                    data.Key.Revive(healthPercentage);
                 }
             }
         }
