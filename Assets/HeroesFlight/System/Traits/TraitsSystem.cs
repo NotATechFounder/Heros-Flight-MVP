@@ -14,13 +14,11 @@ namespace HeroesFlight.System.Stats.Handlers
 {
     public class TraitsSystem : TraitSystemInterface
     {
-
         public TraitsSystem(DataSystemInterface dataSystem, IUISystem uiSystem)
         {
             data = dataSystem;
             this.uiSystem = uiSystem;
-            traitHandler = new TraitHandler(new Vector2Int(5,3));
-           
+            traitHandler = new TraitHandler(new Vector2Int(5, 3));
         }
 
         private DataSystemInterface data;
@@ -35,9 +33,11 @@ namespace HeroesFlight.System.Stats.Handlers
             uiSystem.UiEventHandler.TraitTreeMenu.OnTraitModificationRequest += HandleRequest;
         }
 
-        public void Reset() { }
+        public void Reset()
+        {
+        }
 
-         void HandleTraitButtonPressed()
+        void HandleTraitButtonPressed()
         {
             uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
             uiSystem.UiEventHandler.TraitTreeMenu.Open();
@@ -49,11 +49,24 @@ namespace HeroesFlight.System.Stats.Handlers
             switch (request.ModificationType)
             {
                 case TraitModificationType.Unlock:
+                    if (data.CurrencyManager.GetCurrecy(request.Model.TargetCurrency.GetKey).GetCurrencyAmount <
+                        request.Model.Cost)
+                    {
+                        uiSystem.UiEventHandler.TraitTreeMenu.ShowErrorMessage(
+                            $"Not enough {request.Model.TargetCurrency.GetCurrencyName}");
+                        return;
+                    }
+
+
                     if (traitHandler.TryUnlockTrait(request.Model.Id))
                     {
+                        data.CurrencyManager.GetCurrecy(request.Model.TargetCurrency.GetKey)
+                            .ReduceCurrency(request.Model.Cost);
+                        uiSystem.UiEventHandler.MainMenu.UpdateGoldText(data.CurrencyManager
+                            .GetCurrecy(request.Model.TargetCurrency.GetKey).GetCurrencyAmount);
                         uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
                     }
-                   
+
                     break;
                 case TraitModificationType.Reroll:
                     var effect = traitHandler.GetTraitEffect(request.Model.Id);
@@ -62,12 +75,12 @@ namespace HeroesFlight.System.Stats.Handlers
                     {
                         uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
                     }
+
                     break;
-               
             }
         }
 
-       
+
         public bool HasTraitOfType(TraitType targetType, out string id)
         {
             return traitHandler.HasTraitOfType(targetType, out id);

@@ -9,7 +9,6 @@ using HeroesFlight.System.Utility.UI;
 using TMPro;
 using UISystem;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace HeroesFlight.System.UI.Traits
@@ -31,7 +30,9 @@ namespace HeroesFlight.System.UI.Traits
         [SerializeField] private GameObject TierSlotPrefab;
         [SerializeField] private Transform TierSlotsParent;
         [SerializeField] private GameObject TreeNodeLinePrefab;
-        [Header("Hooks")] [SerializeField] private Button exitButton;
+        [Header("Hooks")] 
+        [SerializeField] private Button exitButton;
+        [SerializeField] private Button errorButton;
         [SerializeField] private TraitPopup popup;
         [SerializeField] private ScrollRect scroll;
         private float nodeStartOffset = 0.35f;
@@ -40,7 +41,7 @@ namespace HeroesFlight.System.UI.Traits
         private float nodeDistanceOffsetBonusPerTier = 0.25f;
 
 
-        [SerializeField] private List<TREE_UI_DATA> treeUIData = new();
+        private List<TREE_UI_DATA> treeUIData = new();
         private readonly List<GameObject> curTreesTiersSlots = new();
         private readonly List<GameObject> curNodeSlots = new();
         private TraitTreeModel currentTree;
@@ -55,6 +56,10 @@ namespace HeroesFlight.System.UI.Traits
             base.Awake();
             scroll.onValueChanged.AddListener(HandleScroll);
             popup.OnTraitModificationRequest += TransferTraitModificationRequest;
+            errorButton.onClick.AddListener(() =>
+            {
+                ToggleCanvasGroup(errorMessageCG,false);
+            });
         }
 
         private void TransferTraitModificationRequest(TraitModificationEventModel request)
@@ -117,7 +122,11 @@ namespace HeroesFlight.System.UI.Traits
             }
         }
 
-      
+        public void ShowErrorMessage(string error)
+        {
+            errorMessageText.text = error;
+            ToggleCanvasGroup(errorMessageCG,true);
+        }
 
         public override void ResetMenu()
         {
