@@ -190,6 +190,16 @@ namespace UISystem
                     boosterButton.Disable();
                 }
             }
+
+            foreach (var button in activeAbilityButtons)
+            {
+                button.Disable();
+            }
+            
+            foreach (var button in passiveAbilityDisplayUIs)
+            {
+                button.Disable();
+            }
         }
 
         public void DisplayInfoMessage(InfoMessageType infoMessageType, float duration = 1.5f)

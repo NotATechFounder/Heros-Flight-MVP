@@ -89,7 +89,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             stateMachine?.Process();
             UpdateTimers();
-            animator.SetMovementDirection(GetVelocity());
+            if(!healthController.IsDead())
+                animator.SetMovementDirection(GetVelocity());
         }
 
         void UpdateTimers()
