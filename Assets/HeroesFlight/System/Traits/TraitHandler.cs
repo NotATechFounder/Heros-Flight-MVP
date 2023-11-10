@@ -48,21 +48,21 @@ namespace HeroesFlight.System.Stats.Handlers
             return false;
         }
 
-        public bool HasTraitOfType(TraitType targetType, out string id)
+        public bool HasTraitOfType(TraitType targetType, out List<TraitStateModel> models)
         {
             var hasTrait = false;
-            id = string.Empty;
+            models = new List<TraitStateModel>();
             foreach (var traitEntry in unlockedTraits)
             {
                 if (traitEntry.Value.TargetTrait.Effect.TraitType == targetType)
                 {
-                    id = traitEntry.Key;
-                    hasTrait = true;
+                    models.Add(traitEntry.Value);
+                    
                 }
             }
 
 
-            return hasTrait;
+            return models.Count>0;
         }
 
         public TraitEffect GetTraitEffect(string id)
@@ -107,7 +107,7 @@ namespace HeroesFlight.System.Stats.Handlers
                 featTreeData.Add(pair.Key, GenerateFeatModel(pair.Value));
             }
 
-            return new TraitTreeModel(size.x, size.y, featTreeData);
+            return new TraitTreeModel(size.y, size.x, featTreeData);
         }
 
         void LoadCache()

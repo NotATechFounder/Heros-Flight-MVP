@@ -7,7 +7,7 @@ namespace HeroesFlight.System.Stats.Handlers
 {
     public interface TraitSystemInterface : SystemInterface
     {
-        bool HasTraitOfType(TraitType targetType, out string id);
+        bool HasTraitOfType(TraitType targetType, out List<TraitStateModel> model);
         TraitEffect GetTraitEffect(string id);
         List<TraitStateModel> GetUnlockedEffects();
     }

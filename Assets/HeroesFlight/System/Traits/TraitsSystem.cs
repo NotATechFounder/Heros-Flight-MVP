@@ -18,7 +18,7 @@ namespace HeroesFlight.System.Stats.Handlers
         {
             data = dataSystem;
             this.uiSystem = uiSystem;
-            traitHandler = new TraitHandler(new Vector2Int(5, 3));
+            traitHandler = new TraitHandler(new Vector2Int(4,8));
         }
 
         private DataSystemInterface data;
@@ -81,9 +81,9 @@ namespace HeroesFlight.System.Stats.Handlers
         }
 
 
-        public bool HasTraitOfType(TraitType targetType, out string id)
+        public bool HasTraitOfType(TraitType targetType, out List<TraitStateModel> models)
         {
-            return traitHandler.HasTraitOfType(targetType, out id);
+            return traitHandler.HasTraitOfType(targetType, out models);
         }
 
         public TraitEffect GetTraitEffect(string id)

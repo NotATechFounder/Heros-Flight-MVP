@@ -13,7 +13,7 @@ namespace HeroesFlight.System.Stats.Traits
         [SerializeField] private TraitTreeMenu menu;
         private void Awake()
         {
-            traitHandler = new TraitHandler(new Vector2Int(6,4));
+            traitHandler = new TraitHandler(new Vector2Int(4,8));
             menu.OnTraitModificationRequest += HandleRequest;
           
             menu.UpdateTreeView(traitHandler.GetTraitTreeData());

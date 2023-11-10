@@ -30,11 +30,11 @@ namespace HeroesFlight.System.UI.Traits
         [SerializeField] private GameObject TierSlotPrefab;
         [SerializeField] private Transform TierSlotsParent;
         [SerializeField] private GameObject TreeNodeLinePrefab;
-        [Header("Hooks")] 
-        [SerializeField] private Button exitButton;
+        [Header("Hooks")] [SerializeField] private Button exitButton;
         [SerializeField] private Button errorButton;
         [SerializeField] private TraitPopup popup;
         [SerializeField] private ScrollRect scroll;
+        [SerializeField] private ClickNotifier notifier;
         private float nodeStartOffset = 0.35f;
         private float nodeDistanceOffsetX = 0.95f;
         private float nodeDistanceOffsetY = 0.95f;
@@ -55,11 +55,14 @@ namespace HeroesFlight.System.UI.Traits
         {
             base.Awake();
             scroll.onValueChanged.AddListener(HandleScroll);
-            popup.OnTraitModificationRequest += TransferTraitModificationRequest;
-            errorButton.onClick.AddListener(() =>
+            notifier.OnClicked += () =>
             {
-                ToggleCanvasGroup(errorMessageCG,false);
-            });
+                Debug.Log("Clicked");
+                if (popup.State != TraitPopupState.Disabled)
+                    popup.HidePopup();
+            };
+            popup.OnTraitModificationRequest += TransferTraitModificationRequest;
+            errorButton.onClick.AddListener(() => { ToggleCanvasGroup(errorMessageCG, false); });
         }
 
         private void TransferTraitModificationRequest(TraitModificationEventModel request)
@@ -117,7 +120,7 @@ namespace HeroesFlight.System.UI.Traits
             {
                 Debug.Log("Popup was open before update");
                 Debug.Log(tree.Data[selectedModel.Id].State);
-                popup.ShowPopup(Vector2.zero,TraitPopupState.Enabled,
+                popup.ShowPopup(Vector2.zero, TraitPopupState.Enabled,
                     tree.Data[selectedModel.Id]);
             }
         }
@@ -125,7 +128,7 @@ namespace HeroesFlight.System.UI.Traits
         public void ShowErrorMessage(string error)
         {
             errorMessageText.text = error;
-            ToggleCanvasGroup(errorMessageCG,true);
+            ToggleCanvasGroup(errorMessageCG, true);
         }
 
         public override void ResetMenu()
@@ -276,10 +279,10 @@ namespace HeroesFlight.System.UI.Traits
                 {
                     // straight line lef or right
                     var secondXOffset = nodeDistanceOffsetX * Mathf.Abs(slotDifference);
-                    if (Mathf.Abs(slotDifference) >0)
+                    if (Mathf.Abs(slotDifference) > 0)
                     {
-                       secondXOffset += nodeStartOffset  *2* Mathf.Abs(slotDifference);
-                       secondXOffset -= nodeStartOffset;
+                        secondXOffset += nodeStartOffset * 2 * Mathf.Abs(slotDifference);
+                        secondXOffset -= nodeStartOffset;
                     }
 
                     if (isLeft)
@@ -396,6 +399,7 @@ namespace HeroesFlight.System.UI.Traits
 
         void Hide()
         {
+            scroll.normalizedPosition = new Vector2(0, -1);
             transform.SetAsFirstSibling();
             popup.HidePopup();
             ToggleCanvasGroup(thisCG, false);

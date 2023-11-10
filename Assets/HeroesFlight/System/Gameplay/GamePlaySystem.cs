@@ -111,6 +111,7 @@ namespace HeroesFlight.System.Gameplay
 
         List<Environment.Objects.Crystal> crystals = new();
         private bool revivedByFeatThisRun = false;
+        private int goldModifier;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -189,6 +190,16 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += HeroProgressionCompleted;
 
+            goldModifier = 0;
+            if ( traitSystem.HasTraitOfType(TraitType.CurrencyBoost, out var traits))
+            {
+                foreach (var data in traits)
+                {
+                    var traitValue = traitSystem.GetTraitEffect(data.TargetTrait.Id);
+                    goldModifier += traitValue.Value + data.Value.Value;
+                }
+                
+            }
             RegisterShrineNPCUIEvents();
 
             OnComplete?.Invoke();
@@ -224,6 +235,7 @@ namespace HeroesFlight.System.Gameplay
             ResetConnections();
             container.SetStartingIndex(0);
             revivedByFeatThisRun = false;
+            goldModifier = 0;
         }
 
         /// <summary>
@@ -524,12 +536,13 @@ namespace HeroesFlight.System.Gameplay
             enemiesToKill--;
             environmentSystem.ParticleManager.Spawn("Loot_Spawn", position,
                 Quaternion.Euler(new Vector3(-90, 0, 0)));
-            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10,
+          
+            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10 + goldModifier,
                 position);
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RunExperience, 10,
                 position);
             progressionSystem.AddCurrency(CurrencyKeys.RunExperience, (int)container.HeroProgressionExpEarnedPerKill);
-
+            
             uiSystem.UpdateEnemiesCounter(enemiesToKill);
             if (currentState != GameState.Ongoing)
                 return;
@@ -560,7 +573,7 @@ namespace HeroesFlight.System.Gameplay
                 
                 if ( traitSystem.HasTraitOfType(TraitType.HealthRestore, out var traitId))
                 {
-                    var traitValue = traitSystem.GetTraitEffect(traitId);
+                    var traitValue = traitSystem.GetTraitEffect(traitId[0].TargetTrait.Id);
                     characterSystem.CurrentCharacter.CharacterTransform.GetComponent<IHealthController>().TryDealDamage(
                         new HealthModificationIntentModel(traitValue.Value,DamageType.NoneCritical,AttackType.Healing,DamageCalculationType.Percentage));
                 }
@@ -593,7 +606,7 @@ namespace HeroesFlight.System.Gameplay
             if (!revivedByFeatThisRun && traitSystem.HasTraitOfType(TraitType.Revival, out var traitId))
             {
                 revivedByFeatThisRun = true;
-                var traitValue = traitSystem.GetTraitEffect(traitId);
+                var traitValue = traitSystem.GetTraitEffect(traitId[0].TargetTrait.Id);
                 CoroutineUtility.WaitForSeconds(2f, () =>
                 {
                    ReviveCharacter(traitValue.Value);
