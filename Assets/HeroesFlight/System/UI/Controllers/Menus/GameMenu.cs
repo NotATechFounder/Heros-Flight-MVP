@@ -74,9 +74,7 @@ namespace UISystem
         [SerializeField] GameObject bosspanel;
 
         [Header("Special Attack")]
-        [SerializeField]
-        private AdvanceButton specialAttackButton;
-
+        [SerializeField] private AdvanceButton specialAttackButton;
         [SerializeField] private Image specialAttackButtonFill;
         [SerializeField] private Image specialAttackIcon;
 
@@ -157,6 +155,8 @@ namespace UISystem
                     OnPassiveAbilityButtonClicked?.Invoke(index);
                 };
             }
+
+            specialAttackButton.gameObject.SetActive(false);
 
             ResetMenu();
         }
@@ -348,10 +348,14 @@ namespace UISystem
             bossCanvas.SetActive(isEnabled);
         }
 
-        public void FillSpecial(float normalisedValue)
+        public void CheckIfSpecialReady(float normalisedValue)
         {
-            specialAttackButtonFill.fillAmount = normalisedValue;
-            ToggleSpecialAttackButton(normalisedValue >= 1);
+            //specialAttackButtonFill.fillAmount = normalisedValue;
+
+            if(normalisedValue >= 1)
+            {
+                ToggleSpecialAttackButton(true);
+            }
         }
 
         public void ToggleSpecialAttackButton(bool value)
@@ -359,8 +363,9 @@ namespace UISystem
             switch (value)
             {
                 case true:
-                    specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r,
-                        specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
+                    specialAttackButton.gameObject.SetActive(true);
+                    specialAttackButtonFill.fillAmount = 1;
+                    specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r, specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
                     specialEffect.Start();
                     break;
                 case false:
@@ -375,7 +380,7 @@ namespace UISystem
         private void SpecialAttackButtonClicked()
         {
             if (specialAttackButtonFill.fillAmount < 1) return;
-
+            specialAttackButton.gameObject.SetActive(false);
             specialAttackButtonFill.fillAmount = 0;
             specialIconEffect.Start();
             OnSpecialAttackButtonClicked?.Invoke();

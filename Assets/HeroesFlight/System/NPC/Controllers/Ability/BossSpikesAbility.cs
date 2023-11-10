@@ -39,7 +39,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 zone.Trigger(() =>
                 {
                     var arrow = ObjectPoolManager.SpawnObject(projectilePrefab, zone.transform.position, Quaternion.identity);
-                    arrow.OnEnded += HandleArrowDisable;
+                    arrow.OnHit += HandleArrowDisable;
                     arrow.SetupProjectile(CalculateDamage(), zone.GetFowardDirection);
                 },preDamageDelay,zoneWidth);
             }
@@ -48,7 +48,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         void HandleArrowDisable(ProjectileControllerInterface obj)
         {
-            obj.OnEnded -= HandleArrowDisable;
+            obj.OnHit -= HandleArrowDisable;
             var arrow = obj as ProjectileControllerBase;
             ObjectPoolManager.ReleaseObject(arrow.gameObject);
         }

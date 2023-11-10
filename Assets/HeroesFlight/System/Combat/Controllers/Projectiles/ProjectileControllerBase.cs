@@ -4,16 +4,35 @@ using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using UnityEngine;
+using static HeroesFlightProject.System.Gameplay.Controllers.ProjectileControllerBase;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class ProjectileControllerBase : MonoBehaviour, ProjectileControllerInterface
     {
+        public enum ProjectileType
+        {
+            Impact,
+            FlyThrough
+        }
+
+        public enum DamgeType
+        {
+            Normal,
+            Line
+        }
+
         [SerializeField] float lifeTime;
         [SerializeField] float speed;
         [SerializeField] LayerMask collisionMask;
+        [SerializeField] ProjectileType projectileType;
+        [SerializeField] DamgeType damageType;
+        [SerializeField] int numberOfLines;
+        [SerializeField] float lineDamageDelay;
+        [SerializeField] ParticleSystem hitEffect;
         Transform view;
-        public event Action<ProjectileControllerInterface> OnEnded;
+        public event Action<ProjectileControllerInterface> OnHit;
+        public event Action<ProjectileControllerInterface> OnDeactivate;
         Vector2 currentDirection = default;
         float damage;
         float currentLifetime;
@@ -27,16 +46,44 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             currentLifetime += Time.deltaTime;
             if (currentLifetime >= lifeTime)
             {
-                DisableProjectile();
+                switch (projectileType)
+                {
+                    case ProjectileType.Impact:
+                        ProjectileHit();
+                        break;
+                    case ProjectileType.FlyThrough:
+                        OnDeactivate?.Invoke(this);
+                        break;
+                    default: break;
+                }
             }
 
             transform.Translate(currentDirection.normalized * speed * Time.deltaTime);
         }
 
-        public virtual void DisableProjectile()
+        public void SetLine (int numberOfLines , float lineDamageDelay)
         {
-            disabled = true;
-            OnEnded?.Invoke(this);
+            projectileType = ProjectileType.FlyThrough;
+            damageType = DamgeType.Line;
+            this.numberOfLines = numberOfLines;
+            this.lineDamageDelay = lineDamageDelay;
+        }
+
+        public void ProjectileHit()
+        {
+            switch (projectileType)
+            {
+                case ProjectileType.Impact:
+                    disabled = true;
+                    break;
+                case ProjectileType.FlyThrough:
+                    break;
+                default:   break;
+            }
+
+            hitEffect?.Play();
+
+            OnHit?.Invoke(this);
         }
 
         public void SetupProjectile(float targetDamage, Vector2 targetDirection)
@@ -60,9 +107,20 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (col.gameObject.TryGetComponent<IHealthController>(out var healthController))
             {
-                healthController.TryDealDamage(new HealthModificationIntentModel(damage,
-                    DamageType.NoneCritical,AttackType.Regular,DamageCalculationType.Flat));
-                DisableProjectile();
+                switch (damageType)
+                {
+                    case DamgeType.Normal:
+                        healthController.TryDealDamage(new HealthModificationIntentModel(damage, DamageType.NoneCritical, AttackType.Regular, DamageCalculationType.Flat));
+                        break;
+                    case DamgeType.Line:
+                        healthController.TryDealLineDamage(numberOfLines, lineDamageDelay, new HealthModificationIntentModel(damage, DamageType.NoneCritical, AttackType.Regular, DamageCalculationType.Flat));
+                        break;
+                    default:
+                        break;
+                }
+
+
+                ProjectileHit();
             }
         }
     }

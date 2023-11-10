@@ -135,11 +135,9 @@ namespace HeroesFlight.System.UI
             UiEventHandler.GameMenu.DisplayInfoMessage(UISystem.GameMenu.InfoMessageType.Start, duration);
         }
 
-     
-
-        public void UpdateUltimateButtonFill(float value)
+        public void UpdateUltimateButton(float value)
         {
-            UiEventHandler.GameMenu.FillSpecial(value);
+            UiEventHandler.GameMenu.CheckIfSpecialReady(value);
         }
 
 

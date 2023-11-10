@@ -69,7 +69,7 @@ public class KnifeFluffy : RegularActiveAbility
     void HandleArrowDisable(ProjectileControllerInterface obj)
     {
         AudioManager.PlaySoundEffect("LightningExplosion", SoundEffectCategory.Hero);
-        obj.OnEnded -= HandleArrowDisable;
+        obj.OnHit -= HandleArrowDisable;
         var arrow = obj as ProjectileControllerBase;
         ObjectPoolManager.ReleaseObject(arrow.gameObject);
     }

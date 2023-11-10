@@ -18,7 +18,7 @@ namespace HeroesFlight.System.UI
         void DisplayStartInfoMessage(float duration);
         void UpdateGameTimeUI(float timeLeft);
         void UpdateEnemiesCounter(int enemiesLeft);
-        void UpdateUltimateButtonFill(float value);
+        void UpdateUltimateButton(float value);
         void UpdateSpecialEnemyHealthBar(float value);
         void ToggleSpecialEnemyHealthBar(bool isEnabled);
         void UpdateComboUI(int count);
