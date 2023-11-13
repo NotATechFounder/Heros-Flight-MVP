@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ce982203ab05275458d2d0acbc7f7975
+guid: ea7442030fe8fab4ba0a01b7919dc365
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -136,13 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Hercules_0
+      name: ARES_VARIATION_ONE_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 341.3333
-        width: 152.33333
-        height: 170.66667
+        y: 1365.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,20 +150,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 62a4c40718006e04e8f27d258d9a5e78
-      internalID: -90546543
+      spriteID: e25bffccfc709164eb13029aef743aeb
+      internalID: -1560386111
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hercules_1
+      name: ARES_VARIATION_ONE_1
       rect:
         serializedVersion: 2
-        x: 152
-        y: 341.3333
-        width: 152.33333
-        height: 170.66667
+        x: 682
+        y: 1365.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -171,20 +171,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 189eb5e16bf03ed42963da226976e551
-      internalID: -1068030561
+      spriteID: eddc42966bdb57a42b368476b0f8bb78
+      internalID: -374956143
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hercules_2
+      name: ARES_VARIATION_ONE_2
       rect:
         serializedVersion: 2
-        x: 304
-        y: 341.3333
-        width: 152.33333
-        height: 170.66667
+        x: 1364
+        y: 1365.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -192,83 +192,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cb11354e8e590ab40b5e9cd4f55fd448
-      internalID: -1346419189
+      spriteID: 01236881a6f6c864eb2d7b26e941218d
+      internalID: -1491087422
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hercules_3
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 171.33333
-        width: 152.33333
-        height: 170.66667
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 845b0725fb6a9e84b9c3e8c630f1ce86
-      internalID: 482815091
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hercules_4
-      rect:
-        serializedVersion: 2
-        x: 152
-        y: 171.33333
-        width: 152.33333
-        height: 170.66667
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f5caa06626b9aaa44bd8b43efc4b697d
-      internalID: 1864089594
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hercules_5
-      rect:
-        serializedVersion: 2
-        x: 304
-        y: 171.33333
-        width: 152.33333
-        height: 170.66667
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b35ce73a448e5984682ea3117870f2a0
-      internalID: 823229602
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hercules_6
+      name: ARES_VARIATION_ONE_3
       rect:
         serializedVersion: 2
         x: 0
-        y: 1.3333282
-        width: 152.33333
-        height: 170.66667
+        y: 683.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -276,20 +213,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: edec281ed5dd1ac47bb3c971699be866
-      internalID: 549435870
+      spriteID: dd07c55fd7278bc409187e22ef6c1a74
+      internalID: -744242198
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hercules_7
+      name: ARES_VARIATION_ONE_4
       rect:
         serializedVersion: 2
-        x: 152
-        y: 1.3333282
-        width: 152.33333
-        height: 170.66667
+        x: 682
+        y: 683.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -297,20 +234,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3092f482f0019974e931f24999fe0924
-      internalID: 1691577223
+      spriteID: e474e1884333ae74fbcb9915a34ad541
+      internalID: -880842597
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hercules_8
+      name: ARES_VARIATION_ONE_5
       rect:
         serializedVersion: 2
-        x: 304
-        y: 1.3333282
-        width: 152.33333
-        height: 170.66667
+        x: 1364
+        y: 683.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -318,8 +255,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: da881da2c64aa8f458c0bb20f26209a4
-      internalID: 2053981371
+      spriteID: 8927d98adeb7e02419a885af7bd1a425
+      internalID: 72067063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARES_VARIATION_ONE_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1.333313
+        width: 682.6667
+        height: 682.6667
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70a86cc3cabb8c7499ad063fe125bc17
+      internalID: 1554608884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARES_VARIATION_ONE_7
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 1.333313
+        width: 682.6667
+        height: 682.6667
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88464955e062d5441af39cfcdccb44d8
+      internalID: -1103017330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ARES_VARIATION_ONE_8
+      rect:
+        serializedVersion: 2
+        x: 1364
+        y: 1.333313
+        width: 682.6667
+        height: 682.6667
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fb16bdb0c44450e46a82f97f6d796a91
+      internalID: 1586147079
       vertices: []
       indices: 
       edges: []
@@ -327,7 +327,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 096f1b4d92d31cf4484a49b77494dc05
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -335,15 +335,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Hercules_0: -90546543
-      Hercules_1: -1068030561
-      Hercules_2: -1346419189
-      Hercules_3: 482815091
-      Hercules_4: 1864089594
-      Hercules_5: 823229602
-      Hercules_6: 549435870
-      Hercules_7: 1691577223
-      Hercules_8: 2053981371
+      ARES_VARIATION_ONE_0: -1560386111
+      ARES_VARIATION_ONE_1: -374956143
+      ARES_VARIATION_ONE_2: -1491087422
+      ARES_VARIATION_ONE_3: -744242198
+      ARES_VARIATION_ONE_4: -880842597
+      ARES_VARIATION_ONE_5: 72067063
+      ARES_VARIATION_ONE_6: 1554608884
+      ARES_VARIATION_ONE_7: -1103017330
+      ARES_VARIATION_ONE_8: 1586147079
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

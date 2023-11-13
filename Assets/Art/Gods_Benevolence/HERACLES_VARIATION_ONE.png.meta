@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2d5633f80885150429b2ce9a615e7fc2
+guid: e8f78a1cd32818349868ebbf7b157052
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -136,7 +136,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ARES_GRID_V3_0
+      name: HERACLES_VARIATION_ONE_0
       rect:
         serializedVersion: 2
         x: 0
@@ -150,14 +150,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a6ba105bf0101364296d03c0d5c1def5
-      internalID: -1964954366
+      spriteID: 84ffdac5e74212b41aff45e4b78f5d82
+      internalID: 233491080
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ARES_GRID_V3_1
+      name: HERACLES_VARIATION_ONE_1
       rect:
         serializedVersion: 2
         x: 682
@@ -171,14 +171,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d7b7d1c393dcc6d44a70cd4b3914105a
-      internalID: 76470119
+      spriteID: 9ab85749035bfaf4bb4427ebb0f2d167
+      internalID: -1977555943
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ARES_GRID_V3_2
+      name: HERACLES_VARIATION_ONE_2
       rect:
         serializedVersion: 2
         x: 1364
@@ -192,14 +192,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b82829a620ae01e4086fc1f30e0e1a95
-      internalID: 812098165
+      spriteID: ad28734cd8484a94a8e2d415dd86152c
+      internalID: 739483160
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ARES_GRID_V3_3
+      name: HERACLES_VARIATION_ONE_3
       rect:
         serializedVersion: 2
         x: 0
@@ -213,14 +213,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 793696d2bcb9c594ab7dcd7ca9a7861a
-      internalID: 869748360
+      spriteID: 09bc9625c8ec5e44584840b979a38d6f
+      internalID: 467843458
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ARES_GRID_V3_4
+      name: HERACLES_VARIATION_ONE_4
       rect:
         serializedVersion: 2
         x: 682
@@ -234,14 +234,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8f03e529fafe0b24aa6aef1ce9cd44e6
-      internalID: -1815933325
+      spriteID: c86973df72e841e4cad254b7f30ddec5
+      internalID: -484098040
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ARES_GRID_V3_5
+      name: HERACLES_VARIATION_ONE_5
       rect:
         serializedVersion: 2
         x: 1364
@@ -255,14 +255,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4f8fa76ba7c60524d90707be5d14e8b3
-      internalID: 2136144906
+      spriteID: 0fae9cf8fa991cc41927d38cce01c54a
+      internalID: 44008182
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ARES_GRID_V3_6
+      name: HERACLES_VARIATION_ONE_6
       rect:
         serializedVersion: 2
         x: 0
@@ -276,14 +276,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d08ba42cd609a894d9e3ade6ae73f577
-      internalID: 1140019135
+      spriteID: 6b6edd14978f99e42b7b3830325c0498
+      internalID: 735125046
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ARES_GRID_V3_7
+      name: HERACLES_VARIATION_ONE_7
       rect:
         serializedVersion: 2
         x: 682
@@ -297,14 +297,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a23b70f188907d845815db665a83b90e
-      internalID: -82471458
+      spriteID: c1e81e80e746de044a68fdaf8d6af85e
+      internalID: 1162849326
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ARES_GRID_V3_8
+      name: HERACLES_VARIATION_ONE_8
       rect:
         serializedVersion: 2
         x: 1364
@@ -318,8 +318,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 947f047bafb2e9d4182bc8a6b32858fe
-      internalID: -1679864415
+      spriteID: 46543ba0b5bf73043a622901a678502e
+      internalID: 402730954
       vertices: []
       indices: 
       edges: []
@@ -327,7 +327,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: c853a94b0a0f55245a704a029db5b485
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -335,15 +335,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ARES_GRID_V3_0: -1964954366
-      ARES_GRID_V3_1: 76470119
-      ARES_GRID_V3_2: 812098165
-      ARES_GRID_V3_3: 869748360
-      ARES_GRID_V3_4: -1815933325
-      ARES_GRID_V3_5: 2136144906
-      ARES_GRID_V3_6: 1140019135
-      ARES_GRID_V3_7: -82471458
-      ARES_GRID_V3_8: -1679864415
+      HERACLES_VARIATION_ONE_0: 233491080
+      HERACLES_VARIATION_ONE_1: -1977555943
+      HERACLES_VARIATION_ONE_2: 739483160
+      HERACLES_VARIATION_ONE_3: 467843458
+      HERACLES_VARIATION_ONE_4: -484098040
+      HERACLES_VARIATION_ONE_5: 44008182
+      HERACLES_VARIATION_ONE_6: 735125046
+      HERACLES_VARIATION_ONE_7: 1162849326
+      HERACLES_VARIATION_ONE_8: 402730954
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

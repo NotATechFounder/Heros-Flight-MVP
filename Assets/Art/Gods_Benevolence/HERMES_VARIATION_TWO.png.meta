@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3e07a71dee102ef4fa4e6d73df8b0c79
+guid: 0283324bf45c0cb419a43579f8a2e2a6
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -136,13 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Hermes God of Trade_0
+      name: HERMES_VARIATION_TWO_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 240
-        width: 214.33333
-        height: 120
+        y: 1365.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,20 +150,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 27bd762dd9be5d54f9bbab273ba7043f
-      internalID: 880368215
+      spriteID: e616a87ebdcae9648bdf1f1c13d62886
+      internalID: 922140204
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hermes God of Trade_1
+      name: HERMES_VARIATION_TWO_1
       rect:
         serializedVersion: 2
-        x: 214
-        y: 240
-        width: 214.33333
-        height: 120
+        x: 682
+        y: 1365.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -171,20 +171,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 351f103950d1f0243a333f6d133060b3
-      internalID: -798137820
+      spriteID: 2f149a96f119a2241935cf5ccbf6553a
+      internalID: -605695492
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hermes God of Trade_2
+      name: HERMES_VARIATION_TWO_2
       rect:
         serializedVersion: 2
-        x: 428
-        y: 240
-        width: 214.33333
-        height: 120
+        x: 1364
+        y: 1365.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -192,83 +192,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fcca7ee5cba2b69428d3408e0c3c21b8
-      internalID: 1050094525
+      spriteID: bf36ee48b0249914c8cfe05796ea054a
+      internalID: -38592927
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hermes God of Trade_3
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 120
-        width: 214.33333
-        height: 120
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 68f674ab169849f4d9beebc388d250e7
-      internalID: 1348978542
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hermes God of Trade_4
-      rect:
-        serializedVersion: 2
-        x: 214
-        y: 120
-        width: 214.33333
-        height: 120
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 37cb4b5c91c19434fb1414b968303e92
-      internalID: -1707422797
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hermes God of Trade_5
-      rect:
-        serializedVersion: 2
-        x: 428
-        y: 120
-        width: 214.33333
-        height: 120
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 306ba27738885b54ea161a4b16c7bcbf
-      internalID: -140277421
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hermes God of Trade_6
+      name: HERMES_VARIATION_TWO_3
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 214.33333
-        height: 120
+        y: 683.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -276,20 +213,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2ea33a17613465f4bb1791cdf250648d
-      internalID: -1748348236
+      spriteID: 7920c96cfefef9444876ed7cff88e677
+      internalID: 504781391
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hermes God of Trade_7
+      name: HERMES_VARIATION_TWO_4
       rect:
         serializedVersion: 2
-        x: 214
-        y: 0
-        width: 214.33333
-        height: 120
+        x: 682
+        y: 683.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -297,20 +234,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 228f92aa16f84e34fb78c7349a188abc
-      internalID: 371182345
+      spriteID: df969356234b7f84c8197c779af64ece
+      internalID: -1586829522
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Hermes God of Trade_8
+      name: HERMES_VARIATION_TWO_5
       rect:
         serializedVersion: 2
-        x: 428
-        y: 0
-        width: 214.33333
-        height: 120
+        x: 1364
+        y: 683.3333
+        width: 682.6667
+        height: 682.6667
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -318,8 +255,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 364610ccbe055da4eb4c56804eba5e51
-      internalID: 107580222
+      spriteID: 2b6d699320fa9f24dbef07971726d3a6
+      internalID: 1251158816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HERMES_VARIATION_TWO_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1.333313
+        width: 682.6667
+        height: 682.6667
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b65404481c64c440a120259cb6c698b
+      internalID: 120326132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HERMES_VARIATION_TWO_7
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 1.333313
+        width: 682.6667
+        height: 682.6667
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5b8637f56f9943440876ab76e3ccb0f9
+      internalID: -1416390559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HERMES_VARIATION_TWO_8
+      rect:
+        serializedVersion: 2
+        x: 1364
+        y: 1.333313
+        width: 682.6667
+        height: 682.6667
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2934f3ee204eb224e828fae12d3428e7
+      internalID: -1666205476
       vertices: []
       indices: 
       edges: []
@@ -327,7 +327,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: bf49faef08047f14b935779a1280dd96
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -335,15 +335,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Hermes God of Trade_0: 880368215
-      Hermes God of Trade_1: -798137820
-      Hermes God of Trade_2: 1050094525
-      Hermes God of Trade_3: 1348978542
-      Hermes God of Trade_4: -1707422797
-      Hermes God of Trade_5: -140277421
-      Hermes God of Trade_6: -1748348236
-      Hermes God of Trade_7: 371182345
-      Hermes God of Trade_8: 107580222
+      HERMES_VARIATION_TWO_0: 922140204
+      HERMES_VARIATION_TWO_1: -605695492
+      HERMES_VARIATION_TWO_2: -38592927
+      HERMES_VARIATION_TWO_3: 504781391
+      HERMES_VARIATION_TWO_4: -1586829522
+      HERMES_VARIATION_TWO_5: 1251158816
+      HERMES_VARIATION_TWO_6: 120326132
+      HERMES_VARIATION_TWO_7: -1416390559
+      HERMES_VARIATION_TWO_8: -1666205476
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

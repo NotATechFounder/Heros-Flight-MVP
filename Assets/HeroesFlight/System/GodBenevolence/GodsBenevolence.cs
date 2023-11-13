@@ -56,7 +56,7 @@ public class GodsBenevolence : MonoBehaviour
                 float damagePerc = godsBenevolence.GetValue("DamagePercentage");
                 float dam = StatCalc.GetPercentage(characterStatController.CurrentPhysicalDamage, damagePerc);
                 benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolence.EffectPrefab, benevolenceSocket.TopSocket);
-                benevolenceEffect.GetComponent<HerculesEffect>().SetUp(dam);
+                benevolenceEffect.GetComponent<HerculesEffect>().SetUp(dam, characterStatController.GetComponent<CharacterControllerInterface>());
 
                 break;
             case GodBenevolenceType.Hermes:
@@ -226,7 +226,7 @@ public class GodsBenevolence : MonoBehaviour
         } while (random == selectedBenevolence);
 
         // TODO: Remove this
-        random = godsBenevolenceArray[0].BenevolenceType;
+        random = godsBenevolenceArray[1].BenevolenceType;
 
         GodsBenevolenceSO godsBenevolenceSO = GetGodsBenevolenceSO(random);
         return godsBenevolenceSO.BenevolenceVisualSO;
