@@ -190,6 +190,18 @@ namespace UISystem
                     boosterButton.Disable();
                 }
             }
+
+            foreach (var button in activeAbilityButtons)
+            {
+                button.Disable();
+            }
+            
+            foreach (var button in passiveAbilityDisplayUIs)
+            {
+                button.Disable();
+            }
+            
+            ToggleSpecialAttackButton(false);
         }
 
         public void DisplayInfoMessage(InfoMessageType infoMessageType, float duration = 1.5f)
@@ -360,10 +372,10 @@ namespace UISystem
 
         public void ToggleSpecialAttackButton(bool value)
         {
+            specialAttackButton.gameObject.SetActive(value);
             switch (value)
             {
                 case true:
-                    specialAttackButton.gameObject.SetActive(true);
                     specialAttackButtonFill.fillAmount = 1;
                     specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r, specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
                     specialEffect.Start();
@@ -375,6 +387,7 @@ namespace UISystem
                     specialAttackIcon.transform.localScale = Vector3.one;
                     break;
             }
+            
         }
 
         private void SpecialAttackButtonClicked()
