@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.Common.Progression;
 using UnityEngine;
 
 public class HeroProgression : MonoBehaviour
@@ -266,6 +267,27 @@ public class HeroProgression : MonoBehaviour
 
         OnEXPAdded?.Invoke(currentLvl, numberOfLevelsGained, currentExp / expToNextLevel);
     }
+
+    public void AddStatsModifiers(Dictionary<HeroProgressionAttribute, int> modifiedStatsMap)
+    {
+        foreach (var modifier in modifiedStatsMap)
+        {
+            if (hPAttributeSpModifiedDic.TryGetValue(modifier.Key, out var value))
+            {
+                hPAttributeSpModifiedDic[modifier.Key] += modifier.Value;
+            }
+            else
+            {
+                hPAttributeSpModifiedDic.Add(modifier.Key,modifier.Value);
+            }
+
+            var info = GetAttributeInfo(modifier.Key);
+            info.IncreaseSP(modifier.Value);
+        }
+        
+        
+        ProccessAttributes();
+    }
 }
 
 [Serializable]
@@ -316,6 +338,12 @@ public class HeroProgressionAttributeInfo
         currentSP -= sp;
     }
 
+    public void IncreaseSP(int sp)
+    {
+        currentSP += sp;
+        OnSPChanged?.Invoke(currentSP);
+    }
+
     public float GetTotalValue(string key)
     {
         foreach (var keyValue in attributeSO.KeyValues)
@@ -352,14 +380,7 @@ public class HeroProgressionAttributeInfo
     }
 }
 
-public enum HeroProgressionAttribute
-{
-    Power,
-    Vitality,
-    Agility,
-    Defense,
-    CriticalHit,
-}
+
 
 [System.Serializable]
 public class HeroProgressionAttributeKeyValue

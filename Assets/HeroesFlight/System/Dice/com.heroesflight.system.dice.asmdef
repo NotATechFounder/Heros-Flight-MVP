@@ -1,0 +1,17 @@
+{
+    "name": "com.heroesflight.system.dice",
+    "rootNamespace": "",
+    "references": [
+        "GUID:41156cdbab6bbf9498004681b8319c94",
+        "GUID:92b5abdaab82d5d4cae5458e76d0e305"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

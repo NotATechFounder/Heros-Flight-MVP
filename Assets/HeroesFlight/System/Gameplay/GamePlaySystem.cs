@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.Common.Progression;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Combat;
 using HeroesFlight.System.Combat.Enum;
@@ -20,6 +21,9 @@ using HeroesFlight.System.NPC.Controllers.Ability;
 using HeroesFlight.System.NPC.Controllers.Control;
 using HeroesFlight.System.NPC.Model;
 using HeroesFlight.System.Stats;
+using HeroesFlight.System.Stats.Handlers;
+using HeroesFlight.System.Stats.Traits.Effects;
+using HeroesFlight.System.Stats.Traits.Enum;
 using HeroesFlight.System.UI;
 using HeroesFlightProject.System.Combat.Controllers;
 using HeroesFlightProject.System.Gameplay.Controllers;
@@ -40,7 +44,7 @@ namespace HeroesFlight.System.Gameplay
         public GamePlaySystem(DataSystemInterface dataSystem, CharacterSystemInterface characterSystem,
             NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem,
             CombatSystemInterface combatSystem,
-            IUISystem uiSystem, ProgressionSystemInterface progressionSystem)
+            IUISystem uiSystem, ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystemInterface)
         {
             this.dataSystem = dataSystem;
             this.npcSystem = npcSystem;
@@ -49,16 +53,17 @@ namespace HeroesFlight.System.Gameplay
             this.combatSystem = combatSystem;
             this.uiSystem = uiSystem;
             this.progressionSystem = progressionSystem;
+            traitSystem = traitSystemInterface;
             this.npcSystem.OnEnemySpawned += HandleEnemySpawned;
             this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
             this.combatSystem.OnEntityDied += HandleEntityDied;
             this.uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
-            this.uiSystem.OnReviveCharacterRequest += ReviveCharacter;
+            this.uiSystem.OnReviveCharacterRequest += () => { ReviveCharacter(100f); };
         }
 
         CountDownTimer GameTimer;
         GameEffectController GameEffectController;
-        
+
         GodsBenevolence godsBenevolence;
         Shrine shrine;
         ActiveAbilityManager activeAbilityManager;
@@ -70,6 +75,7 @@ namespace HeroesFlight.System.Gameplay
         IUISystem uiSystem;
         ProgressionSystemInterface progressionSystem;
         CharacterSystemInterface characterSystem;
+        TraitSystemInterface traitSystem;
 
         GameplayContainer container;
 
@@ -104,6 +110,8 @@ namespace HeroesFlight.System.Gameplay
         Level currentLevel;
 
         List<Environment.Objects.Crystal> crystals = new();
+        private bool revivedByFeatThisRun = false;
+        private int goldModifier;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -115,7 +123,7 @@ namespace HeroesFlight.System.Gameplay
 
             container = scene.GetComponentInChildren<GameplayContainer>();
             hitEffectsPlayer = container.GetComponent<StackableSoundPlayer>();
-           
+
             progressionSystem.BoosterManager.OnBoosterActivated += HandleBoosterActivated;
             progressionSystem.BoosterManager.OnBoosterContainerCreated += HandleBoosterWithDurationActivated;
 
@@ -127,15 +135,14 @@ namespace HeroesFlight.System.Gameplay
 
             npcSystem.NpcContainer.SetMobDifficultyHolder(container.CurrentModel.MobDifficulty);
 
-            uiSystem.UpdateUltimateButtonFill(0);
-
             GameTimer = new CountDownTimer(container);
 
             environmentSystem.CurrencySpawner.OnCollected = HandleCurrencyCollected;
 
-            environmentSystem.BoosterSpawner.ActivateBooster =  progressionSystem.BoosterManager.ActivateBooster;
+            environmentSystem.BoosterSpawner.ActivateBooster = progressionSystem.BoosterManager.ActivateBooster;
 
-            shrine.GetAngelEffectManager.OnPermanetCard += uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
+            shrine.GetAngelEffectManager.OnPermanetCard +=
+                uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
             uiSystem.UiEventHandler.AngelGambitMenu.CardExit += shrine.GetAngelEffectManager.Exists;
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
@@ -181,6 +188,16 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += HeroProgressionCompleted;
 
+            goldModifier = 0;
+            if ( traitSystem.HasTraitOfType(TraitType.CurrencyBoost, out var traits))
+            {
+                foreach (var data in traits)
+                {
+                    var traitValue = traitSystem.GetTraitEffect(data.TargetTrait.Id);
+                    goldModifier += traitValue.Value + data.Value.Value;
+                }
+                
+            }
             RegisterShrineNPCUIEvents();
 
             OnComplete?.Invoke();
@@ -215,6 +232,8 @@ namespace HeroesFlight.System.Gameplay
             ResetLogic();
             ResetConnections();
             container.SetStartingIndex(0);
+            revivedByFeatThisRun = false;
+            goldModifier = 0;
         }
 
         /// <summary>
@@ -326,7 +345,7 @@ namespace HeroesFlight.System.Gameplay
         /// <summary>
         /// Used to reset cached logic
         /// </summary>
-         void ResetLogic()
+        void ResetLogic()
         {
             environmentSystem.CurrencySpawner.ResetItems();
             foreach (var crystal in crystals)
@@ -345,6 +364,7 @@ namespace HeroesFlight.System.Gameplay
             GameTimer.Stop();
             ChangeState(GameState.Ended);
             uiSystem.ToggleSpecialEnemyHealthBar(false);
+            
         }
 
         /// <summary>
@@ -378,14 +398,16 @@ namespace HeroesFlight.System.Gameplay
             });
         }
 
-        void ReviveCharacter()
+        void ReviveCharacter(float healthPercentage)
         {
-            combatSystem.RevivePlayer();
+            environmentSystem.ParticleManager.Spawn("CharacterRevival",
+                characterSystem.CurrentCharacter.CharacterTransform.position);
+            combatSystem.RevivePlayer(healthPercentage);
             GameTimer.Resume();
             ChangeState(GameState.Ongoing);
             uiSystem.UiEventHandler.ReviveMenu.Close();
         }
-        
+
         /// <summary>
         /// Used to load next lvl model
         /// </summary>
@@ -402,7 +424,7 @@ namespace HeroesFlight.System.Gameplay
 
             return true;
         }
-        
+
         /// <summary>
         /// Used to spawn enemies from provided Level
         /// </summary>
@@ -411,41 +433,47 @@ namespace HeroesFlight.System.Gameplay
         {
             npcSystem.SpawnEnemies(currentLvl, CurrentLvlIndex);
         }
-        
+
         /// <summary>
         /// Used to create  player character and proper init it
         /// </summary>
         void SetupCharacter()
         {
             CharacterControllerInterface characterController = characterSystem.CreateCharacter(GetPlayerSpawnPosition);
-            characterHealthController =  characterController.CharacterTransform.GetComponent<CharacterHealthController>();
-            characterAttackController =  characterController.CharacterTransform.GetComponent<BaseCharacterAttackController>();
+            characterHealthController =
+                characterController.CharacterTransform.GetComponent<CharacterHealthController>();
+            characterAttackController =
+                characterController.CharacterTransform.GetComponent<BaseCharacterAttackController>();
 
-            combatSystem.RegisterEntity(new CombatEntityModel(characterHealthController, characterAttackController, CombatEntityType.Player));
-            combatSystem.InitCharacterUltimate(characterController.CharacterSO.CharacterAnimations.UltAnimationsData, characterController.CharacterSO.UltimateData.Charges);
+            characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
+            progressionSystem.HeroProgression.Initialise(characterStatController);
+            UpdateStatModifiers();
+
+            combatSystem.RegisterEntity(new CombatEntityModel(characterHealthController, characterAttackController,
+                CombatEntityType.Player));
+            combatSystem.InitCharacterUltimate(characterController.CharacterSO.CharacterAnimations.UltAnimationsData,
+                characterController.CharacterSO.UltimateData.Charges);
 
             characterAttackController.OnHitTarget += OnEnemyHitSuccess;
 
             characterVFXController = characterController.CharacterTransform.GetComponent<CharacterVFXController>();
             characterVFXController.InjectShaker(cameraController.CameraShaker);
             characterHealthController.OnDodged += HandleCharacterDodged;
-          
+
             characterSystem.SetCharacterControllerState(false);
             cameraController.SetTarget(characterController.CharacterTransform);
             npcSystem.InjectPlayer(characterController.CharacterTransform);
 
-            characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
             progressionSystem.BoosterManager.Initialize(characterStatController);
 
             environmentSystem.CurrencySpawner.SetPlayer(characterController.CharacterTransform);
-            progressionSystem.HeroProgression.Initialise(characterStatController);
 
-            shrine.Initialize( dataSystem.CurrencyManager, characterStatController);
+            shrine.Initialize(dataSystem.CurrencyManager, characterStatController);
             godsBenevolence.Initialize(characterStatController);
 
             activeAbilityManager.Initialize(characterStatController);
-        }    
-        
+        }
+
         void OnEnemyHitSuccess()
         {
             GameEffectController.StopTime(0.1f, container.CurrentModel.TimeStopRestoreSpeed,
@@ -474,7 +502,8 @@ namespace HeroesFlight.System.Gameplay
                     {
                         var attackController =
                             healthController.HealthTransform.GetComponent<IAttackControllerInterface>();
-                        combatSystem.RegisterEntity(new CombatEntityModel(healthController,attackController,CombatEntityType.TempMob));
+                        combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController,
+                            CombatEntityType.TempMob));
                     };
                 }
             }
@@ -505,12 +534,13 @@ namespace HeroesFlight.System.Gameplay
             enemiesToKill--;
             environmentSystem.ParticleManager.Spawn("Loot_Spawn", position,
                 Quaternion.Euler(new Vector3(-90, 0, 0)));
-            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10,
+          
+            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10 + goldModifier,
                 position);
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RunExperience, 10,
                 position);
             progressionSystem.AddCurrency(CurrencyKeys.RunExperience, (int)container.HeroProgressionExpEarnedPerKill);
-
+            
             uiSystem.UpdateEnemiesCounter(enemiesToKill);
             if (currentState != GameState.Ongoing)
                 return;
@@ -538,6 +568,13 @@ namespace HeroesFlight.System.Gameplay
 
                     return;
                 }
+                
+                if ( traitSystem.HasTraitOfType(TraitType.HealthRestore, out var traitId))
+                {
+                    var traitValue = traitSystem.GetTraitEffect(traitId[0].TargetTrait.Id);
+                    characterSystem.CurrentCharacter.CharacterTransform.GetComponent<IHealthController>().TryDealDamage(
+                        new HealthModificationIntentModel(traitValue.Value,DamageType.NoneCritical,AttackType.Healing,DamageCalculationType.Percentage));
+                }
 
                 ChangeState(GameState.WaitingPortal);
             });
@@ -557,11 +594,25 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleCharacterDeath()
         {
+          
             Debug.LogError($"character died and game state is {currentState}");
             if (currentState != GameState.Ongoing)
                 return;
             characterAttackController.GetComponent<CharacterAnimationController>().StopUltSequence();
 
+            
+            if (!revivedByFeatThisRun && traitSystem.HasTraitOfType(TraitType.Revival, out var traitId))
+            {
+                revivedByFeatThisRun = true;
+                var traitValue = traitSystem.GetTraitEffect(traitId[0].TargetTrait.Id);
+                CoroutineUtility.WaitForSeconds(2f, () =>
+                {
+                   ReviveCharacter(traitValue.Value);
+                });
+                
+                return;
+            }
+            
             //freezes engine?  
             // GameTimer.Pause();
             CoroutineUtility.WaitForSeconds(1f, () => { ChangeState(GameState.Died); });
@@ -601,7 +652,7 @@ namespace HeroesFlight.System.Gameplay
                     healthModificationIntentModel.TargetTransform.position);
 
 
-          //  GameEffectController.StopFrame(0.1f);
+            //  GameEffectController.StopFrame(0.1f);
 
             // OnEnemyDamaged?.Invoke(damageModel);
             hitEffectsPlayer.PlayHitEffect("Hit", true);
@@ -742,12 +793,13 @@ namespace HeroesFlight.System.Gameplay
 
                     ShrineNPCHolder shrineNPCHolder = currentLevelEnvironment.GetComponent<ShrineNPCHolder>();
 
-                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.AngelsGambit].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.AngelsGambit],
-                    () =>
-                    {
-                        uiSystem.UiEventHandler.AngelGambitMenu.Open();
-                        TogglePlayerMovement(false);
-                    });
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.AngelsGambit].Initialize(
+                        shrine.ShrineNPCFeeCache[ShrineNPCType.AngelsGambit],
+                        () =>
+                        {
+                            uiSystem.UiEventHandler.AngelGambitMenu.Open();
+                            TogglePlayerMovement(false);
+                        });
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.ActiveAbilityReRoller].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller],
                     () =>
@@ -791,7 +843,8 @@ namespace HeroesFlight.System.Gameplay
 
 
             uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
-            uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
+            uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice +=
+                shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
             uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested += (currencyType) =>
             {
                 return shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType);
@@ -833,7 +886,8 @@ namespace HeroesFlight.System.Gameplay
             };
 
             uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed -= () => TogglePlayerMovement(true);
-            uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice -= shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
+            uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice -=
+                shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
             uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested -= (currencyType) =>
             {
                 return shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType);
@@ -973,6 +1027,7 @@ namespace HeroesFlight.System.Gameplay
                         dataSystem.CharacterManager.UnlockCharacter(CharacterType.Lancer);
                         Debug.Log("Granting LANCER");
                     }
+
                     CoroutineUtility.Start(WaitingPortalRoutine());
                     break;
 
@@ -984,6 +1039,7 @@ namespace HeroesFlight.System.Gameplay
         }
 
         //Boss
+
         void HandleWorldBoss()
         {
             Debug.Log("WORLD BOSS LOGIC");
@@ -1007,15 +1063,16 @@ namespace HeroesFlight.System.Gameplay
                 boss = npcSystem.NpcContainer.SpawnBoss(currentLevel);
                 boss.OnBossStateChange += HandleBossStateChange;
                 boss.OnBeingDamaged += HandleBossDamaged;
-            
+
                 boss.OnHealthPercentageChange += HandleBossHealthChange;
                 boss.OnCrystalDestroyed += SpawnLootFromBoss;
                 characterSystem.SetCharacterControllerState(true);
                 boss.Init();
                 foreach (var health in boss.CrystalNodes)
                 {
-                    combatSystem.RegisterEntity(new CombatEntityModel(health,CombatEntityType.Boss));
+                    combatSystem.RegisterEntity(new CombatEntityModel(health, CombatEntityType.Boss));
                 }
+
                 var spawnAbility = boss.transform.GetComponentInChildren<BossMushroomSummonAbility>();
                 if (spawnAbility != null)
                 {
@@ -1023,7 +1080,8 @@ namespace HeroesFlight.System.Gameplay
                     {
                         var attackController =
                             healthController.HealthTransform.GetComponent<IAttackControllerInterface>();
-                        combatSystem.RegisterEntity(new CombatEntityModel(healthController,attackController,CombatEntityType.TempMob));
+                        combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController,
+                            CombatEntityType.TempMob));
                     };
                 }
             });
@@ -1043,7 +1101,6 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleBossDamaged(HealthModificationIntentModel damageIntentModel)
         {
-            
         }
 
         void HandleBossHealthChange(float amount)
@@ -1105,8 +1162,8 @@ namespace HeroesFlight.System.Gameplay
             if (true)
             {
                 uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
-                uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,
-                ContinueGameLoop);
+                    uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,
+                    ContinueGameLoop);
             }
             else
             {
@@ -1215,6 +1272,31 @@ namespace HeroesFlight.System.Gameplay
             {
                 ContinueGameLoop();
             }
+        }
+
+        private void UpdateStatModifiers()
+        {
+            var unlockedTraits = traitSystem.GetUnlockedEffects();
+            var modifiedStatsMap = new Dictionary<HeroProgressionAttribute, int>();
+            foreach (var trait in unlockedTraits)
+            {
+                if (trait.TargetTrait.Effect.TraitType == TraitType.StatBoost)
+                {
+                    var effect = trait.TargetTrait.Effect as StatBoostEffect;
+                    var modificationValue = effect.Value + trait.Value.Value;
+                    Debug.Log($"Gona update {effect.TargetStat} with value {effect.Value + trait.Value.Value}");
+                    if (modifiedStatsMap.TryGetValue(effect.TargetStat, out var currentValue))
+                    {
+                        modifiedStatsMap[effect.TargetStat] += modificationValue;
+                    }
+                    else
+                    {
+                        modifiedStatsMap.Add(effect.TargetStat, modificationValue);
+                    }
+                }
+            }
+
+            progressionSystem.HeroProgression.AddStatsModifiers(modifiedStatsMap);
         }
     }
 }

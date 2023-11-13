@@ -9,22 +9,7 @@ namespace HeroesFlight.System.UI
 {
     public class UiSystem : IUISystem
     {
-        public UiSystem(DataSystemInterface dataSystemInterface)
-        {
-            // gameplaySystem.OnCountDownTimerStart += DisplayStartInfoMessage;
-            // gameplaySystem.OnGameTimerUpdate += UpdateGameTimeUI;
-            //
-            //
-            // gameplaySystem.OnRemainingEnemiesLeft += UpdateEnemiesCounter;
-            // gameplaySystem.OnCharacterComboChanged += UpdateComboUI;
-            // gameplaySystem.OnSpecialEnemySpawned += HandleSpecialEnemy;
-            // gameplaySystem.OnSpecialEnemyHealthChange += HandleSpecialEnemyHealthChange;
-            // gameplaySystem.OnEncounterSpecialEnemy += GameplaySystemOnEncounterSpecialEnemy;
-            // gameplaySystem.OnBoosterActivated += HandleBoosterActivated;
-            // gameplaySystem.OnCoinsCollected += HandleCoinChange;
-            // gameplaySystem.OnUltimateChargesChange += UpdateUltimateButton;
-            // gameplaySystem.OnBoosterContainerCreated += HandleBoosterContainerCreated;
-        }
+        public UiSystem(DataSystemInterface dataSystemInterface) { }
 
         public event Action OnReturnToMainMenuRequest;
 
@@ -135,11 +120,9 @@ namespace HeroesFlight.System.UI
             UiEventHandler.GameMenu.DisplayInfoMessage(UISystem.GameMenu.InfoMessageType.Start, duration);
         }
 
-     
-
-        public void UpdateUltimateButtonFill(float value)
+        public void UpdateUltimateButton(float value)
         {
-            UiEventHandler.GameMenu.FillSpecial(value);
+            UiEventHandler.GameMenu.CheckIfSpecialReady(value);
         }
 
 

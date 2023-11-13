@@ -1,4 +1,6 @@
 using System;
+using HeroesFlight.System.UI.DIce;
+using HeroesFlight.System.UI.Traits;
 using UISystem;
 using UnityEngine;
 
@@ -28,6 +30,8 @@ public class UIEventHandler : MonoBehaviour
     public HealingNPCMenu HealingNPCMenu { get; private set; }
     public ActiveAbilityRerollerNPCMenu ActiveAbilityRerollerNPCMenu { get; private set; }
     public PassiveAbilityRerollerNPCMenu PassiveAbilityRerollerNPCMenu { get; private set; }
+    public TraitTreeMenu TraitTreeMenu { get; private set; }
+    public DiceMenu DiceMenu { get; private set; }
 
     public AbilitySelectMenu AbilitySelectMenu { get; private set; }
 
@@ -48,9 +52,11 @@ public class UIEventHandler : MonoBehaviour
         HeroProgressionMenu = uIManager.InitMenu<HeroProgressionMenu>();
         RewardPopup = uIManager.InitMenu<RewardPopupController>();
         HealingNPCMenu = uIManager.InitMenu<HealingNPCMenu>();
+        TraitTreeMenu = uIManager.InitMenu<TraitTreeMenu>();
         ActiveAbilityRerollerNPCMenu = uIManager.InitMenu<ActiveAbilityRerollerNPCMenu>();
         AbilitySelectMenu = uIManager.InitMenu<AbilitySelectMenu>();
         PassiveAbilityRerollerNPCMenu = uIManager.InitMenu<PassiveAbilityRerollerNPCMenu>();
+        DiceMenu=uIManager.InitMenu<DiceMenu>();
         OnComplecte?.Invoke();
     }
 }

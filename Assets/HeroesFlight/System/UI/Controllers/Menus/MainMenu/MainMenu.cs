@@ -15,6 +15,7 @@ namespace UISystem
 
         public event Action OnPlayButtonPressed;
         public event Action OnSettingsButtonPressed;
+        public event Action OnTraitButtonPressed;
 
         [Header("UI")]
         [SerializeField] private TextMeshProUGUI goldText;
@@ -22,6 +23,7 @@ namespace UISystem
 
         [SerializeField] private AdvanceButton playButton;
         [SerializeField] private AdvanceButton settingsButton;
+        [SerializeField] private AdvanceButton traitsButton;
         [SerializeField] private CharacterUI characterUIPrefab;
         [SerializeField] private UISwipeArea swipeArea;
         [SerializeField] private UISelection uiSelection;
@@ -52,6 +54,12 @@ namespace UISystem
             {
                 OnSettingsButtonPressed?.Invoke();
             });
+            
+            traitsButton.onClick.AddListener(() =>
+            {
+                OnTraitButtonPressed?.Invoke();
+            });
+            
             GenerateCache();
         }
 

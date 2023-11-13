@@ -79,7 +79,6 @@ public class LightNova : RegularActiveAbility
         float startHealth = characterStatController.GetCurrentHealth();
         while (characterHealthController.CurrentHealth < characterHealthController.MaxHealth)
         {
-            Debug.Log($"{characterHealthController.CurrentHealth} < {characterHealthController.MaxHealth}");
             elapsedTime += Time.deltaTime;
             float amountToRegen =
                 Mathf.Lerp(startHealth, characterHealthController.MaxHealth, elapsedTime / regenTime) -

@@ -26,7 +26,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void DealHealthPercentageDamage(float percentage, DamageType damageType,AttackType attackType);
         bool IsDead();
         void Reset();
-        void Revive();
+        void Revive(float healthPercentage);
 
         void SetInvulnerableState(bool isImmortal);
 

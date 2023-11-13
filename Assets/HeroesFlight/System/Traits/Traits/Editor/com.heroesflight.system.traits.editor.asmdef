@@ -1,0 +1,19 @@
+{
+    "name": "com.heroesflight.system.traits.editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0b10a04491966c249bfc42d493d59796"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [
+        "Android",
+        "iOS"
+    ],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -147,9 +147,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             OnDeath = null;
         }
 
-        public virtual void Revive()
+        public virtual void Revive(float healthPercentage)
         {
-            Init();
+            currentHealth = maxHealth/100 * healthPercentage;
+            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+            currentHit = maxHit;
         }
 
         public virtual void SetInvulnerableState(bool isImmortal)

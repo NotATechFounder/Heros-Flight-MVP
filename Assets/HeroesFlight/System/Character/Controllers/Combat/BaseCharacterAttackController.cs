@@ -17,11 +17,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] int enemiesToHitPerAttack = 4;
         [SerializeField] protected OverlapChecker reguarAttackOverlap;
         [SerializeField] protected OverlapChecker ultAttackOverlap;
+        [SerializeField] WorldBarUI specialBar;
         public event Action<AttackControllerState> OnStateChange;
 
         public float Damage => characterController.CharacterStatController.CurrentPhysicalDamage;
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
+
+        WorldBarUI IAttackControllerInterface.specialBar => specialBar;
 
         protected CharacterControllerInterface characterController;
         protected CharacterAnimationControllerInterface m_CharacterAnimationController;
@@ -154,7 +157,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public void ToggleControllerState(bool isEnabled)
         {
             isDisabled = !isEnabled;
-            visualController.DisableVisuals(isDisabled);
+          //  visualController.DisableVisuals(isDisabled);
         }
 
         public bool CanAttack()

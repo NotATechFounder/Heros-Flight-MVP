@@ -45,14 +45,14 @@ public class AutoShooter : MonoBehaviour
         {
             ProjectileControllerBase bullet = ObjectPoolManager.SpawnObject(projectileController, transform.position, Quaternion.identity);
             bullet.SetupProjectile(damage, (arg2[i].transform.position - transform.position).normalized);
-            bullet.OnEnded += HandleArrowDisable;
+            bullet.OnHit += HandleArrowDisable;
         }
     }
 
     void HandleArrowDisable(ProjectileControllerInterface obj)
     {
         AudioManager.PlaySoundEffect("LightningExplosion", SoundEffectCategory.Hero);
-        obj.OnEnded -= HandleArrowDisable;
+        obj.OnHit -= HandleArrowDisable;
         var arrow = obj as ProjectileControllerBase;
         ObjectPoolManager.ReleaseObject(arrow.gameObject);
     }
