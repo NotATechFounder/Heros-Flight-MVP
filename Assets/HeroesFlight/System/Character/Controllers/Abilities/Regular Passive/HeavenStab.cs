@@ -73,7 +73,7 @@ public class HeavenStab : RegularActiveAbility
     private void FireProjectile()
     {
         ProjectileControllerBase bullet = ObjectPoolManager.SpawnObject(projectileController, transform.position, Quaternion.identity);
-        bullet.transform.localScale = new Vector3(visual.localScale.x * bullet.transform.localScale.x, bullet.transform.localScale.y, 1);
+        bullet.transform.localScale = new Vector3(visual.localScale.x * bullet.transform.localScale.y, bullet.transform.localScale.y, 1);
 
         bullet.SetupProjectile(currentDamage, -visual.localScale.x * Vector2.right);
         bullet.SetLine(currentlinesOfDamage, 0.25f);

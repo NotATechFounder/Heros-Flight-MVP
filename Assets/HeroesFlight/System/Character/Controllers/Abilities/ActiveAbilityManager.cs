@@ -5,6 +5,7 @@ using Pelumi.ObjectPool;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ActiveAbilityManager : MonoBehaviour
@@ -71,19 +72,14 @@ public class ActiveAbilityManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            //EquippedAbility(RegularActiveAbilityType.MagicShield);
-            //EquippedAbility(RegularActiveAbilityType.Immolation);
-            //EquippedAbility(RegularActiveAbilityType.OrbOfLightning);
-
             AddPassiveAbility(PassiveAbilityType.Flex);
             AddPassiveAbility(PassiveAbilityType.DuckDodgeDip);
             AddPassiveAbility(PassiveAbilityType.LuckyHit);
 
-        }
+            EquippedAbility (RegularActiveAbilityType.HeavenStab);
+            EquippedAbility (RegularActiveAbilityType.SwordWhirlwind);
+            EquippedAbility (RegularActiveAbilityType.LightNova);
 
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            DetachAbility(regularAbiltyAndControllerDic[RegularActiveAbilityType.KnifeFluffy], eqquipedRegularActivities[RegularActiveAbilityType.KnifeFluffy]);
         }
 
         if (Input.GetKeyDown(KeyCode.Keypad1))
@@ -99,11 +95,6 @@ public class ActiveAbilityManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Keypad3))
         {
             UseCharacterAbility(2);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            AddPassiveAbility(PassiveAbilityType.HeartThief);
         }
     }
 
@@ -230,15 +221,45 @@ public class ActiveAbilityManager : MonoBehaviour
         return eqquipedRegularActivities.ContainsKey(passiveActiveAbilityType);
     }
 
-    public RegularActiveAbilityType GetRandomActiveAbility(RegularActiveAbilityType regularActiveAbilityTypeExeption)
+    public List<RegularActiveAbilityType> GetRandomActiveAbility(int amount , List<RegularActiveAbilityType> passiveActiveAbilityTypeExeption)
     {
-        List<RegularActiveAbilityType> avaliableAbilities = new List<RegularActiveAbilityType>(regularActiveAbilityTypes);
-        avaliableAbilities.Remove(regularActiveAbilityTypeExeption);
-        int randomIndex = UnityEngine.Random.Range(0, avaliableAbilities.Count);
-        return avaliableAbilities[randomIndex];
+        List<RegularActiveAbilityType> randomAbilities = new List<RegularActiveAbilityType>();
+
+        if (eqquipedRegularActivities.Count >= 3)
+        {
+            randomAbilities = GetRandomActiveAbilityFromEqquiped(amount, passiveActiveAbilityTypeExeption);
+        }
+        else
+        {
+            randomAbilities = GetRandomActiveAbilityFromAll(amount, passiveActiveAbilityTypeExeption);
+        }
+
+        return randomAbilities;
     }
 
-    public List<RegularActiveAbilityType> GetRandomMultipleActiveAbility(int amount, List<RegularActiveAbilityType> passiveActiveAbilityTypeExeption)
+    public List<RegularActiveAbilityType> GetRandomActiveAbilityFromEqquiped(int amount , List<RegularActiveAbilityType> passiveActiveAbilityTypeExeption)
+    {
+        List<RegularActiveAbilityType> randomAbilities = new List<RegularActiveAbilityType>();
+        List<RegularActiveAbilityType> avaliableAbilities = eqquipedRegularActivities.Keys.ToList();
+
+        int differenceInAmount = passiveActiveAbilityTypeExeption.Count - eqquipedRegularActivities.Count;
+        for (int i = 0; i < differenceInAmount; i++)
+        {
+            avaliableAbilities.Remove(passiveActiveAbilityTypeExeption[i]);
+        }
+
+        for (int i = 0; i < amount; i++)
+        {
+            if (avaliableAbilities.Count == 0)
+                break;
+            int randomIndex = UnityEngine.Random.Range(0, avaliableAbilities.Count);
+            randomAbilities.Add(avaliableAbilities[randomIndex]);
+            avaliableAbilities.RemoveAt(randomIndex);
+        }
+        return randomAbilities;
+    }
+
+    public List<RegularActiveAbilityType> GetRandomActiveAbilityFromAll(int amount , List<RegularActiveAbilityType> passiveActiveAbilityTypeExeption)
     {
         List<RegularActiveAbilityType> randomAbilities = new List<RegularActiveAbilityType>();
         List<RegularActiveAbilityType> avaliableAbilities = new List<RegularActiveAbilityType>(regularActiveAbilityTypes);
@@ -259,7 +280,23 @@ public class ActiveAbilityManager : MonoBehaviour
         return randomAbilities;
     }
 
-    public List<PassiveAbilityType> GetRandomMultiplePassiveAbility(int amount, List<PassiveAbilityType> passiveActiveAbilityTypeExeption)
+    public List<PassiveAbilityType> GetRandomPassiveAbility(int amount , List<PassiveAbilityType> passiveActiveAbilityTypeExeption)
+    {
+        List<PassiveAbilityType> randomAbilities = new List<PassiveAbilityType>();
+
+        if(eqquipedRegularActivities.Count >=3)
+        {
+            randomAbilities = GetRandomPassiveAbilityForEqquiped(amount, passiveActiveAbilityTypeExeption);
+        }
+        else
+        {
+            randomAbilities = GetRandomPassiveAbilityFromAll(amount, passiveActiveAbilityTypeExeption);
+        }
+
+        return randomAbilities;
+    }
+
+    public List<PassiveAbilityType> GetRandomPassiveAbilityFromAll(int amount, List<PassiveAbilityType> passiveActiveAbilityTypeExeption)
     {
         List<PassiveAbilityType> randomAbilities = new List<PassiveAbilityType>();
         List<PassiveAbilityType> avaliableAbilities = new List<PassiveAbilityType>(passiveActiveAbilityTypes);
@@ -267,6 +304,30 @@ public class ActiveAbilityManager : MonoBehaviour
         for (int i = 0; i < passiveActiveAbilityTypeExeption.Count; i++)
         {
             avaliableAbilities.Remove(passiveActiveAbilityTypeExeption[i]);
+        }
+
+        for (int i = 0; i < amount; i++)
+        {
+            if (avaliableAbilities.Count == 0)
+                break;
+
+            int randomIndex = UnityEngine.Random.Range(0, avaliableAbilities.Count);
+
+            randomAbilities.Add(avaliableAbilities[randomIndex]);
+            avaliableAbilities.RemoveAt(randomIndex);
+        }
+        return randomAbilities;
+    }
+
+    public List<PassiveAbilityType> GetRandomPassiveAbilityForEqquiped(int amount, List<PassiveAbilityType> passiveAbilityTypeExeption)
+    {
+        List<PassiveAbilityType> randomAbilities = new List<PassiveAbilityType>();
+        List<PassiveAbilityType> avaliableAbilities = eqquipedPassiveAbilities.Keys.ToList();
+
+        int differenceInAmount = passiveAbilityTypeExeption.Count - eqquipedPassiveAbilities.Count;
+        for (int i = 0; i < differenceInAmount; i++)
+        {
+            avaliableAbilities.Remove(passiveAbilityTypeExeption[i]);
         }
 
         for (int i = 0; i < amount; i++)
@@ -290,6 +351,20 @@ public class ActiveAbilityManager : MonoBehaviour
     public PassiveAbilityVisualData GetPassiveAbilityVisualData(PassiveAbilityType passiveAbilityType)
     {
         return allPassiveAbilitiesDic[passiveAbilityType].GetAbilityVisualData;
+    }
+
+    public int GetActiveAbilityLevel(RegularActiveAbilityType regularActiveAbilityType)
+    {
+        if (!eqquipedRegularActivities.ContainsKey(regularActiveAbilityType))
+            return 0;
+        return eqquipedRegularActivities[regularActiveAbilityType].Level;
+    }
+
+    public int GetPassiveAbilityLevel(PassiveAbilityType passiveAbilityType)
+    {
+        if (!eqquipedPassiveAbilities.ContainsKey(passiveAbilityType))
+            return 0;
+        return eqquipedPassiveAbilities[passiveAbilityType];
     }
 
     public void UseCharacterAbility(int slotIndex)

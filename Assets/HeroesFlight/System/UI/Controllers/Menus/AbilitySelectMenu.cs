@@ -8,11 +8,13 @@ namespace UISystem
 {
     public class AbilitySelectMenu : BaseMenu<AbilitySelectMenu>
     {
-        public event Func<RegularActiveAbilityType,RegularActiveAbilityType> GetRandomActiveAbility;
+        public event Func<int, List<RegularActiveAbilityType>, List<RegularActiveAbilityType>> GetRandomActiveAbility;
         public event Func<int, List<PassiveAbilityType>, List<PassiveAbilityType>> GetRandomPassiveAbility;
+        public event Func<PassiveAbilityType, int> GetPassiveAbilityLevel;
 
         public event Func<RegularActiveAbilityType, RegularAbilityVisualData> GetRandomActiveAbilityVisualData;
         public event Func<PassiveAbilityType, PassiveAbilityVisualData> GetRandomPassiveAbilityVisualData;
+        public event Func<RegularActiveAbilityType, int> GetActiveAbilityLevel;
 
         public event Action<RegularActiveAbilityType> OnRegularAbilitySelected;
         public event Action<PassiveAbilityType> OnPassiveAbilitySelected;
@@ -59,9 +61,9 @@ namespace UISystem
         {
             RefreshAbilities();
 
-            // bool activeAbilityChance = UnityEngine.Random.Range(0, 100) < 50;
+            bool activeAbilityChance = UnityEngine.Random.Range(0, 100) < 50;
 
-            bool activeAbilityChance = true;
+            //bool activeAbilityChance = true;
 
             List<PassiveAbilityType> passiveAbilityTypes = GetRandomPassiveAbility.Invoke(3, currentPassiveDisplayed);
 
@@ -71,10 +73,10 @@ namespace UISystem
             {
                 if (activeAbilityChance && i == 2)
                 {
-                    RegularActiveAbilityType passiveActiveAbilityType = GetRandomActiveAbility.Invoke(currentActiveDisplayed);
+                    RegularActiveAbilityType passiveActiveAbilityType = GetRandomActiveAbility.Invoke(1, new List<RegularActiveAbilityType>() { currentActiveDisplayed })[0];
                     currentActiveDisplayed = passiveActiveAbilityType;
                     RegularAbilityVisualData regularAbilityVisualData = GetRandomActiveAbilityVisualData.Invoke(passiveActiveAbilityType);
-                    abilityButtonUIs[i].SetInfo(regularAbilityVisualData.Icon, regularAbilityVisualData.DisplayName, regularAbilityVisualData.Description);
+                    abilityButtonUIs[i].SetInfo(regularAbilityVisualData.Icon, regularAbilityVisualData.DisplayName, regularAbilityVisualData.Description, GetActiveAbilityLevel(passiveActiveAbilityType));
                     abilityButtonUIs[i].GetAdvanceButton.onClick.AddListener(() =>
                     {
                         OnRegularAbilitySelected?.Invoke(passiveActiveAbilityType);
@@ -85,7 +87,7 @@ namespace UISystem
                 {
                     currentPassiveDisplayed.Add(passiveAbilityTypes[i]);
                     PassiveAbilityVisualData abilityVisualData = GetRandomPassiveAbilityVisualData.Invoke(passiveAbilityTypes[i]);
-                    abilityButtonUIs[i].SetInfo(abilityVisualData.Icon, abilityVisualData.DisplayName, abilityVisualData.Description);
+                    abilityButtonUIs[i].SetInfo(abilityVisualData.Icon, abilityVisualData.DisplayName, abilityVisualData.Description, GetPassiveAbilityLevel(passiveAbilityTypes[i]));
                     PassiveAbilityType passiveAbilityType = passiveAbilityTypes[i];
                     abilityButtonUIs[i].GetAdvanceButton.onClick.AddListener(() =>
                     {

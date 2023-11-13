@@ -1,4 +1,5 @@
 using Pelumi.Juicer;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -15,12 +16,15 @@ public class PassiveAbilityDisplayUI : MonoBehaviour
     [SerializeField] private Image infoHolderIcon;
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI infoHolderText;
+    [SerializeField] private TextMeshProUGUI levelText;
 
     private JuicerRuntime infoHolderOpenEffect;
     private JuicerRuntime infoHolderCloseEffect;
     private Coroutine viewInfoCoroutine;
 
     public bool Occupied => content.activeSelf;
+
+    int level = 0;
  
 
     private void Awake()
@@ -33,6 +37,7 @@ public class PassiveAbilityDisplayUI : MonoBehaviour
         {
             ShowInfo();
         });
+        Disable();
     }
 
     public void Initialize(PassiveAbilityVisualData passiveAbilityVisualData)
@@ -40,8 +45,9 @@ public class PassiveAbilityDisplayUI : MonoBehaviour
         infoHolderIcon.sprite = passiveAbilityVisualData.Icon;
         nameText.text = passiveAbilityVisualData.DisplayName;
         infoHolderText.text = passiveAbilityVisualData.Description;
-        content.SetActive(true);
+        gameObject.SetActive(true);
         ShowInfo();
+        AddLevel();
     }
 
     private void ShowInfo()
@@ -72,6 +78,12 @@ public class PassiveAbilityDisplayUI : MonoBehaviour
 
     public void Disable()
     {
-        content.SetActive(false);
+        level = 0;
+        gameObject.SetActive(false);
+    }
+
+    public void AddLevel()
+    {
+        levelText.text = $"Lvl. {++level}";
     }
 }

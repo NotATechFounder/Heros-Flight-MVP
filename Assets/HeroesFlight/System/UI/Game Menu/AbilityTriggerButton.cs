@@ -67,7 +67,7 @@ public class AbilityTriggerButton : MonoBehaviour
 
     public void Disable()
     {
-      icon.sprite = null;
+        icon.sprite = null;
         canvasGroup.alpha = 0;
     }
 }
