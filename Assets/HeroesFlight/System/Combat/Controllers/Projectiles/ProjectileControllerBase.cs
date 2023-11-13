@@ -81,6 +81,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 default:   break;
             }
 
+            if (hitEffect != null)
             hitEffect?.Play();
 
             OnHit?.Invoke(this);
