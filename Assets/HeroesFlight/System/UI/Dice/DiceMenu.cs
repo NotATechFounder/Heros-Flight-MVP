@@ -53,7 +53,7 @@ namespace HeroesFlight.System.UI.DIce
         {
             ToggleCanvasGroup(infoCG, true);
             if (!info.Equals(string.Empty)) infoText.text = info;
-            if (status != Status.Opened) Open();
+            Open();
         }
 
 
