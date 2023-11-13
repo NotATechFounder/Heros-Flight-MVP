@@ -76,7 +76,7 @@ namespace UISystem
                     RegularActiveAbilityType passiveActiveAbilityType = GetRandomActiveAbility.Invoke(1, new List<RegularActiveAbilityType>() { currentActiveDisplayed })[0];
                     currentActiveDisplayed = passiveActiveAbilityType;
                     RegularAbilityVisualData regularAbilityVisualData = GetRandomActiveAbilityVisualData.Invoke(passiveActiveAbilityType);
-                    abilityButtonUIs[i].SetInfo(regularAbilityVisualData.Icon, regularAbilityVisualData.DisplayName, regularAbilityVisualData.Description, GetActiveAbilityLevel(passiveActiveAbilityType));
+                    abilityButtonUIs[i].SetInfo(regularAbilityVisualData.Icon,"Active", regularAbilityVisualData.DisplayName, regularAbilityVisualData.Description, GetActiveAbilityLevel(passiveActiveAbilityType));
                     abilityButtonUIs[i].GetAdvanceButton.onClick.AddListener(() =>
                     {
                         OnRegularAbilitySelected?.Invoke(passiveActiveAbilityType);
@@ -87,7 +87,7 @@ namespace UISystem
                 {
                     currentPassiveDisplayed.Add(passiveAbilityTypes[i]);
                     PassiveAbilityVisualData abilityVisualData = GetRandomPassiveAbilityVisualData.Invoke(passiveAbilityTypes[i]);
-                    abilityButtonUIs[i].SetInfo(abilityVisualData.Icon, abilityVisualData.DisplayName, abilityVisualData.Description, GetPassiveAbilityLevel(passiveAbilityTypes[i]));
+                    abilityButtonUIs[i].SetInfo(abilityVisualData.Icon, "Passive", abilityVisualData.DisplayName, abilityVisualData.Description, GetPassiveAbilityLevel(passiveAbilityTypes[i]));
                     PassiveAbilityType passiveAbilityType = passiveAbilityTypes[i];
                     abilityButtonUIs[i].GetAdvanceButton.onClick.AddListener(() =>
                     {

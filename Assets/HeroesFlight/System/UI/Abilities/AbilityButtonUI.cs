@@ -9,6 +9,7 @@ using log4net.Core;
 public class AbilityButtonUI : MonoBehaviour
 {
     [SerializeField] private Image _icon;
+    [SerializeField] private TextMeshProUGUI typeText;
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private TextMeshProUGUI _infoText;
     [SerializeField] private TextMeshProUGUI levelText;
@@ -22,9 +23,10 @@ public class AbilityButtonUI : MonoBehaviour
         _advanceButton = GetComponent<AdvanceButton>();
     }
 
-    public void SetInfo(Sprite icon, string name, string info , int currentLevel = 1)
+    public void SetInfo(Sprite icon,string typeText,  string name, string info , int currentLevel = 1)
     {
         _icon.sprite = icon;
+        this.typeText.text = typeText;
         _nameText.text = name;
         _infoText.text = info;
         DisplayLevel (currentLevel);
