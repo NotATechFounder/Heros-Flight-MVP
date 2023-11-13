@@ -35,6 +35,7 @@ namespace HeroesFlight.System.UI.Traits
         [SerializeField] private TraitPopup popup;
         [SerializeField] private ScrollRect scroll;
         [SerializeField] private ClickNotifier notifier;
+        [SerializeField] private Button diceInfoButton;
         private float nodeStartOffset = 0.35f;
         private float nodeDistanceOffsetX = 0.95f;
         private float nodeDistanceOffsetY = 0.95f;
@@ -49,6 +50,7 @@ namespace HeroesFlight.System.UI.Traits
         private GridLayoutGroup contentLayout;
         private TraitModel selectedModel;
         public event Action<TraitModificationEventModel> OnTraitModificationRequest;
+        public event Action DiceInfoRequest;
 
 
         protected override void Awake()
@@ -144,6 +146,10 @@ namespace HeroesFlight.System.UI.Traits
             nodeDistanceOffsetY = tierLayout.spacing.y / 100;
             nodeDistanceOffsetBonusPerTier = contentLayout.spacing.y / 100;
             exitButton.onClick.AddListener(Close);
+            diceInfoButton.onClick.AddListener(() =>
+            {
+                DiceInfoRequest?.Invoke();
+            });
         }
 
         public override void OnOpened()
@@ -394,13 +400,13 @@ namespace HeroesFlight.System.UI.Traits
         void Show()
         {
             ToggleCanvasGroup(thisCG, true);
-            transform.SetAsLastSibling();
+         //   transform.SetAsLastSibling();
         }
 
         void Hide()
         {
             scroll.normalizedPosition = new Vector2(0, -1);
-            transform.SetAsFirstSibling();
+          //  transform.SetAsFirstSibling();
             popup.HidePopup();
             ToggleCanvasGroup(thisCG, false);
         }

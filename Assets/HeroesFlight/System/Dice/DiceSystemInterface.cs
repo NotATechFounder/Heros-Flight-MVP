@@ -4,6 +4,6 @@ namespace HeroesFlight.System.Dice
 {
     public interface DiceSystemInterface : SystemInterface
     {
-        void  RollDice( Action<int> onComplete );
+        void  RollDice(Action<int> onComplete );
     }
 }

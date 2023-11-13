@@ -33,6 +33,10 @@ namespace HeroesFlight.System.Stats.Handlers
         {
             uiSystem.UiEventHandler.MainMenu.OnTraitButtonPressed += HandleTraitButtonPressed;
             uiSystem.UiEventHandler.TraitTreeMenu.OnTraitModificationRequest += HandleRequest;
+            uiSystem.UiEventHandler.TraitTreeMenu.DiceInfoRequest += () =>
+            {
+                uiSystem.UiEventHandler.DiceMenu.ShowDiceInfo(string.Empty);
+            };
         }
 
         public void Reset()
@@ -71,7 +75,7 @@ namespace HeroesFlight.System.Stats.Handlers
 
                     break;
                 case TraitModificationType.Reroll:
-                    uiSystem.UiEventHandler.DiceMenu.ShowDiceMenu(() =>
+                    uiSystem.UiEventHandler.DiceMenu.ShowDiceMenu(request.Model.CurrentValue,() =>
                     {
                         diceSystem.RollDice( (rolledValue) =>
                         {
