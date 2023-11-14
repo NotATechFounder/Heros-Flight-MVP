@@ -1,3 +1,4 @@
+using Spine.Unity;
 using System;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ namespace  HeroesFlight.Common
         [SerializeField] string m_WingsSkinReference = "OUTFIT/back_wings/back_wings_004_rare";
         [SerializeField] string m_HatSkinReference = "OUTFIT/hat/hat_000_null";
         [SerializeField] string m_WeaponSkinReference = "";
+        [SerializeField] SkeletonDataAsset dataAsset;
 
         public string BaseSkin => m_BaseSkinReference;
         public string EyeLashesSkinReference => m_EyeLashesSkinReference;
@@ -33,5 +35,6 @@ namespace  HeroesFlight.Common
         public string WeaponSkinReference => m_WeaponSkinReference;
 
         public string FullSkin => preConfiguredSkin;
+        public SkeletonDataAsset DataAsset => dataAsset;
     }
 }

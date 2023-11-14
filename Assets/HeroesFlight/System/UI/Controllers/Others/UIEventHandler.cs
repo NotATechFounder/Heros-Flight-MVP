@@ -35,6 +35,9 @@ public class UIEventHandler : MonoBehaviour
 
     public AbilitySelectMenu AbilitySelectMenu { get; private set; }
 
+    public CharacterSelectMenu CharacterSelectMenu { get; private set; }
+    public InventoryMenu InventoryMenu { get; private set; }
+
     public void Init(Action OnComplecte = null)
     {
         uIManager = GetComponent<UIManager>();
@@ -57,6 +60,8 @@ public class UIEventHandler : MonoBehaviour
         AbilitySelectMenu = uIManager.InitMenu<AbilitySelectMenu>();
         PassiveAbilityRerollerNPCMenu = uIManager.InitMenu<PassiveAbilityRerollerNPCMenu>();
         DiceMenu=uIManager.InitMenu<DiceMenu>();
+        CharacterSelectMenu = uIManager.InitMenu<CharacterSelectMenu>();
+        InventoryMenu = uIManager.InitMenu<InventoryMenu>();
         OnComplecte?.Invoke();
     }
 }

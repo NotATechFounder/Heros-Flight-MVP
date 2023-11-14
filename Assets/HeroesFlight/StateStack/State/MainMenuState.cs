@@ -36,7 +36,12 @@ namespace HeroesFlight.StateStack.State
                     traitSystemInterface.Init();
                     uiSystem.UiEventHandler.MainMenu.Open();
 
-                    uiSystem.UiEventHandler.MainMenu.OnCharacterSelected += dataSystem.CharacterManager.ToggleCharacterSelected;
+                    uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += uiSystem.UiEventHandler.InventoryMenu.Open;
+                    uiSystem.UiEventHandler.InventoryMenu.OnChangeHeroButtonClicked += uiSystem.UiEventHandler.CharacterSelectMenu.Open;
+                    uiSystem.UiEventHandler.CharacterSelectMenu.OnMenuClosed += uiSystem.UiEventHandler.InventoryMenu.Open;
+
+                    uiSystem.UiEventHandler.InventoryMenu.GetSelectedCharacterSO += dataSystem.CharacterManager.GetSelectedCharacter;
+                    uiSystem.UiEventHandler.CharacterSelectMenu.OnCharacterSelected += dataSystem.CharacterManager.ToggleCharacterSelected;
                     
                     void HandleGameStartRequest()
                     {
@@ -46,24 +51,11 @@ namespace HeroesFlight.StateStack.State
                         //  uiSystem.UiEventHandler.MainMenu.OnCharacterSelectButtonPressed -= HandleCharacterSelectionRequest;
                           AppStateStack.State.Set(ApplicationState.Gameplay);
                     } 
-
-
-                    //TODO: Remove this line
-                    void HandleCharacterSelectionRequest()
-                    {
-                        //uiSystem.UiEventHandler.CharacterSelectionMenu.SetUnlockedCharacters(dataSystem.GetUnlockedHeroes());
-                        //uiSystem.UiEventHandler.CharacterSelectionMenu.Open();
-                    }
                     
                     uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed += HandleGameStartRequest;
 
                     uiSystem.UiEventHandler.MainMenu.UpdateGoldText(dataSystem.CurrencyManager.GetCurrencyAmount("GP"));
                     //uiSystem.UiEventHandler.MainMenu.UpdateGoldText(dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gold));
-
-                    //TODO: Remove this line
-                    // uiSystem.UiEventHandler.MainMenu.OnCharacterSelectButtonPressed += HandleCharacterSelectionRequest;
-
-                    //  uiSystem.UiEventHandler.MainMenu.OnCharacterSelected += dataSystem.CharacterManager.ToggleCharacterSelected;
 
 
                     break;
