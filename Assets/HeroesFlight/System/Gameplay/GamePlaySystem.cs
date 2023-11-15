@@ -153,7 +153,6 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=    progressionSystem.HeroProgression.Confirm;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed +=    progressionSystem.HeroProgression.ResetSP;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=    HeroProgressionCompleted;
-            progressionSystem.HeroProgression.OnEXPAdded += uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
             progressionSystem.HeroProgression.OnSpChanged += uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
 
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =  godsBenevolence.GetRandomGodsBenevolenceVisualSO;
@@ -306,7 +305,6 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -=   progressionSystem.HeroProgression.ResetSP;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -= HeroProgressionCompleted;
 
-            progressionSystem.HeroProgression.OnEXPAdded -= uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
             progressionSystem.HeroProgression.OnSpChanged -= uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
 
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -=  godsBenevolence.ActivateGodsBenevolence;
@@ -450,7 +448,7 @@ namespace HeroesFlight.System.Gameplay
                 characterController.CharacterTransform.GetComponent<BaseCharacterAttackController>();
 
             characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
-            progressionSystem.HeroProgression.Initialise(characterStatController);
+           // progressionSystem.HeroProgression.Initialise(characterStatController);
             UpdateStatModifiers();
 
             combatSystem.RegisterEntity(new CombatEntityModel(characterHealthController, characterAttackController,
@@ -1300,7 +1298,7 @@ namespace HeroesFlight.System.Gameplay
                 }
             }
 
-            progressionSystem.HeroProgression.AddStatsModifiers(modifiedStatsMap);
+            progressionSystem.HeroProgression.AddTraitsStatsModifiers(modifiedStatsMap);
         }
     }
 }

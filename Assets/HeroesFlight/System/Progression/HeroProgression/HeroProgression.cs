@@ -1,14 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Codice.CM.Common;
 using HeroesFlight.Common.Progression;
 using HeroesFlight.System.FileManager;
+using HeroesFlight.System.Stats.Stats.Enum;
 using UnityEngine;
 
 public class HeroProgression : MonoBehaviour
 {
     public event Action<int> OnSpChanged;
-    public event Action<int, int, float> OnEXPAdded;
 
     [SerializeField] private int spPerLevel;
     [SerializeField] private float expToNextLevelBase;
@@ -16,10 +17,11 @@ public class HeroProgression : MonoBehaviour
     [SerializeField] private HPAttributeSO[] HPAttributeSOs;
     [SerializeField] private HeroProgressionAttributeInfo[] heroProgressionAttributeInfos;
 
+    private Dictionary<HeroProgressionAttribute, int> trailAttributeModifiedDic;
     private Dictionary<HeroProgressionAttribute, int> hPAttributeSpModifiedDic;
+    private StatModel statModel;
 
     [Header("Debug")]
-    [SerializeField] private CharacterStatController characterStatController;
     [SerializeField] private int avaliableSp;
     [SerializeField] private int totalUsedSp;
     [SerializeField] private int currentUsedSp;
@@ -27,10 +29,10 @@ public class HeroProgression : MonoBehaviour
 
     public HeroProgressionAttributeInfo[]  HeroProgressionAttributeInfos => heroProgressionAttributeInfos;
 
-    public void Initialise(CharacterStatController characterStatController)
+    public void Initialise()
     {
-        this.characterStatController = characterStatController;
         hPAttributeSpModifiedDic = new Dictionary<HeroProgressionAttribute, int>();
+        trailAttributeModifiedDic = new Dictionary<HeroProgressionAttribute, int>();
         SetUpHeroProgressionAttributeInfo();
     }
 
@@ -45,66 +47,138 @@ public class HeroProgression : MonoBehaviour
         }
     }
 
-    public void ProccessAttributes()
+    public void ProccessStats(Dictionary<HeroProgressionAttribute, int> attributes)
     {
-        foreach (KeyValuePair<HeroProgressionAttribute, int> attribute in hPAttributeSpModifiedDic)
+        foreach (KeyValuePair<HeroProgressionAttribute, int> attribute in attributes)
         {
             switch (attribute.Key)
             {
                 case HeroProgressionAttribute.Power:
                     ProccessPower(GetAttributeInfo(HeroProgressionAttribute.Power), attribute.Value);
-                break;
+                    break;
                 case HeroProgressionAttribute.Vitality:
-                    ProccessVitality(GetAttributeInfo(HeroProgressionAttribute.Vitality));
-                break;
+                    ProccessVitality(GetAttributeInfo(HeroProgressionAttribute.Vitality), attribute.Value);
+                    break;
                 case HeroProgressionAttribute.Agility:
-                    ProccessAgility(GetAttributeInfo(HeroProgressionAttribute.Agility));
-                break;
+                    ProccessAgility(GetAttributeInfo(HeroProgressionAttribute.Agility), attribute.Value);
+                    break;
                 case HeroProgressionAttribute.Defense:
-                    ProccessDefense(GetAttributeInfo(HeroProgressionAttribute.Defense));
-                break;
+                    ProccessDefense(GetAttributeInfo(HeroProgressionAttribute.Defense), attribute.Value); ;
+                    break;
                 case HeroProgressionAttribute.CriticalHit:
-                    ProccessCriticalHit(GetAttributeInfo(HeroProgressionAttribute.CriticalHit));
-                break;
+                    ProccessCriticalHit(GetAttributeInfo(HeroProgressionAttribute.CriticalHit), attribute.Value);
+                    break;
             }
         }
     }
 
-    public void ResetAttributes()
+    public void CombineStats()
     {
+        Dictionary<HeroProgressionAttribute, int> combinedStat = new Dictionary<HeroProgressionAttribute, int>(trailAttributeModifiedDic);
+
+        foreach (var item in trailAttributeModifiedDic)
+        {
+
+        }
+    }
+
+    private void ProccessPower(HeroProgressionAttributeInfo info, int newValue)
+    {
+        statModel.ModifyAttribute(StatType.PhysicalDamage, info.GetCurrentValue(StatType.PhysicalDamage, newValue), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
+        statModel.ModifyAttribute(StatType.MagicDamage, info.GetCurrentValue(StatType.MagicDamage, newValue), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
+    }
+
+    private void ProccessVitality(HeroProgressionAttributeInfo info, int newValue)
+    {
+        statModel.ModifyAttribute(StatType.MaxHealth, info.GetCurrentValue(StatType.MaxHealth, newValue), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
+    }
+
+    private void ProccessAgility(HeroProgressionAttributeInfo info, int newValue)
+    {
+        statModel.ModifyAttribute(StatType.MoveSpeed, info.GetCurrentValue(StatType.MoveSpeed, newValue), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
+        statModel.ModifyAttribute(StatType.AttackSpeed, info.GetCurrentValue(StatType.AttackSpeed, newValue), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
+        statModel.ModifyAttribute(StatType.DodgeChance, info.GetCurrentValue(StatType.DodgeChance, newValue), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
+    }
+
+    private void ProccessDefense(HeroProgressionAttributeInfo info, int newValue)
+    {
+        statModel.ModifyAttribute(StatType.Defense, info.GetCurrentValue(StatType.Defense, newValue), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
+    }
+
+    private void ProccessCriticalHit(HeroProgressionAttributeInfo info, int newValue)
+    {
+        statModel.ModifyAttribute(StatType.CriticalHitChance, info.GetCurrentValue(StatType.CriticalHitChance, newValue), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
+    }
+
+    public void ProccessAttributes()
+    {
+        ProccessStats (trailAttributeModifiedDic);
+        ProccessStats (hPAttributeSpModifiedDic);
+    }
+
+    public void ResetAttributes(Dictionary<HeroProgressionAttribute, int> attributes)
+    {
+
+        foreach (var item in attributes)
+        {
+            //switch (item.Key)
+            //{
+            //    case HeroProgressionAttribute.Power:
+
+            //        statModel.ModifyAttribute(StatType.PhysicalDamage, attributeInfo.GetTotalValue(StatType.PhysicalDamage), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+            //        statModel.ModifyAttribute(StatType.MagicDamage, attributeInfo.GetTotalValue(StatType.MagicDamage), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+
+            //        break;
+            //    case HeroProgressionAttribute.Vitality:
+
+            //        statModel.ModifyAttribute(StatType.MaxHealth, attributeInfo.GetTotalValue(StatType.MaxHealth), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+            //        break;
+            //    case HeroProgressionAttribute.Agility:
+
+            //        statModel.ModifyAttribute(StatType.MoveSpeed, attributeInfo.GetTotalValue(StatType.MoveSpeed), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+            //        statModel.ModifyAttribute(StatType.AttackSpeed, attributeInfo.GetTotalValue(StatType.AttackSpeed), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+            //        statModel.ModifyAttribute(StatType.DodgeChance, attributeInfo.GetTotalValue(StatType.DodgeChance), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+
+            //        break;
+            //    case HeroProgressionAttribute.Defense:
+            //        statModel.ModifyAttribute(StatType.Defense, attributeInfo.GetTotalValue(StatType.Defense), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+            //        break;
+            //    case HeroProgressionAttribute.CriticalHit:
+
+            //        statModel.ModifyAttribute(StatType.CriticalHitChance, attributeInfo.GetTotalValue(StatType.CriticalHitChance), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+
+            //        break;
+            //}
+        }
+
+
         foreach (var attributeInfo in heroProgressionAttributeInfos)
         {
-            if (hPAttributeSpModifiedDic.ContainsKey(attributeInfo.AttributeSO.Attribute))
-            {
-                attributeInfo.ReduceSP(hPAttributeSpModifiedDic[attributeInfo.AttributeSO.Attribute]);
-            }
-
             switch (attributeInfo.AttributeSO.Attribute)
             {
                 case HeroProgressionAttribute.Power:
 
-                    characterStatController.ModifyPhysicalDamage(attributeInfo.GetTotalValue("PhysicalOutput"), false);
-                    characterStatController.ModifyMagicDamage(attributeInfo.GetTotalValue("MagicalOutput"), false);
+                    statModel.ModifyAttribute(StatType.PhysicalDamage, attributeInfo.GetTotalValue(StatType.PhysicalDamage), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+                    statModel.ModifyAttribute(StatType.MagicDamage, attributeInfo.GetTotalValue(StatType.MagicDamage), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
 
                     break;
                 case HeroProgressionAttribute.Vitality:
 
-                    characterStatController.ModifyMaxHealth(attributeInfo.GetTotalValue("VitalityOutput"), false);
-
+                    statModel.ModifyAttribute(StatType.MaxHealth, attributeInfo.GetTotalValue(StatType.MaxHealth), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
                     break;
                 case HeroProgressionAttribute.Agility:
 
-                    characterStatController.ModifyMoveSpeed(attributeInfo.GetTotalValue("FlySpeedOutput"), false);
-                    characterStatController.ModifyAttackSpeed(attributeInfo.GetTotalValue("AttackSpeedOutput"), false);
-                    characterStatController.ModifyDodgeChance(attributeInfo.GetTotalValue("DodgeOutput"), false, false);
+                    statModel.ModifyAttribute(StatType.MoveSpeed, attributeInfo.GetTotalValue(StatType.MoveSpeed), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+                    statModel.ModifyAttribute(StatType.AttackSpeed, attributeInfo.GetTotalValue(StatType.AttackSpeed), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+                    statModel.ModifyAttribute(StatType.DodgeChance, attributeInfo.GetTotalValue(StatType.DodgeChance), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
 
                     break;
                 case HeroProgressionAttribute.Defense:
-                    characterStatController.ModifyDefense(attributeInfo.GetTotalValue("DefenseOutput"), false, false);
+                    statModel.ModifyAttribute(StatType.Defense, attributeInfo.GetTotalValue(StatType.Defense), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
                     break;
                 case HeroProgressionAttribute.CriticalHit:
 
-                    characterStatController.ModifyCriticalHitChance(attributeInfo.GetTotalValue("CriticalHitOutput"),false, false);
+                    statModel.ModifyAttribute(StatType.CriticalHitChance, attributeInfo.GetTotalValue(StatType.CriticalHitChance), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
 
                     break;
             }
@@ -123,33 +197,6 @@ public class HeroProgression : MonoBehaviour
         return null;
     }
 
-    private void ProccessPower(HeroProgressionAttributeInfo info, int newValue)
-    {
-        characterStatController.ModifyPhysicalDamage(info.GetKeyValue("PhysicalOutput", newValue), true);
-        characterStatController.ModifyMagicDamage(info.GetKeyValue("MagicalOutput", newValue), true);
-    }
-
-    private void ProccessVitality(HeroProgressionAttributeInfo info)
-    {
-        characterStatController.ModifyMaxHealth(info.GetTotalValue("VitalityOutput"), true);
-    }
-
-    private void ProccessAgility(HeroProgressionAttributeInfo info)
-    {
-        characterStatController.ModifyMoveSpeed(info.GetTotalValue("FlySpeedOutput"), true);
-        characterStatController.ModifyAttackSpeed(info.GetTotalValue("AttackSpeedOutput"), true);
-        characterStatController.ModifyDodgeChance(info.GetTotalValue("DodgeOutput"), true,false);
-    }
-
-    private void ProccessDefense(HeroProgressionAttributeInfo info)
-    {
-        characterStatController.ModifyDefense(info.GetTotalValue("DefenseOutput"), true,false);
-    }
-
-    private void ProccessCriticalHit(HeroProgressionAttributeInfo info)
-    {
-        characterStatController.ModifyCriticalHitChance(info.GetTotalValue("CriticalHitOutput"), true, false);
-    }
 
     public void IncrementAttributeSP(HeroProgressionAttributeInfo attributeInfo)
     {
@@ -216,7 +263,7 @@ public class HeroProgression : MonoBehaviour
             return;
         }
 
-        ResetAttributes();
+       // ResetAttributes();
 
         foreach (var attribute in heroProgressionAttributeInfos)
         {
@@ -230,24 +277,12 @@ public class HeroProgression : MonoBehaviour
         OnSpChanged?.Invoke(avaliableSp);
     }
 
-    public void AddStatsModifiers(Dictionary<HeroProgressionAttribute, int> modifiedStatsMap)
+    public void AddTraitsStatsModifiers(Dictionary<HeroProgressionAttribute, int> modifiedStatsMap)
     {
-        foreach (var modifier in modifiedStatsMap)
-        {
-            if (hPAttributeSpModifiedDic.TryGetValue(modifier.Key, out var value))
-            {
-                hPAttributeSpModifiedDic[modifier.Key] += modifier.Value;
-            }
-            else
-            {
-                hPAttributeSpModifiedDic.Add(modifier.Key,modifier.Value);
-            }
+        // remove the previous stats
 
-            var info = GetAttributeInfo(modifier.Key);
-            info.IncreaseSP(modifier.Value);
-        }
-        
-        
+        trailAttributeModifiedDic = new Dictionary<HeroProgressionAttribute, int>(modifiedStatsMap);
+
         ProccessAttributes();
     }
 
@@ -317,36 +352,18 @@ public class HeroProgressionAttributeInfo
         OnSPChanged?.Invoke(currentSP);
     }
 
-    public float GetTotalValue(string key)
+    public float GetTotalValue(StatType statType)
     {
-        foreach (var keyValue in attributeSO.KeyValues)
-        {
-            if (keyValue.key == key)
-            {
-                return currentSP * keyValue.Value;
-            }
-        }
-        return 0;
+        return GetCurrentValue (statType, currentSP);
     }
 
-    public float GetKeyValue(string key, int newValue)
+    public float GetCurrentValue(StatType statType,int sp)
     {
-        int difference = 0;
-
-        if (currentSP == newValue)
-        {
-            difference = newValue;
-        }
-        else
-        {
-            difference = Mathf.Abs(newValue - currentSP);
-        }
-
         foreach (var keyValue in attributeSO.KeyValues)
         {
-            if (keyValue.key == key)
+            if (keyValue.statType == statType)
             {
-                return difference * keyValue.Value;
+                return keyValue.valuePerSp * sp;
             }
         }
         return 0;
@@ -356,18 +373,19 @@ public class HeroProgressionAttributeInfo
 [Serializable]
 public class HeroProgressionAttributeKeyValue
 {
-    public string key;
-    public float Value;
+    public StatType statType;
+    public float valuePerSp;
 
     public float GetValue()
     {
-        return Value;
+        return valuePerSp;
     }
 }
 
 [Serializable]
 public class SkillPointData
 {
+    public int avaliableSp;
     public List<HeroProgressionSingleData> heroProgressionSingleDatas;
 
     public void SetXp(HeroProgressionAttribute heroProgressionAttribute, int sp)
@@ -440,4 +458,76 @@ public class HeroProgressionSingleData
 {
     public HeroProgressionAttribute heroProgressionAttribute;
     public int sp;
+}
+
+public enum StatType
+{
+    PhysicalDamage,
+    MagicDamage,
+    MaxHealth,
+    MoveSpeed,
+    AttackSpeed,
+    DodgeChance,
+    Defense,
+    CriticalHitChance
+}
+
+public class StatModel
+{
+    public enum StatCalculationType
+    {
+        Flat,
+        Percentage
+    }
+
+    public enum StatModificationType
+    {
+        Addition,
+        Subtraction
+    }
+
+    Dictionary<StatType, float> baseStatDic;
+    Dictionary<StatType, float> currentStatDic;
+
+    public Dictionary<StatType, float> CurrentStatDic => currentStatDic;
+
+    public StatModel(PlayerStatData playerStatData)
+    {
+        baseStatDic = new Dictionary<StatType, float>();
+        baseStatDic.Add(StatType.PhysicalDamage, playerStatData.PhysicalDamage.max);
+        baseStatDic.Add(StatType.MagicDamage, playerStatData.MagicDamage.max);
+        baseStatDic.Add(StatType.MaxHealth, playerStatData.Health);
+        baseStatDic.Add(StatType.MoveSpeed, playerStatData.MoveSpeed);
+        baseStatDic.Add(StatType.AttackSpeed, playerStatData.AttackSpeed);
+        baseStatDic.Add(StatType.DodgeChance, playerStatData.DodgeChance);
+        baseStatDic.Add(StatType.Defense, playerStatData.Defense);
+        baseStatDic.Add(StatType.CriticalHitChance, playerStatData.CriticalHitChance);
+        currentStatDic  = new Dictionary<StatType, float>(baseStatDic);
+    }
+
+    public float GetStatValue(StatType statType)
+    {
+        return currentStatDic[statType];
+    }
+
+    public void ModifyAttribute(StatType StatType, float amount, StatModificationType statModificationType, StatCalculationType statCalculationType)
+    {
+        currentStatDic[StatType] = ModifyStat(baseStatDic[StatType], currentStatDic[StatType], amount, statModificationType, statCalculationType);
+    }
+
+    private float ModifyStat(float baseValue, float currentValue, float amount, StatModificationType statModificationType , StatCalculationType statCalculationType)
+    {
+        float value = currentValue;
+
+        switch (statCalculationType)
+        {
+            case StatCalculationType.Flat:
+                value += statModificationType == StatModificationType.Addition ? amount : -amount;
+                break;
+            case StatCalculationType.Percentage:
+                value = StatCalc.ModifyValueByPercentage(baseValue, currentValue, amount, statModificationType == StatModificationType.Addition);
+                break;
+        }
+        return value;
+    }
 }
