@@ -50,7 +50,6 @@ namespace HeroesFlight.StateStack.State
 
                     uiSystem.UiEventHandler.InventoryMenu.GetSelectedCharacterSO += dataSystem.CharacterManager.GetSelectedCharacter;
                     uiSystem.UiEventHandler.CharacterSelectMenu.OnCharacterSelected += dataSystem.CharacterManager.ToggleCharacterSelected;
-
    
                     void HandleGameStartRequest()
                     {
