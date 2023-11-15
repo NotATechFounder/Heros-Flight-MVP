@@ -2,16 +2,16 @@ using HeroesFlight.Common.Progression;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "HPAttributeSO", menuName = "HeroProgression/HPAttributeSO", order = 1)]
-public class HPAttributeSO : ScriptableObject
+public class StatPointSO : ScriptableObject
 {
-    [SerializeField] private HeroProgressionAttribute attribute;
+    [SerializeField] private StatPointType statPointType;
     [TextArea(3, 10)]
     [SerializeField] private string description;
     [SerializeField] private Sprite icon;
-    [SerializeField] private HeroProgressionAttributeKeyValue[] keyValues;
+    [SerializeField] private StatPointInfo[] keyValues;
 
     public Sprite Icon => icon;
-    public HeroProgressionAttribute Attribute => attribute;
+    public StatPointType StatPointType => statPointType;
     public string Description => description;
-    public HeroProgressionAttributeKeyValue[] KeyValues => keyValues;
+    public StatPointInfo[] KeyValues => keyValues;
 }

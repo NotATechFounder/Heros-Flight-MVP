@@ -147,13 +147,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
 
-            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes += () =>     progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent +=  progressionSystem.HeroProgression.DecrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent +=   progressionSystem.HeroProgression.IncrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=    progressionSystem.HeroProgression.Confirm;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed +=    progressionSystem.HeroProgression.ResetSP;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=    HeroProgressionCompleted;
-            progressionSystem.HeroProgression.OnSpChanged += uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
 
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =  godsBenevolence.GetRandomGodsBenevolenceVisualSO;
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved +=    godsBenevolence.ActivateGodsBenevolence;
@@ -298,14 +292,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
 
-            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -= () =>   progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent -=   progressionSystem.HeroProgression.DecrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent -=  progressionSystem.HeroProgression.IncrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=   progressionSystem.HeroProgression.Confirm;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -=   progressionSystem.HeroProgression.ResetSP;
             uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -= HeroProgressionCompleted;
-
-            progressionSystem.HeroProgression.OnSpChanged -= uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
 
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -=  godsBenevolence.ActivateGodsBenevolence;
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= StoreRunReward;
@@ -1279,7 +1266,7 @@ namespace HeroesFlight.System.Gameplay
         private void UpdateStatModifiers()
         {
             var unlockedTraits = traitSystem.GetUnlockedEffects();
-            var modifiedStatsMap = new Dictionary<HeroProgressionAttribute, int>();
+            var modifiedStatsMap = new Dictionary<StatPointType, int>();
             foreach (var trait in unlockedTraits)
             {
                 if (trait.TargetTrait.Effect.TraitType == TraitType.StatBoost)
@@ -1298,7 +1285,7 @@ namespace HeroesFlight.System.Gameplay
                 }
             }
 
-            progressionSystem.HeroProgression.AddTraitsStatsModifiers(modifiedStatsMap);
+            progressionSystem.HeroProgression.ProcessTraitsStatsModifiers(modifiedStatsMap);
         }
     }
 }
