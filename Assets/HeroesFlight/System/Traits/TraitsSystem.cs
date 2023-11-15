@@ -20,7 +20,7 @@ namespace HeroesFlight.System.Stats.Handlers
             data = dataSystem;
             this.uiSystem = uiSystem;
             diceSystem = diceSystemInterface;
-            traitHandler = new TraitHandler(new Vector2Int(4,8));
+            traitHandler = new TraitHandler(new Vector2Int(4, 8));
         }
 
         private DataSystemInterface data;
@@ -35,7 +35,9 @@ namespace HeroesFlight.System.Stats.Handlers
             uiSystem.UiEventHandler.TraitTreeMenu.OnTraitModificationRequest += HandleRequest;
             uiSystem.UiEventHandler.TraitTreeMenu.DiceInfoRequest += () =>
             {
-                uiSystem.UiEventHandler.DiceMenu.ShowDiceInfo(string.Empty);
+                uiSystem.UiEventHandler.DiceMenu.ShowDiceInfo(
+                    "Roll the 12-sided dice to further enhance any of your traits between 1-12 bonus points. " +
+                    "Each roll will reset the previous bonus");
             };
         }
 
@@ -75,18 +77,18 @@ namespace HeroesFlight.System.Stats.Handlers
 
                     break;
                 case TraitModificationType.Reroll:
-                    uiSystem.UiEventHandler.DiceMenu.ShowDiceMenu(request.Model.CurrentValue,() =>
+                    uiSystem.UiEventHandler.DiceMenu.ShowDiceMenu(request.Model.CurrentValue, () =>
                     {
-                        diceSystem.RollDice( (rolledValue) =>
+                        diceSystem.RollDice((rolledValue) =>
                         {
                             if (traitHandler.TryModifyTraitValue(request.Model.Id, rolledValue))
                             {
                                 uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
+                                uiSystem.UiEventHandler.DiceMenu.ModifyDiceRollResultUi($"+{rolledValue}");
                             }
                         });
                     });
-                
-                 
+
 
                     break;
             }

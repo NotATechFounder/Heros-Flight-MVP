@@ -56,7 +56,10 @@ namespace HeroesFlight.System.UI.DIce
             Open();
         }
 
-
+        public void ModifyDiceRollResultUi(string value)
+        {
+            rollText.text = value;
+        }
         public override void ResetMenu()
         {
         }
