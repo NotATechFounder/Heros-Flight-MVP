@@ -55,10 +55,8 @@ namespace HeroesFlight.StateStack.State
                     void HandleGameStartRequest()
                     {
                         uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;
-
-                        //TODO: Remove this line
-                        //  uiSystem.UiEventHandler.MainMenu.OnCharacterSelectButtonPressed -= HandleCharacterSelectionRequest;
-                          AppStateStack.State.Set(ApplicationState.Gameplay);
+                        
+                        AppStateStack.State.Set(ApplicationState.Gameplay);
                     } 
                     
                     uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed += HandleGameStartRequest;
