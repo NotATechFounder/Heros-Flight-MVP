@@ -104,6 +104,7 @@ public class ActiveAbilityManager : MonoBehaviour
         this.characterSystem = characterStatController.GetComponent<CharacterSimpleController>();
         this.characterHealthController = characterStatController.GetComponent<HealthController>();
         this.characterAttackController = characterStatController.GetComponent<BaseCharacterAttackController>();
+        expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
     }
 
     public void Cache()

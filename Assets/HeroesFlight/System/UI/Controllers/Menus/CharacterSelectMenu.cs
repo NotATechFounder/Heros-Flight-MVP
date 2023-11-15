@@ -11,6 +11,7 @@ namespace UISystem
 {
     public class CharacterSelectMenu : BaseMenu<CharacterSelectMenu>
     {
+        public event Func<CharacterSO[]> GetAllCharacterSO;
         public event Action<CharacterType, bool> OnCharacterSelected;
 
         [Header("Buttons")]
@@ -26,16 +27,15 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI currentDef;
 
         [Header("Properties")]
-        [SerializeField] CharacterSO[] allCharacterSO;
         [SerializeField] UiSpineViewController uiSpineViewController;
         [SerializeField] CharacterSelectUI characterSelectUIPrefab;
         [SerializeField] Transform characterSelectUIParent;
 
         private List<CharacterSelectUI> characterSelectUIs = new List<CharacterSelectUI>();
-        JuicerRuntime openEffectBG;
-        JuicerRuntime closeEffectBG;
-
-        CharacterSelectUI currentCharacterSelected;
+        private JuicerRuntime openEffectBG;
+        private  JuicerRuntime closeEffectBG;
+        private CharacterSelectUI currentCharacterSelected;
+        private bool isCharacterLoaded;
 
         public override void OnCreated()
         {
@@ -45,20 +45,25 @@ namespace UISystem
             closeEffectBG.SetOnCompleted(CloseMenu);
 
             quitButton.onClick.AddListener(Close);
-
-            for (int i = 0; i < allCharacterSO.Length; i++)
-            {
-                CharacterSelectUI characterSelectUI = Instantiate(characterSelectUIPrefab, characterSelectUIParent);
-                characterSelectUI.OnSelected += OnCharacterSelectedSO;
-                characterSelectUI.Init(allCharacterSO[i]);
-                characterSelectUIs.Add(characterSelectUI);
-            }
         }
 
         public override void OnOpened()
         {
             canvasGroup.alpha = 0;
             openEffectBG.Start();
+
+            if (!isCharacterLoaded)
+            {
+                CharacterSO[] allCharacterSO = GetAllCharacterSO.Invoke();
+                for (int i = 0; i < allCharacterSO.Length; i++)
+                {
+                    CharacterSelectUI characterSelectUI = Instantiate(characterSelectUIPrefab, characterSelectUIParent);
+                    characterSelectUI.OnSelected += OnCharacterSelectedSO;
+                    characterSelectUI.Init(allCharacterSO[i]);
+                    characterSelectUIs.Add(characterSelectUI);
+                }
+            }
+            isCharacterLoaded = true;
         }
 
         public override void OnClosed()

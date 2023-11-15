@@ -1,4 +1,5 @@
 using HeroesFlight.Common.Enum;
+using System;
 using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
@@ -82,5 +83,10 @@ public class CharacterManager : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public CharacterSO[] GetAllCharacterSO()
+    {
+        return characters;
     }
 }

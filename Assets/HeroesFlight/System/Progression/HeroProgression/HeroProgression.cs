@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using HeroesFlight.Common.Progression;
+using HeroesFlight.System.FileManager;
 using UnityEngine;
 
 public class HeroProgression : MonoBehaviour
@@ -22,9 +23,7 @@ public class HeroProgression : MonoBehaviour
     [SerializeField] private int avaliableSp;
     [SerializeField] private int totalUsedSp;
     [SerializeField] private int currentUsedSp;
-    [SerializeField] private int currentLevel;
-    [SerializeField] private float currentExp;
-    [SerializeField] private float expToNextLevel;
+    [SerializeField] private SkillPointData skillPointData;
 
     public HeroProgressionAttributeInfo[]  HeroProgressionAttributeInfos => heroProgressionAttributeInfos;
 
@@ -32,7 +31,6 @@ public class HeroProgression : MonoBehaviour
     {
         this.characterStatController = characterStatController;
         hPAttributeSpModifiedDic = new Dictionary<HeroProgressionAttribute, int>();
-        expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
         SetUpHeroProgressionAttributeInfo();
     }
 
@@ -55,19 +53,19 @@ public class HeroProgression : MonoBehaviour
             {
                 case HeroProgressionAttribute.Power:
                     ProccessPower(GetAttributeInfo(HeroProgressionAttribute.Power), attribute.Value);
-                    break;
-                    case HeroProgressionAttribute.Vitality:
+                break;
+                case HeroProgressionAttribute.Vitality:
                     ProccessVitality(GetAttributeInfo(HeroProgressionAttribute.Vitality));
-                    break;
-                    case HeroProgressionAttribute.Agility:
+                break;
+                case HeroProgressionAttribute.Agility:
                     ProccessAgility(GetAttributeInfo(HeroProgressionAttribute.Agility));
-                    break;
-                    case HeroProgressionAttribute.Defense:
+                break;
+                case HeroProgressionAttribute.Defense:
                     ProccessDefense(GetAttributeInfo(HeroProgressionAttribute.Defense));
-                    break;
-                    case HeroProgressionAttribute.CriticalHit:
+                break;
+                case HeroProgressionAttribute.CriticalHit:
                     ProccessCriticalHit(GetAttributeInfo(HeroProgressionAttribute.CriticalHit));
-                    break;
+                break;
             }
         }
     }
@@ -232,42 +230,6 @@ public class HeroProgression : MonoBehaviour
         OnSpChanged?.Invoke(avaliableSp);
     }
 
-    public void AddExp(float exp)
-    {
-        currentExp += exp;
-        if (currentExp >= expToNextLevel)
-        {
-            LevelUp();
-        }
-        else
-        {
-            OnEXPAdded?.Invoke(0,0,currentExp / expToNextLevel);
-        }
-    }
-
-    private void LevelUpOnce()
-    {
-        avaliableSp += spPerLevel;
-        currentUsedSp = avaliableSp;
-        currentLevel++;
-        currentExp -= expToNextLevel;
-        expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
-        OnSpChanged?.Invoke(avaliableSp);
-    }
-
-    private void LevelUp()
-    {
-        int currentLvl = currentLevel;
-        int numberOfLevelsGained = 0;
-        do
-        {
-            LevelUpOnce();
-            ++numberOfLevelsGained;
-        } while (currentExp >= expToNextLevel);
-
-        OnEXPAdded?.Invoke(currentLvl, numberOfLevelsGained, currentExp / expToNextLevel);
-    }
-
     public void AddStatsModifiers(Dictionary<HeroProgressionAttribute, int> modifiedStatsMap)
     {
         foreach (var modifier in modifiedStatsMap)
@@ -287,6 +249,17 @@ public class HeroProgression : MonoBehaviour
         
         
         ProccessAttributes();
+    }
+
+    public void Load()
+    {
+        SkillPointData savedSkillPointData = FileManager.Load<SkillPointData>("SkillPoint");
+        skillPointData = savedSkillPointData != null ? savedSkillPointData : new SkillPointData();
+    }
+
+    public void Save()
+    {
+        FileManager.Save("SkillPoint", skillPointData);
     }
 }
 
@@ -350,7 +323,7 @@ public class HeroProgressionAttributeInfo
         {
             if (keyValue.key == key)
             {
-                return (currentSP / keyValue.pointThreshold) * keyValue.Value;
+                return currentSP * keyValue.Value;
             }
         }
         return 0;
@@ -373,24 +346,98 @@ public class HeroProgressionAttributeInfo
         {
             if (keyValue.key == key)
             {
-                return (difference / keyValue.pointThreshold) * keyValue.Value;
+                return difference * keyValue.Value;
             }
         }
         return 0;
     }
 }
 
-
-
-[System.Serializable]
+[Serializable]
 public class HeroProgressionAttributeKeyValue
 {
     public string key;
-    public int pointThreshold;
     public float Value;
 
     public float GetValue()
     {
         return Value;
     }
+}
+
+[Serializable]
+public class SkillPointData
+{
+    public List<HeroProgressionSingleData> heroProgressionSingleDatas;
+
+    public void SetXp(HeroProgressionAttribute heroProgressionAttribute, int sp)
+    {
+        foreach (var heroProgressionSingleData in heroProgressionSingleDatas)
+        {
+            if (heroProgressionSingleData.heroProgressionAttribute == heroProgressionAttribute)
+            {
+                heroProgressionSingleData.sp = sp;
+                return;
+            }
+        }
+
+        HeroProgressionSingleData heroProgressionSingleData1 = new HeroProgressionSingleData();
+        heroProgressionSingleData1.heroProgressionAttribute = heroProgressionAttribute;
+        heroProgressionSingleData1.sp = sp;
+        heroProgressionSingleDatas.Add(heroProgressionSingleData1);
+    }
+
+    public int GetSp(HeroProgressionAttribute heroProgressionAttribute)
+    {
+        foreach (var heroProgressionSingleData in heroProgressionSingleDatas)
+        {
+            if (heroProgressionSingleData.heroProgressionAttribute == heroProgressionAttribute)
+            {
+                return heroProgressionSingleData.sp;
+            }
+        }
+
+        return 0;
+    }
+
+    public void IncrementSp(HeroProgressionAttribute heroProgressionAttribute)
+    {
+        foreach (var heroProgressionSingleData in heroProgressionSingleDatas)
+        {
+            if (heroProgressionSingleData.heroProgressionAttribute == heroProgressionAttribute)
+            {
+                heroProgressionSingleData.sp++;
+                return;
+            }
+        }
+
+        HeroProgressionSingleData heroProgressionSingleData1 = new HeroProgressionSingleData();
+        heroProgressionSingleData1.heroProgressionAttribute = heroProgressionAttribute;
+        heroProgressionSingleData1.sp = 1;
+        heroProgressionSingleDatas.Add(heroProgressionSingleData1);
+    }
+
+    public void DecrementSp(HeroProgressionAttribute heroProgressionAttribute)
+    {
+        foreach (var heroProgressionSingleData in heroProgressionSingleDatas)
+        {
+            if (heroProgressionSingleData.heroProgressionAttribute == heroProgressionAttribute)
+            {
+                heroProgressionSingleData.sp--;
+                return;
+            }
+        }
+
+        HeroProgressionSingleData heroProgressionSingleData1 = new HeroProgressionSingleData();
+        heroProgressionSingleData1.heroProgressionAttribute = heroProgressionAttribute;
+        heroProgressionSingleData1.sp = 0;
+        heroProgressionSingleDatas.Add(heroProgressionSingleData1);
+    }
+}
+
+[Serializable]
+public class HeroProgressionSingleData
+{
+    public HeroProgressionAttribute heroProgressionAttribute;
+    public int sp;
 }

@@ -2,6 +2,7 @@
 using HeroesFlight.Common.Enum;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Stats;
 using HeroesFlight.System.Stats.Handlers;
 using HeroesFlight.System.UI;
 using JetBrains.Annotations;
@@ -38,11 +39,14 @@ namespace HeroesFlight.StateStack.State
 
                     uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += uiSystem.UiEventHandler.InventoryMenu.Open;
                     uiSystem.UiEventHandler.InventoryMenu.OnChangeHeroButtonClicked += uiSystem.UiEventHandler.CharacterSelectMenu.Open;
+                    uiSystem.UiEventHandler.InventoryMenu.OnStatPointButtonClicked += uiSystem.UiEventHandler.HeroProgressionMenu.Open;
                     uiSystem.UiEventHandler.CharacterSelectMenu.OnMenuClosed += uiSystem.UiEventHandler.InventoryMenu.Open;
+                    uiSystem.UiEventHandler.CharacterSelectMenu.GetAllCharacterSO += dataSystem.CharacterManager.GetAllCharacterSO;
 
                     uiSystem.UiEventHandler.InventoryMenu.GetSelectedCharacterSO += dataSystem.CharacterManager.GetSelectedCharacter;
                     uiSystem.UiEventHandler.CharacterSelectMenu.OnCharacterSelected += dataSystem.CharacterManager.ToggleCharacterSelected;
-                    
+
+   
                     void HandleGameStartRequest()
                     {
                         uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;
