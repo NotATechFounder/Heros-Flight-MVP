@@ -15,10 +15,16 @@ namespace UISystem
         public event Action OnTraitButtonPressed;
         public event Action OnInventoryButtonPressed;
 
+        public event Action AddGold;
+        public event Action AddGem;
+
         [Header("UI")]
         [SerializeField] private TextMeshProUGUI goldText;
         [SerializeField] private TextMeshProUGUI gemText;
 
+        [Header("Buttons")]
+        [SerializeField] private AdvanceButton addGoldButton;
+        [SerializeField] private AdvanceButton addGemButton;
         [SerializeField] private AdvanceButton playButton;
         [SerializeField] private AdvanceButton settingsButton;
         [SerializeField] private AdvanceButton traitsButton;
@@ -27,6 +33,16 @@ namespace UISystem
 
         public override void OnCreated()
         {
+            addGoldButton.onClick.AddListener(() =>
+            {
+                AddGold?.Invoke();
+            });
+
+            addGemButton.onClick.AddListener(() =>
+            {
+                AddGem?.Invoke();
+            });
+
             playButton.onClick.AddListener(()=>
             {
                 OnPlayButtonPressed?.Invoke();
@@ -71,6 +87,19 @@ namespace UISystem
         public void UpdateGemText(float gem)
         {
             gemText.text = gem.ToString();
+        }
+
+        public void CurrencyChanged(CurrencySO sO, bool increase)
+        {
+            switch (sO.GetKey)
+            {
+                case CurrencyKeys.Gold:
+                    UpdateGoldText(sO.GetCurrencyAmount);
+                    break;
+                case CurrencyKeys.Gem:
+                    UpdateGemText(sO.GetCurrencyAmount);
+                    break;
+            }
         }
     }
 }

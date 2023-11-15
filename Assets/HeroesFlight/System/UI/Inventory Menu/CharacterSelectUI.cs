@@ -13,7 +13,6 @@ public class CharacterSelectUI : MonoBehaviour
         Unselected,
         Selected,
         Locked,
-        NewlyUnlocked
     }
 
     [SerializeField] private State state;
@@ -38,8 +37,9 @@ public class CharacterSelectUI : MonoBehaviour
     [Header("Selected UI")]
     [SerializeField] private Image selectedUIIcon;
 
-    [Header("Unselected UI")]
-    [SerializeField] private GameObject unSelectedUI;
+    [Header("InView UI")]
+    [SerializeField] private Image InViewIcon;
+
 
     CharacterSO currentCharacter;
 
@@ -50,7 +50,6 @@ public class CharacterSelectUI : MonoBehaviour
     {
         selectButton.onClick.AddListener(() =>
         {
-            SetState(State.Selected);
             OnSelected?.Invoke(this);
         });
     }
@@ -68,15 +67,15 @@ public class CharacterSelectUI : MonoBehaviour
         }
 
         SetState(state);
-
-        newlyUnlockedInfo.enabled = state == State.NewlyUnlocked;
-        lockedUI.SetActive(state == State.Locked);
-        unlockedUI.SetActive(state != State.Locked);
     }
 
     public void SetState(State unselected)
     {
         state = unselected;
+
+        lockedUI.SetActive(state == State.Locked);
+        unlockedUI.SetActive(state != State.Locked);
+
         switch (state)
         {
             case State.Unselected:
@@ -95,13 +94,11 @@ public class CharacterSelectUI : MonoBehaviour
     {
         characterImage.sprite = currentCharacter.CharacterUiData.CharacterLockedImage;
         characterLockedName.sprite = currentCharacter.CharacterUiData.CharacterLockedName;
-        selectButton.interactable = false;
     }
 
     public void SelectedState()
     {
         UnlockedState();
-        unSelectedUI.SetActive(false);
         selectedUIIcon.gameObject.SetActive(true);
     }
 
@@ -109,15 +106,18 @@ public class CharacterSelectUI : MonoBehaviour
     {
         UnlockedState();
         selectedUIIcon.gameObject.SetActive(false);
-        unSelectedUI.SetActive(true);
     }
 
     public void UnlockedState()
     {
-        selectButton.interactable = true;
         characterImage.sprite = currentCharacter.CharacterUiData.CharacterUnlockedImage;
         characterUnlockedName.sprite = currentCharacter.CharacterUiData.CharacterUnlockedName;
         characterClassIcon.sprite = currentCharacter.CharacterUiData.CharacterClassIcon;
         characterClassName.sprite = currentCharacter.CharacterUiData.CharacterClassName;
+    }
+
+    public void ToggleInView(bool state)
+    {
+        InViewIcon.gameObject.SetActive(state);
     }
 }

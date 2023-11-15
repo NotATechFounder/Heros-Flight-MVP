@@ -6,11 +6,26 @@ public class CharacterManager : MonoBehaviour
 {
     [SerializeField] private CharacterSO[] characters;
 
+    private CurrencyManager currencyManager;
+
     public CharacterSO SelectedCharacter { get; private set; }
 
-    private void Awake()                
+    public void Init(CurrencyManager currencyManager)
     {
+        this.currencyManager = currencyManager;
         LoadAllCharacterData();
+    }
+
+    public bool TryBuyCharacter(CharacterType characterType)
+    {
+        CharacterSO characterSO = GetCharacterSO(characterType);
+        if (currencyManager.GetCurrencyAmount (characterSO.CurrencySO.GetID()) >= characterSO.UnlockPrice)
+        {
+            currencyManager.ReduceCurency(characterSO.CurrencySO.GetID(), characterSO.UnlockPrice);
+            UnlockCharacter(characterType);
+            return true;
+        }
+        return false;
     }
 
     public CharacterSO GetCharacterSO(CharacterType characterType)

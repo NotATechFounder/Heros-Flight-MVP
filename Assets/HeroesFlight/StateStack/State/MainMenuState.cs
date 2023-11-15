@@ -38,12 +38,17 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.UiEventHandler.MainMenu.Open();
 
                     uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += uiSystem.UiEventHandler.InventoryMenu.Open;
+                    uiSystem.UiEventHandler.MainMenu.AddGem += () => dataSystem.CurrencyManager.AddCurency("GEM", 10000);
+                    uiSystem.UiEventHandler.MainMenu.AddGold += () => dataSystem.CurrencyManager.AddCurency("GP", 10000);
+
                     uiSystem.UiEventHandler.InventoryMenu.OnChangeHeroButtonClicked += uiSystem.UiEventHandler.CharacterSelectMenu.Open;
                     uiSystem.UiEventHandler.InventoryMenu.OnStatPointButtonClicked += uiSystem.UiEventHandler.HeroProgressionMenu.Open;
+
                     uiSystem.UiEventHandler.CharacterSelectMenu.OnMenuClosed += uiSystem.UiEventHandler.InventoryMenu.Open;
                     uiSystem.UiEventHandler.CharacterSelectMenu.GetAllCharacterSO += dataSystem.CharacterManager.GetAllCharacterSO;
+                    uiSystem.UiEventHandler.CharacterSelectMenu.OnTryBuyCharacter += dataSystem.CharacterManager.TryBuyCharacter;
 
-                    uiSystem.UiEventHandler.InventoryMenu.GetSelectedCharacterSO += dataSystem.CharacterManager.GetSelectedCharacter;
+                   uiSystem.UiEventHandler.InventoryMenu.GetSelectedCharacterSO += dataSystem.CharacterManager.GetSelectedCharacter;
                     uiSystem.UiEventHandler.CharacterSelectMenu.OnCharacterSelected += dataSystem.CharacterManager.ToggleCharacterSelected;
 
    
@@ -57,10 +62,8 @@ namespace HeroesFlight.StateStack.State
                     } 
                     
                     uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed += HandleGameStartRequest;
-
-                    uiSystem.UiEventHandler.MainMenu.UpdateGoldText(dataSystem.CurrencyManager.GetCurrencyAmount("GP"));
-                    //uiSystem.UiEventHandler.MainMenu.UpdateGoldText(dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gold));
-
+                    dataSystem.CurrencyManager.OnCurrencyChanged += uiSystem.UiEventHandler.MainMenu.CurrencyChanged;
+                    dataSystem.CurrencyManager.TriggerAllCurrencyChange();
 
                     break;
                 case StackAction.Paused:

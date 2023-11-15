@@ -11,8 +11,13 @@ public class CharacterSO : ScriptableObject
     [Header("Character Info")]
     [SerializeField] string characterName;
     [SerializeField] CharacterType characterType;
+
+    [Header("Unlock Info")]
     [SerializeField] bool isUnlockedDefault;
     [SerializeField] bool isSelectedDefault;
+    [SerializeField] string unlockDescription;
+    [SerializeField] private int unlockPrice;
+    [SerializeField] CurrencySO currencySO;
 
     [Header("Others")]
     [SerializeField] AppearanceData appearanceData;
@@ -30,6 +35,10 @@ public class CharacterSO : ScriptableObject
 
     public string CharacterName => characterName;
     public CharacterType CharacterType => characterType;
+
+    public string UnlockDescription => unlockDescription;
+    public int UnlockPrice => unlockPrice;
+    public CurrencySO CurrencySO => currencySO;
     public PlayerStatData GetPlayerStatData => playerStatData;
     public AppearanceData GetAppearanceData => appearanceData;
     public CharacterAnimations CharacterAnimations => m_AnimationData;

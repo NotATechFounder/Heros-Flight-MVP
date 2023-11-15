@@ -13,6 +13,7 @@ namespace UISystem
     {
         public event Func<CharacterSO[]> GetAllCharacterSO;
         public event Action<CharacterType, bool> OnCharacterSelected;
+        public event Func<CharacterType, bool> OnTryBuyCharacter;
 
         [Header("Buttons")]
         [SerializeField] private AdvanceButton quitButton;
@@ -26,6 +27,12 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI currentHp;
         [SerializeField] private TextMeshProUGUI currentDef;
 
+        [Header("Unlocking")]
+        [SerializeField] private GameObject unlockUI;
+        [SerializeField] private AdvanceButton unlockButton;
+        [SerializeField] private TextMeshProUGUI unlockPrice;
+        [SerializeField] private TextMeshProUGUI unlockDescription;
+
         [Header("Properties")]
         [SerializeField] UiSpineViewController uiSpineViewController;
         [SerializeField] CharacterSelectUI characterSelectUIPrefab;
@@ -35,6 +42,7 @@ namespace UISystem
         private JuicerRuntime openEffectBG;
         private  JuicerRuntime closeEffectBG;
         private CharacterSelectUI currentCharacterSelected;
+        private CharacterSelectUI currentCharacterInView;
         private bool isCharacterLoaded;
 
         public override void OnCreated()
@@ -45,6 +53,27 @@ namespace UISystem
             closeEffectBG.SetOnCompleted(CloseMenu);
 
             quitButton.onClick.AddListener(Close);
+
+            unlockButton.onClick.AddListener(() =>
+            {
+                if (OnTryBuyCharacter?.Invoke(currentCharacterInView.GetCharacterSO.CharacterType) == true)
+                {
+                    unlockUI.SetActive(false);
+
+                    if (currentCharacterSelected != null)
+                    {
+                        currentCharacterSelected.SetState(CharacterSelectUI.State.Unselected);
+                        OnCharacterSelected?.Invoke(currentCharacterSelected.GetCharacterSO.CharacterType, false);
+                    }
+                    currentCharacterSelected = currentCharacterInView;
+                    currentCharacterSelected.SetState(CharacterSelectUI.State.Selected);
+                    OnCharacterSelected?.Invoke(currentCharacterSelected.GetCharacterSO.CharacterType, true);
+                }
+                else
+                {
+                    Debug.Log("Not enough money");
+                }
+            });
         }
 
         public override void OnOpened()
@@ -78,28 +107,46 @@ namespace UISystem
 
         private void OnCharacterSelectedSO(CharacterSelectUI characterSelectUI)
         {
-            if (currentCharacterSelected == characterSelectUI)
+            if (currentCharacterInView == characterSelectUI)
             {
                 return;
             }
 
-            if (currentCharacterSelected != null)
+            if (currentCharacterInView != null)
             {
-                currentCharacterSelected.SetState(CharacterSelectUI.State.Unselected);
-                OnCharacterSelected?.Invoke(currentCharacterSelected.GetCharacterSO.CharacterType, false);
+                currentCharacterInView.ToggleInView(false);
+            }   
+
+            currentCharacterInView = characterSelectUI;
+
+            currentCharacterInView.ToggleInView(true);
+
+            if (characterSelectUI.GetCharacterSO.CharacterData.isUnlocked)
+            {
+                if (currentCharacterSelected != null)
+                {
+                    currentCharacterSelected.SetState(CharacterSelectUI.State.Unselected);
+                    OnCharacterSelected?.Invoke(currentCharacterSelected.GetCharacterSO.CharacterType, false);
+                }
+                currentCharacterSelected = characterSelectUI;
+                currentCharacterSelected.SetState(CharacterSelectUI.State.Selected);
+                OnCharacterSelected?.Invoke(currentCharacterSelected.GetCharacterSO.CharacterType, true);
+            }
+            else
+            {
+                unlockPrice.text = currentCharacterInView.GetCharacterSO.UnlockPrice.ToString("F0");
+                unlockDescription.text = "Unlock by bla bla";
             }
 
-            currentCharacterSelected = characterSelectUI;
-            OnCharacterSelected?.Invoke(currentCharacterSelected.GetCharacterSO.CharacterType, true);
-
-            uiSpineViewController.SetupView(currentCharacterSelected.GetCharacterSO);
-            heroName.text = currentCharacterSelected.GetCharacterSO.CharacterType.ToString();
+            uiSpineViewController.SetupView(currentCharacterInView.GetCharacterSO);
+            heroName.text = currentCharacterInView.GetCharacterSO.CharacterType.ToString();
             heroDescription.text = "Description: ";
             heroPlayStyle.text = "Playstyle: ";
             heroUltimateInfo.text = "Ultimate: ";
-            currentAtk.text = currentCharacterSelected.GetCharacterSO.GetPlayerStatData.PhysicalDamage.max.ToString("F0");
-            currentHp.text = currentCharacterSelected.GetCharacterSO.GetPlayerStatData.Health.ToString("F0");
-            currentDef.text = currentCharacterSelected.GetCharacterSO.GetPlayerStatData.Defense.ToString("F0");
+            currentAtk.text = currentCharacterInView.GetCharacterSO.GetPlayerStatData.PhysicalDamage.max.ToString("F0");
+            currentHp.text = currentCharacterInView.GetCharacterSO.GetPlayerStatData.Health.ToString("F0");
+            currentDef.text = currentCharacterInView.GetCharacterSO.GetPlayerStatData.Defense.ToString("F0");
+            unlockUI.SetActive(!currentCharacterInView.GetCharacterSO.CharacterData.isUnlocked);
         }
     }
 }

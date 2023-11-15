@@ -26,6 +26,7 @@ public class DataSystem : DataSystemInterface
         CurrencyManager.LoadCurrencies();
 
         CharacterManager = scene.GetComponent<CharacterManager>();
+        CharacterManager.Init(CurrencyManager);
 
         onComplete?.Invoke();
     }
