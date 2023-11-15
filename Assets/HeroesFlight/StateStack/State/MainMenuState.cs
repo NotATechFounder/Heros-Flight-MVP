@@ -38,8 +38,8 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.UiEventHandler.MainMenu.Open();
 
                     uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += uiSystem.UiEventHandler.InventoryMenu.Open;
-                    uiSystem.UiEventHandler.MainMenu.AddGem += () => dataSystem.CurrencyManager.AddCurency("GEM", 10000);
-                    uiSystem.UiEventHandler.MainMenu.AddGold += () => dataSystem.CurrencyManager.AddCurency("GP", 10000);
+                    uiSystem.UiEventHandler.MainMenu.AddGem += () => dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Gem, 10000);
+                    uiSystem.UiEventHandler.MainMenu.AddGold += () => dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Gold, 10000);
 
                     uiSystem.UiEventHandler.InventoryMenu.OnChangeHeroButtonClicked += uiSystem.UiEventHandler.CharacterSelectMenu.Open;
                     uiSystem.UiEventHandler.InventoryMenu.OnStatPointButtonClicked += uiSystem.UiEventHandler.HeroProgressionMenu.Open;
