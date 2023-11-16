@@ -9,7 +9,7 @@ public class StatPoints : MonoBehaviour
 {
     [SerializeField] private StatPointSO[] statPointSO;
     [SerializeField] private SkillPointData skillPointData;
-    private Dictionary<StatPointType, int> statPointsDic = new Dictionary<StatPointType, int>();
+    private Dictionary<StatAttributeType, int> statPointsDic = new Dictionary<StatAttributeType, int>();
 
     private void Start()
     {
@@ -21,12 +21,12 @@ public class StatPoints : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            AddXp (StatPointType.Power, 1);
+            AddXp (StatAttributeType.Power, 1);
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            RemoveXp(StatPointType.Power, 1);
+            RemoveXp(StatAttributeType.Power, 1);
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -69,12 +69,12 @@ public class StatPoints : MonoBehaviour
         FileManager.Save("SkillPoint", skillPointData);
     }
 
-    public void AddXp(StatPointType statPointType, int amount)
+    public void AddXp(StatAttributeType statPointType, int amount)
     {
         statPointsDic[statPointType] += amount;
     }
 
-    public void RemoveXp(StatPointType statPointType, int amount)
+    public void RemoveXp(StatAttributeType statPointType, int amount)
     {
         if (statPointsDic[statPointType] > 0)
         {
@@ -82,12 +82,12 @@ public class StatPoints : MonoBehaviour
         }
     }
 
-    public int GetXp(StatPointType statPointType)
+    public int GetXp(StatAttributeType statPointType)
     {
         return statPointsDic[statPointType];
     }
 
-    public void ResetXp(StatPointType statPointType)
+    public void ResetXp(StatAttributeType statPointType)
     {
         statPointsDic[statPointType] = 0;
     }
@@ -99,7 +99,7 @@ public class SkillPointData
     public int avaliableSp;
     public List<StatPointSingleData> statPointSingleDatas = new List<StatPointSingleData>();
 
-    public void SetXp(StatPointType heroProgressionAttribute, int sp)
+    public void SetXp(StatAttributeType heroProgressionAttribute, int sp)
     {
         foreach (var heroProgressionSingleData in statPointSingleDatas)
         {
@@ -116,7 +116,7 @@ public class SkillPointData
         statPointSingleDatas.Add(heroProgressionSingleData1);
     }
 
-    public int GetSp(StatPointType heroProgressionAttribute)
+    public int GetSp(StatAttributeType heroProgressionAttribute)
     {
         foreach (var heroProgressionSingleData in statPointSingleDatas)
         {
@@ -129,7 +129,7 @@ public class SkillPointData
         return 0;
     }
 
-    public void ModifySp(StatPointType heroProgressionAttribute, int amount, StatModel.StatModificationType statModificationType)
+    public void ModifySp(StatAttributeType heroProgressionAttribute, int amount, StatModel.StatModificationType statModificationType)
     {
         foreach (var heroProgressionSingleData in statPointSingleDatas)
         {
@@ -153,6 +153,6 @@ public class SkillPointData
 [Serializable]
 public class StatPointSingleData
 {
-    public StatPointType statPointType;
+    public StatAttributeType statPointType;
     public int sp;
 }

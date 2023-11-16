@@ -1266,7 +1266,7 @@ namespace HeroesFlight.System.Gameplay
         private void UpdateStatModifiers()
         {
             var unlockedTraits = traitSystem.GetUnlockedEffects();
-            var modifiedStatsMap = new Dictionary<StatPointType, int>();
+            var modifiedStatsMap = new Dictionary<StatAttributeType, int>();
             foreach (var trait in unlockedTraits)
             {
                 if (trait.TargetTrait.Effect.TraitType == TraitType.StatBoost)

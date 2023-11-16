@@ -3,7 +3,7 @@
 namespace HeroesFlight.Common.Progression
 {
     [Serializable]
-    public enum StatPointType
+    public enum StatAttributeType
     {
         Power,
         Vitality,
