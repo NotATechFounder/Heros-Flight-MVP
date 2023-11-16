@@ -23,7 +23,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void TryDealDamage(HealthModificationIntentModel healthModificationIntent);
         void TryDealLineDamage(int numberOfLines, float delayBetweenLines, HealthModificationIntentModel healthModificationIntent);
         void ModifyHealth(HealthModificationIntentModel modificationIntentModel);
-        void DealHealthPercentageDamage(float percentage, DamageType damageType,AttackType attackType);
+        void DealHealthPercentageDamage(float percentage, DamageCritType damageCritType,AttackType attackType);
         bool IsDead();
         void Reset();
         void Revive(float healthPercentage);

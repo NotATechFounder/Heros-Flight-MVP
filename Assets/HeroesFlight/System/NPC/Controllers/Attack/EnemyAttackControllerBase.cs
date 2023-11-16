@@ -84,9 +84,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 ? baseDamage * criticalChance
                 : baseDamage;
 
-            var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
+            var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
             var damageModel = new HealthModificationIntentModel(damageToDeal, type,
-                AttackType.Regular, DamageCalculationType.Flat);
+                AttackType.Regular, DamageCalculationType.Flat,health);
             target.TryDealDamage(damageModel);
             OnHitTarget?.Invoke();
         }

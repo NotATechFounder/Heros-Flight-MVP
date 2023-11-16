@@ -105,7 +105,7 @@ public class AresEffect : MonoBehaviour
             if (colliders[i].TryGetComponent( out IHealthController healthController))
             {
                 healthController.TryDealDamage(new HealthModificationIntentModel(damage, 
-                    DamageType.Critical, AttackType.Regular,DamageCalculationType.Flat));
+                    DamageCritType.Critical, AttackType.Regular,DamageCalculationType.Flat,null));
               OnHitEnemy?.Invoke();
             }
         }

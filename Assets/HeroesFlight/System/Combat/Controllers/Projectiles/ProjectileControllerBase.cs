@@ -42,7 +42,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (disabled)
                 return;
-            
+
             currentLifetime += Time.deltaTime;
             if (currentLifetime >= lifeTime)
             {
@@ -61,7 +61,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             transform.Translate(currentDirection.normalized * speed * Time.deltaTime);
         }
 
-        public void SetLine (int numberOfLines , float lineDamageDelay)
+        public void SetLine(int numberOfLines, float lineDamageDelay)
         {
             projectileType = ProjectileType.FlyThrough;
             damageType = DamgeType.Line;
@@ -78,11 +78,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                     break;
                 case ProjectileType.FlyThrough:
                     break;
-                default:   break;
+                default: break;
             }
 
             if (hitEffect != null)
-            hitEffect?.Play();
+                hitEffect?.Play();
 
             OnHit?.Invoke(this);
         }
@@ -111,10 +111,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 switch (damageType)
                 {
                     case DamgeType.Normal:
-                        healthController.TryDealDamage(new HealthModificationIntentModel(damage, DamageType.NoneCritical, AttackType.Regular, DamageCalculationType.Flat));
+                        healthController.TryDealDamage(new HealthModificationIntentModel(damage,
+                            DamageCritType.NoneCritical, AttackType.Regular, DamageCalculationType.Flat, null));
                         break;
                     case DamgeType.Line:
-                        healthController.TryDealLineDamage(numberOfLines, lineDamageDelay, new HealthModificationIntentModel(damage, DamageType.NoneCritical, AttackType.Regular, DamageCalculationType.Flat));
+                        healthController.TryDealLineDamage(numberOfLines, lineDamageDelay,
+                            new HealthModificationIntentModel(damage, DamageCritType.NoneCritical, AttackType.Regular,
+                                DamageCalculationType.Flat,null));
                         break;
                     default:
                         break;

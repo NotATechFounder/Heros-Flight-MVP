@@ -75,7 +75,7 @@ public class EffectMushroomHazard : EnironmentHazard
         {
             float damage = StatCalc.GetPercentage(healthPercentageDecrease, healthController.CurrentHealth);
             healthController.TryDealDamage(new HealthModificationIntentModel(damage, 
-                DamageType.NoneCritical, AttackType.Regular,DamageCalculationType.Percentage));
+                DamageCritType.NoneCritical, AttackType.Regular,DamageCalculationType.Percentage,null));
         }
     }
 

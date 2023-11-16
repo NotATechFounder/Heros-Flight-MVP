@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using HeroesFlight.Common;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Effects.Enum;
 using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.Handlers;
 using HeroesFlight.System.Combat.Model;
@@ -10,6 +12,9 @@ using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.UI;
 using HeroesFlightProject.System.Combat.Controllers;
 using HeroesFlightProject.System.Gameplay.Controllers;
+using StansAssets.Foundation.Async;
+using UnityEditor;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace HeroesFlight.System.Combat
@@ -22,6 +27,7 @@ namespace HeroesFlight.System.Combat
             this.uiSystem=uiSystem;
             comboHandler = new CharacterComboHandler();
             comboHandler.OnComboUpdated += UpdateCharacterComboUi;
+            tick = new WaitForSeconds(1f);
         }
 
         public event Action<EntityDeathModel> OnEntityDied;
@@ -37,11 +43,20 @@ namespace HeroesFlight.System.Combat
         CharacterComboHandler comboHandler;
         WorldBarUI specialBar;
 
+        private Coroutine tickRoutine;
+        private WaitForSeconds tick;
         Dictionary<IHealthController,CombatEntityModel>  combatEntities= new ();
+        private Action OnTick;
 
-        public void Init(Scene scene = default, Action onComplete = null) {}
+        public void Init(Scene scene = default, Action onComplete = null)
+        {
+            tickRoutine = CoroutineUtility.Start(TickRoutine());
+        }
 
-        public void Reset() { }
+        public void Reset()
+        {
+            CoroutineUtility.Stop(tickRoutine);
+        }
 
 
         public void RegisterEntity(CombatEntityModel model)
@@ -53,8 +68,10 @@ namespace HeroesFlight.System.Combat
             model.AttackController?.Init();
             model.HealthController.OnDamageReceiveRequest += HandleEntityDamaged;
             model.HealthController.OnDeath += HandleEntityDied;
+            OnTick += model.EffectHandler.ExecuteTick;
             if (model.EntityType == CombatEntityType.Player)
             {
+                Debug.Log($"player registered,hes effects controller is null ? {model.EffectHandler==null}");
                 characterSkillHandler =
                     new CharacterSkillHandler(model.HealthController.HealthTransform.GetComponent<CharacterAbilityInterface>());
                 specialBar = model.AttackController.specialBar;
@@ -62,58 +79,76 @@ namespace HeroesFlight.System.Combat
             }
         }
 
-        private void HandleEntityDamaged(HealthModificationRequestModel obj)
+        private void HandleEntityDamaged(HealthModificationRequestModel requestModel)
         {
-            if (combatEntities.TryGetValue(obj.RequestOwner, out var data))
+            if (combatEntities.TryGetValue(requestModel.RequestOwner, out var data))
             {
-                if (obj.IntentModel.CalculationType == DamageCalculationType.Flat)
+                if (requestModel.IntentModel.CalculationType == DamageCalculationType.Percentage)
                 {
-                    obj.RequestOwner.ModifyHealth(obj.IntentModel);      
+                    Debug.Log(requestModel.IntentModel.Amount);
+                    var modificationValue = requestModel.RequestOwner.MaxHealth / 100 * requestModel.IntentModel.Amount;
+                    requestModel.IntentModel.ModifyAmount(modificationValue); 
+                    Debug.Log(requestModel.IntentModel.Amount);
                 }
-                else
+
+                if (requestModel.IntentModel.Source != null)
                 {
-                    var modificationValue = obj.RequestOwner.MaxHealth / 100 * obj.IntentModel.Amount;
-                    obj.IntentModel.ModifyAmount(modificationValue);
-                    obj.RequestOwner.ModifyHealth(obj.IntentModel); 
+                    if (combatEntities.TryGetValue(requestModel.IntentModel.Source, out var model))
+                    {
+                        Debug.Log(requestModel.IntentModel.Source.HealthTransform.name);
+                        Debug.Log(model.EffectHandler == null);
+                        if (model.EffectHandler != null)
+                        {
+                            model.EffectHandler.TriggerCombatEffect(CombatEffectApplicationType.OnDealDamage,
+                                requestModel);
+                        }
+                    }
                 }
                 
-              
+                data.EffectHandler?.TriggerCombatEffect(CombatEffectApplicationType.OnTakeDamage,
+                    requestModel);
+
                 switch (data.EntityType)
                 {
                     case CombatEntityType.Player:
-                        HandlePlayerHealthModified(obj);
+                        HandlePlayerHealthModified(requestModel);
                         break;
                     case CombatEntityType.Mob:
-                        HandleAiDamaged(obj);
+                        HandleAiDamaged(requestModel);
                         break;
                     case CombatEntityType.MiniBoss:
-                        HandleAiDamaged(obj);
+                        HandleAiDamaged(requestModel);
                         break;
                     case CombatEntityType.Boss:
-                        HandleAiDamaged(obj);
+                        HandleAiDamaged(requestModel);
                         break;
                     case CombatEntityType.TempMob:
-                        HandleAiDamaged(obj);
+                        HandleAiDamaged(requestModel);
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
-                OnEntityReceivedDamage?.Invoke(new EntityDamageReceivedModel(obj.RequestOwner.HealthTransform.position,
-                    obj.IntentModel,data.EntityType,  obj.RequestOwner.CurrentHealthProportion ));
+
+                requestModel.RequestOwner.ModifyHealth(requestModel.IntentModel);
+
+                if (requestModel.IntentModel.AttackType == AttackType.DoT)
+                    return;
+                
+                
+                OnEntityReceivedDamage?.Invoke(new EntityDamageReceivedModel(requestModel.RequestOwner.HealthTransform.position,
+                    requestModel.IntentModel,data.EntityType,  requestModel.RequestOwner.CurrentHealthProportion ));
             }
         }
 
         private void HandlePlayerHealthModified(HealthModificationRequestModel obj)
         {
             uiSystem.ShowDamageText(obj.IntentModel.Amount, obj.RequestOwner.HealthTransform,
-                obj.IntentModel.DamageType == DamageType.Critical, true,
+                obj.IntentModel.DamageCritType == DamageCritType.Critical, true,
                 obj.IntentModel.AttackType == AttackType.Healing);
         }
 
         private void HandleAiDamaged(HealthModificationRequestModel obj)
         {
             uiSystem.ShowDamageText(obj.IntentModel.Amount, obj.RequestOwner.HealthTransform,
-                obj.IntentModel.DamageType == DamageType.Critical, false);
+                obj.IntentModel.DamageCritType == DamageCritType.Critical, false);
             comboHandler.RegisterCharacterHit();
             switch (obj.IntentModel.AttackType)
             {
@@ -135,6 +170,7 @@ namespace HeroesFlight.System.Combat
                 {
                     obj.OnDamageReceiveRequest -= HandleEntityDamaged;
                     obj.OnDeath -= HandleEntityDied;
+                    OnTick -= data.EffectHandler.ExecuteTick;
                     combatEntities.Remove(obj);
                 }
               
@@ -183,6 +219,17 @@ namespace HeroesFlight.System.Combat
         void UpdateCharacterComboUi(int value)
         {
             uiSystem.UpdateComboUI(value);
+        }
+
+        IEnumerator TickRoutine()
+        {
+            while (true)
+            {
+               OnTick?.Invoke();
+            
+                yield return  tick;    
+            }
+            
         }
     }
 }

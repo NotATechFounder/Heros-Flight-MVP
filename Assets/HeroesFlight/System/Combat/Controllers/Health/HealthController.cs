@@ -123,7 +123,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             if (notify)
             {
                 var intent =new HealthModificationIntentModel(amount,
-                    DamageType.NoneCritical, AttackType.Healing, DamageCalculationType.Flat);
+                    DamageCritType.NoneCritical, AttackType.Healing, DamageCalculationType.Flat,null);
                 OnDamageReceiveRequest?.Invoke(new HealthModificationRequestModel(intent, this));
             }
             else
@@ -193,10 +193,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             OnBeingHitDamaged?.Invoke(transform);
         }
 
-        public void DealHealthPercentageDamage(float percentage, DamageType damageType, AttackType attackType)
+        public void DealHealthPercentageDamage(float percentage, DamageCritType damageCritType, AttackType attackType)
         {
             float damage = StatCalc.GetPercentage(maxHealth, percentage);
-            HealthModificationIntentModel healthModificationIntentModel = new HealthModificationIntentModel(damage, damageType, attackType,DamageCalculationType.Flat);
+            HealthModificationIntentModel healthModificationIntentModel = new HealthModificationIntentModel(damage, damageCritType, attackType,DamageCalculationType.Flat,null);
             TryDealDamage(healthModificationIntentModel);
         }
 

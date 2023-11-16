@@ -78,7 +78,7 @@ public class ExplosionMushroomHazard : MonoBehaviour
         {
             if (collider2D[i].TryGetComponent(out IHealthController healthController))
             {
-                healthController.DealHealthPercentageDamage(damagePercentage,DamageType.Critical, AttackType.Regular);
+                healthController.DealHealthPercentageDamage(damagePercentage,DamageCritType.Critical, AttackType.Regular);
             }
 
             if (collider2D[i].TryGetComponent(out Trigger2DObserver trigger2DObserver))

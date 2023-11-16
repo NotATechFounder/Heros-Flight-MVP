@@ -4,6 +4,7 @@ namespace HeroesFlight.Common.Enum
     {
         Regular,
         Ultimate,
-        Healing
+        Healing,
+        DoT
     }
 }

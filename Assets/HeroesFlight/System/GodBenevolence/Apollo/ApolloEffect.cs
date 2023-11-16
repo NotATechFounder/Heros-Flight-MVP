@@ -118,7 +118,7 @@ public class ApolloEffect : MonoBehaviour
                 if (colliders[z].TryGetComponent(out IHealthController healthController))
                 {
                     healthController.TryDealLineDamage(linesOfDamage, lineDamageDelay, new HealthModificationIntentModel(damage,
-                        DamageType.Critical, AttackType.Regular, DamageCalculationType.Flat));
+                        DamageCritType.Critical, AttackType.Regular, DamageCalculationType.Flat,null));
                 }
             }
         }
