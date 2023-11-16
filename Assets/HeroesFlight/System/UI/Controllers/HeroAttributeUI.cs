@@ -10,9 +10,7 @@ public class HeroAttributeUI : MonoBehaviour
     public Action<HeroAttributeUI> OnAddSpEffectStart;
     public Action<HeroAttributeUI> OnAddSpEffectCompleted;
 
-    public Action<HeroProgressionAttributeInfo> OnUpButtonClickedEvent;
-    public Action<HeroProgressionAttributeInfo> OnDownButtonClickedEvent;
-    public Action<HPAttributeSO> OnInfoButtonClickedEvent;
+    public Action<StatPointSO> OnInfoButtonClickedEvent;
 
     //[SerializeField] private AdvanceButton upButton;
     [SerializeField] private AdvanceButton downButton;
@@ -23,8 +21,6 @@ public class HeroAttributeUI : MonoBehaviour
     [SerializeField] private Image icon;
     [SerializeField] private Image buttonImage;
     [SerializeField] private Image levelUpFill;
-
-    private HeroProgressionAttributeInfo attributeInfo;
 
     JuicerRuntime levelUpEffect;
 
@@ -37,15 +33,15 @@ public class HeroAttributeUI : MonoBehaviour
         levelUpEffect = levelUpFill.JuicyFillAmount(1, 0.15f);
     }
 
-    public void SetAttribute(HeroProgressionAttributeInfo attribute)
+    public void SetAttribute()
     {
-        this.attributeInfo = attribute;
-        attributeName.text = attribute.AttributeSO.Attribute.ToString();
-        attributeValue.text = "LV. " + attribute.CurrentSP.ToString();
-        attributeInfoText.text = attribute.AttributeSO.Description;
-        icon.sprite = attribute.AttributeSO.Icon;
-        attribute.OnSPChanged = OnSPChanged;
-        attribute.OnModified = OnModified;
+        //this.attributeInfo = attribute;
+        //attributeName.text = attribute.AttributeSO.Attribute.ToString();
+        //attributeValue.text = "LV. " + attribute.CurrentSP.ToString();
+        //attributeInfoText.text = attribute.AttributeSO.Description;
+        //icon.sprite = attribute.AttributeSO.Icon;
+        //attribute.OnSPChanged = OnSPChanged;
+        //attribute.OnModified = OnModified;
     }
 
     public void OnSPChanged(int sp)
@@ -70,17 +66,17 @@ public class HeroAttributeUI : MonoBehaviour
 
     public void OnUpButtonClicked()
     {
-        OnUpButtonClickedEvent?.Invoke(attributeInfo);
+
     }
 
     public void OnDownButtonClicked()
     {
-        OnDownButtonClickedEvent?.Invoke(attributeInfo);
+   
     }
 
     public void OnInfoButtonClicked()
     {
-        OnInfoButtonClickedEvent?.Invoke(attributeInfo.AttributeSO);
+
     }
 
     public void ResetSpText()

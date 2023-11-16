@@ -23,6 +23,8 @@ namespace UISystem
         [SerializeField] private Image timerFill;
 
         [Header("Puzzle Menu")]
+        [SerializeField] private Image puzzleIine;
+        [SerializeField] private Image puzzleFrame;
         [SerializeField] private GridLayoutGroup gridLayoutGroup;
         [SerializeField] private PuzzlePiece[] puzzlePieces;
 
@@ -77,13 +79,14 @@ namespace UISystem
 
             selectedBenevolenceVisual = GetRandomBenevolenceVisualSO.Invoke(selectedBenevolence);
             selectedBenevolence = selectedBenevolenceVisual.BenevolenceType;
+            puzzleFrame.sprite = selectedBenevolenceVisual.GetBenevolenceFrame();
             Sprite[] benevolencePuzzle = selectedBenevolenceVisual.GetBenevolencePuzzle();
             for (int i = 0; i < puzzlePieces.Length; i++)
             {
                 puzzlePieces[i].ShuffleRotation();
                 puzzlePieces[i].SetSprite(benevolencePuzzle[i]);
             }
-
+            puzzleIine.enabled = true;
             blocker.SetActive(false);
 
             openEffectBG.Start();
@@ -152,9 +155,13 @@ namespace UISystem
         private IEnumerator PuzzleSolvedRoutine()
         {
             countDownTimer.Stop();
+            puzzleIine.enabled = false;
+
+            yield return new WaitForSeconds(.25f);
+
             blocker.SetActive(true);
             
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(.25f);
 
             AudioManager.PlaySoundEffect(selectedBenevolenceVisual.CompletedSfxKey,SoundEffectCategory.UI);    
 

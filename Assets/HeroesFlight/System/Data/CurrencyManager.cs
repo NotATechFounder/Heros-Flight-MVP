@@ -4,11 +4,13 @@ using System;
 
 public class CurrencyManager : MonoBehaviour
 {
+    public event Action<CurrencySO, bool> OnCurrencyChanged;
     [SerializeField] private List<CurrencySO> _currencies;
 
     private void Awake()
     {
         InitCurrencies();
+        AssignCurrrencyChangeCallback();
     }
 
     public void ReduceCurency(string key, float amount)
@@ -32,6 +34,20 @@ public class CurrencyManager : MonoBehaviour
     public void AddCurrrencyChangeCallback(string currencyKey, Action<CurrencySO, bool> action)
     {
         _currencies.Find ((currency) => currency.GetKey == currencyKey).AssignCurrencyChangeCallback(action);
+    }
+
+    public void AssignCurrrencyChangeCallback()
+    {
+        _currencies.ForEach((currency) => currency.AssignCurrencyChangeCallback((currencySO, isIncrease) =>
+        {
+           // Debug.Log($"{currencySO.GetKey} has changed by {currencySO.GetCurrencyAmount} and isIncrease is {isIncrease}");
+            OnCurrencyChanged?.Invoke(currencySO, isIncrease);
+        }));
+    }
+
+    public void TriggerAllCurrencyChange()
+    {
+        _currencies.ForEach((currency) => OnCurrencyChanged?.Invoke(currency, true));
     }
 
     public float GetCurrencyAmount(string currencyKey)

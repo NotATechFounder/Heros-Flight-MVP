@@ -13,10 +13,6 @@ namespace UISystem
 {
     public class HeroProgressionMenu : BaseMenu<HeroProgressionMenu>
     {
-        public Func<HeroProgressionAttributeInfo[]> GetHeroAttributes;
-
-        public Action<HeroProgressionAttributeInfo> OnUpButtonClickedEvent;
-        public Action<HeroProgressionAttributeInfo> OnDownButtonClickedEvent;
         public Action OnCloseButtonPressed;
         public Action OnResetButtonPressed;
 
@@ -92,16 +88,6 @@ namespace UISystem
 
         public void SetHeroAttributeUIs()
         {
-            HeroProgressionAttributeInfo[] heroProgressionAttributeInfos = GetHeroAttributes?.Invoke();
-            for (int i = 0; i < heroAttributeUIArray.Length; i++)
-            {
-                heroAttributeUIArray[i].SetAttribute(heroProgressionAttributeInfos[i]);
-                heroAttributeUIArray[i].OnUpButtonClickedEvent = OnUpButtonClickedEvent;
-                heroAttributeUIArray[i].OnDownButtonClickedEvent = OnDownButtonClickedEvent;
-                heroAttributeUIArray[i].OnAddSpEffectStart = OnAddSpStart;
-                heroAttributeUIArray[i].OnAddSpEffectCompleted = OnAddSpCompleted;
-            }
-
             loadedHeroAttributes = true;
         }
 

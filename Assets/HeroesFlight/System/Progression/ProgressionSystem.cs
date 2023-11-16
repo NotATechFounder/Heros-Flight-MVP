@@ -17,12 +17,12 @@ namespace HeroesFlight.System.Stats
         DataSystemInterface dataSystem;
         InRunCurrencyHandler currencyHandler;
        // private TraitHandler traitHandler;
-        public HeroProgression HeroProgression { get; private set; }
+        public StatManager HeroProgression { get; private set; }
         public BoosterManager BoosterManager { get; private set; }
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
-            HeroProgression = scene.GetComponentInChildren<HeroProgression>();
+            HeroProgression = scene.GetComponentInChildren<StatManager>();
             BoosterManager = scene.GetComponentInChildren<BoosterManager>();
         }
 

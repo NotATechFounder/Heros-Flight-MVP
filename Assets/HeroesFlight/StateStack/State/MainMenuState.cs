@@ -2,6 +2,7 @@
 using HeroesFlight.Common.Enum;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Stats;
 using HeroesFlight.System.Stats.Handlers;
 using HeroesFlight.System.UI;
 using JetBrains.Annotations;
@@ -36,35 +37,30 @@ namespace HeroesFlight.StateStack.State
                     traitSystemInterface.Init();
                     uiSystem.UiEventHandler.MainMenu.Open();
 
-                    uiSystem.UiEventHandler.MainMenu.OnCharacterSelected += dataSystem.CharacterManager.ToggleCharacterSelected;
-                    
+                    uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += uiSystem.UiEventHandler.InventoryMenu.Open;
+                    uiSystem.UiEventHandler.MainMenu.AddGem += () => dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Gem, 10000);
+                    uiSystem.UiEventHandler.MainMenu.AddGold += () => dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Gold, 10000);
+
+                    uiSystem.UiEventHandler.InventoryMenu.OnChangeHeroButtonClicked += uiSystem.UiEventHandler.CharacterSelectMenu.Open;
+                    uiSystem.UiEventHandler.InventoryMenu.OnStatPointButtonClicked += uiSystem.UiEventHandler.HeroProgressionMenu.Open;
+
+                    uiSystem.UiEventHandler.CharacterSelectMenu.OnMenuClosed += uiSystem.UiEventHandler.InventoryMenu.Open;
+                    uiSystem.UiEventHandler.CharacterSelectMenu.GetAllCharacterSO += dataSystem.CharacterManager.GetAllCharacterSO;
+                    uiSystem.UiEventHandler.CharacterSelectMenu.OnTryBuyCharacter += dataSystem.CharacterManager.TryBuyCharacter;
+
+                    uiSystem.UiEventHandler.InventoryMenu.GetSelectedCharacterSO += dataSystem.CharacterManager.GetSelectedCharacter;
+                    uiSystem.UiEventHandler.CharacterSelectMenu.OnCharacterSelected += dataSystem.CharacterManager.ToggleCharacterSelected;
+   
                     void HandleGameStartRequest()
                     {
                         uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;
-
-                        //TODO: Remove this line
-                        //  uiSystem.UiEventHandler.MainMenu.OnCharacterSelectButtonPressed -= HandleCharacterSelectionRequest;
-                          AppStateStack.State.Set(ApplicationState.Gameplay);
+                        
+                        AppStateStack.State.Set(ApplicationState.Gameplay);
                     } 
-
-
-                    //TODO: Remove this line
-                    void HandleCharacterSelectionRequest()
-                    {
-                        //uiSystem.UiEventHandler.CharacterSelectionMenu.SetUnlockedCharacters(dataSystem.GetUnlockedHeroes());
-                        //uiSystem.UiEventHandler.CharacterSelectionMenu.Open();
-                    }
                     
                     uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed += HandleGameStartRequest;
-
-                    uiSystem.UiEventHandler.MainMenu.UpdateGoldText(dataSystem.CurrencyManager.GetCurrencyAmount("GP"));
-                    //uiSystem.UiEventHandler.MainMenu.UpdateGoldText(dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gold));
-
-                    //TODO: Remove this line
-                    // uiSystem.UiEventHandler.MainMenu.OnCharacterSelectButtonPressed += HandleCharacterSelectionRequest;
-
-                    //  uiSystem.UiEventHandler.MainMenu.OnCharacterSelected += dataSystem.CharacterManager.ToggleCharacterSelected;
-
+                    dataSystem.CurrencyManager.OnCurrencyChanged += uiSystem.UiEventHandler.MainMenu.CurrencyChanged;
+                    dataSystem.CurrencyManager.TriggerAllCurrencyChange();
 
                     break;
                 case StackAction.Paused:

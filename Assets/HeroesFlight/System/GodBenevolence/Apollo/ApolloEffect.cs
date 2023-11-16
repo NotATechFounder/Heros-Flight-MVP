@@ -101,10 +101,10 @@ public class ApolloEffect : MonoBehaviour
         {
             case attackAnimation1Name:
                 skeletonAnimation.AnimationState.SetAnimation(0, idleAnimationName, true);
-            break;
+                break;
             case attackAnimation2Name:
-                    skeletonAnimation.AnimationState.SetAnimation(0, idleAnimationName, true);
-            break;
+                skeletonAnimation.AnimationState.SetAnimation(0, idleAnimationName, true);
+                break;
             default: break;
         }
     }

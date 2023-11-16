@@ -8,7 +8,7 @@ public class GodsBenevolenceVisualData
     [SerializeField] private GodBenevolenceType benevolenceType;
     [TextArea(3, 10)]
     [SerializeField] private string benevolenceDescription;
-    [SerializeField] private Sprite benevolenceIcon;
+    [SerializeField] private Sprite benevolenceFrame;
     [SerializeField] private BenevolencePuzzle[] benevolencePuzzles;
     [SerializeField] private string completedSfxKey;
 
@@ -16,6 +16,16 @@ public class GodsBenevolenceVisualData
 
     public GodBenevolenceType BenevolenceType => benevolenceType;
     public string CompletedSfxKey => completedSfxKey;
+
+    public string GetBenevolenceDescription()
+    {
+        return benevolenceDescription;
+    }
+
+    public Sprite GetBenevolenceFrame()
+    {
+        return benevolenceFrame;
+    }
 
     public Sprite[] GetBenevolencePuzzle()
     {

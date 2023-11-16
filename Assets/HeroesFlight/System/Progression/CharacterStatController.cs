@@ -57,6 +57,13 @@ public class CharacterStatController : MonoBehaviour
         ResetStats();
     }
 
+    public void Initialize(PlayerStatData playerCombatModel, StatModel statModel)
+    {
+        this.playerCombatModel = playerCombatModel;
+        ResetStats();
+
+    }
+
     public void SetCurrentCardIcon(Sprite sprite)
     {
         if (sprite != null)
