@@ -62,7 +62,7 @@ public class HazardArrow : MonoBehaviour
             {
                 float damage = StatCalc.GetPercentage(healthController.CurrentHealth, healthPercentage);
                 healthController.TryDealDamage(new HealthModificationIntentModel(damage, 
-                    DamageType.NoneCritical, AttackType.Regular,DamageCalculationType.Flat));
+                    DamageCritType.NoneCritical, AttackType.Regular,CalculationType.Flat,null));
             }
             DisableProjectile();
         }

@@ -45,7 +45,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 if(targets[i].TryGetComponent<IHealthController>(out var health))
                 {
                     health.TryDealDamage(new HealthModificationIntentModel(CalculateDamage(),
-                        DamageType.NoneCritical,AttackType.Regular,DamageCalculationType.Flat));
+                        DamageCritType.NoneCritical,AttackType.Regular,CalculationType.Flat,null));
                 }
             }
         }

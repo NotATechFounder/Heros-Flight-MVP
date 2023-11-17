@@ -6,9 +6,11 @@ using HeroesFlight.Common.Enum;
 using HeroesFlight.Common.Progression;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Combat;
+using HeroesFlight.System.Combat.Effects.Effects;
 using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.Handlers;
 using HeroesFlight.System.Combat.Model;
+using HeroesFlight.System.Combat.StatusEffects;
 using HeroesFlight.System.Environment;
 using HeroesFlight.System.FileManager.Enum;
 using HeroesFlight.System.FileManager.Model;
@@ -159,12 +161,18 @@ namespace HeroesFlight.System.Gameplay
 
             activeAbilityManager.OnEXPAdded += uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
 
-            activeAbilityManager.TimedAbilityControllers[0].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFill;
-            activeAbilityManager.TimedAbilityControllers[0].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFillCoolDown;
-            activeAbilityManager.TimedAbilityControllers[1].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[1].UpdateSkillOneFill;
-            activeAbilityManager.TimedAbilityControllers[1].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[1].UpdateSkillOneFillCoolDown;
-            activeAbilityManager.TimedAbilityControllers[2].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[2].UpdateSkillOneFill;
-            activeAbilityManager.TimedAbilityControllers[2].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[2].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[0].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu
+                .ActiveAbilityTriggerButtons[0].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[0].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu
+                .ActiveAbilityTriggerButtons[0].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[1].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu
+                .ActiveAbilityTriggerButtons[1].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[1].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu
+                .ActiveAbilityTriggerButtons[1].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[2].OnRuntimeActive += uiSystem.UiEventHandler.GameMenu
+                .ActiveAbilityTriggerButtons[2].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[2].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu
+                .ActiveAbilityTriggerButtons[2].UpdateSkillOneFillCoolDown;
             uiSystem.OnPassiveAbilityButtonClicked += activeAbilityManager.UseCharacterAbility;
 
             activeAbilityManager.OnActiveAbilityEquipped += uiSystem.UiEventHandler.GameMenu.ActiveAbilityEqquiped;
@@ -182,15 +190,15 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += HeroProgressionCompleted;
 
             goldModifier = 0;
-            if ( traitSystem.HasTraitOfType(TraitType.CurrencyBoost, out var traits))
+            if (traitSystem.HasTraitOfType(TraitType.CurrencyBoost, out var traits))
             {
                 foreach (var data in traits)
                 {
                     var traitValue = traitSystem.GetTraitEffect(data.TargetTrait.Id);
                     goldModifier += traitValue.Value + data.Value.Value;
                 }
-                
             }
+
             RegisterShrineNPCUIEvents();
 
             OnComplete?.Invoke();
@@ -268,7 +276,7 @@ namespace HeroesFlight.System.Gameplay
                     break;
                 case CombatEntityType.MiniBoss:
                     HandleEnemyDamaged(damageModel.DamageIntentModel);
-                    HandleMinibossHealthChange(damageModel.HealthPercentagePercentageLeft);
+                 //   HandleMinibossHealthChange(damageModel.HealthPercentagePercentageLeft);
                     break;
                 case CombatEntityType.Boss:
                     HandleEnemyDamaged(damageModel.DamageIntentModel);
@@ -302,12 +310,18 @@ namespace HeroesFlight.System.Gameplay
             characterAttackController = null;
             characterHealthController = null;
 
-            activeAbilityManager.TimedAbilityControllers[0].OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFill;
-            activeAbilityManager.TimedAbilityControllers[0].OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[0].UpdateSkillOneFillCoolDown;
-            activeAbilityManager.TimedAbilityControllers[1].OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[1].UpdateSkillOneFill;
-            activeAbilityManager.TimedAbilityControllers[1].OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[1].UpdateSkillOneFillCoolDown;
-            activeAbilityManager.TimedAbilityControllers[2].OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[2].UpdateSkillOneFill;
-            activeAbilityManager.TimedAbilityControllers[2].OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityTriggerButtons[2].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[0].OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu
+                .ActiveAbilityTriggerButtons[0].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[0].OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu
+                .ActiveAbilityTriggerButtons[0].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[1].OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu
+                .ActiveAbilityTriggerButtons[1].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[1].OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu
+                .ActiveAbilityTriggerButtons[1].UpdateSkillOneFillCoolDown;
+            activeAbilityManager.TimedAbilityControllers[2].OnRuntimeActive -= uiSystem.UiEventHandler.GameMenu
+                .ActiveAbilityTriggerButtons[2].UpdateSkillOneFill;
+            activeAbilityManager.TimedAbilityControllers[2].OnCoolDownActive -= uiSystem.UiEventHandler.GameMenu
+                .ActiveAbilityTriggerButtons[2].UpdateSkillOneFillCoolDown;
             uiSystem.OnPassiveAbilityButtonClicked -= activeAbilityManager.UseCharacterAbility;
 
             activeAbilityManager.OnActiveAbilityEquipped -= uiSystem.UiEventHandler.GameMenu.ActiveAbilityEqquiped;
@@ -349,7 +363,6 @@ namespace HeroesFlight.System.Gameplay
             GameTimer.Stop();
             ChangeState(GameState.Ended);
             uiSystem.ToggleSpecialEnemyHealthBar(false);
-            
         }
 
         /// <summary>
@@ -434,7 +447,10 @@ namespace HeroesFlight.System.Gameplay
            // progressionSystem.HeroProgression.Initialise(characterStatController);
             UpdateStatModifiers();
 
+
+            var effectsController = characterController.CharacterTransform.GetComponent<CombatEffectsController>();
             combatSystem.RegisterEntity(new CombatEntityModel(characterHealthController, characterAttackController,
+                effectsController,
                 CombatEntityType.Player));
             combatSystem.InitCharacterUltimate(characterController.CharacterSO.CharacterAnimations.UltAnimationsData,
                 characterController.CharacterSO.UltimateData.Charges);
@@ -477,7 +493,8 @@ namespace HeroesFlight.System.Gameplay
             if (obj.EnemyType == EnemyType.MiniBoss)
             {
                 var attackController = obj.GetComponent<IAttackControllerInterface>();
-                combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController,
+                var effectsController = obj.GetComponent<CombatEffectsController>();
+                combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
                     CombatEntityType.MiniBoss));
                 uiSystem.ToggleSpecialEnemyHealthBar(true);
                 var spawnAbility = obj.transform.GetComponentInChildren<SpawnEnemyAbility>();
@@ -487,7 +504,10 @@ namespace HeroesFlight.System.Gameplay
                     {
                         var attackController =
                             healthController.HealthTransform.GetComponent<IAttackControllerInterface>();
+                        var effectsController =
+                            healthController.HealthTransform.GetComponent<CombatEffectsController>();
                         combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController,
+                            effectsController,
                             CombatEntityType.TempMob));
                     };
                 }
@@ -496,7 +516,8 @@ namespace HeroesFlight.System.Gameplay
             {
                 obj.OnDisabled += HandleEnemyDisabled;
                 var attackController = obj.GetComponent<IAttackControllerInterface>();
-                combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController,
+                var effectsController = obj.GetComponent<CombatEffectsController>();
+                combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
                     CombatEntityType.Mob));
             }
         }
@@ -519,13 +540,13 @@ namespace HeroesFlight.System.Gameplay
             enemiesToKill--;
             environmentSystem.ParticleManager.Spawn("Loot_Spawn", position,
                 Quaternion.Euler(new Vector3(-90, 0, 0)));
-          
+
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10 + goldModifier,
                 position);
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RunExperience, 10,
                 position);
             progressionSystem.AddCurrency(CurrencyKeys.RunExperience, (int)container.HeroProgressionExpEarnedPerKill);
-            
+
             uiSystem.UpdateEnemiesCounter(enemiesToKill);
             if (currentState != GameState.Ongoing)
                 return;
@@ -553,12 +574,13 @@ namespace HeroesFlight.System.Gameplay
 
                     return;
                 }
-                
-                if ( traitSystem.HasTraitOfType(TraitType.HealthRestore, out var traitId))
+
+                if (traitSystem.HasTraitOfType(TraitType.HealthRestore, out var traitId))
                 {
                     var traitValue = traitSystem.GetTraitEffect(traitId[0].TargetTrait.Id);
                     characterSystem.CurrentCharacter.CharacterTransform.GetComponent<IHealthController>().TryDealDamage(
-                        new HealthModificationIntentModel(traitValue.Value,DamageType.NoneCritical,AttackType.Healing,DamageCalculationType.Percentage));
+                        new HealthModificationIntentModel(traitValue.Value, DamageCritType.NoneCritical, AttackType.Healing,
+                            CalculationType.Percentage,null));
                 }
 
                 ChangeState(GameState.WaitingPortal);
@@ -579,25 +601,21 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleCharacterDeath()
         {
-          
             Debug.LogError($"character died and game state is {currentState}");
             if (currentState != GameState.Ongoing)
                 return;
             characterAttackController.GetComponent<CharacterAnimationController>().StopUltSequence();
 
-            
+
             if (!revivedByFeatThisRun && traitSystem.HasTraitOfType(TraitType.Revival, out var traitId))
             {
                 revivedByFeatThisRun = true;
                 var traitValue = traitSystem.GetTraitEffect(traitId[0].TargetTrait.Id);
-                CoroutineUtility.WaitForSeconds(2f, () =>
-                {
-                   ReviveCharacter(traitValue.Value);
-                });
-                
+                CoroutineUtility.WaitForSeconds(2f, () => { ReviveCharacter(traitValue.Value); });
+
                 return;
             }
-            
+
             //freezes engine?  
             // GameTimer.Pause();
             CoroutineUtility.WaitForSeconds(1f, () => { ChangeState(GameState.Died); });
@@ -606,7 +624,7 @@ namespace HeroesFlight.System.Gameplay
         void HandleEnemyDamaged(HealthModificationIntentModel healthModificationIntentModel)
         {
             Particle vfxReference = null;
-            var isCritical = healthModificationIntentModel.DamageType == DamageType.Critical;
+            var isCritical = healthModificationIntentModel.DamageCritType == DamageCritType.Critical;
             switch (healthModificationIntentModel.AttackType)
             {
                 case AttackType.Regular:
@@ -622,7 +640,7 @@ namespace HeroesFlight.System.Gameplay
                     break;
             }
 
-            if (healthModificationIntentModel.DamageType == DamageType.Critical)
+            if (healthModificationIntentModel.DamageCritType == DamageCritType.Critical)
             {
                 cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion, 0.1f,
                     0.20f);
@@ -786,34 +804,35 @@ namespace HeroesFlight.System.Gameplay
                             TogglePlayerMovement(false);
                         });
 
-                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.ActiveAbilityReRoller].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller],
-                    () =>
-                    {
-                        uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.Open();
-                        TogglePlayerMovement(false);
-                    });
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.ActiveAbilityReRoller].Initialize(
+                        shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller],
+                        () =>
+                        {
+                            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.Open();
+                            TogglePlayerMovement(false);
+                        });
 
-                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.PassiveAbilityReRoller].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller],
-                    () =>
-                    {
-                        uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.Open();
-                        TogglePlayerMovement(false);
-                    });
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.PassiveAbilityReRoller].Initialize(
+                        shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller],
+                        () =>
+                        {
+                            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.Open();
+                            TogglePlayerMovement(false);
+                        });
 
-                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.HealingMagicRune].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune],
-                    () =>
-                    {
-                        uiSystem.UiEventHandler.HealingNPCMenu.Open();
-                        TogglePlayerMovement(false);
-                    });
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.HealingMagicRune].Initialize(
+                        shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune],
+                        () =>
+                        {
+                            uiSystem.UiEventHandler.HealingNPCMenu.Open();
+                            TogglePlayerMovement(false);
+                        });
 
-                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.Blacksmith].Initialize(shrine.ShrineNPCFeeCache[ShrineNPCType.Blacksmith],
-                    () =>
-                    {
+                    shrineNPCHolder.shrineNPCsCache[ShrineNPCType.Blacksmith].Initialize(
+                        shrine.ShrineNPCFeeCache[ShrineNPCType.Blacksmith],
+                        () => { });
 
-                    });
-
-                    container.EnablePortal(currentLevelEnvironment .GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
+                    container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
                     break;
             }
         }
@@ -834,13 +853,11 @@ namespace HeroesFlight.System.Gameplay
             {
                 return shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType);
             };
-            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted += () =>
-            {
-                shrine.GetHealer.Heal();
-            };
+            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted += () => { shrine.GetHealer.Heal(); };
 
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
+                shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
             {
                 return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
@@ -851,7 +868,8 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped += activeAbilityManager.SwapActiveAbility;
 
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
+                shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
             {
                 return shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
@@ -877,13 +895,11 @@ namespace HeroesFlight.System.Gameplay
             {
                 return shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType);
             };
-            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted -= () =>
-            {
-                shrine.GetHealer.Heal();
-            };
+            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted -= () => { shrine.GetHealer.Heal(); };
 
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
+                shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
             {
                 return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
@@ -894,7 +910,8 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped += activeAbilityManager.SwapActiveAbility;
 
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice += shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
+                shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
             {
                 return shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
@@ -1053,7 +1070,7 @@ namespace HeroesFlight.System.Gameplay
                 boss.Init();
                 foreach (var health in boss.CrystalNodes)
                 {
-                    combatSystem.RegisterEntity(new CombatEntityModel(health, CombatEntityType.Boss));
+                    combatSystem.RegisterEntity(new CombatEntityModel(health, null, CombatEntityType.Boss));
                 }
 
                 var spawnAbility = boss.transform.GetComponentInChildren<BossMushroomSummonAbility>();
@@ -1063,7 +1080,10 @@ namespace HeroesFlight.System.Gameplay
                     {
                         var attackController =
                             healthController.HealthTransform.GetComponent<IAttackControllerInterface>();
+                        var effectsController =
+                            healthController.HealthTransform.GetComponent<CombatEffectsController>();
                         combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController,
+                            effectsController,
                             CombatEntityType.TempMob));
                     };
                 }

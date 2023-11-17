@@ -34,7 +34,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected PlayerStatData playerStatData = null;
         protected UltimateData ultimateData;
         protected AttackData attackData;
-
+        protected IHealthController healthController;
         float m_TimeSinceLastAttack = 0;
         Vector2 attackPointOffset;
 
@@ -61,6 +61,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             m_TimeSinceLastAttack = playerStatData.AttackSpeed;
             attackPoint = (Vector2)transform.position + (new Vector2(-1.5f, 1) * attackPointOffset);
             visualController.Init(reguarAttackOverlap.GetSizeX());
+            healthController = GetComponent<HealthController>();
             // visualController.SetPosition(attackPoint);
             isDisabled = false;
             //attackDuration = characterController.CharacterSO.CharacterAnimations.AttackAnimation.Animation.Duration;
@@ -180,9 +181,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                         ? baseDamage * characterController.CharacterStatController.CurrentCriticalHitDamage
                         : baseDamage;
 
-                    var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
+                    var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
                     health.TryDealDamage(new HealthModificationIntentModel(damageToDeal,
-                        type, AttackType.Ultimate, DamageCalculationType.Flat));
+                        type, AttackType.Ultimate, CalculationType.Flat,health));
                     ApplyLifeSteal();
                     OnHitTarget?.Invoke();
                 }
@@ -203,9 +204,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                         ? baseDamage * characterController.CharacterStatController.CurrentCriticalHitDamage
                         : baseDamage;
 
-                    var type = isCritical ? DamageType.Critical : DamageType.NoneCritical;
+                    var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
                     health.TryDealDamage(new HealthModificationIntentModel(damageToDeal,
-                        type, AttackType.Regular, DamageCalculationType.Flat));
+                        type, AttackType.Regular, CalculationType.Flat,this.healthController));
                     ApplyLifeSteal();
                     OnHitTarget?.Invoke();
                 }

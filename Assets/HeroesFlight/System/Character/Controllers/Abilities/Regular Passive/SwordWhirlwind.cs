@@ -61,7 +61,7 @@ public class SwordWhirlwind : RegularActiveAbility
             {
 
                 healthController.TryDealLineDamage(currentlinesOfDamage, lineDamageDelay, new HealthModificationIntentModel(currentDamage,
-                DamageType.NoneCritical, AttackType.Regular, DamageCalculationType.Flat));
+                DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat,null));
             }
         }
     }

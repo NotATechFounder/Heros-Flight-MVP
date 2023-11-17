@@ -123,7 +123,7 @@ public class LightNova : RegularActiveAbility
             {
                 health.TryDealDamage(new HealthModificationIntentModel(
                     characterStatController.CurrentMagicDamage * damageMultiplier,
-                    DamageType.NoneCritical, AttackType.Regular, DamageCalculationType.Flat));
+                    DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat,null));
             }
         }
     }

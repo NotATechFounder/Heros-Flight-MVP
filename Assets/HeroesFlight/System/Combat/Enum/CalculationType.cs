@@ -1,6 +1,6 @@
 namespace HeroesFlight.System.Combat.Enum
 {
-    public enum DamageCalculationType
+    public enum CalculationType
     {
         Flat,
         Percentage

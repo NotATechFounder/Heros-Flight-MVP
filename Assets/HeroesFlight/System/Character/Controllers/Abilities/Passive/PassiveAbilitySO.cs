@@ -1,4 +1,5 @@
-﻿using ScriptableObjectDatabase;
+﻿using HeroesFlight.System.Combat.Effects.Effects;
+using ScriptableObjectDatabase;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Passive Ability", menuName = "Ability / Passive Ability")]
@@ -44,9 +45,15 @@ public class PassiveAbilitySO : ScriptableObject, IHasID
         return currentLevel >= maxLevel;
     }
 
+    public CombatEffect GetCombatEffectByLvl(int lvl)
+    {
+        return passiveAbilityKeyValues[lvl].Effect;
+    }
+
     [System.Serializable]
     public class PassiveAbilityKeyValue
     {
+        public CombatEffect Effect;
         public string key;
         public float startValue;
         public float increasePerLevel;

@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Combat;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Input;
 using HeroesFlight.System.NPC;
@@ -41,6 +42,7 @@ namespace HeroesFlight.StateStack.State
                     var dataSystem = GetService<DataSystemInterface>();
                     var progressionSystem = GetService<ProgressionSystemInterface>();
                     var inputSystem = GetService<InputSystemInterface>();
+                    var combatSystem = GetService<CombatSystemInterface>();
                     uiSystem.OnReturnToMainMenuRequest += HandleReturnToMainMenu;
 
 
@@ -54,6 +56,7 @@ namespace HeroesFlight.StateStack.State
                         m_SceneActionsQueue.AddAction(SceneActionType.Unload, gameScene);
                         gamePlaySystem.Reset();
                         progressionSystem.Reset();
+                        combatSystem.Reset();
                         uiSystem.UiEventHandler.StatePointsMenu.ResetMenu();
 
 
@@ -80,6 +83,7 @@ namespace HeroesFlight.StateStack.State
                             .CharacterType);
                         npcSystem.Init(loadedScene);
                         inputSystem.Init(loadedScene);
+                        combatSystem.Init(loadedScene);
                         gamePlaySystem.Init(loadedScene);
                         gamePlaySystem.StartGameSession();
                     });
