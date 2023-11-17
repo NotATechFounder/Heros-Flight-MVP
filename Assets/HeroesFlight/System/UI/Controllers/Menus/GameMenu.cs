@@ -427,11 +427,14 @@ namespace UISystem
         {
             if (currentPassiveDisplayed.ContainsKey(passiveAbility.PassiveActiveAbilityType))
             {
+                currentPassiveDisplayed[passiveAbility.PassiveActiveAbilityType].AddLevel();
                 Debug.Log("Passive Ability Already Displayed");
                 return;
             }
 
-            PassiveAbilityDisplayUI emptyUI = passiveAbilityDisplayUIs.First( (x) => !x.Occupied);
+            //PassiveAbilityDisplayUI emptyUI = passiveAbilityDisplayUIs.First( (x) => !x.Occupied);
+
+            PassiveAbilityDisplayUI emptyUI = passiveAbilityDisplayUIs.First((x) => !x.gameObject.activeInHierarchy);
 
             currentPassiveDisplayed.Add(passiveAbility.PassiveActiveAbilityType, emptyUI);
             emptyUI.Initialize(passiveAbility);

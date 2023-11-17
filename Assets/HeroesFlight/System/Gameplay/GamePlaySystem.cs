@@ -149,23 +149,8 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
 
-            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes +=
-                () => progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent +=
-                progressionSystem.HeroProgression.DecrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent +=
-                progressionSystem.HeroProgression.IncrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=
-                progressionSystem.HeroProgression.Confirm;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed +=
-                progressionSystem.HeroProgression.ResetSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed += HeroProgressionCompleted;
-            progressionSystem.HeroProgression.OnEXPAdded += uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
-            progressionSystem.HeroProgression.OnSpChanged += uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
-
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =
-                godsBenevolence.GetRandomGodsBenevolenceVisualSO;
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved += godsBenevolence.ActivateGodsBenevolence;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =  godsBenevolence.GetRandomGodsBenevolenceVisualSO;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved +=    godsBenevolence.ActivateGodsBenevolence;
 
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += StoreRunReward;
             uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete += HandleSingleLevelUp;
@@ -195,16 +180,13 @@ namespace HeroesFlight.System.Gameplay
             activeAbilityManager.OnPassiveAbilityRemoved += uiSystem.UiEventHandler.GameMenu.RemovePassiveAbility;
 
             uiSystem.UiEventHandler.AbilitySelectMenu.OnRegularAbilitySelected += activeAbilityManager.EquippedAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected +=
-                activeAbilityManager.AddPassiveAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility +=
-                activeAbilityManager.GetRandomActiveAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData +=
-                activeAbilityManager.GetActiveAbilityVisualData;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility +=
-                activeAbilityManager.GetRandomMultiplePassiveAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData +=
-                activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected += activeAbilityManager.AddPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility += activeAbilityManager.GetRandomActiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetActiveAbilityLevel += activeAbilityManager.GetActiveAbilityLevel;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility += activeAbilityManager.GetRandomPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetPassiveAbilityLevel += activeAbilityManager.GetPassiveAbilityLevel;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += HeroProgressionCompleted;
 
             goldModifier = 0;
@@ -316,22 +298,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
 
-            uiSystem.UiEventHandler.HeroProgressionMenu.GetHeroAttributes -=
-                () => progressionSystem.HeroProgression.HeroProgressionAttributeInfos;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnUpButtonClickedEvent -=
-                progressionSystem.HeroProgression.DecrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnDownButtonClickedEvent -=
-                progressionSystem.HeroProgression.IncrementAttributeSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -=
-                progressionSystem.HeroProgression.Confirm;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnResetButtonPressed -=
-                progressionSystem.HeroProgression.ResetSP;
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -= HeroProgressionCompleted;
-
-            progressionSystem.HeroProgression.OnEXPAdded -= uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
-            progressionSystem.HeroProgression.OnSpChanged -= uiSystem.UiEventHandler.HeroProgressionMenu.OnSpChanged;
-
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -= godsBenevolence.ActivateGodsBenevolence;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -=  godsBenevolence.ActivateGodsBenevolence;
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= StoreRunReward;
             uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= HandleSingleLevelUp;
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed -= ContinueGameLoop;
@@ -362,16 +329,13 @@ namespace HeroesFlight.System.Gameplay
             activeAbilityManager.OnPassiveAbilityRemoved -= uiSystem.UiEventHandler.GameMenu.RemovePassiveAbility;
 
             uiSystem.UiEventHandler.AbilitySelectMenu.OnRegularAbilitySelected -= activeAbilityManager.EquippedAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected -=
-                activeAbilityManager.AddPassiveAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility -=
-                activeAbilityManager.GetRandomActiveAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData -=
-                activeAbilityManager.GetActiveAbilityVisualData;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility -=
-                activeAbilityManager.GetRandomMultiplePassiveAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData -=
-                activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected -= activeAbilityManager.AddPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility -= activeAbilityManager.GetRandomActiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData -= activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetActiveAbilityLevel -= activeAbilityManager.GetActiveAbilityLevel;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility -= activeAbilityManager.GetRandomPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData -= activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetPassiveAbilityLevel -= activeAbilityManager.GetPassiveAbilityLevel;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed -= HeroProgressionCompleted;
 
             UnRegisterShrineNPCUIEvents();
@@ -480,7 +444,7 @@ namespace HeroesFlight.System.Gameplay
                 characterController.CharacterTransform.GetComponent<BaseCharacterAttackController>();
 
             characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
-            progressionSystem.HeroProgression.Initialise(characterStatController);
+           // progressionSystem.HeroProgression.Initialise(characterStatController);
             UpdateStatModifiers();
 
 
@@ -898,14 +862,10 @@ namespace HeroesFlight.System.Gameplay
             {
                 return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
             };
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes +=
-                activeAbilityManager.GetEqqipedActiveAbilities;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetRandomActiveAbilityTypes +=
-                activeAbilityManager.GetRandomMultipleActiveAbility;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityVisualData +=
-                activeAbilityManager.GetActiveAbilityVisualData;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped +=
-                activeAbilityManager.SwapActiveAbility;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes += activeAbilityManager.GetEqqipedActiveAbilities;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetRandomActiveAbilityTypes += activeAbilityManager.GetRandomActiveAbilityFromAll;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped += activeAbilityManager.SwapActiveAbility;
 
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
@@ -914,14 +874,10 @@ namespace HeroesFlight.System.Gameplay
             {
                 return shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
             };
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes +=
-                activeAbilityManager.GetEqquipedPassiveAbilities;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetRandomPassiveAbilityTypes +=
-                activeAbilityManager.GetRandomMultiplePassiveAbility;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityVisualData +=
-                activeAbilityManager.GetPassiveAbilityVisualData;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped +=
-                activeAbilityManager.SwapPassiveAbility;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes += activeAbilityManager.GetEqquipedPassiveAbilities;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetRandomPassiveAbilityTypes += activeAbilityManager.GetRandomPassiveAbilityFromAll;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped += activeAbilityManager.SwapPassiveAbility;
         }
 
         void UnRegisterShrineNPCUIEvents()
@@ -948,14 +904,10 @@ namespace HeroesFlight.System.Gameplay
             {
                 return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
             };
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes +=
-                activeAbilityManager.GetEqqipedActiveAbilities;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetRandomActiveAbilityTypes +=
-                activeAbilityManager.GetRandomMultipleActiveAbility;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityVisualData +=
-                activeAbilityManager.GetActiveAbilityVisualData;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped +=
-                activeAbilityManager.SwapActiveAbility;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes += activeAbilityManager.GetEqqipedActiveAbilities;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetRandomActiveAbilityTypes += activeAbilityManager.GetRandomActiveAbilityFromAll;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped += activeAbilityManager.SwapActiveAbility;
 
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
@@ -964,14 +916,10 @@ namespace HeroesFlight.System.Gameplay
             {
                 return shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
             };
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes -=
-                activeAbilityManager.GetEqquipedPassiveAbilities;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetRandomPassiveAbilityTypes -=
-                activeAbilityManager.GetRandomMultiplePassiveAbility;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityVisualData -=
-                activeAbilityManager.GetPassiveAbilityVisualData;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped -=
-                activeAbilityManager.SwapPassiveAbility;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes -= activeAbilityManager.GetEqquipedPassiveAbilities;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetRandomPassiveAbilityTypes -= activeAbilityManager.GetRandomPassiveAbilityFromAll;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityVisualData -= activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped -= activeAbilityManager.SwapPassiveAbility;
         }
 
         void HandleCrystalHit(Transform transform)
@@ -1076,8 +1024,6 @@ namespace HeroesFlight.System.Gameplay
                     Debug.Log(CurrentLvlIndex);
                     if (CurrentLvlIndex == 3)
                     {
-                        dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
-                            CharacterType.Lancer));
                         dataSystem.CharacterManager.UnlockCharacter(CharacterType.Lancer);
                         Debug.Log("Granting LANCER");
                     }
@@ -1334,7 +1280,7 @@ namespace HeroesFlight.System.Gameplay
         private void UpdateStatModifiers()
         {
             var unlockedTraits = traitSystem.GetUnlockedEffects();
-            var modifiedStatsMap = new Dictionary<HeroProgressionAttribute, int>();
+            var modifiedStatsMap = new Dictionary<StatAttributeType, int>();
             foreach (var trait in unlockedTraits)
             {
                 if (trait.TargetTrait.Effect.TraitType == TraitType.StatBoost)
@@ -1353,7 +1299,7 @@ namespace HeroesFlight.System.Gameplay
                 }
             }
 
-            progressionSystem.HeroProgression.AddStatsModifiers(modifiedStatsMap);
+            //progressionSystem.StatManager.ProcessTraitsStatsModifiers(modifiedStatsMap);
         }
     }
 }

@@ -22,7 +22,7 @@ public class UIEventHandler : MonoBehaviour
     public GodsBenevolencePuzzleMenu GodsBenevolencePuzzleMenu { get; private set; }
     public AngelGambitMenu AngelGambitMenu { get; private set; }
     public AngelPermanetCardMenu AngelPermanetCardMenu { get; private set; }
-    public HeroProgressionMenu HeroProgressionMenu { get; private set; }
+    public StatPointsMenu StatePointsMenu { get; private set; }
     public ConfirmationUISO BackToMenuConfirmation => backToMenu;
     public ConfirmationUISO PuzzleConfirmation => puzzleConfirmation;
     public RewardPopupController RewardPopup { get; private set; }
@@ -34,6 +34,9 @@ public class UIEventHandler : MonoBehaviour
     public DiceMenu DiceMenu { get; private set; }
 
     public AbilitySelectMenu AbilitySelectMenu { get; private set; }
+
+    public CharacterSelectMenu CharacterSelectMenu { get; private set; }
+    public InventoryMenu InventoryMenu { get; private set; }
 
     public void Init(Action OnComplecte = null)
     {
@@ -49,7 +52,7 @@ public class UIEventHandler : MonoBehaviour
         GodsBenevolencePuzzleMenu = uIManager.InitMenu<GodsBenevolencePuzzleMenu>();
         AngelGambitMenu = uIManager.InitMenu<AngelGambitMenu>();
         AngelPermanetCardMenu = uIManager.InitMenu<AngelPermanetCardMenu>();
-        HeroProgressionMenu = uIManager.InitMenu<HeroProgressionMenu>();
+        StatePointsMenu = uIManager.InitMenu<StatPointsMenu>();
         RewardPopup = uIManager.InitMenu<RewardPopupController>();
         HealingNPCMenu = uIManager.InitMenu<HealingNPCMenu>();
         TraitTreeMenu = uIManager.InitMenu<TraitTreeMenu>();
@@ -57,6 +60,8 @@ public class UIEventHandler : MonoBehaviour
         AbilitySelectMenu = uIManager.InitMenu<AbilitySelectMenu>();
         PassiveAbilityRerollerNPCMenu = uIManager.InitMenu<PassiveAbilityRerollerNPCMenu>();
         DiceMenu=uIManager.InitMenu<DiceMenu>();
+        CharacterSelectMenu = uIManager.InitMenu<CharacterSelectMenu>();
+        InventoryMenu = uIManager.InitMenu<InventoryMenu>();
         OnComplecte?.Invoke();
     }
 }

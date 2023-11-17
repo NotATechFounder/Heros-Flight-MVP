@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Combat;
@@ -57,7 +57,7 @@ namespace HeroesFlight.StateStack.State
                         gamePlaySystem.Reset();
                         progressionSystem.Reset();
                         combatSystem.Reset();
-                        uiSystem.UiEventHandler.HeroProgressionMenu.ResetMenu();
+                        uiSystem.UiEventHandler.StatePointsMenu.ResetMenu();
 
 
                         m_SceneActionsQueue.Start(uiSystem.UiEventHandler.LoadingMenu.UpdateLoadingBar, () =>

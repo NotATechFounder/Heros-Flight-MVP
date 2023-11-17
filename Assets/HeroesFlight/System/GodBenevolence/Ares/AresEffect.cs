@@ -16,7 +16,6 @@ public class AresEffect : MonoBehaviour
     public Action OnHitEnemy;
 
     [SerializeField] private float autoAttackInterval = 2f;
-    [SerializeField] private float damage = 10f;
 
     [Header("Clash")]
     [SerializeField] private Transform visual;
@@ -28,6 +27,7 @@ public class AresEffect : MonoBehaviour
     [SerializeField] public const string idleAnimationName = "Idle";
     [SerializeField] public const string attackAnimation1Name = "Attack";
 
+    private float damage = 10f;
     private CharacterControllerInterface characterController;
     private float timer;
 
