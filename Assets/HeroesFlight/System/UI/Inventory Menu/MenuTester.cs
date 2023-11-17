@@ -5,27 +5,36 @@ using UnityEngine;
 
 public class MenuTester : MonoBehaviour
 {
-    [SerializeField] private CharacterManager characterManager;
-    [SerializeField] private InventoryMenu inventoryMenu;
-    [SerializeField] private CharacterSelectMenu characterSelectMenu;
-
+    [SerializeField] private StatPoints statPoints;
+    [SerializeField] private StatPointsMenu statPointsMenu;
 
     private void Start()
     {
-        //inventoryMenu.GetSelectedCharacterSO += characterManager.GetSelectedCharacter;
-        //inventoryMenu.OnChangeHeroButtonClicked += characterSelectMenu.Open;
 
-        characterSelectMenu.OnCharacterSelected += characterManager.ToggleCharacterSelected;
-
-        //inventoryMenu.OnCreated();
-        characterSelectMenu.OnCreated();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.A))
         {
-            inventoryMenu.OnOpened();
+            statPointsMenu.GetCurrentSpLevel += statPoints.GetSp;
+            statPointsMenu.OnAddSpClicked += statPoints.TryAddSp;
+            statPointsMenu.OnRemoveSpClicked += statPoints.TrytRemoveSp;
+            statPointsMenu.GetAvailabletSp += statPoints.GetAvailableSp;
+            statPointsMenu.OnCompletePressed += statPoints.Confirm;
+
+            statPointsMenu.CacheStatUI();
+            statPointsMenu.InitStatUI();
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            statPointsMenu.OnCreated();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+
         }
     }
 }

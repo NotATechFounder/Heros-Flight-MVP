@@ -12,5 +12,9 @@ public interface DataSystemInterface : SystemInterface
 
     public CurrencyManager CurrencyManager { get; }
 
+    public StatManager StatManager { get; }
+
+    public StatPoints StatPoints { get; }
+
     RewardsHandlerInterface RewardHandler { get; }
 }

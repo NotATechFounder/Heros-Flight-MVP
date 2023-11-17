@@ -54,7 +54,7 @@ namespace HeroesFlight.StateStack.State
                         m_SceneActionsQueue.AddAction(SceneActionType.Unload, gameScene);
                         gamePlaySystem.Reset();
                         progressionSystem.Reset();
-                        uiSystem.UiEventHandler.HeroProgressionMenu.ResetMenu();
+                        uiSystem.UiEventHandler.StatePointsMenu.ResetMenu();
 
 
                         m_SceneActionsQueue.Start(uiSystem.UiEventHandler.LoadingMenu.UpdateLoadingBar, () =>
