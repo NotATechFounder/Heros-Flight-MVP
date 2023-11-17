@@ -18,6 +18,10 @@ public class DataSystem : DataSystemInterface
 
     public CurrencyManager CurrencyManager { get; private set; }
 
+    public StatManager StatManager { get; private set; }
+
+    public StatPoints StatPoints { get; private set; }
+
 
     public void Init(Scene scene = default, Action onComplete = null)
     {
@@ -27,6 +31,10 @@ public class DataSystem : DataSystemInterface
 
         CharacterManager = scene.GetComponent<CharacterManager>();
         CharacterManager.Init(CurrencyManager);
+
+        StatManager = scene.GetComponent<StatManager>();
+
+        StatPoints = scene.GetComponent<StatPoints>();
 
         onComplete?.Invoke();
     }

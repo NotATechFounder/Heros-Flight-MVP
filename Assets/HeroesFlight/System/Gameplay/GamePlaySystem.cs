@@ -147,8 +147,6 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
 
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed +=    HeroProgressionCompleted;
-
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =  godsBenevolence.GetRandomGodsBenevolenceVisualSO;
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved +=    godsBenevolence.ActivateGodsBenevolence;
 
@@ -291,8 +289,6 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= shrine.GetAngelEffectManager.Exists;
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
-
-            uiSystem.UiEventHandler.HeroProgressionMenu.OnCloseButtonPressed -= HeroProgressionCompleted;
 
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -=  godsBenevolence.ActivateGodsBenevolence;
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= StoreRunReward;
@@ -1011,8 +1007,6 @@ namespace HeroesFlight.System.Gameplay
                     Debug.Log(CurrentLvlIndex);
                     if (CurrentLvlIndex == 3)
                     {
-                        dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
-                            CharacterType.Lancer));
                         dataSystem.CharacterManager.UnlockCharacter(CharacterType.Lancer);
                         Debug.Log("Granting LANCER");
                     }
@@ -1285,7 +1279,7 @@ namespace HeroesFlight.System.Gameplay
                 }
             }
 
-            progressionSystem.HeroProgression.ProcessTraitsStatsModifiers(modifiedStatsMap);
+            //progressionSystem.StatManager.ProcessTraitsStatsModifiers(modifiedStatsMap);
         }
     }
 }

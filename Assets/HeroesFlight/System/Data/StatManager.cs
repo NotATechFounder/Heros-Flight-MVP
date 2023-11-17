@@ -30,7 +30,7 @@ public class StatManager : MonoBehaviour
                 statTypePerSp.Add(statPointInfo.statType, statPointInfo);
             }
 
-            statPointsDic.Add(statPointSo.StatPointType, 0);
+            statPointsDic.Add(statPointSo.StatAttributeType, 0);
         }
     }
 

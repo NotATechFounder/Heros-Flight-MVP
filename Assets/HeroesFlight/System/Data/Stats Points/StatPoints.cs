@@ -10,6 +10,8 @@ public class StatPoints : MonoBehaviour
     [SerializeField] private StatPointSO[] statPointSO;
     [SerializeField] private SkillPointData skillPointData;
     private Dictionary<StatAttributeType, int> statPointsDic = new Dictionary<StatAttributeType, int>();
+    private Dictionary<StatAttributeType, int> tempStatPointsDic = new Dictionary<StatAttributeType, int>();
+    [SerializeField] int currentSp;
 
     private void Start()
     {
@@ -19,15 +21,15 @@ public class StatPoints : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            AddXp (StatAttributeType.Power, 1);
-        }
+        //if (Input.GetKeyDown(KeyCode.A))
+        //{
+        //    AddXp (StatAttributeType.Power);
+        //}
 
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            RemoveXp(StatAttributeType.Power, 1);
-        }
+        //if (Input.GetKeyDown(KeyCode.D))
+        //{
+        //    RemoveXp(StatAttributeType.Power);
+        //}
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -39,7 +41,7 @@ public class StatPoints : MonoBehaviour
     {
         foreach (StatPointSO statPointSo in statPointSO)
         {
-            statPointsDic.Add(statPointSo.StatPointType, 0);
+            statPointsDic.Add(statPointSo.StatAttributeType, 0);
         }
     }
 
@@ -48,20 +50,29 @@ public class StatPoints : MonoBehaviour
         SkillPointData savedSkillPointData = FileManager.Load<SkillPointData>("SkillPoint");
         skillPointData = savedSkillPointData != null ? savedSkillPointData : new SkillPointData();
 
+        currentSp = skillPointData.avaliableSp = 10;
+
         foreach (StatPointSingleData statPointSingleData in skillPointData.statPointSingleDatas)
         {
-            statPointsDic[statPointSingleData.statPointType] = statPointSingleData.sp;
+            statPointsDic[statPointSingleData.statAttributeType] = statPointSingleData.sp;
         }
     }
 
     public void Confirm()
     {
+        foreach (var statPointSo in tempStatPointsDic)
+        {
+            statPointsDic[statPointSo.Key] += statPointSo.Value;
+        }
+
         foreach (var statPointSo in statPointsDic)
         {
             skillPointData.SetXp(statPointSo.Key, statPointSo.Value);
         }
 
         Save();
+
+        tempStatPointsDic.Clear();
     }   
 
     public void Save()
@@ -69,27 +80,62 @@ public class StatPoints : MonoBehaviour
         FileManager.Save("SkillPoint", skillPointData);
     }
 
-    public void AddXp(StatAttributeType statPointType, int amount)
+    public bool TryAddSp(StatAttributeType statPointType)
     {
-        statPointsDic[statPointType] += amount;
-    }
-
-    public void RemoveXp(StatAttributeType statPointType, int amount)
-    {
-        if (statPointsDic[statPointType] > 0)
+        if (currentSp > 0)
         {
-            statPointsDic[statPointType] -= amount;
+            if (!tempStatPointsDic.ContainsKey(statPointType))
+            {
+                tempStatPointsDic.Add(statPointType, 0);
+            }
+
+            tempStatPointsDic[statPointType]++;
+            currentSp--;
+
+            Debug.Log(statPointType + " " + tempStatPointsDic[statPointType]);
+            return true;
         }
+        return false;
     }
 
-    public int GetXp(StatAttributeType statPointType)
+    public bool TrytRemoveSp(StatAttributeType statPointType)
+    {
+        if (!tempStatPointsDic.ContainsKey(statPointType))
+        {
+            return false;
+        }
+
+        if (tempStatPointsDic[statPointType] > 0)
+        {
+            tempStatPointsDic[statPointType]--;
+            currentSp++;
+
+
+            Debug.Log(statPointType + " " + tempStatPointsDic[statPointType]);
+
+            if (tempStatPointsDic[statPointType] == 0)
+            {
+                tempStatPointsDic.Remove(statPointType);
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    public int GetSp(StatAttributeType statPointType)
     {
         return statPointsDic[statPointType];
     }
 
-    public void ResetXp(StatAttributeType statPointType)
+    public void ResetSp(StatAttributeType statPointType)
     {
         statPointsDic[statPointType] = 0;
+    }
+
+    public int GetAvailableSp()
+    {
+        return currentSp;
     }
 }
 
@@ -103,7 +149,7 @@ public class SkillPointData
     {
         foreach (var heroProgressionSingleData in statPointSingleDatas)
         {
-            if (heroProgressionSingleData.statPointType == heroProgressionAttribute)
+            if (heroProgressionSingleData.statAttributeType == heroProgressionAttribute)
             {
                 heroProgressionSingleData.sp = sp;
                 return;
@@ -111,7 +157,7 @@ public class SkillPointData
         }
 
         StatPointSingleData heroProgressionSingleData1 = new StatPointSingleData();
-        heroProgressionSingleData1.statPointType = heroProgressionAttribute;
+        heroProgressionSingleData1.statAttributeType = heroProgressionAttribute;
         heroProgressionSingleData1.sp = sp;
         statPointSingleDatas.Add(heroProgressionSingleData1);
     }
@@ -120,7 +166,7 @@ public class SkillPointData
     {
         foreach (var heroProgressionSingleData in statPointSingleDatas)
         {
-            if (heroProgressionSingleData.statPointType == heroProgressionAttribute)
+            if (heroProgressionSingleData.statAttributeType == heroProgressionAttribute)
             {
                 return heroProgressionSingleData.sp;
             }
@@ -133,7 +179,7 @@ public class SkillPointData
     {
         foreach (var heroProgressionSingleData in statPointSingleDatas)
         {
-            if (heroProgressionSingleData.statPointType == heroProgressionAttribute)
+            if (heroProgressionSingleData.statAttributeType == heroProgressionAttribute)
             {
                 heroProgressionSingleData.sp = (statModificationType == StatModel.StatModificationType.Addition) ? heroProgressionSingleData.sp + amount : heroProgressionSingleData.sp - amount;
                 return;
@@ -143,7 +189,7 @@ public class SkillPointData
         if (statModificationType == StatModel.StatModificationType.Addition)
         {
             StatPointSingleData newData = new StatPointSingleData();
-            newData.statPointType = heroProgressionAttribute;
+            newData.statAttributeType = heroProgressionAttribute;
             newData.sp = amount;
             statPointSingleDatas.Add(newData);
         }
@@ -153,6 +199,6 @@ public class SkillPointData
 [Serializable]
 public class StatPointSingleData
 {
-    public StatAttributeType statPointType;
+    public StatAttributeType statAttributeType;
     public int sp;
 }
