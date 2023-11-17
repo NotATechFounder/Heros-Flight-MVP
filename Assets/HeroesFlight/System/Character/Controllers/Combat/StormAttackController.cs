@@ -32,7 +32,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
             var damageModel = new HealthModificationIntentModel(damageToDeal, type,
-                AttackType.Regular,DamageCalculationType.Flat,healthController);
+                AttackType.Regular,CalculationType.Flat,healthController);
             for (int i = 0; i < hits; i++)
             {
                 if (colliders[i].TryGetComponent<IHealthController>(out var health))

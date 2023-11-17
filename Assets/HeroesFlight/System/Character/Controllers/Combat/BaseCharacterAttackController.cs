@@ -183,7 +183,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
                     var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
                     health.TryDealDamage(new HealthModificationIntentModel(damageToDeal,
-                        type, AttackType.Ultimate, DamageCalculationType.Flat,health));
+                        type, AttackType.Ultimate, CalculationType.Flat,health));
                     ApplyLifeSteal();
                     OnHitTarget?.Invoke();
                 }
@@ -206,7 +206,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
                     var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
                     health.TryDealDamage(new HealthModificationIntentModel(damageToDeal,
-                        type, AttackType.Regular, DamageCalculationType.Flat,this.healthController));
+                        type, AttackType.Regular, CalculationType.Flat,this.healthController));
                     ApplyLifeSteal();
                     OnHitTarget?.Invoke();
                 }

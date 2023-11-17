@@ -22,6 +22,8 @@ namespace HeroesFlight.System.NPC.Controllers.Movement
         public virtual void MoveToRandomPosition() { }
 
         public virtual void ProcessKnockBack(Vector2 direction) { }
+        public virtual void SetMovementSpeed(float newSpeed) { }
+
         public virtual Vector2 GetVelocity()
         {
             return Vector2.zero;

@@ -9,7 +9,7 @@ namespace HeroesFlight.System.Gameplay.Model
     public class HealthModificationIntentModel
     {
         public HealthModificationIntentModel(float damage,DamageCritType critType, AttackType attackType,
-            DamageCalculationType calculationType,IHealthController damageSource)
+            CalculationType calculationType,IHealthController damageSource)
         {
             Amount = damage;
             DamageCritType = critType;
@@ -21,7 +21,7 @@ namespace HeroesFlight.System.Gameplay.Model
         public float Amount { get;  private set;}
         public DamageCritType DamageCritType { get; }
         public AttackType AttackType { get; }
-        public DamageCalculationType CalculationType { get; }
+        public CalculationType CalculationType { get; }
         public IHealthController Target { get; }
         public IHealthController Source { get; }
         public Transform TargetTransform { get; private set; }

@@ -38,9 +38,6 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         {
             if (statusEffectsMap.TryGetValue(effect.EffectType, out var targetModel))
             {
-                if (effect.DurationType == EffectDurationType.Instant)
-                    return;
-
                 if (targetModel.Effect.IsStackable)
                 {
                     targetModel.AddStack();
@@ -53,29 +50,31 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             else
             {
                 var visual = effect.Visual == null
-                    ?null : ParticleManager.instance.Spawn(effect.Visual,
-                        transform);
+                    ? null
+                    : ParticleManager.instance.Spawn(effect.Visual,
+                        visualsParent.position);
+                if (visual != null)
+                    visual.transform.SetParent(visualsParent);
 
                 var newModel = new StatusEffectRuntimeModel(effect, visual);
                 newModel.OnEnd += HandleStatusEffectEnd;
                 newModel.OnTick += HandleStatusEffectTick;
                 statusEffectsMap.Add(effect.EffectType, newModel);
-
-                // if (effect.DurationType == EffectDurationType.Instant)
-                // {
-                //     HandleStatusEffectTick(new StatusEffectRuntimeModel(effect, visual));
-                //     effectsEndedLastFrame.Add(effect.EffectType);
-                // }
             }
         }
 
         public void ExecuteTick()
         {
-            foreach (var effects in effectsEndedLastFrame)
+            foreach (var effectType in effectsEndedLastFrame)
             {
-                Destroy(statusEffectsMap[effects].Visual);
-                if (statusEffectsMap.ContainsKey(effects))
-                    statusEffectsMap.Remove(effects);
+                if (statusEffectsMap[effectType].Visual != null)
+                    statusEffectsMap[effectType].Visual.GetParticleSystem.Stop();
+
+                if (statusEffectsMap.ContainsKey(effectType))
+                {
+                    HandleStatusEffectRemoval(statusEffectsMap[effectType]);
+                    statusEffectsMap.Remove(effectType);
+                }
             }
 
             effectsEndedLastFrame.Clear();
@@ -93,6 +92,11 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             {
                 if (!effects.ContainsKey(effect.ID))
                 {
+                    effects.Add(effect.ID, new CombatEffectRuntimeModel(effect, visual));
+                }
+                else
+                {
+                    effects.Remove(effect.ID);
                     effects.Add(effect.ID, new CombatEffectRuntimeModel(effect, visual));
                 }
             }
@@ -147,7 +151,6 @@ namespace HeroesFlight.System.Combat.Effects.Effects
 
                 foreach (var model in effects.Values)
                 {
-                    Debug.Log(model.Effect.ID);
                     foreach (var status in model.Effect.StatusEffects)
                     {
                         TryTriggerEffect(status, effectsHandler, requestModel);
@@ -159,15 +162,16 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         protected void TryTriggerEffect(Effect status, CombatEffectsController effectsHandler,
             HealthModificationRequestModel healthModificationRequestModel)
         {
+            var rng = Random.Range(0, 101);
+            if (rng > status.TriggerChance)
+                return;
+
+
             if (status.GetType() == typeof(StatusEffect))
             {
-                var rng = Random.Range(0, 100);
-                if (rng <= status.TriggerChance)
-                {
-                    effectsHandler.ApplyStatusEffect(status as StatusEffect);
-                }
+                effectsHandler.ApplyStatusEffect(status as StatusEffect);
             }
-            else
+            else if (status.GetType() == typeof(TriggerEffect))
             {
                 ActivateEffectOnTarget(status as TriggerEffect, effectsHandler, healthModificationRequestModel);
             }
@@ -189,33 +193,69 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                 case EffectType.Shock:
                     break;
                 case EffectType.Reflect:
-                    healthModificationRequestModel.IntentModel.Source
-                        .TryDealDamage(new HealthModificationIntentModel(effect.Value,
-                            DamageCritType.NoneCritical, AttackType.DoT, DamageCalculationType.Flat, null));
-                    if (effect.Visual != null)
-                    {
-                        ParticleManager.instance.Spawn(effect.Visual,
-                            healthModificationRequestModel.IntentModel.Source.HealthTransform.position);
-                    }
-
+                    HandleReflect(effect, healthModificationRequestModel);
                     break;
                 case EffectType.Sacrifice:
+                    HandleSacrifice(effect, healthModificationRequestModel);
                     break;
                 case EffectType.FullCounter:
-                    healthModificationRequestModel.IntentModel.Source
-                        .TryDealDamage(new HealthModificationIntentModel(effect.Value,
-                            DamageCritType.NoneCritical, AttackType.DoT, DamageCalculationType.Flat, null));
-                    if (effect.Visual != null)
-                    {
-                        ParticleManager.instance.Spawn(effect.Visual,
-                            healthModificationRequestModel.IntentModel.Source.HealthTransform.position);
-                    }
-                    healthModificationRequestModel.IntentModel.ModifyAmount(0);
+                    HandleFullCounter(effect, healthModificationRequestModel);
                     break;
             }
         }
 
+        protected virtual void HandleSacrifice(TriggerEffect effect,
+            HealthModificationRequestModel healthModificationRequestModel)
+        {
+            var additionalDamage = attackController.Damage / 100 * effect.Value;
+            var healthPercTreshhold = healthController.MaxHealth / 100 * effect.OptionalValue;
+            var healthDiff = healthController.MaxHealth - healthController.CurrentHealth;
+            var currentHealthPerc = Mathf.FloorToInt(healthDiff / healthPercTreshhold);
+            var additionalFinaleDamage = additionalDamage * currentHealthPerc;
+            healthModificationRequestModel.IntentModel.ModifyAmount(
+                healthModificationRequestModel.IntentModel.Amount + additionalFinaleDamage
+            );
+        }
+
+        protected virtual void HandleFullCounter(TriggerEffect effect,
+            HealthModificationRequestModel healthModificationRequestModel)
+        {
+            healthModificationRequestModel.IntentModel.Source
+                .TryDealDamage(new HealthModificationIntentModel(attackController.Damage / 100 * effect.Value,
+                    DamageCritType.NoneCritical, AttackType.DoT, CalculationType.Flat, null));
+            if (effect.Visual != null)
+            {
+                ParticleManager.instance.Spawn(effect.Visual,
+                    healthModificationRequestModel.IntentModel.Source.HealthTransform.position);
+            }
+
+            healthModificationRequestModel.IntentModel.ModifyAmount(0);
+            PopUpManager.Instance.PopUpAtTextPosition(
+                healthModificationRequestModel.IntentModel.Source.HealthTransform.position, Vector3.zero,
+                "COUNTER", Color.yellow, 100);
+        }
+
+        protected virtual void HandleReflect(TriggerEffect effect,
+            HealthModificationRequestModel healthModificationRequestModel)
+        {
+            var possibleHealthDamage =
+                healthModificationRequestModel.IntentModel.Source.MaxHealth / 100 * effect.OptionalValue;
+            var finalDamage = possibleHealthDamage > effect.Value ? possibleHealthDamage : effect.Value;
+            healthModificationRequestModel.IntentModel.Source
+                .TryDealDamage(new HealthModificationIntentModel(finalDamage,
+                    DamageCritType.NoneCritical, AttackType.DoT, effect.CalculationType, null));
+            if (effect.Visual != null)
+            {
+                ParticleManager.instance.Spawn(effect.Visual,
+                    healthModificationRequestModel.IntentModel.Source.HealthTransform.position);
+            }
+        }
+
         protected virtual void HandleStatusEffectTick(StatusEffectRuntimeModel effectModel)
+        {
+        }
+
+        protected virtual void HandleStatusEffectRemoval(StatusEffectRuntimeModel effectModel)
         {
         }
 

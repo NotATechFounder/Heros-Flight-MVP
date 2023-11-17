@@ -70,5 +70,10 @@ namespace HeroesFlight.System.NPC.Controllers.Movement
             point += (Vector2)ai.position;
             return point;
         }
+
+        public override void SetMovementSpeed(float newSpeed)
+        {
+            ai.maxSpeed = newSpeed;
+        }
     }
 }

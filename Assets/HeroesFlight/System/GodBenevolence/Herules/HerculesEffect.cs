@@ -108,7 +108,7 @@ public class HerculesEffect : MonoBehaviour
             if (colliders[i].TryGetComponent(out IHealthController healthController))
             {
                 healthController.TryDealLineDamage(3, 0.25f, new HealthModificationIntentModel(damage,
-                    DamageCritType.Critical, AttackType.Regular, DamageCalculationType.Flat,null));
+                    DamageCritType.Critical, AttackType.Regular, CalculationType.Flat,null));
                 OnHitEnemy?.Invoke();
             }
         }

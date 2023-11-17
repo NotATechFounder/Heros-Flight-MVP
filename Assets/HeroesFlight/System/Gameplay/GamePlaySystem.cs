@@ -276,7 +276,7 @@ namespace HeroesFlight.System.Gameplay
                     break;
                 case CombatEntityType.MiniBoss:
                     HandleEnemyDamaged(damageModel.DamageIntentModel);
-                    HandleMinibossHealthChange(damageModel.HealthPercentagePercentageLeft);
+                 //   HandleMinibossHealthChange(damageModel.HealthPercentagePercentageLeft);
                     break;
                 case CombatEntityType.Boss:
                     HandleEnemyDamaged(damageModel.DamageIntentModel);
@@ -580,7 +580,7 @@ namespace HeroesFlight.System.Gameplay
                     var traitValue = traitSystem.GetTraitEffect(traitId[0].TargetTrait.Id);
                     characterSystem.CurrentCharacter.CharacterTransform.GetComponent<IHealthController>().TryDealDamage(
                         new HealthModificationIntentModel(traitValue.Value, DamageCritType.NoneCritical, AttackType.Healing,
-                            DamageCalculationType.Percentage,null));
+                            CalculationType.Percentage,null));
                 }
 
                 ChangeState(GameState.WaitingPortal);

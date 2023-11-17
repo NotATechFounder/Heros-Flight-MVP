@@ -61,7 +61,7 @@ public class KnifeFluffy : RegularActiveAbility
             if (collider2D[z].TryGetComponent(out IHealthController healthController))
             {
                 healthController.TryDealDamage(new HealthModificationIntentModel(currentDamage,
-                    DamageCritType.Critical, AttackType.Regular, DamageCalculationType.Flat,null));
+                    DamageCritType.Critical, AttackType.Regular, CalculationType.Flat,null));
             }
         }
     }

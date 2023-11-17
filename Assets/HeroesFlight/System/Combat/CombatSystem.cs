@@ -83,7 +83,7 @@ namespace HeroesFlight.System.Combat
         {
             if (combatEntities.TryGetValue(requestModel.RequestOwner, out var data))
             {
-                if (requestModel.IntentModel.CalculationType == DamageCalculationType.Percentage)
+                if (requestModel.IntentModel.CalculationType == CalculationType.Percentage)
                 {
                     Debug.Log(requestModel.IntentModel.Amount);
                     var modificationValue = requestModel.RequestOwner.MaxHealth / 100 * requestModel.IntentModel.Amount;
@@ -95,8 +95,6 @@ namespace HeroesFlight.System.Combat
                 {
                     if (combatEntities.TryGetValue(requestModel.IntentModel.Source, out var model))
                     {
-                        Debug.Log(requestModel.IntentModel.Source.HealthTransform.name);
-                        Debug.Log(model.EffectHandler == null);
                         if (model.EffectHandler != null)
                         {
                             model.EffectHandler.TriggerCombatEffect(CombatEffectApplicationType.OnDealDamage,
@@ -108,6 +106,7 @@ namespace HeroesFlight.System.Combat
                 data.EffectHandler?.TriggerCombatEffect(CombatEffectApplicationType.OnTakeDamage,
                     requestModel);
 
+                requestModel.RequestOwner.ModifyHealth(requestModel.IntentModel);
                 switch (data.EntityType)
                 {
                     case CombatEntityType.Player:
@@ -118,6 +117,7 @@ namespace HeroesFlight.System.Combat
                         break;
                     case CombatEntityType.MiniBoss:
                         HandleAiDamaged(requestModel);
+                        uiSystem.UpdateSpecialEnemyHealthBar(requestModel.RequestOwner.CurrentHealthProportion);
                         break;
                     case CombatEntityType.Boss:
                         HandleAiDamaged(requestModel);
@@ -127,7 +127,6 @@ namespace HeroesFlight.System.Combat
                         break;
                 }
 
-                requestModel.RequestOwner.ModifyHealth(requestModel.IntentModel);
 
                 if (requestModel.IntentModel.AttackType == AttackType.DoT)
                     return;

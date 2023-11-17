@@ -43,13 +43,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
                         var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
                         var damageModel = new HealthModificationIntentModel(damageToDeal, 
-                            type, AttackType.Regular,DamageCalculationType.Flat,null);
+                            type, AttackType.Regular,CalculationType.Flat,null);
                         health.TryDealDamage(damageModel);
                     }
                     else
                     {
                         health.TryDealDamage(new HealthModificationIntentModel(CalculateDamage(),
-                            DamageCritType.NoneCritical,AttackType.Regular,DamageCalculationType.Flat,null));      
+                            DamageCritType.NoneCritical,AttackType.Regular,CalculationType.Flat,null));      
                     }
                   
                 }

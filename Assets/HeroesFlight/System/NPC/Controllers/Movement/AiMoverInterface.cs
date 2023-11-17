@@ -11,6 +11,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         void MoveToRandomPosition();
         void SetMovementState(bool canMove);
         void ProcessKnockBack(Vector2 direction);
+        void SetMovementSpeed(float newSpeed);
         Vector2 GetVelocity();
     }
 }

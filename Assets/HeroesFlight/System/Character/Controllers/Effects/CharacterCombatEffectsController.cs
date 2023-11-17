@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace HeroesFlight.System.Character.Controllers.Effects
 {
-    public class CharacterEffectsHandler :CombatEffectsController
+    public class CharacterCombatEffectsController :CombatEffectsController
     {
         [SerializeField] private List<CombatEffect> testEffect;
 
@@ -34,7 +34,7 @@ namespace HeroesFlight.System.Character.Controllers.Effects
             {
                 case EffectType.Burn:
                     healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value,
-                        DamageCritType.NoneCritical,AttackType.Regular,DamageCalculationType.Percentage,null));
+                        DamageCritType.NoneCritical,AttackType.Regular,CalculationType.Percentage,null));
                     break;
                 case EffectType.Freeze:
                     break;

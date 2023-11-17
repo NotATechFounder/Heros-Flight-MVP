@@ -61,7 +61,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers.Hazard
             {
                 float damage = StatCalc.GetPercentage(healthPercentageDecrease, healthController.CurrentHealth);
                 healthController.TryDealDamage(new HealthModificationIntentModel(damage, 
-                    DamageCritType.NoneCritical, AttackType.Regular,DamageCalculationType.Percentage,null));
+                    DamageCritType.NoneCritical, AttackType.Regular,CalculationType.Percentage,null));
             }
         }
 
