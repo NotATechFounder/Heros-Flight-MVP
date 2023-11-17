@@ -12,7 +12,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         [SerializeField] protected EffectDurationType durationType;
         [SerializeField] protected float duration;
         [SerializeField] protected GameObject visual;
-        [SerializeField] private List<StatusEffect> statusEffects = new ();
+        [SerializeField] private List<Effect> statusEffects = new ();
 
 
         public CombatEffectApplicationType ApplyType => applyType;
@@ -20,6 +20,6 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         public float Duration => duration;
         public GameObject Visual => visual;
         public string ID => id;
-        public List<StatusEffect> StatusEffects => statusEffects;
+        public List<Effect> StatusEffects => statusEffects;
     }
 }

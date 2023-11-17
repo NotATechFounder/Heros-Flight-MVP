@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Combat.Effects.Enum;
+using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.Model;
 using HeroesFlight.System.Combat.StatusEffects.Enum;
+using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
+using Pelumi.ObjectPool;
 using UnityEngine;
 using NotImplementedException = System.NotImplementedException;
 using Random = UnityEngine.Random;
@@ -17,11 +22,11 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         protected Dictionary<CombatEffectApplicationType, Dictionary<string, CombatEffectRuntimeModel>> effectsMap =
             new();
 
-        protected Dictionary<StatusEffectType, StatusEffectRuntimeModel> statusEffectsMap = new();
+        protected Dictionary<EffectType, StatusEffectRuntimeModel> statusEffectsMap = new();
 
         protected IHealthController healthController;
         protected IAttackControllerInterface attackController;
-        protected List<StatusEffectType> effectsEndedLastFrame = new();
+        protected List<EffectType> effectsEndedLastFrame = new();
 
         protected virtual void Awake()
         {
@@ -47,17 +52,20 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             }
             else
             {
-                var visual = effect.Visual == null ? null : Instantiate(effect.Visual, visualsParent);
+                var visual = effect.Visual == null
+                    ?null : ParticleManager.instance.Spawn(effect.Visual,
+                        transform);
+
                 var newModel = new StatusEffectRuntimeModel(effect, visual);
                 newModel.OnEnd += HandleStatusEffectEnd;
                 newModel.OnTick += HandleStatusEffectTick;
                 statusEffectsMap.Add(effect.EffectType, newModel);
 
-                if (effect.DurationType == EffectDurationType.Instant)
-                {
-                    HandleStatusEffectTick(new StatusEffectRuntimeModel(effect, visual));
-                    effectsEndedLastFrame.Add(effect.EffectType);
-                }
+                // if (effect.DurationType == EffectDurationType.Instant)
+                // {
+                //     HandleStatusEffectTick(new StatusEffectRuntimeModel(effect, visual));
+                //     effectsEndedLastFrame.Add(effect.EffectType);
+                // }
             }
         }
 
@@ -142,14 +150,68 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                     Debug.Log(model.Effect.ID);
                     foreach (var status in model.Effect.StatusEffects)
                     {
-                        var rng = Random.Range(0, 100);
-                        if (rng <= status.TriggerChance)
-                        {
-                            effectsHandler.ApplyStatusEffect(status);
-                        }
-                        
+                        TryTriggerEffect(status, effectsHandler, requestModel);
                     }
                 }
+            }
+        }
+
+        protected void TryTriggerEffect(Effect status, CombatEffectsController effectsHandler,
+            HealthModificationRequestModel healthModificationRequestModel)
+        {
+            if (status.GetType() == typeof(StatusEffect))
+            {
+                var rng = Random.Range(0, 100);
+                if (rng <= status.TriggerChance)
+                {
+                    effectsHandler.ApplyStatusEffect(status as StatusEffect);
+                }
+            }
+            else
+            {
+                ActivateEffectOnTarget(status as TriggerEffect, effectsHandler, healthModificationRequestModel);
+            }
+        }
+
+        protected virtual void ActivateEffectOnTarget(TriggerEffect effect, CombatEffectsController effectsHandler,
+            HealthModificationRequestModel healthModificationRequestModel)
+        {
+            switch (effect.EffectType)
+            {
+                case EffectType.Burn:
+                    break;
+                case EffectType.Freeze:
+                    break;
+                case EffectType.Root:
+                    break;
+                case EffectType.Poison:
+                    break;
+                case EffectType.Shock:
+                    break;
+                case EffectType.Reflect:
+                    healthModificationRequestModel.IntentModel.Source
+                        .TryDealDamage(new HealthModificationIntentModel(effect.Value,
+                            DamageCritType.NoneCritical, AttackType.DoT, DamageCalculationType.Flat, null));
+                    if (effect.Visual != null)
+                    {
+                        ParticleManager.instance.Spawn(effect.Visual,
+                            healthModificationRequestModel.IntentModel.Source.HealthTransform.position);
+                    }
+
+                    break;
+                case EffectType.Sacrifice:
+                    break;
+                case EffectType.FullCounter:
+                    healthModificationRequestModel.IntentModel.Source
+                        .TryDealDamage(new HealthModificationIntentModel(effect.Value,
+                            DamageCritType.NoneCritical, AttackType.DoT, DamageCalculationType.Flat, null));
+                    if (effect.Visual != null)
+                    {
+                        ParticleManager.instance.Spawn(effect.Visual,
+                            healthModificationRequestModel.IntentModel.Source.HealthTransform.position);
+                    }
+                    healthModificationRequestModel.IntentModel.ModifyAmount(0);
+                    break;
             }
         }
 

@@ -15,25 +15,25 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
           
             switch (effectModel.Effect.EffectType)
             {
-                case StatusEffectType.Burn:
+                case EffectType.Burn:
                     healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value *effectModel.CurrentStacks ,
                         DamageCritType.NoneCritical,AttackType.DoT,DamageCalculationType.Percentage,null));
                     break;
-                case StatusEffectType.Freeze:
+                case EffectType.Freeze:
                     break;
-                case StatusEffectType.Root:
+                case EffectType.Root:
                     break;
-                case StatusEffectType.Poison:
+                case EffectType.Poison:
                     break;
-                case StatusEffectType.Shock:
+                case EffectType.Shock:
                     break;
-                case StatusEffectType.Reflect:
+                case EffectType.Reflect:
                     healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value,
                         DamageCritType.NoneCritical,AttackType.DoT,DamageCalculationType.Flat,null));
                     break;
-                case StatusEffectType.Sacrifice:
+                case EffectType.Sacrifice:
                     break;
-                case StatusEffectType.FullCounter:
+                case EffectType.FullCounter:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

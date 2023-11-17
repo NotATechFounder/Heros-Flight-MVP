@@ -3,7 +3,7 @@
 namespace HeroesFlight.System.Combat.StatusEffects.Enum
 {
     [Serializable]
-    public enum StatusEffectType
+    public enum EffectType
     {
         Burn,
         Freeze,
