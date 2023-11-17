@@ -31,6 +31,8 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
                         DamageCritType.NoneCritical,AttackType.DoT,CalculationType.Percentage,null));
                     break;
                 case EffectType.Freeze:
+                    if(mover==null)
+                        return;
                     var speedModifier = controller.AgentModel.AiData.MoveSpeed/100 * effectModel.Effect.Value;
                     mover.SetMovementSpeed( controller.AgentModel.AiData.MoveSpeed-speedModifier);
                     break;
@@ -48,8 +50,7 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
                     break;
                 case EffectType.FullCounter:
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+              
             }
         }
 
@@ -58,6 +59,8 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
             switch (effectModel.Effect.EffectType)
             {
                 case EffectType.Freeze:
+                    if(mover==null)
+                        return;
                     mover.SetMovementSpeed( controller.AgentModel.AiData.MoveSpeed);
                     break;
                 case EffectType.Root:

@@ -1,11 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Codice.Client.BaseCommands;
-using Codice.CM.Common;
 using HeroesFlight.Common.Progression;
-using HeroesFlight.System.FileManager;
-using HeroesFlight.System.Stats.Stats.Enum;
 using UnityEngine;
 
 public class StatManager : MonoBehaviour
