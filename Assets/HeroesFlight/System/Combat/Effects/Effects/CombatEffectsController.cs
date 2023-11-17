@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Combat.Effects.Enum;
 using HeroesFlight.System.Combat.Enum;
@@ -8,9 +7,7 @@ using HeroesFlight.System.Combat.StatusEffects.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
-using Pelumi.ObjectPool;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 using Random = UnityEngine.Random;
 
 namespace HeroesFlight.System.Combat.Effects.Effects
@@ -63,7 +60,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             }
         }
 
-        public void ExecuteTick()
+        public virtual void ExecuteTick()
         {
             foreach (var effectType in effectsEndedLastFrame)
             {

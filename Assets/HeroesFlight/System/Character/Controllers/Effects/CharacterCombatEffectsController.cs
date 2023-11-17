@@ -22,8 +22,7 @@ namespace HeroesFlight.System.Character.Controllers.Effects
             {
                 AddCombatEffect(effect);
             }
-            Debug.Log(effectsMap.Count);
-            Debug.Log(effectsMap[CombatEffectApplicationType.OnDealDamage].Count);
+          
         }
 
         protected override void HandleStatusEffectTick(StatusEffectRuntimeModel effectModel)

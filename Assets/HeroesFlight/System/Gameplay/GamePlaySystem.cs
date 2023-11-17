@@ -1070,7 +1070,8 @@ namespace HeroesFlight.System.Gameplay
                 boss.Init();
                 foreach (var health in boss.CrystalNodes)
                 {
-                    combatSystem.RegisterEntity(new CombatEntityModel(health, null, CombatEntityType.Boss));
+                    var effectsHandler = health.HealthTransform.GetComponent<CombatEffectsController>();
+                    combatSystem.RegisterEntity(new CombatEntityModel(health, effectsHandler, CombatEntityType.Boss));
                 }
 
                 var spawnAbility = boss.transform.GetComponentInChildren<BossMushroomSummonAbility>();
