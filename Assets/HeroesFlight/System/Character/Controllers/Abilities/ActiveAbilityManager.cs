@@ -487,7 +487,8 @@ public class ActiveAbilityManager : MonoBehaviour
 
                 break;
             case PassiveAbilityType.GreedIsGood:
-
+                characterStatController.ModifyGoldBoost(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("Increase ", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]), true);
+                characterStatController.ModifyExperienceBoost(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("Increase ", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]), true);
                 break;
             case PassiveAbilityType.DuckDodgeDip:
                 characterStatController.ModifyDodgeChance(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("DodgeChance", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]), true);
@@ -544,7 +545,8 @@ public class ActiveAbilityManager : MonoBehaviour
 
                 break;
             case PassiveAbilityType.GreedIsGood:
-
+                characterStatController.ModifyGoldBoost(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("Increase ", eqquipedPassiveAbilities[passiveAbilityType]), false);
+                characterStatController.ModifyExperienceBoost(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("Increase ", eqquipedPassiveAbilities[passiveAbilityType]), false);
                 break;
             case PassiveAbilityType.DuckDodgeDip:
                 characterStatController.ModifyDodgeChance(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("DodgeChance", eqquipedPassiveAbilities[passiveAbilityType]), false);

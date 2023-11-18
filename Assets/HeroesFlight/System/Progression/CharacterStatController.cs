@@ -37,6 +37,10 @@ public class CharacterStatController : MonoBehaviour
     [field: SerializeField] public float CurrentDefense { get; private set; }
     [field: SerializeField] public float CurrentAttackSpeed { get; private set; }
 
+    [field: SerializeField] public float CurrentGoldBoost { get; private set; }
+
+    [field: SerializeField] public float CurrentExperienceBoost { get; private set; }
+
     [SerializeField] private float runtimeMaxHealth;
     [SerializeField] private float runtimeMagicDamage;
     [SerializeField] private float runtimePhysicalDamage;
@@ -181,6 +185,16 @@ public class CharacterStatController : MonoBehaviour
     public void ModifyLifeSteal(float amount, bool increase)
     {
         CurrentLifeSteal += increase ? amount : -amount;
+    }
+
+    public void ModifyGoldBoost(float amount, bool increase)
+    {
+        CurrentGoldBoost += increase ? amount : -amount;
+    }
+
+    public void ModifyExperienceBoost(float amount, bool increase)
+    {
+        CurrentExperienceBoost += increase ? amount : -amount;
     }
 
     public float GetHealthPercentage()
