@@ -37,6 +37,10 @@ public class CharacterStatController : MonoBehaviour
     [field: SerializeField] public float CurrentDefense { get; private set; }
     [field: SerializeField] public float CurrentAttackSpeed { get; private set; }
 
+    [field: SerializeField] public float CurrentGoldBoost { get; private set; }
+
+    [field: SerializeField] public float CurrentExperienceBoost { get; private set; }
+
     [SerializeField] private float runtimeMaxHealth;
     [SerializeField] private float runtimeMagicDamage;
     [SerializeField] private float runtimePhysicalDamage;
@@ -47,21 +51,22 @@ public class CharacterStatController : MonoBehaviour
     {
         if (debug)
         {
-            Initialize(playerCombatModel);
+            Initialize(new StatModel(playerCombatModel));    
         }
     }
 
-    public void Initialize(PlayerStatData playerCombatModel)
+    public void Initialize(StatModel statModel)
     {
-        this.playerCombatModel = playerCombatModel;
+        this.playerCombatModel = statModel.GetPlayerStatData;
         ResetStats();
-    }
-
-    public void Initialize(PlayerStatData playerCombatModel, StatModel statModel)
-    {
-        this.playerCombatModel = playerCombatModel;
-        ResetStats();
-
+        runtimeMaxHealth = statModel.CurrentStatDic[StatType.MaxHealth];
+        runtimeMagicDamage = statModel.CurrentStatDic[StatType.MagicDamage];
+        runtimePhysicalDamage = statModel.CurrentStatDic[StatType.PhysicalDamage];
+        RuntimeMoveSpeed = statModel.CurrentStatDic[StatType.MoveSpeed];
+        CurrentCriticalHitChance = statModel.CurrentStatDic[StatType.CriticalHitChance];
+        CurrentDefense = statModel.CurrentStatDic[StatType.Defense];
+        CurrentAttackSpeed = statModel.CurrentStatDic[StatType.AttackSpeed];
+        CurrentDodgeChance = statModel.CurrentStatDic[StatType.DodgeChance];
     }
 
     public void SetCurrentCardIcon(Sprite sprite)
@@ -180,6 +185,16 @@ public class CharacterStatController : MonoBehaviour
     public void ModifyLifeSteal(float amount, bool increase)
     {
         CurrentLifeSteal += increase ? amount : -amount;
+    }
+
+    public void ModifyGoldBoost(float amount, bool increase)
+    {
+        CurrentGoldBoost += increase ? amount : -amount;
+    }
+
+    public void ModifyExperienceBoost(float amount, bool increase)
+    {
+        CurrentExperienceBoost += increase ? amount : -amount;
     }
 
     public float GetHealthPercentage()

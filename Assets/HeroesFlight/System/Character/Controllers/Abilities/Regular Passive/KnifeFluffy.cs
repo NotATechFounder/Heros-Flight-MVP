@@ -28,7 +28,7 @@ public class KnifeFluffy : RegularActiveAbility
 
     public override void OnActivated()
     {
-        GetEffectParticleByLevel().SetActive(true);
+        GetEffectParticleByLevel().Play();
         numberOfMobsToDamage = GetMajorValueByLevel(baseNumberOfMobsToDamage, numberOfMobsToDamagePerLevel);
 
         currentRadious = damageRadiousCurve.GetCurrentValueFloat(currentLevel);
@@ -43,7 +43,7 @@ public class KnifeFluffy : RegularActiveAbility
 
     public override void OnCoolDownEnded()
     {
-        GetEffectParticleByLevel().SetActive(false);
+
     }
 
     public void Initialize(int level, int baseDamage)

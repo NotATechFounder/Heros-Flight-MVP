@@ -5,11 +5,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Pelumi.Juicer;
+using HeroesFlight.Common.Progression;
 
 namespace UISystem
 {
     public class InventoryMenu : BaseMenu<InventoryMenu>
     {
+        public event Func<StatModel> GetStatModel;
         public event Func<CharacterSO> GetSelectedCharacterSO;
         public event Action OnChangeHeroButtonClicked;
         public event Action OnStatPointButtonClicked;
@@ -46,15 +48,13 @@ namespace UISystem
         {
             canvasGroup.alpha = 0;
             openEffectBG.Start();
-            UpdateStats(GetSelectedCharacterSO.Invoke());
+            UpdateCharacter(GetSelectedCharacterSO.Invoke());
         }
 
-        private void UpdateStats(CharacterSO characterSO)
+        private void UpdateCharacter(CharacterSO characterSO)
         {
             uiSpineViewController.SetupView(characterSO);
-            currentAtk.text = characterSO.GetPlayerStatData.PhysicalDamage.max.ToString("F0");
-            currentHp.text = characterSO.GetPlayerStatData.Health.ToString("F0");
-            currentDef.text = characterSO.GetPlayerStatData.Defense.ToString("F0");
+            OnStatValueChanged (GetStatModel.Invoke());
         }
 
         public override void OnClosed()
@@ -65,6 +65,25 @@ namespace UISystem
         public override void ResetMenu()
         {
 
+        }
+
+        public void OnStatValueChanged(StatModel statModel)
+        {
+            foreach (var stat in statModel.CurrentStatDic)
+            {
+                switch (stat.Key)
+                {
+                    case StatType.PhysicalDamage:
+                        currentAtk.text = stat.Value.ToString("F0");
+                        break;
+                    case StatType.MaxHealth:
+                        currentHp.text = stat.Value.ToString("F0");
+                        break;
+                    case StatType.Defense:
+                        currentDef.text = stat.Value.ToString("F0");
+                        break;
+                }
+            }
         }
     }
 }

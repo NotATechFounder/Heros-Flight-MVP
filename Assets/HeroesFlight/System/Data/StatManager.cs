@@ -5,15 +5,23 @@ using UnityEngine;
 
 public class StatManager : MonoBehaviour
 {
+    public event Action<StatModel> OnValueChanged;
+
     [SerializeField] private StatPointSO[] statPointSO;
     private Dictionary<StatAttributeType, int> trailAttributeModifiedDic = new Dictionary<StatAttributeType, int>();
     private Dictionary<StatAttributeType, int> statPointsDic = new Dictionary<StatAttributeType, int>();
-    private StatModel statModel;
     private Dictionary<StatType, StatPointInfo> statTypePerSp = new Dictionary<StatType, StatPointInfo>();
+    private StatModel statModel = new StatModel(new PlayerStatData());
 
-    private void Start()
+
+    private void Awake()
     {
         Init();
+    }
+
+    public StatModel GetStatModel()
+    {
+        return statModel;
     }
 
     private void Init()
@@ -90,13 +98,40 @@ public class StatManager : MonoBehaviour
         RemoveStats(trailAttributeModifiedDic);
         trailAttributeModifiedDic = new Dictionary<StatAttributeType, int>(modifiedStatsMap);
         AddStats(trailAttributeModifiedDic);
+
+        OnValueChanged?.Invoke(statModel);
     }
 
-    public void ProcessHPAttributeSpModifiers(Dictionary<StatAttributeType, int> modifiedStatsMap)
+    public void ProcessStatPointsModifiers(Dictionary<StatAttributeType, int> modifiedStatsMap)
     {
         RemoveStats(statPointsDic);
         statPointsDic = new Dictionary<StatAttributeType, int>(modifiedStatsMap);
         AddStats(statPointsDic);
+
+        OnValueChanged?.Invoke(statModel);
+    }
+
+    public void ProcessAllModifiers(PlayerStatData playerStatData)
+    {
+        statModel = new StatModel(playerStatData);
+        AddStats(statPointsDic);
+        AddStats(trailAttributeModifiedDic);
+
+        OnValueChanged?.Invoke(statModel);
+    }
+
+    private void OnGUI()
+    {
+        if (statModel != null)
+        {
+            float space = 30;
+            foreach (KeyValuePair<StatType, float> stat in statModel.CurrentStatDic)
+            {
+                // draw in a big size
+                GUI.Label(new Rect(500, space, 500, 500), stat.Key.ToString() + ": " + stat.Value.ToString());
+                space += 30;
+            }
+        }
     }
 }
 
@@ -126,13 +161,16 @@ public class StatModel
         Subtraction
     }
 
-    Dictionary<StatType, float> baseStatDic;
-    Dictionary<StatType, float> currentStatDic;
+    private Dictionary<StatType, float> baseStatDic;
+    private Dictionary<StatType, float> currentStatDic;
+    private PlayerStatData playerStatData;
 
     public Dictionary<StatType, float> CurrentStatDic => currentStatDic;
+    public PlayerStatData GetPlayerStatData => playerStatData;
 
     public StatModel(PlayerStatData playerStatData)
     {
+        this.playerStatData = playerStatData;
         baseStatDic = new Dictionary<StatType, float>();
         baseStatDic.Add(StatType.PhysicalDamage, playerStatData.PhysicalDamage.max);
         baseStatDic.Add(StatType.MagicDamage, playerStatData.MagicDamage.max);

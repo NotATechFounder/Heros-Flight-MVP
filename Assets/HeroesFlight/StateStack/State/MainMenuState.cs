@@ -44,6 +44,7 @@ namespace HeroesFlight.StateStack.State
 
                     uiSystem.UiEventHandler.InventoryMenu.OnChangeHeroButtonClicked += uiSystem.UiEventHandler.CharacterSelectMenu.Open;
                     uiSystem.UiEventHandler.InventoryMenu.OnStatPointButtonClicked += uiSystem.UiEventHandler.StatePointsMenu.Open;
+                    uiSystem.UiEventHandler.InventoryMenu.GetStatModel += dataSystem.StatManager.GetStatModel;
 
                     uiSystem.UiEventHandler.CharacterSelectMenu.OnMenuClosed += uiSystem.UiEventHandler.InventoryMenu.Open;
                     uiSystem.UiEventHandler.CharacterSelectMenu.GetAllCharacterSO += dataSystem.CharacterManager.GetAllCharacterSO;

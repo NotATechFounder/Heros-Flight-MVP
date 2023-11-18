@@ -225,9 +225,6 @@ public class GodsBenevolence : MonoBehaviour
             random = godsBenevolenceArray[UnityEngine.Random.Range(0, godsBenevolenceArray.Length)].BenevolenceType;
         } while (random == selectedBenevolence);
 
-        // TODO: Remove this
-        random = godsBenevolenceArray[1].BenevolenceType;
-
         GodsBenevolenceSO godsBenevolenceSO = GetGodsBenevolenceSO(random);
         return godsBenevolenceSO.BenevolenceVisualSO;
     }

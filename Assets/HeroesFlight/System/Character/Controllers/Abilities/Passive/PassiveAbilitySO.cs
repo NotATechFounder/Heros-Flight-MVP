@@ -16,13 +16,13 @@ public class PassiveAbilitySO : ScriptableObject, IHasID
         return regularAbilityVisualData.PassiveActiveAbilityType.ToString();
     }
 
-    public float GetLevelValue(string key, int level = 1)
+    public float GetLevelValue(string key, int currentLevel = 1)
     {
         foreach (var item in passiveAbilityKeyValues)
         {
             if (item.key == key)
             {
-                return item.startValue + item.increasePerLevel * (level - 1);
+                return item.startValue + item.increasePerLevel * (currentLevel - 1);
             }
         }
         return 0;

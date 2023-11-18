@@ -60,6 +60,8 @@ public class ActiveAbilityManager : MonoBehaviour
     [SerializeField] private float currentExp;
     [SerializeField] private float expToNextLevel;
 
+    private float chanceToMulticast = 0;
+
 
     private void Awake()
     {
@@ -377,7 +379,18 @@ public class ActiveAbilityManager : MonoBehaviour
         TimedAbilityController timedAbilityController = timedAbilitySlots[slotIndex];
         if (!timedAbilityController.IsValid)
             return;
-        timedAbilityController.ActivateAbility();
+        if(timedAbilityController.ActivateAbility())
+        {
+            RegularActiveAbility regularActiveAbility = eqquipedRegularActivities[regularAbiltyAndControllerDic.FirstOrDefault(x => x.Value == timedAbilityController).Key];
+            if (regularActiveAbility.IsInstant())
+            {
+                bool canMulticast = UnityEngine.Random.Range(0.0f, 100.0f) <= chanceToMulticast;
+                if (canMulticast)
+                {
+                    regularActiveAbility.StartCoroutine(regularActiveAbility.MultiCast());
+                }
+           }
+        }
     }
 
     public List<RegularActiveAbilityType> GetEqqipedActiveAbilities()
@@ -462,6 +475,9 @@ public class ActiveAbilityManager : MonoBehaviour
                 break;
             case PassiveAbilityType.Multicast:
 
+                chanceToMulticast +=
+                allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("Chance", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]);
+
                 break;
             case PassiveAbilityType.Sacrifice:
                 characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1));
@@ -471,7 +487,8 @@ public class ActiveAbilityManager : MonoBehaviour
 
                 break;
             case PassiveAbilityType.GreedIsGood:
-
+                characterStatController.ModifyGoldBoost(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("Increase ", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]), true);
+                characterStatController.ModifyExperienceBoost(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("Increase ", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]), true);
                 break;
             case PassiveAbilityType.DuckDodgeDip:
                 characterStatController.ModifyDodgeChance(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("DodgeChance", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]), true);
@@ -517,6 +534,9 @@ public class ActiveAbilityManager : MonoBehaviour
                 break;
             case PassiveAbilityType.Multicast:
 
+                chanceToMulticast -=
+                allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("Chance", eqquipedPassiveAbilities[passiveAbilityType]);
+
                 break;
             case PassiveAbilityType.Sacrifice:
 
@@ -525,7 +545,8 @@ public class ActiveAbilityManager : MonoBehaviour
 
                 break;
             case PassiveAbilityType.GreedIsGood:
-
+                characterStatController.ModifyGoldBoost(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("Increase ", eqquipedPassiveAbilities[passiveAbilityType]), false);
+                characterStatController.ModifyExperienceBoost(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("Increase ", eqquipedPassiveAbilities[passiveAbilityType]), false);
                 break;
             case PassiveAbilityType.DuckDodgeDip:
                 characterStatController.ModifyDodgeChance(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("DodgeChance", eqquipedPassiveAbilities[passiveAbilityType]), false);

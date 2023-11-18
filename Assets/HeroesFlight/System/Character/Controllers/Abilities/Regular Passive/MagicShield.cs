@@ -17,7 +17,7 @@ public class MagicShield : RegularActiveAbility
     {
         forceEnd = false;
 
-        GetEffectParticleByLevel().SetActive(true);
+        GetEffectParticleByLevel().gameObject.SetActive(true);
 
         currentHealthAbsorption = healthAbsorptionCurve.GetCurrentValueInt(currentLevel);
 
@@ -33,13 +33,13 @@ public class MagicShield : RegularActiveAbility
         }
         characterHealthController.SetShieldedState(false);
         characterHealthController.OnHitWhileIsShielded -= OnHitWhileShielded;
-        GetEffectParticleByLevel().SetActive(false);
+        GetEffectParticleByLevel().gameObject.SetActive(false);
     }
 
 
     public override void OnCoolDownEnded()
     {
-        GetEffectParticleByLevel().SetActive(false);
+
     }
 
     public void Initialize(int level , HealthController characterHealthController)
