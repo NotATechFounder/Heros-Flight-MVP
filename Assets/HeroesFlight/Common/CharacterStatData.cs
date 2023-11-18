@@ -9,7 +9,7 @@ public class CharacterStatData
     [SerializeField] protected float moveSpeed;
     [SerializeField] protected float attackRange;
     [SerializeField] float defense;
-    [SerializeField] float criticalHitChance = 10f;
+    [SerializeField] float criticalHitChance;
     [SerializeField] RangeValue criticalHitDamage;
     public float AttackSpeed => attackSpeed;
     public float MoveSpeed => moveSpeed;

@@ -111,9 +111,6 @@ namespace UISystem
             }
 
             spText.text = GetAvailabletSp?.Invoke().ToString();
-
-            // to remove 
-            //completeButton.onClick.AddListener(ForceClose);
         }
 
         public void ForceClose()
@@ -135,6 +132,10 @@ namespace UISystem
                 {
                     Close();
                 });
+            }
+            else
+            {
+                Close();
             }
         }
 

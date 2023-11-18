@@ -17,4 +17,6 @@ public interface DataSystemInterface : SystemInterface
     public StatPoints StatPoints { get; }
 
     RewardsHandlerInterface RewardHandler { get; }
+
+    //TraitSystemInterface TraitSystem { get; }
 }

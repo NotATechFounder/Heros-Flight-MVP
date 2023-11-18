@@ -7,35 +7,13 @@ using UnityEngine;
 
 public class StatPoints : MonoBehaviour
 {
+    public event Action<Dictionary<StatAttributeType, int>> OnValueChanged;
+
     [SerializeField] private StatPointSO[] statPointSO;
     [SerializeField] private SkillPointData skillPointData;
     private Dictionary<StatAttributeType, int> statPointsDic = new Dictionary<StatAttributeType, int>();
     private Dictionary<StatAttributeType, int> tempStatPointsDic = new Dictionary<StatAttributeType, int>();
     [SerializeField] int currentSp;
-
-    private void Start()
-    {
-        Init();
-        Load();
-    }
-
-    private void Update()
-    {
-        //if (Input.GetKeyDown(KeyCode.A))
-        //{
-        //    AddXp (StatAttributeType.Power);
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.D))
-        //{
-        //    RemoveXp(StatAttributeType.Power);
-        //}
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Confirm();
-        }
-    }
 
     public void Init()
     {
@@ -43,6 +21,8 @@ public class StatPoints : MonoBehaviour
         {
             statPointsDic.Add(statPointSo.StatAttributeType, 0);
         }
+
+        Load();
     }
 
     public void Load()
@@ -56,6 +36,8 @@ public class StatPoints : MonoBehaviour
         {
             statPointsDic[statPointSingleData.statAttributeType] = statPointSingleData.sp;
         }
+
+        OnValueChanged ?.Invoke(statPointsDic);
     }
 
     public void Confirm()
@@ -73,6 +55,8 @@ public class StatPoints : MonoBehaviour
         Save();
 
         tempStatPointsDic.Clear();
+
+        OnValueChanged?.Invoke(statPointsDic);
     }   
 
     public void Save()

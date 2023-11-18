@@ -29,12 +29,16 @@ public class DataSystem : DataSystemInterface
 
         CurrencyManager.LoadCurrencies();
 
-        CharacterManager = scene.GetComponent<CharacterManager>();
-        CharacterManager.Init(CurrencyManager);
-
         StatManager = scene.GetComponent<StatManager>();
 
         StatPoints = scene.GetComponent<StatPoints>();
+        StatPoints.OnValueChanged += StatManager.ProcessStatPointsModifiers;
+        StatPoints.Init();
+
+        CharacterManager = scene.GetComponent<CharacterManager>();
+        CharacterManager.OnCharacterChanged += (characterSO) => StatManager.ProcessAllModifiers(characterSO.GetPlayerStatData);
+        CharacterManager.Init(CurrencyManager);
+
 
         onComplete?.Invoke();
     }

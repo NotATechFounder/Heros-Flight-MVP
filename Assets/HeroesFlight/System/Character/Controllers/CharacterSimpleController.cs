@@ -45,7 +45,6 @@ namespace HeroesFlight.System.Character
             sfxController = GetComponent<CharacterSfxController>();
             vfxController.Initialize(characterSO.CharacterAnimations);
             sfxController.Initialize(characterSO.CharacterAnimations);
-            m_CharacterStatController.Initialize(CharacterSO.GetPlayerStatData);
             viewController.SetupView(CharacterSO.GetAppearanceData);
             animationController.Init(characterSO.CharacterAnimations);
             m_CurrentState = CharacterState.Idle;

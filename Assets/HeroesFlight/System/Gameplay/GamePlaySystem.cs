@@ -37,7 +37,6 @@ using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static CurrencySO;
 
 namespace HeroesFlight.System.Gameplay
 {
@@ -444,7 +443,7 @@ namespace HeroesFlight.System.Gameplay
                 characterController.CharacterTransform.GetComponent<BaseCharacterAttackController>();
 
             characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
-           // progressionSystem.HeroProgression.Initialise(characterStatController);
+            characterStatController.Initialize(dataSystem.StatManager.GetStatModel());
             UpdateStatModifiers();
 
 

@@ -47,21 +47,22 @@ public class CharacterStatController : MonoBehaviour
     {
         if (debug)
         {
-            Initialize(playerCombatModel);
+            Initialize(new StatModel(playerCombatModel));    
         }
     }
 
-    public void Initialize(PlayerStatData playerCombatModel)
+    public void Initialize(StatModel statModel)
     {
-        this.playerCombatModel = playerCombatModel;
+        this.playerCombatModel = statModel.GetPlayerStatData;
         ResetStats();
-    }
-
-    public void Initialize(PlayerStatData playerCombatModel, StatModel statModel)
-    {
-        this.playerCombatModel = playerCombatModel;
-        ResetStats();
-
+        runtimeMaxHealth = statModel.CurrentStatDic[StatType.MaxHealth];
+        runtimeMagicDamage = statModel.CurrentStatDic[StatType.MagicDamage];
+        runtimePhysicalDamage = statModel.CurrentStatDic[StatType.PhysicalDamage];
+        RuntimeMoveSpeed = statModel.CurrentStatDic[StatType.MoveSpeed];
+        CurrentCriticalHitChance = statModel.CurrentStatDic[StatType.CriticalHitChance];
+        CurrentDefense = statModel.CurrentStatDic[StatType.Defense];
+        CurrentAttackSpeed = statModel.CurrentStatDic[StatType.AttackSpeed];
+        CurrentDodgeChance = statModel.CurrentStatDic[StatType.DodgeChance];
     }
 
     public void SetCurrentCardIcon(Sprite sprite)

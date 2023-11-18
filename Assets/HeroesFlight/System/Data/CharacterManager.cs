@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
 {
+    public event Action<CharacterSO> OnCharacterChanged;
+
     [SerializeField] private CharacterSO[] characters;
 
     private CurrencyManager currencyManager;
@@ -45,9 +47,12 @@ public class CharacterManager : MonoBehaviour
         foreach (CharacterSO characterSO in characters)
         {
             characterSO.Load();
-        }
 
-        SelectedCharacter = GetSelectedCharacter();
+            if (characterSO.CharacterData.isSelected)
+            {
+                SetSelectedCharacter(characterSO);
+            }
+        }
     }
 
     public void SaveAllCharacterData()
@@ -61,6 +66,7 @@ public class CharacterManager : MonoBehaviour
     public void SetSelectedCharacter(CharacterSO characterSO)
     {
         SelectedCharacter = characterSO;
+        OnCharacterChanged?.Invoke(characterSO);
     }
 
     public void UnlockCharacter(CharacterType characterType)
