@@ -73,7 +73,6 @@ public class HerculesEffect : MonoBehaviour
                 if (overlapChecker.TargetInRange())
                 {
                     skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
-                    Attack();
                 }
             }
             yield return null;

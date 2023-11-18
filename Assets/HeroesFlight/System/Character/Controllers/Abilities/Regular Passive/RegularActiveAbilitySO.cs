@@ -28,3 +28,10 @@ public class RegularActiveAbilitySO : ScriptableObject, IHasID
         return abilityVisualData.RegularActiveAbilityType.ToString();
     }
 }
+
+public enum AbilityDurationType
+{
+    OverTime,
+    Instant,
+    Combined
+}

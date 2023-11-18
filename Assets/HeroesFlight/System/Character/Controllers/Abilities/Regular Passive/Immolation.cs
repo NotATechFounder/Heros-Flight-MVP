@@ -20,7 +20,7 @@ public class Immolation : RegularActiveAbility
 
     public override void OnActivated()
     {
-        GetEffectParticleByLevel().SetActive(true);
+        GetEffectParticleByLevel().gameObject.SetActive(true);
         currentDamage = (int)StatCalc.GetPercentage (baseDamage, damagePercentageCurve.GetCurrentValueFloat(currentLevel));
         isOn = true;
     }
@@ -28,7 +28,7 @@ public class Immolation : RegularActiveAbility
     public override void OnDeactivated()
     {
         isOn = false;
-        GetEffectParticleByLevel().SetActive(false);
+        GetEffectParticleByLevel().gameObject.SetActive(false);
     }
 
     public override void OnCoolDownEnded()

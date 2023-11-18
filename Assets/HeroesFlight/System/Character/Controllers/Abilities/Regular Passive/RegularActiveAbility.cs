@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class RegularActiveAbility : MonoBehaviour
 {
     [SerializeField] protected int currentLevel = 1;
-    [SerializeField] GameObject[] effectParticle;
+    [SerializeField] ParticleSystem[] effectParticle;
     protected int maxLevel = 9;
     protected int majorBoostLevel = 3;
 
@@ -21,8 +21,11 @@ public abstract class RegularActiveAbility : MonoBehaviour
         this.activeAbilitySO = activeAbilitySO;
     }
 
+    public bool IsInstant() => activeAbilitySO.Duration == 0;
     public abstract void OnActivated();
+
     public abstract void OnDeactivated();
+
     public abstract void OnCoolDownEnded();
 
     public virtual void LevelUp()
@@ -44,8 +47,14 @@ public abstract class RegularActiveAbility : MonoBehaviour
         return baseValue + (Mathf.FloorToInt((currentLevel - 1) / majorBoostLevel) * increasePerLevel);
     }
 
-    public GameObject GetEffectParticleByLevel()
+    public ParticleSystem GetEffectParticleByLevel()
     {
         return effectParticle[Mathf.FloorToInt((currentLevel - 1) / majorBoostLevel)];
+    }
+
+    public IEnumerator MultiCast()
+    {
+        yield return new WaitForSeconds(1f);
+        OnActivated();
     }
 }

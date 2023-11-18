@@ -32,12 +32,13 @@ public class TimedAbilityController
         OnCoolDownActive?.Invoke(0);
     }
 
-    public virtual void ActivateAbility()
+    public virtual bool ActivateAbility()
     {
         if (!canUseAbility)
-            return;
+            return false;
         OnActivated?.Invoke();
         owner.StartCoroutine(Runtime());
+        return true;
     }
 
     private IEnumerator Runtime()

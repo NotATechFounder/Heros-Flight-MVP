@@ -7,6 +7,9 @@
     Immolation,
     LightNova,
     SwordWhirlwind,
+    LightningArrow,
+    ChainRotate,
+    KageBunshin,
     None
 }
 

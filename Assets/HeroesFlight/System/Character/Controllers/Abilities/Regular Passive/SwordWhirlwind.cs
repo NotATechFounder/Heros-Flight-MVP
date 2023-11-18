@@ -25,7 +25,7 @@ public class SwordWhirlwind : RegularActiveAbility
 
     public override void OnActivated()
     {
-        GetEffectParticleByLevel().SetActive(true);
+        GetEffectParticleByLevel().Play();
         currentDamage = (int)StatCalc.GetPercentage(baseDamage, damagePercentageCurve.GetCurrentValueFloat(currentLevel));
         currentlinesOfDamage = GetMajorValueByLevel(linesOfDamage, 1);
         overlapChecker.DetectOverlap();
@@ -38,7 +38,7 @@ public class SwordWhirlwind : RegularActiveAbility
 
     public override void OnCoolDownEnded()
     {
-        GetEffectParticleByLevel().SetActive(false);
+
     }
 
     public override void LevelUp()

@@ -1,17 +1,14 @@
-using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Character;
-using HeroesFlight.System.Combat.Enum;
-using HeroesFlight.System.Gameplay.Enum;
-using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using Pelumi.ObjectPool;
 using Plugins.Audio_System;
-using System;
+using Spine;
+using Spine.Unity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeavenStab : RegularActiveAbility
+public class LightningArrow : RegularActiveAbility
 {
     [Header("LineDamage")]
     [SerializeField] private float firstAttackDelay = 0.1f;
@@ -22,7 +19,11 @@ public class HeavenStab : RegularActiveAbility
     [Header("Damage")]
     [SerializeField] private CustomAnimationCurve damagePercentageCurve;
     [SerializeField] private ProjectileControllerBase projectileController;
+
+    [Header("Animation and Viusal Settings")]
     [SerializeField] private Transform visual;
+    [SerializeField] SkeletonAnimation skeletonAnimation;
+    [SerializeField] public const string attackAnimation1Name = "animation";
 
     private int baseDamage;
     private float currentDamagePercentage;
@@ -30,16 +31,24 @@ public class HeavenStab : RegularActiveAbility
     private int currentlinesOfDamage;
     private CharacterSimpleController characterControllerInterface;
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            OnActivated();
+        }
+    }
+
     public override void OnActivated()
     {
         GetEffectParticleByLevel().Play();
-        GetEffectParticleByLevel().GetComponent<ParticleSystem>().Play();
 
         currentDamagePercentage = damagePercentageCurve.GetCurrentValueFloat(currentLevel);
         currentDamage = (int)StatCalc.GetPercentage(baseDamage, currentDamagePercentage);
 
         currentlinesOfDamage = GetMajorValueByLevel(linesOfDamage, linesOfDamagePerIncrease);
 
+        skeletonAnimation.AnimationState. SetAnimation(0, attackAnimation1Name, false);
         FireProjectile();
     }
 
@@ -53,6 +62,27 @@ public class HeavenStab : RegularActiveAbility
 
     }
 
+    private void AnimationState_Event(TrackEntry trackEntry, Spine.Event e)
+    {
+        if (e.Data.Name == "Attack")
+        {
+
+        }
+    }
+
+    private void AnimationState_Complete(TrackEntry trackEntry)
+    {
+        switch (trackEntry.Animation.Name)
+        {
+            case attackAnimation1Name:
+                // play no animation
+                skeletonAnimation.AnimationState.SetEmptyAnimation(0, 0);
+                break;
+            default: break;
+        }
+    }
+
+
     public override void LevelUp()
     {
         base.LevelUp();
@@ -64,6 +94,7 @@ public class HeavenStab : RegularActiveAbility
         this.baseDamage = baseDamage;
         this.characterControllerInterface = characterControllerInterface;
         characterControllerInterface.OnFaceDirectionChange += Flip;
+        skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
     }
 
     private void Flip(bool facingLeft)
@@ -73,7 +104,7 @@ public class HeavenStab : RegularActiveAbility
 
     private void FireProjectile()
     {
-        ProjectileControllerBase bullet = ObjectPoolManager.SpawnObject(projectileController, transform.position, Quaternion.identity);
+        ProjectileControllerBase bullet = Instantiate(projectileController, transform.position, Quaternion.identity);
         bullet.transform.localScale = new Vector3(visual.localScale.x * bullet.transform.localScale.y, bullet.transform.localScale.y, 1);
 
         bullet.SetupProjectile(currentDamage, -visual.localScale.x * Vector2.right);
@@ -93,7 +124,7 @@ public class HeavenStab : RegularActiveAbility
         obj.OnHit -= HandleArrowDisable;
         obj.OnDeactivate -= HandleArrowDisable;
         var arrow = obj as ProjectileControllerBase;
-        ObjectPoolManager.ReleaseObject(arrow.gameObject);
+        Destroy(arrow.gameObject);
     }
 
     private void OnDestroy()
