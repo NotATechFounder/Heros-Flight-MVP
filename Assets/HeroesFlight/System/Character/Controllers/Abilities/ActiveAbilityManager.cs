@@ -24,6 +24,8 @@ public class ActiveAbilityManager : MonoBehaviour
     public Action<int, RegularAbilityVisualData> OnActiveAbilityEquipped;
     public Action<PassiveAbilityVisualData> OnPassiveAbilityEquipped;
     public Action<PassiveAbilityType> OnPassiveAbilityRemoved;
+    public Action<RegularActiveAbilityType, RegularActiveAbilityType> OnRegularActiveAbilitySwapped;
+    public Action<RegularActiveAbilityType, int> OnRegularActiveAbilityUpgraded;
 
     [SerializeField] private RegularActiveAbilityDatabase allActiveAbilities;
     [SerializeField] private PassiveAbilityDatabase allPassiveAbilities;
@@ -224,11 +226,13 @@ public class ActiveAbilityManager : MonoBehaviour
         TimedAbilityController timedAbilityController = regularAbiltyAndControllerDic[currentAbility];
         DetachAbility(regularAbiltyAndControllerDic[currentAbility], eqquipedRegularActivities[currentAbility]);
         InitialiseAbility (newAbility, timedAbilityController, levelOfCurrentAbility);
+        OnRegularActiveAbilitySwapped?.Invoke(currentAbility, newAbility);
     }
 
     public void UpgradeAbility(RegularActiveAbilityType passiveActiveAbilityType)
     {
         eqquipedRegularActivities[passiveActiveAbilityType].LevelUp();
+        OnRegularActiveAbilityUpgraded?.Invoke(passiveActiveAbilityType, eqquipedRegularActivities[passiveActiveAbilityType].Level);
     }
 
     bool AbilityAlreadyEquipped(RegularActiveAbilityType passiveActiveAbilityType)

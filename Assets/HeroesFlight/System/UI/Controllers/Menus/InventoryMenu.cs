@@ -51,7 +51,7 @@ namespace UISystem
             UpdateCharacter(GetSelectedCharacterSO.Invoke());
         }
 
-        private void UpdateCharacter(CharacterSO characterSO)
+        public void UpdateCharacter(CharacterSO characterSO)
         {
             uiSpineViewController.SetupView(characterSO);
             OnStatValueChanged (GetStatModel.Invoke());

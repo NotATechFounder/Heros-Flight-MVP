@@ -92,6 +92,7 @@ namespace UISystem
         [SerializeField] private CanvasGroup transitionCanvasGroup;
 
         private Dictionary<PassiveAbilityType, PassiveAbilityDisplayUI> currentPassiveDisplayed = new Dictionary<PassiveAbilityType, PassiveAbilityDisplayUI>();
+        private Dictionary<RegularActiveAbilityType, AbilityTriggerButton> currentActiveDisplayed = new Dictionary<RegularActiveAbilityType, AbilityTriggerButton>();
 
         public TextMeshProUGUI CoinText => coinText;
         public AbilityTriggerButton[] ActiveAbilityTriggerButtons => activeAbilityButtons;
@@ -420,6 +421,7 @@ namespace UISystem
 
         public void ActiveAbilityEqquiped(int index, RegularAbilityVisualData data)
         {
+            currentActiveDisplayed.Add(data.RegularActiveAbilityType, activeAbilityButtons[index]);
             activeAbilityButtons[index].SetIcon(data.Icon);
         }
 
@@ -446,6 +448,18 @@ namespace UISystem
                 currentPassiveDisplayed[passiveAbilityType].Disable();
                 currentPassiveDisplayed.Remove(passiveAbilityType);
             }
+        }
+
+        public void SwapActiveAbility(RegularActiveAbilityType type1, RegularActiveAbilityType type2)
+        {
+            AbilityTriggerButton temp = currentActiveDisplayed[type1];
+            currentActiveDisplayed[type1] = currentActiveDisplayed[type2];
+            currentActiveDisplayed[type2] = temp;
+        }
+
+        public void UpgradeActiveAbility(RegularActiveAbilityType type, int arg2)
+        {
+            currentActiveDisplayed[type].SetLevel(arg2);
         }
     }
 }
