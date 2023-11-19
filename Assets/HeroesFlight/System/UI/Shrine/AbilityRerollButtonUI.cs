@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class AbilityRerollButtonUI : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class AbilityRerollButtonUI : MonoBehaviour
 
     [SerializeField] private Image icon;
     [SerializeField] private Image toggleIcon;
+    [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private bool toggable;
     private Toggle toggle;
 
@@ -21,10 +23,12 @@ public class AbilityRerollButtonUI : MonoBehaviour
         Disable();
     }
 
-    public void Init(Sprite icon)
+    public void Init(Sprite icon, int level = 0)
     {
         this.icon.sprite = icon;
-        gameObject.SetActive(true); 
+        levelText.text = "LV." +  level.ToString();
+        gameObject.SetActive(true);
+        levelText.gameObject.SetActive(level > 0);
     }
 
     public void Toggled (bool isOn)

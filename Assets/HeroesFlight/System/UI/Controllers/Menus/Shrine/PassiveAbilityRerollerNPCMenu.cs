@@ -11,6 +11,7 @@ public class PassiveAbilityRerollerNPCMenu : BaseMenu<PassiveAbilityRerollerNPCM
     public event Func<ShrineNPCCurrencyType, int> GetCurrencyPrice;
     public event Func<ShrineNPCCurrencyType, bool> OnPurchaseRequested;
 
+    public event Func<PassiveAbilityType, int> GetPassiveAbilityLevel;
     public event Func <List<PassiveAbilityType>> GetEqquipedPassiveAbilityTypes;
     public event Func<int, List<PassiveAbilityType>, List<PassiveAbilityType>> GetRandomPassiveAbilityTypes;
     public event Func<PassiveAbilityType, PassiveAbilityVisualData> GetPassiveAbilityVisualData;
@@ -108,7 +109,7 @@ public class PassiveAbilityRerollerNPCMenu : BaseMenu<PassiveAbilityRerollerNPCM
         for (int i = 0; i < eqquipedPassiveAbilities.Count; i++)
         {
             PassiveAbilityType oldAbiity = eqquipedPassiveAbilities[i];
-            eqquipedAbilityRerollButtonUIs[i].Init(GetPassiveAbilityVisualData.Invoke(eqquipedPassiveAbilities[i]).Icon);
+            eqquipedAbilityRerollButtonUIs[i].Init(GetPassiveAbilityVisualData.Invoke(eqquipedPassiveAbilities[i]).Icon, GetPassiveAbilityLevel(eqquipedPassiveAbilities[i]));
             eqquipedAbilityRerollButtonUIs[i].OnClick = () =>
             {
                 if (selectedNewAbility != PassiveAbilityType.None)

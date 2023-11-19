@@ -23,7 +23,7 @@ namespace UISystem
         }
 
         //   public Func<float> GetCoinText;
-
+        public event Func<PassiveAbilityType, int> GetPassiveAbilityLevel;
         public event Action OnSingleLevelUpComplete;
         public event Action OnPauseButtonClicked;
         public event Action OnSpecialAttackButtonClicked;
@@ -427,8 +427,7 @@ namespace UISystem
         {
             if (currentPassiveDisplayed.ContainsKey(passiveAbility.PassiveActiveAbilityType))
             {
-                currentPassiveDisplayed[passiveAbility.PassiveActiveAbilityType].AddLevel();
-                Debug.Log("Passive Ability Already Displayed");
+                currentPassiveDisplayed[passiveAbility.PassiveActiveAbilityType].SetLevel(GetPassiveAbilityLevel(passiveAbility.PassiveActiveAbilityType));
                 return;
             }
 
@@ -437,7 +436,7 @@ namespace UISystem
             PassiveAbilityDisplayUI emptyUI = passiveAbilityDisplayUIs.First((x) => !x.gameObject.activeInHierarchy);
 
             currentPassiveDisplayed.Add(passiveAbility.PassiveActiveAbilityType, emptyUI);
-            emptyUI.Initialize(passiveAbility);
+            emptyUI.Initialize(passiveAbility, GetPassiveAbilityLevel(passiveAbility.PassiveActiveAbilityType));
         }
 
         public void RemovePassiveAbility(PassiveAbilityType passiveAbilityType)

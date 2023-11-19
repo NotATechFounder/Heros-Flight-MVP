@@ -11,6 +11,7 @@ public class ActiveAbilityRerollerNPCMenu : BaseMenu<ActiveAbilityRerollerNPCMen
     public event Func<ShrineNPCCurrencyType, int> GetCurrencyPrice;
     public event Func<ShrineNPCCurrencyType, bool> OnPurchaseRequested;
 
+    public event Func<RegularActiveAbilityType, int> GetActiveAbilityLevel;
     public event Func<List<RegularActiveAbilityType>> GetEqquipedActiveAbilityTypes;
     public event Func<int, List<RegularActiveAbilityType>, List<RegularActiveAbilityType>> GetRandomActiveAbilityTypes;
     public event Func<RegularActiveAbilityType, RegularAbilityVisualData> GetActiveAbilityVisualData;
@@ -106,7 +107,7 @@ public class ActiveAbilityRerollerNPCMenu : BaseMenu<ActiveAbilityRerollerNPCMen
         for (int i = 0; i < eqquipedActiveAbilities.Count; i++)
         {
             RegularActiveAbilityType oldAbiity = eqquipedActiveAbilities[i];
-            eqquipedAbilityRerollButtonUIs[i].Init(GetActiveAbilityVisualData.Invoke(eqquipedActiveAbilities[i]).Icon);
+            eqquipedAbilityRerollButtonUIs[i].Init(GetActiveAbilityVisualData.Invoke(eqquipedActiveAbilities[i]).Icon, GetActiveAbilityLevel(eqquipedActiveAbilities[i]));
             eqquipedAbilityRerollButtonUIs[i].OnClick = () =>
             {
                 if (selectedNewAbility != RegularActiveAbilityType.None)

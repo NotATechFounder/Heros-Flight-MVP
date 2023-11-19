@@ -10,14 +10,19 @@ using System.Collections.Generic;
 using HeroesFlight.System.Combat.Enum;
 using HeroesFlightProject.System.Combat.Controllers;
 using UnityEngine;
+using Spine.Unity;
+using Spine;
 
 public class LightNova : RegularActiveAbility
 {
     [Header("LightNova")] 
     [SerializeField] private float damageMultiplier = 1;
     [SerializeField] private ParticleSystem chargeEffect;
-    [SerializeField] private ParticleSystem explosionEffect;
     [SerializeField] private OverlapChecker overlapChecker;
+
+    [Header("Animation and Viusal Settings")]
+    [SerializeField] SkeletonAnimation skeletonAnimation;
+    [SerializeField] public const string attackAnimation1Name = "animation";
 
     private CharacterStatController characterStatController;
     private CharacterSimpleController characterSystem;
@@ -36,6 +41,9 @@ public class LightNova : RegularActiveAbility
         this.characterSystem = characterSystem;
         this.characterHealthController = characterHealthController;
         this.characterAttackController = characterAttackController;
+
+        skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
+        skeletonAnimation.gameObject.SetActive(false);
     }
 
     public override void OnActivated()
@@ -45,6 +53,8 @@ public class LightNova : RegularActiveAbility
         characterHealthController.SetInvulnerableState(true);
         characterSystem.SetActionState(false);
         characterAttackController.ToggleControllerState(false);
+
+        skeletonAnimation.gameObject.SetActive(true);
 
         if (characterHealthController.CurrentHealth == characterHealthController.MaxHealth)
         {
@@ -68,6 +78,19 @@ public class LightNova : RegularActiveAbility
 
     }
 
+    private void AnimationState_Complete(TrackEntry trackEntry)
+    {
+        switch (trackEntry.Animation.Name)
+        {
+            case attackAnimation1Name:
+                skeletonAnimation.AnimationState.SetEmptyAnimation(0, 0);
+                skeletonAnimation.gameObject.SetActive(false);
+                Debug.Log("Animation Complete");
+                break;
+            default: break;
+        }
+    }
+
     private IEnumerator HealthRegen(float regenTime)
     {
         AudioManager.PlaySoundEffect("ValSkillActivation", SoundEffectCategory.Hero);
@@ -89,7 +112,8 @@ public class LightNova : RegularActiveAbility
         }
 
         chargeEffect.Stop();
-        explosionEffect.Play();
+        skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
+        GetEffectParticleByLevel().Play();
         overlapChecker.DetectOverlap();
         AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Hero);
     }
@@ -110,7 +134,8 @@ public class LightNova : RegularActiveAbility
         }
 
         chargeEffect.Stop();
-        explosionEffect.Play();
+        skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
+        GetEffectParticleByLevel().Play();
         overlapChecker.DetectOverlap();
         AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Hero);
     }
