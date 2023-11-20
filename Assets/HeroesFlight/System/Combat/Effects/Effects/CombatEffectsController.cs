@@ -7,6 +7,7 @@ using HeroesFlight.System.Combat.StatusEffects.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
+using Pelumi.ObjectPool;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -48,7 +49,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             {
                 var visual = effect.Visual == null
                     ? null
-                    : ParticleManager.instance.Spawn(effect.Visual,
+                    : ParticleManager.instance.Spawn(effect.Visual.GetComponent<Particle>(),
                         visualsParent.position);
                 if (visual != null)
                     visual.transform.SetParent(visualsParent);
@@ -222,7 +223,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                     DamageCritType.NoneCritical, AttackType.DoT, CalculationType.Flat, null));
             if (effect.Visual != null)
             {
-                ParticleManager.instance.Spawn(effect.Visual,
+                ParticleManager.instance.Spawn(effect.Visual.GetComponent<Particle>(),
                     healthModificationRequestModel.IntentModel.Source.HealthTransform.position);
             }
 
@@ -243,7 +244,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                     DamageCritType.NoneCritical, AttackType.DoT, effect.CalculationType, null));
             if (effect.Visual != null)
             {
-                ParticleManager.instance.Spawn(effect.Visual,
+                ParticleManager.instance.Spawn(effect.Visual.GetComponent<Particle>(),
                     healthModificationRequestModel.IntentModel.Source.HealthTransform.position);
             }
         }

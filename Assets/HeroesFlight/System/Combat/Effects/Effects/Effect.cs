@@ -13,12 +13,12 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         [SerializeField] protected float triggerChance;
         [SerializeField] protected float value;
         [SerializeField] protected float optionalValue;
-        [SerializeField] protected Particle visual;
+        [SerializeField] protected GameObject visual;
         public float Value => value;
         public float OptionalValue => optionalValue;
         public float TriggerChance => triggerChance;
         public EffectType EffectType => effectType;
-        public Particle Visual => visual;
+        public GameObject Visual => visual;
         public CalculationType CalculationType => calculationType;
     }
 }
