@@ -71,10 +71,8 @@ namespace HeroesFlight.StateStack.State
                         {
                             diceSystem.RollDice((rolledValue) =>
                             {
+                                dataSystem.StatPoints.SetDiceRollValue(statAttributeType, rolledValue);
                                 uiSystem.UiEventHandler.StatePointsMenu.OnNewDiceRoll(statAttributeType, rolledValue);
-                                //To update whats will be on the dice ui in the end can call
-                                //uiSystem.UiEventHandler.DiceMenu.ModifyDiceRollResultUi($"+{rolledValue}");
-                                //where ModifyDiceRollResultUi accepts  string so you can modify and show w/e you want
                             });
                         });
                     };

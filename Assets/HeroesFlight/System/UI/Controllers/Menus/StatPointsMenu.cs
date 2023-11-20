@@ -79,7 +79,6 @@ namespace UISystem
             foreach (StatPointSO statpointSo in statPointSOArray)
             {
                 StatPointUI statPointUI = Instantiate(statPointUIPrefab, statPointContainer);
-                statPointUI.Init(statpointSo);
 
                 statPointUI.GetCurrentSpLevel += (stat) =>
                 {
@@ -103,13 +102,15 @@ namespace UISystem
 
                 statPointUI.GetDiceRollValue += (stat) =>
                 {
-                    return GetDiceRollValue?.Invoke(stat) ?? 0;
+                    return GetDiceRollValue.Invoke(stat);
                 };
 
                 statPointUI.OnDiceClicked += (statAttributeType, value) =>
                 {
                     OnDiceClicked?.Invoke(statAttributeType, value);
                 };
+
+                statPointUI.Init(statpointSo);
 
                 statPointUIDic.Add(statpointSo.StatAttributeType, statPointUI);
             }
@@ -158,7 +159,8 @@ namespace UISystem
 
         public void OnNewDiceRoll(StatAttributeType statAttributeType, int rolledValue)
         {
-            statPointUIDic[statAttributeType].SetDiceRoll(rolledValue);
+            statPointUIDic[statAttributeType].OnNewDiceRoll(rolledValue);
+            //InitStatUI();
         }
     }
 }
