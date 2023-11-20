@@ -450,9 +450,7 @@ namespace HeroesFlight.System.Gameplay
 
             characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
             characterStatController.Initialize(dataSystem.StatManager.GetStatModel());
-            UpdateStatModifiers();
-
-
+          
             var effectsController = characterController.CharacterTransform.GetComponent<CombatEffectsController>();
             combatSystem.RegisterEntity(new CombatEntityModel(characterHealthController, characterAttackController,
                 effectsController,
@@ -1287,29 +1285,6 @@ namespace HeroesFlight.System.Gameplay
             }
         }
 
-        private void UpdateStatModifiers()
-        {
-            var unlockedTraits = traitSystem.GetUnlockedEffects();
-            var modifiedStatsMap = new Dictionary<StatAttributeType, int>();
-            foreach (var trait in unlockedTraits)
-            {
-                if (trait.TargetTrait.Effect.TraitType == TraitType.StatBoost)
-                {
-                    var effect = trait.TargetTrait.Effect as StatBoostEffect;
-                    var modificationValue = effect.Value + trait.Value.Value;
-                    Debug.Log($"Gona update {effect.TargetStat} with value {effect.Value + trait.Value.Value}");
-                    if (modifiedStatsMap.TryGetValue(effect.TargetStat, out var currentValue))
-                    {
-                        modifiedStatsMap[effect.TargetStat] += modificationValue;
-                    }
-                    else
-                    {
-                        modifiedStatsMap.Add(effect.TargetStat, modificationValue);
-                    }
-                }
-            }
-
-            //progressionSystem.StatManager.ProcessTraitsStatsModifiers(modifiedStatsMap);
-        }
+       
     }
 }
