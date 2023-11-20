@@ -1,14 +1,11 @@
 Apollo_BowFX.png
-size:230,352
+size:458,154
 filter:Linear,Linear
 pma:true
 scale:0.5
 Group 1
-bounds:2,2,226,150
+bounds:230,2,226,150
 offsets:3,2,232,154
 Group 1 copy
-bounds:2,154,226,150
+bounds:2,2,226,150
 offsets:3,2,232,154
-Group 2
-bounds:2,306,159,44
-offsets:1,1,161,46

@@ -1,0 +1,1 @@
+"I have fixed this effect, you can find the Bow in the Spine folder. Here is the effect that you will attach to the Bow when it performs the attack action, including both the arrow and the effect when the arrow collides."
