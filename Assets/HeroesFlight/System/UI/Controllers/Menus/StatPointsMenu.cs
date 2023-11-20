@@ -14,12 +14,14 @@ namespace UISystem
 {
     public class StatPointsMenu : BaseMenu<StatPointsMenu>
     {
+        public event Action<StatAttributeType, int> OnDiceClicked;
         public event Action OnCompletePressed;
         public event Action OnResetButtonPressed;
         public event Func< int> GetAvailabletSp;
         public event Func<StatAttributeType, int> GetCurrentSpLevel;
         public event Func<StatAttributeType, bool> OnAddSpClicked;
         public event Func<StatAttributeType, bool> OnRemoveSpClicked;
+        public event Func <StatAttributeType, int> GetDiceRollValue;
 
         [SerializeField] private AdvanceButton completeButton;
         [SerializeField] private AdvanceButton resetButton;
@@ -99,6 +101,16 @@ namespace UISystem
                     spText.text = GetAvailabletSp?.Invoke().ToString();
                 };
 
+                statPointUI.GetDiceRollValue += (stat) =>
+                {
+                    return GetDiceRollValue?.Invoke(stat) ?? 0;
+                };
+
+                statPointUI.OnDiceClicked += (statAttributeType, value) =>
+                {
+                    OnDiceClicked?.Invoke(statAttributeType, value);
+                };
+
                 statPointUIDic.Add(statpointSo.StatAttributeType, statPointUI);
             }
         }
@@ -142,6 +154,11 @@ namespace UISystem
         private void ResetButtonPressed()
         {
             OnResetButtonPressed?.Invoke();
+        }
+
+        public void OnNewDiceRoll(StatAttributeType statAttributeType, int rolledValue)
+        {
+            statPointUIDic[statAttributeType].SetDiceRoll(rolledValue);
         }
     }
 }

@@ -541,16 +541,15 @@ namespace HeroesFlight.System.Gameplay
         void HandleEnemyDeath(Vector3 position)
         {
             enemiesToKill--;
-            environmentSystem.ParticleManager.Spawn("Loot_Spawn", position,
-                Quaternion.Euler(new Vector3(-90, 0, 0)));
 
-            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10 + goldModifier,
-                position);
-            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RunExperience, 10,
-                position);
-            progressionSystem.AddCurrency(CurrencyKeys.RunExperience, (int)container.HeroProgressionExpEarnedPerKill);
+            environmentSystem.ParticleManager.Spawn("Loot_Spawn", position, Quaternion.Euler(new Vector3(-90, 0, 0)));
+
+            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10 + goldModifier, position);
+
+            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RunExperience, 0, position);
 
             uiSystem.UpdateEnemiesCounter(enemiesToKill);
+
             if (currentState != GameState.Ongoing)
                 return;
 
@@ -974,7 +973,7 @@ namespace HeroesFlight.System.Gameplay
             godsBenevolence.DeactivateGodsBenevolence();
             environmentSystem.CurrencySpawner.ActivateExpItems(() =>
             {
-                Debug.Log("EXP ITEMS ACTIVATED");
+                progressionSystem.AddCurrency(CurrencyKeys.RunExperience, (int)currentLevel.ExpReward);
                 activeAbilityManager.AddExp(progressionSystem.GetCurrency(CurrencyKeys.RunExperience));
                 progressionSystem.CollectRunCurrency();
             });

@@ -61,9 +61,24 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.UiEventHandler.StatePointsMenu.OnRemoveSpClicked += dataSystem.StatPoints.TrytRemoveSp;
                     uiSystem.UiEventHandler.StatePointsMenu.GetAvailabletSp += dataSystem.StatPoints.GetAvailableSp;
                     uiSystem.UiEventHandler.StatePointsMenu.OnCompletePressed += dataSystem.StatPoints.Confirm;
+                    uiSystem.UiEventHandler.StatePointsMenu.GetDiceRollValue += dataSystem.StatPoints.GetDiceRollValue;
+
+                    uiSystem.UiEventHandler.StatePointsMenu.OnDiceClicked += (statAttributeType, value) =>
+                    {
+                        uiSystem.UiEventHandler.DiceMenu.ShowDiceMenu(value, () =>
+                        {
+                            int rolledValue = 0;
+                            //diceSystem.RollDice((rolledValue) =>
+                            //{
+                            uiSystem.UiEventHandler.StatePointsMenu.OnNewDiceRoll(statAttributeType, rolledValue);
+                            //});
+                        });
+                    };
 
                     dataSystem.CharacterManager.OnCharacterChanged += uiSystem.UiEventHandler.InventoryMenu.UpdateCharacter;
                     dataSystem.StatManager.OnValueChanged += uiSystem.UiEventHandler.InventoryMenu.OnStatValueChanged;
+
+                    //dataSystem.StatPoints.OnSpChanged += uiSystem.UiEventHandler.StatePointsMenu.Open;
 
                     void HandleGameStartRequest()
                     {
@@ -71,9 +86,10 @@ namespace HeroesFlight.StateStack.State
                         traitSystem.OnTraitsStateChange -= HandleTraitStateChange;
                         AppStateStack.State.Set(ApplicationState.Gameplay);
                     } 
+
                     void HandleTraitStateChange(Dictionary<StatAttributeType, int> modifiers)
                     {
-                        dataSystem.StatManager.ProcessStatPointsModifiers(modifiers);
+                        dataSystem.StatManager.ProcessTraitsStatsModifiers(modifiers);
                     }
                     
                     uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed += HandleGameStartRequest;

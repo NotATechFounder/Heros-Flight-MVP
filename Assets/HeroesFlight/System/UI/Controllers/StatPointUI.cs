@@ -10,11 +10,13 @@ using System.Linq;
 
 public class StatPointUI : MonoBehaviour
 {
+    public event Func <StatAttributeType, int> GetDiceRollValue;
     public event Func<StatAttributeType, int> GetCurrentSpLevel;
     public event Func<StatAttributeType, bool> OnAddSpClicked;
     public event Func<StatAttributeType, bool> OnRemoveSpClicked;
 
     public event Action OnSpChanged;
+    public event Action<StatAttributeType, int> OnDiceClicked;
 
     [SerializeField] private AdvanceButton upButton;
     [SerializeField] private AdvanceButton downButton;
@@ -22,6 +24,7 @@ public class StatPointUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI attributeName;
     [SerializeField] private TextMeshProUGUI attributeIncrement;
     [SerializeField] private TextMeshProUGUI attributeLevel;
+    [SerializeField] private TextMeshProUGUI attributeDiceRoll;
     [SerializeField] private Image icon;
     [SerializeField] private Image buttonImage;
     [SerializeField] private Image levelUpFill;
@@ -41,6 +44,10 @@ public class StatPointUI : MonoBehaviour
     {
         upButton.onClick.AddListener(OnUpButtonClicked);
         downButton.onClick.AddListener(OnDownButtonClicked);
+        diceButton.onClick.AddListener(() =>
+        {
+            OnDiceClicked?.Invoke(statPointSO.StatAttributeType, GetDiceRollValue?.Invoke(statPointSO.StatAttributeType) ?? 0);
+        });
         levelUpEffect = levelUpFill.JuicyFillAmount(1, 0.15f);
     }
 
@@ -48,6 +55,7 @@ public class StatPointUI : MonoBehaviour
     {
         this.statPointSO = statPointSO;
         SetAttribute();
+        SetDiceRoll (GetDiceRollValue?.Invoke(statPointSO.StatAttributeType) ?? 0);
     }
 
     public void SetAttribute()
@@ -184,5 +192,15 @@ public class StatPointUI : MonoBehaviour
     {
         downButton.interactable = active;
         buttonImage.color = active ? Color.white : Color.grey;
+    }
+
+    public void SetDiceRoll(int diceRoll)
+    {
+        if (diceRoll == 0)
+        {
+            attributeDiceRoll.text = "";
+            return;
+        }
+        attributeDiceRoll.text =  "+" + diceRoll.ToString();
     }
 }

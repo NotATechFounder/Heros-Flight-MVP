@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class AccountLevelManager : MonoBehaviour
 {
-    public event Action<int> OnLevelUp;
+    public event Action<int, int> OnLevelUp;
     public event Action<int, int, float> OnEXPAdded;
 
     [SerializeField] private float expToNextLevelBase;
@@ -15,6 +15,11 @@ public class AccountLevelManager : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private Data data;
     private float expToNextLevel => expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, data.currentLevel);
+
+    private void Start()
+    {
+        Load();
+    }
 
     private void Update()
     {
@@ -35,6 +40,8 @@ public class AccountLevelManager : MonoBehaviour
         {
             OnEXPAdded?.Invoke(0, 0, data.currentExp / expToNextLevel);
         }
+
+        Save();
     }
 
     private void LevelUp()
@@ -47,6 +54,7 @@ public class AccountLevelManager : MonoBehaviour
             ++numberOfLevelsGained;
         } while (data.currentExp >= expToNextLevel);
 
+        OnLevelUp?.Invoke(currentLvl, numberOfLevelsGained);
         OnEXPAdded?.Invoke(currentLvl, numberOfLevelsGained, data.currentExp / expToNextLevel);
     }
 
