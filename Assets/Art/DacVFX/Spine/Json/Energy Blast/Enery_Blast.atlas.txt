@@ -1,0 +1,9 @@
+Enery_Blast.png
+size:502,104
+filter:Linear,Linear
+pma:true
+scale:0.5
+Cannon_1
+bounds:310,34,190,68
+Cannon_3
+bounds:2,2,306,100
