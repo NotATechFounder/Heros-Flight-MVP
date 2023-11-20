@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Effects.Effects.Data;
 using HeroesFlight.System.Combat.Effects.Enum;
 using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.Model;
@@ -65,7 +66,10 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                         case EffectType.Root:
                             ApplyRootEffect(effect, out visual);
                             break;
-
+                        
+                        case EffectType.Freeze:
+                            ApplyFreezeEffect(effect, out visual);
+                            break;
                         default:
                             ApplyDotEffect(effect, out visual);
                             break;
@@ -73,10 +77,36 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                 }
 
 
-                var newModel = new StatusEffectRuntimeModel(effect, visual);
+                var newModel = new StatusEffectRuntimeModel(ConvertStatusToRealEffect(effect), visual);
                 newModel.OnEnd += HandleStatusEffectEnd;
                 newModel.OnTick += HandleStatusEffectTick;
                 statusEffectsMap.Add(effect.EffectType, newModel);
+            }
+        }
+
+       
+
+        private StatusEffect ConvertStatusToRealEffect(StatusEffect effect)
+        {
+            switch (effect.EffectType)
+            {
+                case EffectType.Burn:
+                    return effect as BurnStatusEffect;
+                    break;
+                case EffectType.Freeze:
+                    return effect;
+                    break;
+                case EffectType.Root:
+                    return effect;
+                    break;
+                case EffectType.Poison:
+                    return effect;
+                    break;
+                case EffectType.Shock:
+                    return effect;
+                    break;
+             default:
+                 return null;
             }
         }
 
@@ -112,25 +142,25 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             }
         }
 
-        public void AddCombatEffect(CombatEffect effect)
+        public void AddCombatEffect(CombatEffect effect,int lvl)
         {
             var visual = effect.Visual == null ? null : Instantiate(effect.Visual, visualsParent);
             if (effectsMap.TryGetValue(effect.ApplyType, out var effects))
             {
                 if (!effects.ContainsKey(effect.ID))
                 {
-                    effects.Add(effect.ID, new CombatEffectRuntimeModel(effect, visual));
+                    effects.Add(effect.ID, new CombatEffectRuntimeModel(effect, visual,lvl));
                 }
                 else
                 {
                     effects.Remove(effect.ID);
-                    effects.Add(effect.ID, new CombatEffectRuntimeModel(effect, visual));
+                    effects.Add(effect.ID, new CombatEffectRuntimeModel(effect, visual,lvl));
                 }
             }
             else
             {
                 effectsMap.Add(effect.ApplyType, new Dictionary<string, CombatEffectRuntimeModel>());
-                effectsMap[effect.ApplyType].Add(effect.ID, new CombatEffectRuntimeModel(effect, visual));
+                effectsMap[effect.ApplyType].Add(effect.ID, new CombatEffectRuntimeModel(effect, visual,lvl));
             }
         }
 
@@ -189,12 +219,16 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         protected void TryTriggerEffect(Effect status, CombatEffectsController effectsHandler,
             HealthModificationRequestModel healthModificationRequestModel)
         {
+            var data = status.GetData<EffectData>();
+            var triggerChance = data.ProcChance.GetCurrentValue(1);
+            Debug.Log(triggerChance);
             var rng = Random.Range(0, 101);
-            if (rng > status.TriggerChance)
+            if (rng > triggerChance)
                 return;
 
-
-            if (status.GetType() == typeof(StatusEffect))
+            var type = status.GetType();
+            
+            if (type.IsSubclassOf( typeof(StatusEffect)))
             {
                 effectsHandler.ApplyStatusEffect(status as StatusEffect);
             }
@@ -245,6 +279,13 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         }
 
         protected virtual void ApplyDotEffect(StatusEffect effect, out GameObject visual)
+        {
+            visual = ParticleManager.instance.Spawn(effect.Visual.GetComponent<Particle>(),
+                visualsParent.position).gameObject;
+            visual.transform.SetParent(visualsParent);
+        }
+        
+        protected virtual void ApplyFreezeEffect(StatusEffect effect, out GameObject visual)
         {
             visual = ParticleManager.instance.Spawn(effect.Visual.GetComponent<Particle>(),
                 visualsParent.position).gameObject;

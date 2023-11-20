@@ -444,27 +444,32 @@ public class ActiveAbilityManager : MonoBehaviour
         switch (passiveAbilityType)
         {
             case PassiveAbilityType.FrostStrike:
-                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1));
+                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1),
+                    eqquipedPassiveAbilities[passiveAbilityType]-1);
                 break;
             case PassiveAbilityType.FlameStrike:
-                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1));
+                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1),
+                    eqquipedPassiveAbilities[passiveAbilityType]-1);
 
                 break;
             case PassiveAbilityType.LightningStrike:
 
                 break;
             case PassiveAbilityType.LichArmor:
-                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1));
+                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1),
+                    eqquipedPassiveAbilities[passiveAbilityType]-1);
                 break;
             case PassiveAbilityType.IfritsArmor:
-                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1));
+                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1),
+                    eqquipedPassiveAbilities[passiveAbilityType]-1);
 
                 break;
             case PassiveAbilityType.HeartThief:
                 characterStatController.ModifyLifeSteal(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("LifeSteal", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]), true);
                 break;
             case PassiveAbilityType.Reflect:
-                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1));
+                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1),
+                    eqquipedPassiveAbilities[passiveAbilityType]-1);
 
                 break;
             case PassiveAbilityType.LuckyHit:
@@ -480,7 +485,8 @@ public class ActiveAbilityManager : MonoBehaviour
 
                 break;
             case PassiveAbilityType.Sacrifice:
-                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1));
+                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1),
+                    eqquipedPassiveAbilities[passiveAbilityType]-1);
 
                 break;
             case PassiveAbilityType.BoilingPoint:
@@ -494,7 +500,8 @@ public class ActiveAbilityManager : MonoBehaviour
                 characterStatController.ModifyDodgeChance(allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("DodgeChance", isFirstLevel, eqquipedPassiveAbilities[passiveAbilityType]), true);
                 break;
             case PassiveAbilityType.FullCounter:
-                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1));
+                characterEffectsController.AddCombatEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl( eqquipedPassiveAbilities[passiveAbilityType]-1),
+                    eqquipedPassiveAbilities[passiveAbilityType]-1);
 
                 break;
             default: break;

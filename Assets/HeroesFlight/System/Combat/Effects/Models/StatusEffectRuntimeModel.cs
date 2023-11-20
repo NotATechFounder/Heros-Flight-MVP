@@ -1,6 +1,5 @@
 ﻿using System;
 using HeroesFlight.System.Combat.Effects.Enum;
-using Pelumi.ObjectPool;
 using UnityEngine;
 
 namespace HeroesFlight.System.Combat.Effects.Effects
@@ -23,7 +22,6 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         public int CurrentStacks { get; private set; }
         public GameObject Visual { get; }
         private float currentDuration;
-
         public void ExecuteTick()
         {
             if (Effect.DurationType == EffectDurationType.Fixed)

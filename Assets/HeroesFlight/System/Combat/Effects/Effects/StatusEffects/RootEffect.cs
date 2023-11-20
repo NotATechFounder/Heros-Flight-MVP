@@ -3,8 +3,8 @@ using NotImplementedException = System.NotImplementedException;
 
 namespace HeroesFlight.System.Combat.Effects.Effects
 {
-    [CreateAssetMenu(fileName = "TriggerEffect", menuName = "Combat/Effects/Trigger", order = 100)]
-    public class TriggerEffect : Effect
+    [CreateAssetMenu(fileName = "RootEffect", menuName = "Combat/Effects/StatusEffects/Root", order = 100)]
+    public class RootEffect : StatusEffect
     {
         public override T GetData<T>()
         {

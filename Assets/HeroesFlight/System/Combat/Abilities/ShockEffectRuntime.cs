@@ -63,10 +63,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             var currentlyHited = 0;
             for (int i = 0; i < targets.Count; i++)
             {
-                Debug.Log($"hited more then max jumps? {currentlyHited} >= {maxJumps}");
                 if (currentlyHited >= maxJumps)
                     break;
-                Debug.Log(currentlyHited);
+              
                 currentlyHited++;
                 var particle = ParticleManager.instance.Spawn("Chain_Lightning", currentTarget.HealthTransform);
                 var emitParams = new ParticleSystem.EmitParams();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Combat.Effects.Effects;
+using HeroesFlight.System.Combat.Effects.Effects.Data;
 using HeroesFlight.System.Combat.Effects.Enum;
 using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.StatusEffects.Enum;
@@ -11,18 +12,14 @@ using UnityEngine;
 
 namespace HeroesFlight.System.Character.Controllers.Effects
 {
-    public class CharacterCombatEffectsController :CombatEffectsController
+    public class CharacterCombatEffectsController : CombatEffectsController
     {
-        [SerializeField] private List<CombatEffect> testEffect;
+        private CharacterControllerInterface controller;
 
         protected override void Awake()
         {
             base.Awake();
-            foreach (var effect in testEffect)
-            {
-                AddCombatEffect(effect);
-            }
-          
+            controller = GetComponent<CharacterSimpleController>();
         }
 
         protected override void HandleStatusEffectTick(StatusEffectRuntimeModel effectModel)
@@ -32,26 +29,40 @@ namespace HeroesFlight.System.Character.Controllers.Effects
             switch (effectModel.Effect.EffectType)
             {
                 case EffectType.Burn:
-                    healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value,
-                        DamageCritType.NoneCritical,AttackType.Regular,CalculationType.Percentage,null));
-                    break;
-                case EffectType.Freeze:
+                    var data = effectModel.Effect.GetData<BurnEffectData>();
+
+                    healthController.TryDealDamage(new HealthModificationIntentModel(
+                        data.Damage.GetCurrentValue(1) * effectModel.CurrentStacks,
+                        DamageCritType.NoneCritical, AttackType.Regular, effectModel.Effect.CalculationType, null));
                     break;
                 case EffectType.Root:
+                    healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value,
+                        DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
                 case EffectType.Poison:
+                    var poisonData = effectModel.Effect.GetData<PoisonEffectData>();
+                    healthController.TryDealDamage(new HealthModificationIntentModel(
+                        poisonData.Damage.GetCurrentValue(1) * effectModel.CurrentStacks,
+                        DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
-                case EffectType.Shock:
-                    break;
-                case EffectType.Reflect:
-                    break;
-                case EffectType.Sacrifice:
-                    break;
-                case EffectType.FullCounter:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
+        }
+
+
+        protected override void HandleStatusEffectRemoval(StatusEffectRuntimeModel effectModel)
+        {
+            switch (effectModel.Effect.EffectType)
+            {
+                case EffectType.Root:
+                    controller.SetActionState(true);
+                    break;
+            }
+        }
+
+        protected override void ApplyRootEffect(StatusEffect effect, out GameObject visual)
+        {
+            base.ApplyRootEffect(effect, out visual);
+            controller.SetActionState(false);
         }
     }
 }

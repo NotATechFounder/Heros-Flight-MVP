@@ -7,7 +7,7 @@ namespace HeroesFlight.System.Combat.Effects
 {
     public interface CombatEntityEffectsHandlerInterface : StatusEffectsHandlerInterface
     {
-        void AddCombatEffect(CombatEffect effect);
+        void AddCombatEffect(CombatEffect effect,int lvl);
         void RemoveEffect(CombatEffect data);
 
         void TriggerCombatEffect(CombatEffectApplicationType onDealDamage, HealthModificationRequestModel requestModel);
