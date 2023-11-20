@@ -10,11 +10,13 @@ using System.Linq;
 
 public class StatPointUI : MonoBehaviour
 {
+    public event Func <StatAttributeType, int> GetDiceRollValue;
     public event Func<StatAttributeType, int> GetCurrentSpLevel;
     public event Func<StatAttributeType, bool> OnAddSpClicked;
     public event Func<StatAttributeType, bool> OnRemoveSpClicked;
 
     public event Action OnSpChanged;
+    public event Action<StatAttributeType, int> OnDiceClicked;
 
     [SerializeField] private AdvanceButton upButton;
     [SerializeField] private AdvanceButton downButton;
@@ -22,6 +24,7 @@ public class StatPointUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI attributeName;
     [SerializeField] private TextMeshProUGUI attributeIncrement;
     [SerializeField] private TextMeshProUGUI attributeLevel;
+    [SerializeField] private TextMeshProUGUI attributeDiceRoll;
     [SerializeField] private Image icon;
     [SerializeField] private Image buttonImage;
     [SerializeField] private Image levelUpFill;
@@ -31,6 +34,8 @@ public class StatPointUI : MonoBehaviour
     private StatPointSO statPointSO;
     private int initialSpLevel;
     private int currentSpLevel;
+    private int currentDiceRollValue;
+    private int spIncrementValue;
     private Dictionary <StatType, StatValueUI> statTypePerSp = new Dictionary<StatType, StatValueUI>();
 
     public StatPointSO StatPointSO => statPointSO;
@@ -41,6 +46,10 @@ public class StatPointUI : MonoBehaviour
     {
         upButton.onClick.AddListener(OnUpButtonClicked);
         downButton.onClick.AddListener(OnDownButtonClicked);
+        diceButton.onClick.AddListener(() =>
+        {
+            OnDiceClicked?.Invoke(statPointSO.StatAttributeType, GetDiceRollValue?.Invoke(statPointSO.StatAttributeType) ?? 0);
+        });
         levelUpEffect = levelUpFill.JuicyFillAmount(1, 0.15f);
     }
 
@@ -68,8 +77,8 @@ public class StatPointUI : MonoBehaviour
         if(OnAddSpClicked?.Invoke(statPointSO.StatAttributeType) ?? false)
         {
             OnSpChanged?.Invoke();
-            currentSpLevel++;
-            attributeIncrement.text = "+" + (currentSpLevel - initialSpLevel).ToString();
+            spIncrementValue++;
+            attributeIncrement.text = "+" + spIncrementValue.ToString();
 
             UpdateNextStatValues();
         }
@@ -80,16 +89,15 @@ public class StatPointUI : MonoBehaviour
         if(OnRemoveSpClicked?.Invoke(statPointSO.StatAttributeType) ?? false)
         {
             OnSpChanged?.Invoke();
+            spIncrementValue--;
 
-            currentSpLevel--;
-
-            if (currentSpLevel == initialSpLevel)
+            if (spIncrementValue == 0)
             {
                 attributeIncrement.text = "";
             }
             else
             {
-                attributeIncrement.text = "+" + (currentSpLevel - initialSpLevel).ToString();
+                attributeIncrement.text = "+" + spIncrementValue.ToString();
             }
 
             UpdateNextStatValues();
@@ -98,11 +106,13 @@ public class StatPointUI : MonoBehaviour
 
     public void LoadCurrentValues()
     {
-        currentSpLevel = initialSpLevel = GetCurrentSpLevel?.Invoke(statPointSO.StatAttributeType) ?? 0;
+        currentSpLevel = initialSpLevel = GetCurrentSpLevel.Invoke(statPointSO.StatAttributeType);
+        currentDiceRollValue = GetDiceRollValue.Invoke(statPointSO.StatAttributeType);
         attributeLevel.text = "LV. " + currentSpLevel.ToString();
         attributeIncrement.text = "";
 
         UpdateCurrentValue();
+        SetDiceRoll(GetDiceRollValue.Invoke(statPointSO.StatAttributeType));
         ToggleInteractivity (true);
     }
 
@@ -117,7 +127,7 @@ public class StatPointUI : MonoBehaviour
     {
         foreach (KeyValuePair<StatType, StatValueUI> statValueUI in statTypePerSp)
         {
-            statValueUI.Value.UpdateCurrentValue((currentSpLevel * statPointSO.KeyValues.FirstOrDefault(x => x.statType == statValueUI.Key).valuePerSp).ToString());
+            statValueUI.Value.UpdateCurrentValue(((currentSpLevel + currentDiceRollValue) * statPointSO.KeyValues.FirstOrDefault(x => x.statType == statValueUI.Key).valuePerSp).ToString());
         }
     }
 
@@ -125,29 +135,31 @@ public class StatPointUI : MonoBehaviour
     {
         foreach (KeyValuePair<StatType, StatValueUI> statValueUI in statTypePerSp)
         {
-            if (currentSpLevel == initialSpLevel)
+            if (spIncrementValue == 0)
             {
                 statValueUI.Value.UpdateNextValue(0);
             }
             else
             {
-                statValueUI.Value.UpdateNextValue(currentSpLevel * statPointSO.KeyValues.FirstOrDefault(x => x.statType == statValueUI.Key).valuePerSp);
+                statValueUI.Value.UpdateNextValue((currentSpLevel + currentDiceRollValue + spIncrementValue) * statPointSO.KeyValues.FirstOrDefault(x => x.statType == statValueUI.Key).valuePerSp);
             }
         }
     }
 
     public bool TryUpgradeCurrentValue()
     {
-        if (currentSpLevel == initialSpLevel)
+        if (spIncrementValue == 0)
         {
             return false;
         }
-        OnLevelUp(currentSpLevel);
+        OnLevelUp( currentSpLevel + spIncrementValue);
         return true;    
     }
 
     public void OnLevelUp(int newLevel)
     {
+        spIncrementValue = 0;
+
         ToggleInteractivity(false);
 
         levelUpEffect.SetOnCompleted(() =>
@@ -162,6 +174,8 @@ public class StatPointUI : MonoBehaviour
             }
 
         });
+
+
 
         AudioClip clip = AudioManager.GetSoundEffectClip("HeroProgressionGain");
         levelUpEffect.ChangeDuration(clip.length - 1.5f);
@@ -184,5 +198,24 @@ public class StatPointUI : MonoBehaviour
     {
         downButton.interactable = active;
         buttonImage.color = active ? Color.white : Color.grey;
+    }
+
+    public void SetDiceRoll(int diceRoll)
+    {
+        if (diceRoll == 0)
+        {
+            attributeDiceRoll.text = "";
+            return;
+        }
+        attributeDiceRoll.text =  "+" + diceRoll.ToString();
+    }
+
+    public void OnNewDiceRoll(int diceRoll)
+    {
+        currentDiceRollValue = diceRoll;
+        attributeDiceRoll.text = "+" + diceRoll.ToString();
+        int newLevel = currentSpLevel + currentDiceRollValue;
+        UpdateCurrentValue();
+        UpdateNextStatValues();
     }
 }

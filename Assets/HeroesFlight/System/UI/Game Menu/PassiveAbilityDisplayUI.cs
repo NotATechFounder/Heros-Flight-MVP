@@ -40,14 +40,15 @@ public class PassiveAbilityDisplayUI : MonoBehaviour
         Disable();
     }
 
-    public void Initialize(PassiveAbilityVisualData passiveAbilityVisualData)
+    public void Initialize(PassiveAbilityVisualData passiveAbilityVisualData, int level = 0)
     {
         infoHolderIcon.sprite = passiveAbilityVisualData.Icon;
         nameText.text = passiveAbilityVisualData.DisplayName;
         infoHolderText.text = passiveAbilityVisualData.Description;
         gameObject.SetActive(true);
+
         ShowInfo();
-        AddLevel();
+        SetLevel (level);
     }
 
     private void ShowInfo()
@@ -82,8 +83,8 @@ public class PassiveAbilityDisplayUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void AddLevel()
+    public void SetLevel(int level)
     {
-        levelText.text = $"Lvl. {++level}";
+        levelText.text = $"Lvl. {level}";
     }
 }

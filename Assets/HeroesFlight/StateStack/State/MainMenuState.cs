@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.Common.Progression;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Dice;
 using HeroesFlight.System.Stats;
 using HeroesFlight.System.Stats.Handlers;
 using HeroesFlight.System.UI;
@@ -33,6 +36,9 @@ namespace HeroesFlight.StateStack.State
                     progressReporter.SetDone();
                     var uiSystem = GetService<IUISystem>();
                     var dataSystem = GetService<DataSystemInterface>();
+                    var traitSystem = GetService<TraitSystemInterface>();
+                    var diceSystem = GetService<DiceSystemInterface>();
+                    traitSystem.OnTraitsStateChange += HandleTraitStateChange;
                     TraitSystemInterface traitSystemInterface = GetService<TraitSystemInterface>();
                     Debug.Log("Initing trait system");
                     traitSystemInterface.Init();
@@ -46,7 +52,6 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.UiEventHandler.InventoryMenu.OnStatPointButtonClicked += uiSystem.UiEventHandler.StatePointsMenu.Open;
                     uiSystem.UiEventHandler.InventoryMenu.GetStatModel += dataSystem.StatManager.GetStatModel;
 
-                    uiSystem.UiEventHandler.CharacterSelectMenu.OnMenuClosed += uiSystem.UiEventHandler.InventoryMenu.Open;
                     uiSystem.UiEventHandler.CharacterSelectMenu.GetAllCharacterSO += dataSystem.CharacterManager.GetAllCharacterSO;
                     uiSystem.UiEventHandler.CharacterSelectMenu.OnTryBuyCharacter += dataSystem.CharacterManager.TryBuyCharacter;
 
@@ -58,13 +63,36 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.UiEventHandler.StatePointsMenu.OnRemoveSpClicked += dataSystem.StatPoints.TrytRemoveSp;
                     uiSystem.UiEventHandler.StatePointsMenu.GetAvailabletSp += dataSystem.StatPoints.GetAvailableSp;
                     uiSystem.UiEventHandler.StatePointsMenu.OnCompletePressed += dataSystem.StatPoints.Confirm;
+                    uiSystem.UiEventHandler.StatePointsMenu.GetDiceRollValue += dataSystem.StatPoints.GetDiceRollValue;
+
+                    uiSystem.UiEventHandler.StatePointsMenu.OnDiceClicked += (statAttributeType, value) =>
+                    {
+                        uiSystem.UiEventHandler.DiceMenu.ShowDiceMenu(value, () =>
+                        {
+                            diceSystem.RollDice((rolledValue) =>
+                            {
+                                dataSystem.StatPoints.SetDiceRollValue(statAttributeType, rolledValue);
+                                uiSystem.UiEventHandler.StatePointsMenu.OnNewDiceRoll(statAttributeType, rolledValue);
+                            });
+                        });
+                    };
+
+                    dataSystem.CharacterManager.OnCharacterChanged += uiSystem.UiEventHandler.InventoryMenu.UpdateCharacter;
+                    dataSystem.StatManager.OnValueChanged += uiSystem.UiEventHandler.InventoryMenu.OnStatValueChanged;
+
+                    //dataSystem.StatPoints.OnSpChanged += uiSystem.UiEventHandler.StatePointsMenu.Open;
 
                     void HandleGameStartRequest()
                     {
                         uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;
-                        
+                        traitSystem.OnTraitsStateChange -= HandleTraitStateChange;
                         AppStateStack.State.Set(ApplicationState.Gameplay);
                     } 
+
+                    void HandleTraitStateChange(Dictionary<StatAttributeType, int> modifiers)
+                    {
+                        dataSystem.StatManager.ProcessTraitsStatsModifiers(modifiers);
+                    }
                     
                     uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed += HandleGameStartRequest;
                     dataSystem.CurrencyManager.OnCurrencyChanged += uiSystem.UiEventHandler.MainMenu.CurrencyChanged;
@@ -82,5 +110,7 @@ namespace HeroesFlight.StateStack.State
                     throw new ArgumentOutOfRangeException(nameof(evt.Action), evt.Action, null);
             }
         }
+
+      
     }
 }

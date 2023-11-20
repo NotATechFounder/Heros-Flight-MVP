@@ -23,7 +23,7 @@ namespace UISystem
         }
 
         //   public Func<float> GetCoinText;
-
+        public event Func<PassiveAbilityType, int> GetPassiveAbilityLevel;
         public event Action OnSingleLevelUpComplete;
         public event Action OnPauseButtonClicked;
         public event Action OnSpecialAttackButtonClicked;
@@ -92,6 +92,7 @@ namespace UISystem
         [SerializeField] private CanvasGroup transitionCanvasGroup;
 
         private Dictionary<PassiveAbilityType, PassiveAbilityDisplayUI> currentPassiveDisplayed = new Dictionary<PassiveAbilityType, PassiveAbilityDisplayUI>();
+        private Dictionary<RegularActiveAbilityType, AbilityTriggerButton> currentActiveDisplayed = new Dictionary<RegularActiveAbilityType, AbilityTriggerButton>();
 
         public TextMeshProUGUI CoinText => coinText;
         public AbilityTriggerButton[] ActiveAbilityTriggerButtons => activeAbilityButtons;
@@ -420,6 +421,7 @@ namespace UISystem
 
         public void ActiveAbilityEqquiped(int index, RegularAbilityVisualData data)
         {
+            currentActiveDisplayed.Add(data.RegularActiveAbilityType, activeAbilityButtons[index]);
             activeAbilityButtons[index].SetIcon(data.Icon);
         }
 
@@ -427,8 +429,7 @@ namespace UISystem
         {
             if (currentPassiveDisplayed.ContainsKey(passiveAbility.PassiveActiveAbilityType))
             {
-                currentPassiveDisplayed[passiveAbility.PassiveActiveAbilityType].AddLevel();
-                Debug.Log("Passive Ability Already Displayed");
+                currentPassiveDisplayed[passiveAbility.PassiveActiveAbilityType].SetLevel(GetPassiveAbilityLevel(passiveAbility.PassiveActiveAbilityType));
                 return;
             }
 
@@ -437,7 +438,7 @@ namespace UISystem
             PassiveAbilityDisplayUI emptyUI = passiveAbilityDisplayUIs.First((x) => !x.gameObject.activeInHierarchy);
 
             currentPassiveDisplayed.Add(passiveAbility.PassiveActiveAbilityType, emptyUI);
-            emptyUI.Initialize(passiveAbility);
+            emptyUI.Initialize(passiveAbility, GetPassiveAbilityLevel(passiveAbility.PassiveActiveAbilityType));
         }
 
         public void RemovePassiveAbility(PassiveAbilityType passiveAbilityType)
@@ -447,6 +448,18 @@ namespace UISystem
                 currentPassiveDisplayed[passiveAbilityType].Disable();
                 currentPassiveDisplayed.Remove(passiveAbilityType);
             }
+        }
+
+        public void SwapActiveAbility(RegularActiveAbilityType type1, RegularActiveAbilityType type2)
+        {
+            AbilityTriggerButton temp = currentActiveDisplayed[type1];
+            currentActiveDisplayed[type1] = currentActiveDisplayed[type2];
+            currentActiveDisplayed[type2] = temp;
+        }
+
+        public void UpgradeActiveAbility(RegularActiveAbilityType type, int arg2)
+        {
+            currentActiveDisplayed[type].SetLevel(arg2);
         }
     }
 }

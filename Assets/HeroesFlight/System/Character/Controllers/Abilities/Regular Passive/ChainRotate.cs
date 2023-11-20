@@ -50,7 +50,7 @@ public class ChainRotate : RegularActiveAbility
         currentDamagePercentage = damagePercentageCurve.GetCurrentValueFloat(currentLevel);
         currentDamage = (int)StatCalc.GetPercentage(baseDamage, currentDamagePercentage);
 
-        skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, true);
+        skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
         canRotate = true;
     }
 
