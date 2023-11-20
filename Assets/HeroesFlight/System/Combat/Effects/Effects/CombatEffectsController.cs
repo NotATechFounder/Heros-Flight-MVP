@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Combat.Effects.Enum;
 using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.Model;
 using HeroesFlight.System.Combat.StatusEffects.Enum;
+using HeroesFlight.System.Combat.Visuals;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
@@ -47,12 +49,22 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             }
             else
             {
-                var visual = effect.Visual == null
-                    ? null
-                    : ParticleManager.instance.Spawn(effect.Visual.GetComponent<Particle>(),
-                        visualsParent.position);
-                if (visual != null)
-                    visual.transform.SetParent(visualsParent);
+                GameObject visual = null;
+                if (effect.Visual != null)
+                {
+                    switch (effect.EffectType)
+                    {
+                        
+                        case EffectType.Root:
+                            ApplyRootEffect(effect, out visual);
+                            break;
+
+                        default:
+                            ApplyDotEffect(effect, out visual);
+                            break;
+                    }
+                }
+
 
                 var newModel = new StatusEffectRuntimeModel(effect, visual);
                 newModel.OnEnd += HandleStatusEffectEnd;
@@ -66,7 +78,17 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             foreach (var effectType in effectsEndedLastFrame)
             {
                 if (statusEffectsMap[effectType].Visual != null)
-                    statusEffectsMap[effectType].Visual.GetParticleSystem.Stop();
+                {
+                    if (statusEffectsMap[effectType].Visual.TryGetComponent<Particle>(out var particle))
+                    {
+                        particle.GetParticleSystem.Stop();
+                    }
+                    else
+                    {
+                        Destroy(statusEffectsMap[effectType].Visual);
+                    }
+                }
+
 
                 if (statusEffectsMap.ContainsKey(effectType))
                 {
@@ -213,6 +235,20 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             healthModificationRequestModel.IntentModel.ModifyAmount(
                 healthModificationRequestModel.IntentModel.Amount + additionalFinaleDamage
             );
+        }
+
+        protected virtual void ApplyDotEffect(StatusEffect effect, out GameObject visual)
+        {
+            visual = ParticleManager.instance.Spawn(effect.Visual.GetComponent<Particle>(),
+                visualsParent.position).gameObject;
+            visual.transform.SetParent(visualsParent);
+        }
+
+        protected virtual void ApplyRootEffect(StatusEffect effect, out GameObject visual)
+        {
+            visual = Instantiate(effect.Visual, visualsParent);
+            visual.transform.SetParent(visualsParent);
+            visual.GetComponent<EntanglingRootsVisual>().ShowRootsVisual();
         }
 
         protected virtual void HandleFullCounter(TriggerEffect effect,

@@ -7,6 +7,7 @@ using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Controllers.Movement;
 using HeroesFlightProject.System.NPC.Controllers;
+using UnityEngine;
 
 namespace HeroesFlight.System.NPC.Controllers.Effects
 {
@@ -28,7 +29,7 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
             {
                 case EffectType.Burn:
                     healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value *effectModel.CurrentStacks ,
-                        DamageCritType.NoneCritical,AttackType.DoT,CalculationType.Percentage,null));
+                        DamageCritType.NoneCritical,AttackType.DoT,effectModel.Effect.CalculationType,null));
                     break;
                 case EffectType.Freeze:
                     if(mover==null)
@@ -37,6 +38,8 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
                     mover.SetMovementSpeed( controller.AgentModel.AiData.MoveSpeed-speedModifier);
                     break;
                 case EffectType.Root:
+                    healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value,
+                        DamageCritType.NoneCritical,AttackType.DoT,effectModel.Effect.CalculationType,null));
                     break;
                 case EffectType.Poison:
                     break;
@@ -44,7 +47,7 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
                     break;
                 case EffectType.Reflect:
                     healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value,
-                        DamageCritType.NoneCritical,AttackType.DoT,CalculationType.Flat,null));
+                        DamageCritType.NoneCritical,AttackType.DoT,effectModel.Effect.CalculationType,null));
                     break;
                 case EffectType.Sacrifice:
                     break;
@@ -64,9 +67,16 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
                     mover.SetMovementSpeed( controller.AgentModel.AiData.MoveSpeed);
                     break;
                 case EffectType.Root:
+                    mover.SetMovementState(true);
                     break;
                
             }
+        }
+
+        protected override void ApplyRootEffect(StatusEffect effect, out GameObject visual)
+        {
+            base.ApplyRootEffect(effect, out visual);
+            mover.SetMovementState(false);
         }
     }
 }
