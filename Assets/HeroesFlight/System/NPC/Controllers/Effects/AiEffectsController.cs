@@ -6,6 +6,7 @@ using HeroesFlight.System.Combat.StatusEffects.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Controllers.Movement;
+using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
 
@@ -42,8 +43,16 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
                         DamageCritType.NoneCritical,AttackType.DoT,effectModel.Effect.CalculationType,null));
                     break;
                 case EffectType.Poison:
+                    healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value *effectModel.CurrentStacks ,
+                        DamageCritType.NoneCritical,AttackType.DoT,effectModel.Effect.CalculationType,null));
                     break;
                 case EffectType.Shock:
+                    healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value ,
+                        DamageCritType.NoneCritical,AttackType.DoT,effectModel.Effect.CalculationType,null));
+                    var shockController = effectModel.Visual.GetComponent<ShockEffectController>();
+                    ParticleManager.instance.Spawn(shockController.MainParticle, healthController.HealthTransform.position);
+                    shockController.TriggerEffect(healthController,new HealthModificationIntentModel(effectModel.Effect.OptionalValue ,
+                        DamageCritType.NoneCritical,AttackType.DoT,effectModel.Effect.CalculationType,null));
                     break;
                 case EffectType.Reflect:
                     healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value,

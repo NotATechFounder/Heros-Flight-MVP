@@ -55,6 +55,13 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                 {
                     switch (effect.EffectType)
                     {
+                        case EffectType.Poison:
+                            ApplyPoisonEffect(effect, out visual);
+                            break;
+                        case EffectType.Shock:
+                            ApplyShockEffect(effect, out visual);
+                            break;
+                            
                         case EffectType.Root:
                             ApplyRootEffect(effect, out visual);
                             break;
@@ -244,11 +251,24 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             visual.transform.SetParent(visualsParent);
         }
 
+        protected virtual void ApplyPoisonEffect(StatusEffect effect, out GameObject visual)
+        {
+            visual = ParticleManager.instance.Spawn(effect.Visual.GetComponent<Particle>(),
+                visualsParent.position).gameObject;
+            visual.transform.SetParent(visualsParent);
+        }
+
         protected virtual void ApplyRootEffect(StatusEffect effect, out GameObject visual)
         {
             visual = Instantiate(effect.Visual, visualsParent);
             visual.transform.SetParent(visualsParent);
             visual.GetComponent<EntanglingRootsVisual>().ShowRootsVisual();
+        }
+
+        protected virtual void ApplyShockEffect(StatusEffect effect, out GameObject visual)
+        {
+            visual = Instantiate(effect.Visual, visualsParent);
+            visual.transform.SetParent(visualsParent);
         }
 
         protected virtual void HandleFullCounter(TriggerEffect effect,
