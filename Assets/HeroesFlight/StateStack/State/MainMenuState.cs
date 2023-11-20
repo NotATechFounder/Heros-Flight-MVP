@@ -4,6 +4,7 @@ using HeroesFlight.Common.Enum;
 using HeroesFlight.Common.Progression;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Dice;
 using HeroesFlight.System.Stats;
 using HeroesFlight.System.Stats.Handlers;
 using HeroesFlight.System.UI;
@@ -36,6 +37,7 @@ namespace HeroesFlight.StateStack.State
                     var uiSystem = GetService<IUISystem>();
                     var dataSystem = GetService<DataSystemInterface>();
                     var traitSystem = GetService<TraitSystemInterface>();
+                    var diceSystem = GetService<DiceSystemInterface>();
                     traitSystem.OnTraitsStateChange += HandleTraitStateChange;
                     TraitSystemInterface traitSystemInterface = GetService<TraitSystemInterface>();
                     Debug.Log("Initing trait system");
@@ -67,11 +69,13 @@ namespace HeroesFlight.StateStack.State
                     {
                         uiSystem.UiEventHandler.DiceMenu.ShowDiceMenu(value, () =>
                         {
-                            int rolledValue = 0;
-                            //diceSystem.RollDice((rolledValue) =>
-                            //{
-                            uiSystem.UiEventHandler.StatePointsMenu.OnNewDiceRoll(statAttributeType, rolledValue);
-                            //});
+                            diceSystem.RollDice((rolledValue) =>
+                            {
+                                uiSystem.UiEventHandler.StatePointsMenu.OnNewDiceRoll(statAttributeType, rolledValue);
+                                //To update whats will be on the dice ui in the end can call
+                                //uiSystem.UiEventHandler.DiceMenu.ModifyDiceRollResultUi($"+{rolledValue}");
+                                //where ModifyDiceRollResultUi accepts  string so you can modify and show w/e you want
+                            });
                         });
                     };
 
