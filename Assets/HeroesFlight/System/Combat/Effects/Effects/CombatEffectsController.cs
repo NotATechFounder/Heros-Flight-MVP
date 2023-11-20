@@ -44,7 +44,8 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                 }
                 else
                 {
-                    targetModel.RefreshDuration();
+                    if (effect.CanReApply)
+                        targetModel.RefreshDuration();
                 }
             }
             else
@@ -54,7 +55,6 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                 {
                     switch (effect.EffectType)
                     {
-                        
                         case EffectType.Root:
                             ApplyRootEffect(effect, out visual);
                             break;

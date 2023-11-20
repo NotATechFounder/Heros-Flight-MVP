@@ -9,15 +9,13 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         [SerializeField] protected EffectDurationType durationType;
         [SerializeField] protected float duration;
         [SerializeField] protected bool isStackable;
-       
-        
+        [SerializeField] protected bool canBeReApplied;
+
+
         public EffectDurationType DurationType => durationType;
         public float Duration => duration;
-      
-        public bool IsStackable => isStackable;
-      
-      
-    }
 
-    
+        public bool IsStackable => isStackable;
+        public bool CanReApply => canBeReApplied;
+    }
 }
