@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.Common.Progression;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Stats;
@@ -33,6 +35,8 @@ namespace HeroesFlight.StateStack.State
                     progressReporter.SetDone();
                     var uiSystem = GetService<IUISystem>();
                     var dataSystem = GetService<DataSystemInterface>();
+                    var traitSystem = GetService<TraitSystemInterface>();
+                    traitSystem.OnTraitsStateChange += HandleTraitStateChange;
                     TraitSystemInterface traitSystemInterface = GetService<TraitSystemInterface>();
                     Debug.Log("Initing trait system");
                     traitSystemInterface.Init();
@@ -64,9 +68,13 @@ namespace HeroesFlight.StateStack.State
                     void HandleGameStartRequest()
                     {
                         uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;
-                        
+                        traitSystem.OnTraitsStateChange -= HandleTraitStateChange;
                         AppStateStack.State.Set(ApplicationState.Gameplay);
                     } 
+                    void HandleTraitStateChange(Dictionary<StatAttributeType, int> modifiers)
+                    {
+                        dataSystem.StatManager.ProcessStatPointsModifiers(modifiers);
+                    }
                     
                     uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed += HandleGameStartRequest;
                     dataSystem.CurrencyManager.OnCurrencyChanged += uiSystem.UiEventHandler.MainMenu.CurrencyChanged;
@@ -84,5 +92,7 @@ namespace HeroesFlight.StateStack.State
                     throw new ArgumentOutOfRangeException(nameof(evt.Action), evt.Action, null);
             }
         }
+
+      
     }
 }
