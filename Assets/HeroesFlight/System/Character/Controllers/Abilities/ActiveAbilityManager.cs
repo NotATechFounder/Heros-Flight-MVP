@@ -519,25 +519,25 @@ public class ActiveAbilityManager : MonoBehaviour
         switch (passiveAbilityType)
         {
             case PassiveAbilityType.FrostStrike:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             case PassiveAbilityType.FlameStrike:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             case PassiveAbilityType.LightningStrike:
 
                 break;
             case PassiveAbilityType.LichArmor:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             case PassiveAbilityType.IfritsArmor:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             case PassiveAbilityType.HeartThief:
                 characterStatController.ModifyLifeSteal(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("LifeSteal", eqquipedPassiveAbilities[passiveAbilityType]), false);
                 break;
             case PassiveAbilityType.Reflect:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             case PassiveAbilityType.LuckyHit:
                 characterStatController.ModifyCriticalHitChance(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("CriticalHitChance", eqquipedPassiveAbilities[passiveAbilityType]), false);
@@ -552,7 +552,7 @@ public class ActiveAbilityManager : MonoBehaviour
 
                 break;
             case PassiveAbilityType.Sacrifice:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             case PassiveAbilityType.BoilingPoint:
 
@@ -565,7 +565,7 @@ public class ActiveAbilityManager : MonoBehaviour
                 characterStatController.ModifyDodgeChance(allPassiveAbilitiesDic[passiveAbilityType].GetLevelValue("DodgeChance", eqquipedPassiveAbilities[passiveAbilityType]), false);
                 break;
             case PassiveAbilityType.FullCounter:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             default: break;
         }
