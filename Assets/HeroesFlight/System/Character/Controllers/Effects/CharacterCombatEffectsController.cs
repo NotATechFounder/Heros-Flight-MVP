@@ -30,18 +30,18 @@ namespace HeroesFlight.System.Character.Controllers.Effects
                     var data = effectModel.Effect.GetData<BurnEffectData>();
 
                     healthController.TryDealDamage(new HealthModificationIntentModel(
-                        data.Damage.GetCurrentValue(1) * effectModel.CurrentStacks,
+                        data.Damage.GetCurrentValue(effectModel.LVL) * effectModel.CurrentStacks,
                         DamageCritType.NoneCritical, AttackType.Regular, effectModel.Effect.CalculationType, null));
                     break;
                 case EffectType.Root:
                     var rootData = effectModel.Effect.GetData<RootEffectData>();
-                    healthController.TryDealDamage(new HealthModificationIntentModel(rootData.Damage.GetCurrentValue(1),
+                    healthController.TryDealDamage(new HealthModificationIntentModel(rootData.Damage.GetCurrentValue(effectModel.LVL),
                         DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
                 case EffectType.Poison:
                     var poisonData = effectModel.Effect.GetData<PoisonEffectData>();
                     healthController.TryDealDamage(new HealthModificationIntentModel(
-                        poisonData.Damage.GetCurrentValue(1) * effectModel.CurrentStacks,
+                        poisonData.Damage.GetCurrentValue(effectModel.LVL) * effectModel.CurrentStacks,
                         DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
             }
@@ -58,9 +58,9 @@ namespace HeroesFlight.System.Character.Controllers.Effects
             }
         }
 
-        protected override void ApplyRootEffect(StatusEffect effect, out GameObject visual)
+        protected override void ApplyRootEffect(StatusEffect effect, out GameObject visual, int modelLvl)
         {
-            base.ApplyRootEffect(effect, out visual);
+            base.ApplyRootEffect(effect, out visual,modelLvl);
             controller.SetActionState(false);
         }
     }

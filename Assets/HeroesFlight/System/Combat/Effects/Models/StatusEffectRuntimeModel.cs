@@ -10,17 +10,19 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         public event Action<StatusEffectRuntimeModel> OnEnd;
         public event Action<StatusEffectRuntimeModel> OnTick; 
 
-        public StatusEffectRuntimeModel(StatusEffect effect, GameObject visual)
+        public StatusEffectRuntimeModel(StatusEffect effect, GameObject visual, int modelLvl)
         {
             Effect = effect;
             Visual = visual;
             currentDuration = effect.Duration;
             CurrentStacks = 1;
+            LVL = modelLvl;
         }
 
         public StatusEffect Effect { get; }
         public int CurrentStacks { get; private set; }
         public GameObject Visual { get; }
+        public int LVL { get; }
         private float currentDuration;
         public void ExecuteTick()
         {

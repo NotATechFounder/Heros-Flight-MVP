@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Combat.Effects.Effects.Data;
 using HeroesFlight.System.Combat.Effects.Enum;
-using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.Model;
 using HeroesFlight.System.Combat.StatusEffects.Enum;
 using HeroesFlight.System.Combat.Visuals;
@@ -35,7 +33,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             attackController = GetComponent<IAttackControllerInterface>();
         }
 
-        public virtual void ApplyStatusEffect(StatusEffect effect)
+        public virtual void ApplyStatusEffect(StatusEffect effect, int modelLvl)
         {
             if (statusEffectsMap.TryGetValue(effect.EffectType, out var targetModel))
             {
@@ -57,27 +55,27 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                     switch (effect.EffectType)
                     {
                         case EffectType.Poison:
-                            ApplyPoisonEffect(effect, out visual);
+                            ApplyPoisonEffect(effect, out visual,modelLvl);
                             break;
                         case EffectType.Shock:
-                            ApplyShockEffect(effect, out visual);
+                            ApplyShockEffect(effect, out visual,modelLvl);
                             break;
 
                         case EffectType.Root:
-                            ApplyRootEffect(effect, out visual);
+                            ApplyRootEffect(effect, out visual,modelLvl);
                             break;
 
                         case EffectType.Freeze:
-                            ApplyFreezeEffect(effect, out visual);
+                            ApplyFreezeEffect(effect, out visual,modelLvl);
                             break;
                         default:
-                            ApplyDotEffect(effect, out visual);
+                            ApplyDotEffect(effect, out visual,modelLvl);
                             break;
                     }
                 }
 
 
-                var newModel = new StatusEffectRuntimeModel(ConvertStatusToRealEffect(effect), visual);
+                var newModel = new StatusEffectRuntimeModel(ConvertStatusToRealEffect(effect), visual,modelLvl);
                 newModel.OnEnd += HandleStatusEffectEnd;
                 newModel.OnTick += HandleStatusEffectTick;
                 statusEffectsMap.Add(effect.EffectType, newModel);
@@ -108,6 +106,8 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                     return null;
             }
         }
+
+      
 
         public virtual void ExecuteTick()
         {
@@ -163,6 +163,11 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             }
         }
 
+        public void AddCombatEffect(CombatEffect effect)
+        {
+            AddCombatEffect(effect,1);
+        }
+
         public void RemoveEffect(CombatEffect effect)
         {
             if (effectsMap.TryGetValue(effect.ApplyType, out var effects))
@@ -209,17 +214,17 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                 {
                     foreach (var status in model.Effect.StatusEffects)
                     {
-                        TryTriggerEffect(status, effectsHandler, requestModel);
+                        TryTriggerEffect(status,model.Lvl, effectsHandler, requestModel);
                     }
                 }
             }
         }
 
-        protected void TryTriggerEffect(Effect status, CombatEffectsController effectsHandler,
+        protected void TryTriggerEffect(Effect status, int modelLvl, CombatEffectsController effectsHandler,
             HealthModificationRequestModel healthModificationRequestModel)
         {
             var data = status.GetData<EffectData>();
-            var triggerChance = data.ProcChance.GetCurrentValue(1);
+            var triggerChance = data.ProcChance.GetCurrentValue(modelLvl);
             Debug.Log(triggerChance);
             var rng = Random.Range(0, 101);
             if (rng > triggerChance)
@@ -229,37 +234,37 @@ namespace HeroesFlight.System.Combat.Effects.Effects
 
             if (type.IsSubclassOf(typeof(StatusEffect)))
             {
-                effectsHandler.ApplyStatusEffect(status as StatusEffect);
+                effectsHandler.ApplyStatusEffect(status as StatusEffect,modelLvl);
             }
             else if (type.IsSubclassOf(typeof(TriggerEffect)))
             {
-                ActivateEffectOnTarget(status as TriggerEffect, effectsHandler, healthModificationRequestModel);
+                ActivateEffectOnTarget(status as TriggerEffect, effectsHandler, healthModificationRequestModel,modelLvl);
             }
         }
 
         protected virtual void ActivateEffectOnTarget(TriggerEffect effect, CombatEffectsController effectsHandler,
-            HealthModificationRequestModel healthModificationRequestModel)
+            HealthModificationRequestModel healthModificationRequestModel, int modelLvl)
         {
             switch (effect.EffectType)
             {
                 case EffectType.Reflect:
-                    HandleReflect(effect, healthModificationRequestModel);
+                    HandleReflect(effect, healthModificationRequestModel,modelLvl);
                     break;
                 case EffectType.Sacrifice:
-                    HandleSacrifice(effect, healthModificationRequestModel);
+                    HandleSacrifice(effect, healthModificationRequestModel,modelLvl);
                     break;
                 case EffectType.FullCounter:
-                    HandleFullCounter(effect, healthModificationRequestModel);
+                    HandleFullCounter(effect, healthModificationRequestModel,modelLvl);
                     break;
             }
         }
 
         protected virtual void HandleSacrifice(TriggerEffect effect,
-            HealthModificationRequestModel healthModificationRequestModel)
+            HealthModificationRequestModel healthModificationRequestModel, int modelLvl)
         {
             var data = effect.GetData<SacrificeEffectData>();
-            var additionalDamage = attackController.Damage / 100 * data.DamageBoost.GetCurrentValue(1);
-            var healthPercTreshhold = healthController.MaxHealth / 100 * data.HealthThreshhold.GetCurrentValue(1);
+            var additionalDamage = attackController.Damage / 100 * data.DamageBoost.GetCurrentValue(modelLvl);
+            var healthPercTreshhold = healthController.MaxHealth / 100 * data.HealthThreshhold.GetCurrentValue(modelLvl);
             var healthDiff = healthController.MaxHealth - healthController.CurrentHealth;
             var currentHealthPerc = Mathf.FloorToInt(healthDiff / healthPercTreshhold);
             var additionalFinaleDamage = additionalDamage * currentHealthPerc;
@@ -268,47 +273,47 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             );
         }
 
-        protected virtual void ApplyDotEffect(StatusEffect effect, out GameObject visual)
+        protected virtual void ApplyDotEffect(StatusEffect effect, out GameObject visual, int modelLvl)
         {
             visual = ParticleManager.instance.Spawn(effect.Visual.GetComponent<Particle>(),
                 visualsParent.position).gameObject;
             visual.transform.SetParent(visualsParent);
         }
 
-        protected virtual void ApplyFreezeEffect(StatusEffect effect, out GameObject visual)
+        protected virtual void ApplyFreezeEffect(StatusEffect effect, out GameObject visual, int modelLvl)
         {
             visual = ParticleManager.instance.Spawn(effect.Visual.GetComponent<Particle>(),
                 visualsParent.position).gameObject;
             visual.transform.SetParent(visualsParent);
         }
 
-        protected virtual void ApplyPoisonEffect(StatusEffect effect, out GameObject visual)
+        protected virtual void ApplyPoisonEffect(StatusEffect effect, out GameObject visual, int modelLvl)
         {
             visual = ParticleManager.instance.Spawn(effect.Visual.GetComponent<Particle>(),
                 visualsParent.position).gameObject;
             visual.transform.SetParent(visualsParent);
         }
 
-        protected virtual void ApplyRootEffect(StatusEffect effect, out GameObject visual)
+        protected virtual void ApplyRootEffect(StatusEffect effect, out GameObject visual, int modelLvl)
         {
             visual = Instantiate(effect.Visual, visualsParent);
             visual.transform.SetParent(visualsParent);
             visual.GetComponent<EntanglingRootsVisual>().ShowRootsVisual();
         }
 
-        protected virtual void ApplyShockEffect(StatusEffect effect, out GameObject visual)
+        protected virtual void ApplyShockEffect(StatusEffect effect, out GameObject visual, int modelLvl)
         {
             visual = Instantiate(effect.Visual, visualsParent);
             visual.transform.SetParent(visualsParent);
         }
 
         protected virtual void HandleFullCounter(TriggerEffect effect,
-            HealthModificationRequestModel healthModificationRequestModel)
+            HealthModificationRequestModel healthModificationRequestModel, int modelLvl)
         {
             var data = effect.GetData<FullCounterData>();
             healthModificationRequestModel.IntentModel.Attacker
                 .TryDealDamage(new HealthModificationIntentModel(
-                    attackController.Damage / 100 * data.Damage.GetCurrentValue(1),
+                    attackController.Damage / 100 * data.Damage.GetCurrentValue(modelLvl),
                     DamageCritType.NoneCritical, AttackType.DoT, effect.CalculationType, null));
             if (effect.Visual != null)
             {
@@ -323,15 +328,15 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         }
 
         protected virtual void HandleReflect(TriggerEffect effect,
-            HealthModificationRequestModel healthModificationRequestModel)
+            HealthModificationRequestModel healthModificationRequestModel, int modelLvl)
         {
             var data = effect.GetData<ReflectEffectData>();
             var possibleHealthDamage =
                 healthModificationRequestModel.IntentModel.Attacker.MaxHealth / 100 *
-                data.PercentageDamage.GetCurrentValue(1);
-            var finalDamage = possibleHealthDamage > data.FlatDamage.GetCurrentValue(1)
+                data.PercentageDamage.GetCurrentValue(modelLvl);
+            var finalDamage = possibleHealthDamage > data.FlatDamage.GetCurrentValue(modelLvl)
                 ? possibleHealthDamage
-                :  data.FlatDamage.GetCurrentValue(1);
+                :  data.FlatDamage.GetCurrentValue(modelLvl);
 
 
             healthModificationRequestModel.IntentModel.Attacker

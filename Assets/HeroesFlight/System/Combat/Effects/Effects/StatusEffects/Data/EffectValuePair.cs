@@ -10,7 +10,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects.Data
 
         public float GetCurrentValue(int lvl)
         {
-            return StartValue + IncreasePerLvl * (lvl-1);
+            return StartValue + IncreasePerLvl * (lvl);
         }
     }
 }

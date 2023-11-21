@@ -30,34 +30,34 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
                 case EffectType.Burn:
                     var burnData = effectModel.Effect.GetData<BurnEffectData>();
                     healthController.TryDealDamage(new HealthModificationIntentModel(
-                        burnData.Damage.GetCurrentValue(1) * effectModel.CurrentStacks,
+                        burnData.Damage.GetCurrentValue(effectModel.LVL) * effectModel.CurrentStacks,
                         DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
 
                 case EffectType.Root:
                     var rootData = effectModel.Effect.GetData<RootEffectData>();
-                    healthController.TryDealDamage(new HealthModificationIntentModel(rootData.Damage.GetCurrentValue(1),
+                    healthController.TryDealDamage(new HealthModificationIntentModel(
+                        rootData.Damage.GetCurrentValue(effectModel.LVL),
                         DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
                 case EffectType.Poison:
                     var poisonData = effectModel.Effect.GetData<PoisonEffectData>();
                     healthController.TryDealDamage(new HealthModificationIntentModel(
-                        poisonData.Damage.GetCurrentValue(1) * effectModel.CurrentStacks,
+                        poisonData.Damage.GetCurrentValue(effectModel.LVL) * effectModel.CurrentStacks,
                         DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
                 case EffectType.Shock:
                     var shockData = effectModel.Effect.GetData<ShockEffectData>();
                     healthController.TryDealDamage(new HealthModificationIntentModel(
-                        shockData.MainDamage.GetCurrentValue(1),
+                        shockData.MainDamage.GetCurrentValue(effectModel.LVL),
                         DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     var shockController = effectModel.Visual.GetComponent<ShockEffectController>();
                     ParticleManager.instance.Spawn(shockController.MainParticle,
                         healthController.HealthTransform.position);
                     shockController.TriggerEffect(healthController, new HealthModificationIntentModel(
-                        shockData.SecondaryDamage.GetCurrentValue(1),
+                        shockData.SecondaryDamage.GetCurrentValue(effectModel.LVL),
                         DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
-              
             }
         }
 
@@ -78,19 +78,19 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
             }
         }
 
-        protected override void ApplyRootEffect(StatusEffect effect, out GameObject visual)
+        protected override void ApplyRootEffect(StatusEffect effect, out GameObject visual, int modelLvl)
         {
-            base.ApplyRootEffect(effect, out visual);
+            base.ApplyRootEffect(effect, out visual,modelLvl);
             mover.SetMovementState(false);
         }
 
-        protected override void ApplyFreezeEffect(StatusEffect effect, out GameObject visual)
+        protected override void ApplyFreezeEffect(StatusEffect effect, out GameObject visual, int modelLvl)
         {
-            base.ApplyFreezeEffect(effect, out visual);
+            base.ApplyFreezeEffect(effect, out visual,modelLvl);
             if (mover == null)
                 return;
             var data = effect.GetData<FreezeEffectData>();
-            var speedModifier = controller.AgentModel.AiData.MoveSpeed / 100 * data.SlowAmount.GetCurrentValue(1);
+            var speedModifier = controller.AgentModel.AiData.MoveSpeed / 100 * data.SlowAmount.GetCurrentValue(modelLvl);
             mover.SetMovementSpeed(controller.AgentModel.AiData.MoveSpeed - speedModifier);
         }
     }
