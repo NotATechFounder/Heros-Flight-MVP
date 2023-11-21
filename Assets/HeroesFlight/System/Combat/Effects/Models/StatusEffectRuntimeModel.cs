@@ -1,6 +1,5 @@
 ﻿using System;
 using HeroesFlight.System.Combat.Effects.Enum;
-using Pelumi.ObjectPool;
 using UnityEngine;
 
 namespace HeroesFlight.System.Combat.Effects.Effects
@@ -11,19 +10,20 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         public event Action<StatusEffectRuntimeModel> OnEnd;
         public event Action<StatusEffectRuntimeModel> OnTick; 
 
-        public StatusEffectRuntimeModel(StatusEffect effect, Particle visual)
+        public StatusEffectRuntimeModel(StatusEffect effect, GameObject visual, int modelLvl)
         {
             Effect = effect;
             Visual = visual;
             currentDuration = effect.Duration;
             CurrentStacks = 1;
+            LVL = modelLvl;
         }
 
         public StatusEffect Effect { get; }
         public int CurrentStacks { get; private set; }
-        public Particle Visual { get; }
+        public GameObject Visual { get; }
+        public int LVL { get; }
         private float currentDuration;
-
         public void ExecuteTick()
         {
             if (Effect.DurationType == EffectDurationType.Fixed)

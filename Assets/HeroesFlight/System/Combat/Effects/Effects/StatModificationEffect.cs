@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using NotImplementedException = System.NotImplementedException;
 
 namespace HeroesFlight.System.Combat.Effects.Effects
 {
@@ -8,5 +9,9 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         [SerializeField] private string targetAttribute;
 
         public string TargetAttribute => targetAttribute;
+        public override T GetData<T>()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

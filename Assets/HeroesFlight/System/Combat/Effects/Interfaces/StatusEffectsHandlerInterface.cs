@@ -4,7 +4,7 @@ namespace HeroesFlight.System.Combat.StatusEffects
 {
     public interface StatusEffectsHandlerInterface
     {
-        void ApplyStatusEffect(StatusEffect effect);
+        void ApplyStatusEffect(StatusEffect effect,int lvl);
         void ExecuteTick();
     }
 }

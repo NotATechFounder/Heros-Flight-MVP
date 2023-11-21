@@ -71,7 +71,6 @@ namespace HeroesFlight.System.Combat
             OnTick += model.EffectHandler.ExecuteTick;
             if (model.EntityType == CombatEntityType.Player)
             {
-                Debug.Log($"player registered,hes effects controller is null ? {model.EffectHandler==null}");
                 characterSkillHandler =
                     new CharacterSkillHandler(model.HealthController.HealthTransform.GetComponent<CharacterAbilityInterface>());
                 specialBar = model.AttackController.specialBar;
@@ -85,15 +84,13 @@ namespace HeroesFlight.System.Combat
             {
                 if (requestModel.IntentModel.CalculationType == CalculationType.Percentage)
                 {
-                    Debug.Log(requestModel.IntentModel.Amount);
                     var modificationValue = requestModel.RequestOwner.MaxHealth / 100 * requestModel.IntentModel.Amount;
                     requestModel.IntentModel.ModifyAmount(modificationValue); 
-                    Debug.Log(requestModel.IntentModel.Amount);
                 }
 
-                if (requestModel.IntentModel.Source != null)
+                if (requestModel.IntentModel.Attacker != null)
                 {
-                    if (combatEntities.TryGetValue(requestModel.IntentModel.Source, out var model))
+                    if (combatEntities.TryGetValue(requestModel.IntentModel.Attacker, out var model))
                     {
                         if (model.EffectHandler != null)
                         {
@@ -139,6 +136,9 @@ namespace HeroesFlight.System.Combat
 
         private void HandlePlayerHealthModified(HealthModificationRequestModel obj)
         {
+            if(obj.IntentModel.Amount==0)
+                return;
+            
             uiSystem.ShowDamageText(obj.IntentModel.Amount, obj.RequestOwner.HealthTransform,
                 obj.IntentModel.DamageCritType == DamageCritType.Critical, true,
                 obj.IntentModel.AttackType == AttackType.Healing);

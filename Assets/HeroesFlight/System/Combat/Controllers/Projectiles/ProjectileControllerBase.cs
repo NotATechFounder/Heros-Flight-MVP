@@ -37,6 +37,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         float damage;
         float currentLifetime;
         bool disabled;
+        private IHealthController owner;
 
         void Update()
         {
@@ -87,8 +88,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             OnHit?.Invoke(this);
         }
 
-        public void SetupProjectile(float targetDamage, Vector2 targetDirection)
+        public void SetupProjectile(float targetDamage, Vector2 targetDirection,IHealthController currentOwner=null)
         {
+            owner = currentOwner;
             currentDirection = targetDirection;
             currentLifetime = 0;
             damage = targetDamage;
@@ -112,12 +114,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 {
                     case DamgeType.Normal:
                         healthController.TryDealDamage(new HealthModificationIntentModel(damage,
-                            DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, null));
+                            DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, owner));
                         break;
                     case DamgeType.Line:
                         healthController.TryDealLineDamage(numberOfLines, lineDamageDelay,
                             new HealthModificationIntentModel(damage, DamageCritType.NoneCritical, AttackType.Regular,
-                                CalculationType.Flat,null));
+                                CalculationType.Flat,owner));
                         break;
                     default:
                         break;

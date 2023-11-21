@@ -654,7 +654,7 @@ namespace HeroesFlight.System.Gameplay
 
             if (vfxReference != null)
                 environmentSystem.ParticleManager.Spawn(vfxReference,
-                    healthModificationIntentModel.TargetTransform.position);
+                    healthModificationIntentModel.DefenderTransform.position);
 
 
             //  GameEffectController.StopFrame(0.1f);

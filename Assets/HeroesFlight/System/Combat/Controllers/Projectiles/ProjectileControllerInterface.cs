@@ -8,6 +8,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public event Action<ProjectileControllerInterface> OnDeactivate;
         event Action<ProjectileControllerInterface> OnHit;
 
-        void SetupProjectile(float targetDamage,Vector2 targetDirection);
+        void SetupProjectile(float targetDamage,Vector2 targetDirection,IHealthController currentOwner=null);
     }
 }
