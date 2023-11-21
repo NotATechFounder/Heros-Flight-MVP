@@ -7,14 +7,10 @@ using UnityEngine;
 public class AccountLevelManager : MonoBehaviour
 {
     public event Action<int, int> OnLevelUp;
-    public event Action<int, int, float> OnEXPAdded;
 
-    [SerializeField] private float expToNextLevelBase;
-    [SerializeField] private float expToNextLevelMultiplier;
-
+    [SerializeField] private CustomAnimationCurve levelCurve;
     [Header("Debug")]
     [SerializeField] private Data data;
-    private float expToNextLevel => expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, data.currentLevel);
 
     private void Start()
     {
@@ -29,44 +25,27 @@ public class AccountLevelManager : MonoBehaviour
         }
     }
 
+    public int TotalExpAccumulated(int currentLevel) => levelCurve.GetTotalValue(currentLevel);
+    public float GetNormalizedExp() => data.currentExp / GetExpForNextLevel(data.currentLevel);
+    public int GetExpForLevel(int level) => levelCurve.GetCurrentValueInt(level);
+    public float GetExpForNextLevel(int currentLevel) => levelCurve.GetCurrentValueInt(currentLevel + 1);
+
     public void AddExp(float exp)
     {
         data.currentExp += exp;
-        if (data.currentExp >= expToNextLevel)
-        {
-            LevelUp();
-        }
-        else
-        {
-            OnEXPAdded?.Invoke(0, 0, data.currentExp / expToNextLevel);
-        }
-
-        Save();
-    }
-
-    private void LevelUp()
-    {
-        int currentLvl = data.currentLevel;
         int numberOfLevelsGained = 0;
-        do
+        while (data.currentExp >= GetExpForNextLevel(data.currentLevel))
         {
-            LevelUpOnce();
+            Debug.Log("Exp: " + data.currentExp + " / " + GetExpForNextLevel(data.currentLevel));
+            data.currentExp -= GetExpForNextLevel(data.currentLevel);
+            data.currentLevel++;
             ++numberOfLevelsGained;
-        } while (data.currentExp >= expToNextLevel);
+        }
 
-        OnLevelUp?.Invoke(currentLvl, numberOfLevelsGained);
-        OnEXPAdded?.Invoke(currentLvl, numberOfLevelsGained, data.currentExp / expToNextLevel);
-    }
-
-    private void LevelUpOnce()
-    {
-        data.currentExp -= expToNextLevel;
-        data.currentLevel++;
-    }
-
-    public float GetNormalizedExp()
-    {
-        return data.currentExp / expToNextLevel;
+        if (numberOfLevelsGained > 0)
+        {
+            OnLevelUp?.Invoke(data.currentLevel, numberOfLevelsGained);
+        }
     }
 
     public void Load()
@@ -80,7 +59,20 @@ public class AccountLevelManager : MonoBehaviour
         FileManager.Save( "AccountLevel",data);
     }
 
-    [System.Serializable]
+    private void OnDrawGizmosSelected()
+    {
+        if (levelCurve != null)
+        {
+            levelCurve.UpdateCurve();
+            Gizmos.color = Color.red;
+            for (int i = 0; i < levelCurve.maxLevel; i++)
+            {
+                Gizmos.DrawSphere(new Vector3(i, levelCurve.GetCurrentValueInt(i) / 10) + transform.position, 1f);
+            }
+        }
+    }
+
+    [Serializable]
     public class Data
     {
         public int currentLevel;

@@ -19,6 +19,7 @@ public class LightningArrow : RegularActiveAbility
     [Header("Damage")]
     [SerializeField] private CustomAnimationCurve damagePercentageCurve;
     [SerializeField] private ProjectileControllerBase projectileController;
+    [SerializeField] Transform projectileSpawnPoint;
 
     [Header("Animation and Viusal Settings")]
     [SerializeField] private Transform visual;
@@ -41,6 +42,7 @@ public class LightningArrow : RegularActiveAbility
 
     public override void OnActivated()
     {
+        skeletonAnimation.gameObject.SetActive(true);
         GetEffectParticleByLevel().Play();
 
         currentDamagePercentage = damagePercentageCurve.GetCurrentValueFloat(currentLevel);
@@ -77,6 +79,7 @@ public class LightningArrow : RegularActiveAbility
             case attackAnimation1Name:
                 // play no animation
                 skeletonAnimation.AnimationState.SetEmptyAnimation(0, 0);
+                skeletonAnimation.gameObject.SetActive(false);
                 break;
             default: break;
         }
@@ -95,6 +98,7 @@ public class LightningArrow : RegularActiveAbility
         this.characterControllerInterface = characterControllerInterface;
         characterControllerInterface.OnFaceDirectionChange += Flip;
         skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
+        skeletonAnimation.gameObject.SetActive(false);
     }
 
     private void Flip(bool facingLeft)
@@ -104,7 +108,7 @@ public class LightningArrow : RegularActiveAbility
 
     private void FireProjectile()
     {
-        ProjectileControllerBase bullet = Instantiate(projectileController, transform.position, Quaternion.identity);
+        ProjectileControllerBase bullet = Instantiate(projectileController, projectileSpawnPoint.position, Quaternion.identity);
         bullet.transform.localScale = new Vector3(visual.localScale.x * bullet.transform.localScale.y, bullet.transform.localScale.y, 1);
 
         bullet.SetupProjectile(currentDamage, -visual.localScale.x * Vector2.right);

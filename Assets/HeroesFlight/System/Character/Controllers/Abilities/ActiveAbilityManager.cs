@@ -83,7 +83,7 @@ public class ActiveAbilityManager : MonoBehaviour
             AddPassiveAbility(PassiveAbilityType.DuckDodgeDip);
             AddPassiveAbility(PassiveAbilityType.LuckyHit);
 
-            EquippedAbility (RegularActiveAbilityType.HeavenStab);
+            EquippedAbility (RegularActiveAbilityType.LightningArrow);
             EquippedAbility (RegularActiveAbilityType.SwordWhirlwind);
             EquippedAbility (RegularActiveAbilityType.LightNova);
 
