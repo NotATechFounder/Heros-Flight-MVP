@@ -91,9 +91,9 @@ namespace HeroesFlight.System.Combat
                     Debug.Log(requestModel.IntentModel.Amount);
                 }
 
-                if (requestModel.IntentModel.Source != null)
+                if (requestModel.IntentModel.Attacker != null)
                 {
-                    if (combatEntities.TryGetValue(requestModel.IntentModel.Source, out var model))
+                    if (combatEntities.TryGetValue(requestModel.IntentModel.Attacker, out var model))
                     {
                         if (model.EffectHandler != null)
                         {
@@ -139,6 +139,9 @@ namespace HeroesFlight.System.Combat
 
         private void HandlePlayerHealthModified(HealthModificationRequestModel obj)
         {
+            if(obj.IntentModel.Amount==0)
+                return;
+            
             uiSystem.ShowDamageText(obj.IntentModel.Amount, obj.RequestOwner.HealthTransform,
                 obj.IntentModel.DamageCritType == DamageCritType.Critical, true,
                 obj.IntentModel.AttackType == AttackType.Healing);

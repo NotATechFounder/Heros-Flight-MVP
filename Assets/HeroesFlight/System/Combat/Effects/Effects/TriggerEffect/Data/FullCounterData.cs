@@ -3,8 +3,8 @@
 namespace HeroesFlight.System.Combat.Effects.Effects.Data
 {
     [Serializable]
-    public class EffectData
+    public class FullCounterData : EffectData
     {
-        public StatusEffectValuePair ProcChance;
+        public EffectValuePair Damage;
     }
 }

@@ -3,7 +3,7 @@
 namespace HeroesFlight.System.Combat.Effects.Effects.Data
 {
     [Serializable]
-    public class StatusEffectValuePair
+    public class EffectValuePair
     {
         public float StartValue;
         public float IncreasePerLvl;

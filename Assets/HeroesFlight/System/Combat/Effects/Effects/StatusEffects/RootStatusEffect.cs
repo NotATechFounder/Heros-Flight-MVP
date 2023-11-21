@@ -1,14 +1,15 @@
-﻿using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
+﻿using HeroesFlight.System.Combat.Effects.Effects.Data;
+using UnityEngine;
 
 namespace HeroesFlight.System.Combat.Effects.Effects
 {
     [CreateAssetMenu(fileName = "RootEffect", menuName = "Combat/Effects/StatusEffects/Root", order = 100)]
-    public class RootEffect : StatusEffect
+    public class RootStatusEffect : StatusEffect
     {
+        [SerializeField] private RootEffectData Data;
         public override T GetData<T>()
         {
-            throw new NotImplementedException();
+            return Data as T;
         }
     }
 }

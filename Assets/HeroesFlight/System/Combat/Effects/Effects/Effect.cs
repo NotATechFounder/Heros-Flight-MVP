@@ -8,12 +8,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects
     {
         [SerializeField] protected EffectType effectType;
         [SerializeField] protected CalculationType calculationType;
-        [SerializeField] protected float value;
-        [SerializeField] protected float optionalValue;
         [SerializeField] protected GameObject visual;
-        public float Value => value;
-        public float OptionalValue => optionalValue;
-      
         public EffectType EffectType => effectType;
         public GameObject Visual => visual;
         public CalculationType CalculationType => calculationType;

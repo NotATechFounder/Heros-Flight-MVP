@@ -35,11 +35,12 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
                     break;
 
                 case EffectType.Root:
-                    healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value,
+                    var rootData = effectModel.Effect.GetData<RootEffectData>();
+                    healthController.TryDealDamage(new HealthModificationIntentModel(rootData.Damage.GetCurrentValue(1),
                         DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
                 case EffectType.Poison:
-                    var poisonData =effectModel.Effect.GetData<PoisonEffectData>();
+                    var poisonData = effectModel.Effect.GetData<PoisonEffectData>();
                     healthController.TryDealDamage(new HealthModificationIntentModel(
                         poisonData.Damage.GetCurrentValue(1) * effectModel.CurrentStacks,
                         DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
@@ -56,10 +57,7 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
                         shockData.SecondaryDamage.GetCurrentValue(1),
                         DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
-                case EffectType.Reflect:
-                    healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value,
-                        DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
-                    break;
+              
             }
         }
 
@@ -73,6 +71,8 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
                     mover.SetMovementSpeed(controller.AgentModel.AiData.MoveSpeed);
                     break;
                 case EffectType.Root:
+                    if (mover == null)
+                        return;
                     mover.SetMovementState(true);
                     break;
             }

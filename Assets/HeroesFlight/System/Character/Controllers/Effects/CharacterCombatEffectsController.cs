@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Combat.Effects.Effects;
 using HeroesFlight.System.Combat.Effects.Effects.Data;
-using HeroesFlight.System.Combat.Effects.Enum;
-using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.StatusEffects.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
@@ -36,7 +34,8 @@ namespace HeroesFlight.System.Character.Controllers.Effects
                         DamageCritType.NoneCritical, AttackType.Regular, effectModel.Effect.CalculationType, null));
                     break;
                 case EffectType.Root:
-                    healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value,
+                    var rootData = effectModel.Effect.GetData<RootEffectData>();
+                    healthController.TryDealDamage(new HealthModificationIntentModel(rootData.Damage.GetCurrentValue(1),
                         DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
                 case EffectType.Poison:
