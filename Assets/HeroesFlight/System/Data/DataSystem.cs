@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.FileManager.Rewards;
 using UnityEngine.SceneManagement;
+using log4net.Core;
 
 public class DataSystem : DataSystemInterface
 {
@@ -22,6 +23,8 @@ public class DataSystem : DataSystemInterface
 
     public StatPoints StatPoints { get; private set; }
 
+    public AccountLevelManager AccountLevelManager { get; private set; }
+
 
     public void Init(Scene scene = default, Action onComplete = null)
     {
@@ -39,12 +42,16 @@ public class DataSystem : DataSystemInterface
         CharacterManager.OnCharacterChanged += (characterSO) => StatManager.ProcessAllModifiers(characterSO.GetPlayerStatData);
         CharacterManager.Init(CurrencyManager);
 
+        AccountLevelManager = scene.GetComponent<AccountLevelManager>();
+        AccountLevelManager.OnLevelUp += StatPoints.AddPoints;
 
         onComplete?.Invoke();
     }
 
     public void Reset()
     {
-
+        StatPoints.OnValueChanged -= StatManager.ProcessStatPointsModifiers;
+        CharacterManager.OnCharacterChanged -= (characterSO) => StatManager.ProcessAllModifiers(characterSO.GetPlayerStatData);
+        AccountLevelManager.OnLevelUp -= StatPoints.AddPoints;
     }
 }

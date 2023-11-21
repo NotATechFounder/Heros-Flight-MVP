@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.Common.Feat;
+using HeroesFlight.Common.Progression;
 using HeroesFlight.System.Dice;
 using HeroesFlight.System.Stats.Traits.Effects;
 using HeroesFlight.System.Stats.Traits.Enum;
@@ -23,11 +24,14 @@ namespace HeroesFlight.System.Stats.Handlers
             traitHandler = new TraitHandler(new Vector2Int(4, 8));
         }
 
+
+        public event Action<Dictionary<StatAttributeType, int>> OnTraitsStateChange;
         private DataSystemInterface data;
         private DiceSystemInterface diceSystem;
         private IUISystem uiSystem;
 
         private TraitHandler traitHandler;
+
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
@@ -92,6 +96,8 @@ namespace HeroesFlight.System.Stats.Handlers
 
                     break;
             }
+
+            NotifyTraitStateChanged();
         }
 
 
@@ -108,6 +114,31 @@ namespace HeroesFlight.System.Stats.Handlers
         public List<TraitStateModel> GetUnlockedEffects()
         {
             return traitHandler.GetUnlockedTraits();
+        }
+
+
+       void  NotifyTraitStateChanged()
+        {
+            var unlockedTraits = GetUnlockedEffects();
+            var modifiedStatsMap = new Dictionary<StatAttributeType, int>();
+            foreach (var trait in unlockedTraits)
+            {
+                if (trait.TargetTrait.Effect.TraitType == TraitType.StatBoost)
+                {
+                    var effect = trait.TargetTrait.Effect as StatBoostEffect;
+                    var modificationValue = effect.Value + trait.Value.Value;
+                    Debug.Log($"Gona update {effect.TargetStat} with value {effect.Value + trait.Value.Value}");
+                    if (modifiedStatsMap.TryGetValue(effect.TargetStat, out var currentValue))
+                    {
+                        modifiedStatsMap[effect.TargetStat] += modificationValue;
+                    }
+                    else
+                    {
+                        modifiedStatsMap.Add(effect.TargetStat, modificationValue);
+                    }
+                }
+            }
+            OnTraitsStateChange?.Invoke(modifiedStatsMap);
         }
     }
 }

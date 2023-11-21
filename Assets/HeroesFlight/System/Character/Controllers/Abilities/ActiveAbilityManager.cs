@@ -24,6 +24,8 @@ public class ActiveAbilityManager : MonoBehaviour
     public Action<int, RegularAbilityVisualData> OnActiveAbilityEquipped;
     public Action<PassiveAbilityVisualData> OnPassiveAbilityEquipped;
     public Action<PassiveAbilityType> OnPassiveAbilityRemoved;
+    public Action<RegularActiveAbilityType, RegularActiveAbilityType> OnRegularActiveAbilitySwapped;
+    public Action<RegularActiveAbilityType, int> OnRegularActiveAbilityUpgraded;
 
     [SerializeField] private RegularActiveAbilityDatabase allActiveAbilities;
     [SerializeField] private PassiveAbilityDatabase allPassiveAbilities;
@@ -170,7 +172,6 @@ public class ActiveAbilityManager : MonoBehaviour
         passiveActiveAbility.transform.SetParent(characterStatController.transform);
 
         AttachAbility(timedAbilityController, passiveActiveAbility);
-        regularAbiltyAndControllerDic.CreateOrAdd(passiveActiveAbilityType, timedAbilityController);
 
         switch (passiveActiveAbilityType)
         {
@@ -199,22 +200,28 @@ public class ActiveAbilityManager : MonoBehaviour
                 (passiveActiveAbility as SwordWhirlwind).Initialize(level,
                     (int)characterStatController.CurrentPhysicalDamage);
                 break;
-            default: break;
+            case RegularActiveAbilityType.LightningArrow:
+                (passiveActiveAbility as LightningArrow).Initialize(level, (int)characterStatController.CurrentMagicDamage, characterSystem);
+                break;
+            case RegularActiveAbilityType.ChainRotate:
+                (passiveActiveAbility as ChainRotate).Initialize(level, (int)characterStatController.CurrentPhysicalDamage, characterSystem);
+                break;
+            default:  break;
         }
 
         int index = timedAbilitySlots.IndexOf(timedAbilityController);
         OnActiveAbilityEquipped?.Invoke(index, GetActiveAbilityVisualData(passiveActiveAbilityType));
     }
 
-    public void AttachAbility(TimedAbilityController timedAbilityController, RegularActiveAbility passiveActiveAbility)
+    public void AttachAbility(TimedAbilityController timedAbilityController, RegularActiveAbility activeAbility)
     {
-        timedAbilityController.Init(this, passiveActiveAbility.ActiveAbilitySO.Duration,
-            passiveActiveAbility.ActiveAbilitySO.Cooldown);
-        timedAbilityController.OnActivated += passiveActiveAbility.OnActivated;
-        timedAbilityController.OnCoolDownStarted += passiveActiveAbility.OnDeactivated;
-        timedAbilityController.OnCoolDownEnded += passiveActiveAbility.OnCoolDownEnded;
+        timedAbilityController.Init(this, activeAbility.ActiveAbilitySO.Duration, activeAbility.ActiveAbilitySO.Cooldown);
+        timedAbilityController.OnActivated += activeAbility.OnActivated;
+        timedAbilityController.OnCoolDownStarted += activeAbility.OnDeactivated;
+        timedAbilityController.OnCoolDownEnded += activeAbility.OnCoolDownEnded;
 
-        eqquipedRegularActivities.CreateOrAdd(passiveActiveAbility.PassiveActiveAbilityType, passiveActiveAbility);
+        eqquipedRegularActivities.CreateOrAdd(activeAbility.PassiveActiveAbilityType, activeAbility);
+        regularAbiltyAndControllerDic.CreateOrAdd(activeAbility.PassiveActiveAbilityType, timedAbilityController);
     }
 
     public void DetachAbility(TimedAbilityController timedAbilityController, RegularActiveAbility passiveActiveAbility)
@@ -225,19 +232,23 @@ public class ActiveAbilityManager : MonoBehaviour
         timedAbilityController.Refresh();
 
         eqquipedRegularActivities.Remove(passiveActiveAbility.PassiveActiveAbilityType);
+        regularAbiltyAndControllerDic.Remove(passiveActiveAbility.PassiveActiveAbilityType);
         Destroy(passiveActiveAbility.gameObject);
     }
 
     public void SwapActiveAbility(RegularActiveAbilityType currentAbility, RegularActiveAbilityType newAbility)
     {
         int levelOfCurrentAbility = eqquipedRegularActivities[currentAbility].Level;
+        TimedAbilityController timedAbilityController = regularAbiltyAndControllerDic[currentAbility];
         DetachAbility(regularAbiltyAndControllerDic[currentAbility], eqquipedRegularActivities[currentAbility]);
-        InitialiseAbility(newAbility, regularAbiltyAndControllerDic[currentAbility], levelOfCurrentAbility);
+        InitialiseAbility (newAbility, timedAbilityController, levelOfCurrentAbility);
+        OnRegularActiveAbilitySwapped?.Invoke(currentAbility, newAbility);
     }
 
     public void UpgradeAbility(RegularActiveAbilityType passiveActiveAbilityType)
     {
         eqquipedRegularActivities[passiveActiveAbilityType].LevelUp();
+        OnRegularActiveAbilityUpgraded?.Invoke(passiveActiveAbilityType, eqquipedRegularActivities[passiveActiveAbilityType].Level);
     }
 
     bool AbilityAlreadyEquipped(RegularActiveAbilityType passiveActiveAbilityType)
@@ -409,9 +420,8 @@ public class ActiveAbilityManager : MonoBehaviour
             return;
         if (timedAbilityController.ActivateAbility())
         {
-            RegularActiveAbility regularActiveAbility =
-                eqquipedRegularActivities[
-                    regularAbiltyAndControllerDic.FirstOrDefault(x => x.Value == timedAbilityController).Key];
+            RegularActiveAbilityType regularActiveAbilityType = regularAbiltyAndControllerDic.FirstOrDefault(x => x.Value == timedAbilityController).Key;
+            RegularActiveAbility regularActiveAbility = eqquipedRegularActivities[regularActiveAbilityType];
             if (regularActiveAbility.IsInstant())
             {
                 bool canMulticast = UnityEngine.Random.Range(0.0f, 100.0f) <= chanceToMulticast;
@@ -563,19 +573,19 @@ public class ActiveAbilityManager : MonoBehaviour
         switch (passiveAbilityType)
         {
             case PassiveAbilityType.FrostStrike:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             case PassiveAbilityType.FlameStrike:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             case PassiveAbilityType.LightningStrike:
 
                 break;
             case PassiveAbilityType.LichArmor:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             case PassiveAbilityType.IfritsArmor:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             case PassiveAbilityType.HeartThief:
                 characterStatController.ModifyLifeSteal(
@@ -583,7 +593,7 @@ public class ActiveAbilityManager : MonoBehaviour
                         .GetLevelValue("LifeSteal", eqquipedPassiveAbilities[passiveAbilityType]), false);
                 break;
             case PassiveAbilityType.Reflect:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             case PassiveAbilityType.LuckyHit:
                 characterStatController.ModifyCriticalHitChance(
@@ -603,7 +613,7 @@ public class ActiveAbilityManager : MonoBehaviour
 
                 break;
             case PassiveAbilityType.Sacrifice:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             case PassiveAbilityType.BoilingPoint:
 
@@ -622,7 +632,7 @@ public class ActiveAbilityManager : MonoBehaviour
                         .GetLevelValue("DodgeChance", eqquipedPassiveAbilities[passiveAbilityType]), false);
                 break;
             case PassiveAbilityType.FullCounter:
-
+                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
                 break;
             default: break;
         }

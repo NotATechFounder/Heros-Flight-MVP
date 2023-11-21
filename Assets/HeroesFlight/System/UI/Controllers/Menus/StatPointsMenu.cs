@@ -14,12 +14,14 @@ namespace UISystem
 {
     public class StatPointsMenu : BaseMenu<StatPointsMenu>
     {
+        public event Action<StatAttributeType, int> OnDiceClicked;
         public event Action OnCompletePressed;
         public event Action OnResetButtonPressed;
         public event Func< int> GetAvailabletSp;
         public event Func<StatAttributeType, int> GetCurrentSpLevel;
         public event Func<StatAttributeType, bool> OnAddSpClicked;
         public event Func<StatAttributeType, bool> OnRemoveSpClicked;
+        public event Func <StatAttributeType, int> GetDiceRollValue;
 
         [SerializeField] private AdvanceButton completeButton;
         [SerializeField] private AdvanceButton resetButton;
@@ -77,7 +79,6 @@ namespace UISystem
             foreach (StatPointSO statpointSo in statPointSOArray)
             {
                 StatPointUI statPointUI = Instantiate(statPointUIPrefab, statPointContainer);
-                statPointUI.Init(statpointSo);
 
                 statPointUI.GetCurrentSpLevel += (stat) =>
                 {
@@ -98,6 +99,18 @@ namespace UISystem
                 {
                     spText.text = GetAvailabletSp?.Invoke().ToString();
                 };
+
+                statPointUI.GetDiceRollValue += (stat) =>
+                {
+                    return GetDiceRollValue.Invoke(stat);
+                };
+
+                statPointUI.OnDiceClicked += (statAttributeType, value) =>
+                {
+                    OnDiceClicked?.Invoke(statAttributeType, value);
+                };
+
+                statPointUI.Init(statpointSo);
 
                 statPointUIDic.Add(statpointSo.StatAttributeType, statPointUI);
             }
@@ -142,6 +155,12 @@ namespace UISystem
         private void ResetButtonPressed()
         {
             OnResetButtonPressed?.Invoke();
+        }
+
+        public void OnNewDiceRoll(StatAttributeType statAttributeType, int rolledValue)
+        {
+            statPointUIDic[statAttributeType].OnNewDiceRoll(rolledValue);
+            //InitStatUI();
         }
     }
 }

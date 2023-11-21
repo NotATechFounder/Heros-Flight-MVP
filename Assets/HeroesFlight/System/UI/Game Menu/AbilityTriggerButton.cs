@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class AbilityTriggerButton : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class AbilityTriggerButton : MonoBehaviour
 
     [SerializeField] private Image icon;
     [SerializeField] private Image fill;
+    [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] int abilityIndex;
 
     private JuicerRuntime effect;
@@ -69,5 +71,10 @@ public class AbilityTriggerButton : MonoBehaviour
     {
         icon.sprite = null;
         canvasGroup.alpha = 0;
+    }
+
+    public void SetLevel(int level)
+    {
+        levelText.text = "LV." +  level.ToString();
     }
 }

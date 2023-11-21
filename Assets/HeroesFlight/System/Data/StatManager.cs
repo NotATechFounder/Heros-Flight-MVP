@@ -122,16 +122,16 @@ public class StatManager : MonoBehaviour
 
     private void OnGUI()
     {
-        if (statModel != null)
-        {
-            float space = 30;
-            foreach (KeyValuePair<StatType, float> stat in statModel.CurrentStatDic)
-            {
-                // draw in a big size
-                GUI.Label(new Rect(500, space, 500, 500), stat.Key.ToString() + ": " + stat.Value.ToString());
-                space += 30;
-            }
-        }
+        //if (statModel != null)
+        //{
+        //    float space = 30;
+        //    foreach (KeyValuePair<StatType, float> stat in statModel.CurrentStatDic)
+        //    {
+        //        // draw in a big size
+        //        GUI.Label(new Rect(500, space, 500, 500), stat.Key.ToString() + ": " + stat.Value.ToString());
+        //        space += 30;
+        //    }
+        //}
     }
 }
 

@@ -3,16 +3,20 @@ using HeroesFlight.System.FileManager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 public class StatPoints : MonoBehaviour
 {
+    public event Action OnSpChanged;
     public event Action<Dictionary<StatAttributeType, int>> OnValueChanged;
 
     [SerializeField] private StatPointSO[] statPointSO;
     [SerializeField] private SkillPointData skillPointData;
+    [SerializeField] private SkillPointData diceRollData;
     private Dictionary<StatAttributeType, int> statPointsDic = new Dictionary<StatAttributeType, int>();
     private Dictionary<StatAttributeType, int> tempStatPointsDic = new Dictionary<StatAttributeType, int>();
+    private Dictionary<StatAttributeType, int> diceRollDic = new Dictionary<StatAttributeType, int>();
     [SerializeField] int currentSp;
 
     public void Init()
@@ -20,6 +24,7 @@ public class StatPoints : MonoBehaviour
         foreach (StatPointSO statPointSo in statPointSO)
         {
             statPointsDic.Add(statPointSo.StatAttributeType, 0);
+            diceRollDic.Add(statPointSo.StatAttributeType, 0);
         }
 
         Load();
@@ -30,14 +35,23 @@ public class StatPoints : MonoBehaviour
         SkillPointData savedSkillPointData = FileManager.Load<SkillPointData>("SkillPoint");
         skillPointData = savedSkillPointData != null ? savedSkillPointData : new SkillPointData();
 
-        currentSp = skillPointData.avaliableSp = 10;
+        if(savedSkillPointData == null)
+        {
+            foreach (StatPointSO statPointSo in statPointSO)
+            {
+                skillPointData.SetXp(statPointSo.StatAttributeType, 0);
+            }
+        }
+
+        currentSp = skillPointData.avaliableSp;
 
         foreach (StatPointSingleData statPointSingleData in skillPointData.statPointSingleDatas)
         {
             statPointsDic[statPointSingleData.statAttributeType] = statPointSingleData.sp;
+            diceRollDic[statPointSingleData.statAttributeType] = statPointSingleData.diceRoll;
         }
 
-        OnValueChanged ?.Invoke(statPointsDic);
+        OnStatValueChanged();
     }
 
     public void Confirm()
@@ -56,12 +70,30 @@ public class StatPoints : MonoBehaviour
 
         tempStatPointsDic.Clear();
 
-        OnValueChanged?.Invoke(statPointsDic);
+        OnStatValueChanged();
     }   
 
     public void Save()
     {
+        skillPointData.avaliableSp = currentSp;
+
+        foreach (var statPointSo in skillPointData.statPointSingleDatas)
+        {
+            statPointSo.diceRoll = diceRollDic[statPointSo.statAttributeType];
+        }
+
         FileManager.Save("SkillPoint", skillPointData);
+    }
+
+    public void OnStatValueChanged()
+    {
+        Dictionary<StatAttributeType, int> combinedData = new Dictionary<StatAttributeType, int>(statPointsDic);
+        for (int i = 0; i < statPointSO.Length; i++)
+        {
+            combinedData[statPointSO[i].StatAttributeType] += diceRollDic[statPointSO[i].StatAttributeType];
+        }
+
+        OnValueChanged?.Invoke(combinedData);
     }
 
     public bool TryAddSp(StatAttributeType statPointType)
@@ -76,7 +108,6 @@ public class StatPoints : MonoBehaviour
             tempStatPointsDic[statPointType]++;
             currentSp--;
 
-            Debug.Log(statPointType + " " + tempStatPointsDic[statPointType]);
             return true;
         }
         return false;
@@ -94,9 +125,6 @@ public class StatPoints : MonoBehaviour
             tempStatPointsDic[statPointType]--;
             currentSp++;
 
-
-            Debug.Log(statPointType + " " + tempStatPointsDic[statPointType]);
-
             if (tempStatPointsDic[statPointType] == 0)
             {
                 tempStatPointsDic.Remove(statPointType);
@@ -105,6 +133,14 @@ public class StatPoints : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+
+    public void AddPoints(int newLevel, int nuberOfPoints)
+    {
+        currentSp += nuberOfPoints;
+        Save();
+        OnSpChanged?.Invoke();
     }
 
     public int GetSp(StatAttributeType statPointType)
@@ -120,6 +156,18 @@ public class StatPoints : MonoBehaviour
     public int GetAvailableSp()
     {
         return currentSp;
+    }
+
+    public int GetDiceRollValue(StatAttributeType type)
+    {
+        return diceRollDic[type];
+    }
+
+    public void SetDiceRollValue(StatAttributeType statAttributeType, int rolledValue)
+    {
+        diceRollDic[statAttributeType] = rolledValue;
+        OnStatValueChanged();
+        Save();
     }
 }
 
@@ -185,4 +233,5 @@ public class StatPointSingleData
 {
     public StatAttributeType statAttributeType;
     public int sp;
+    public int diceRoll;
 }
