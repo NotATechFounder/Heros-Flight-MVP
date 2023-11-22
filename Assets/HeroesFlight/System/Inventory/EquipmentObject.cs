@@ -3,22 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Rarities { Common, Great, Rare, Epic, Legendary };
-public enum EquipmentType { Weapon, Armour, Accessory, Scroll, Pet };
+public enum Rarities { Common, UnCommon, Rare, Epic, Legendary };
+public enum EquipmentType { Weapon, Armour, Ring, Belt, Necklace };
 
 public class EquipmentObject : ItemSO
 {
     public Rarities rarity;
     public EquipmentType equipmentType;
-    public BuffType[] buffs;
+    public ItemEffectType[] effects;
 
     private void Awake() => itemType = ItemType.Equipment;
 }
 
 [Serializable]
-public class ItemBuff
+public class ItemEffect
 {
-    public BuffType buffType;
+    public ItemEffectType itemEffectType;
     public int value;
 }
 

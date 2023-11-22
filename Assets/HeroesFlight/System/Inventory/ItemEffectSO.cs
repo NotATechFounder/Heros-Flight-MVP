@@ -5,8 +5,8 @@ using UnityEngine;
 using System.Text;
 using System;
 
-[CreateAssetMenu(fileName = "New Buff", menuName = "Inventory System/Buff")]
-public class Buff : ScriptableObject
+[CreateAssetMenu(fileName = "New ItemEffectSO", menuName = "Inventory System/ItemEffectSO")]
+public class ItemEffectSO : ScriptableObject
 {
     [System.Serializable]
     public class RarityBuffStat
@@ -15,7 +15,7 @@ public class Buff : ScriptableObject
         public CustomAnimationCurve statCurve;
     }
 
-    public BuffType buffType;
+    public ItemEffectType buffType;
     public BuffInfo buffInfo;
     public RarityBuffStat[] buffRarityStats;
 

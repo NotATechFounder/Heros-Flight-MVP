@@ -12,7 +12,7 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
     [Header("Rarities")]
     [SerializeField] RarityInfo[] rarityInfos;
     [Header("Buffs")]
-    [SerializeField] Buff[] buffs;
+    [SerializeField] ItemEffectSO[] buffs;
 
     public int GetLevelCost(ItemData currentItem)
     {
@@ -43,7 +43,7 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         {
             for (int j = 0; j < buffs.Length; j++)
             {
-                if (currentItem.ItemBuffs()[i].buffType != buffs[j].buffType) continue;
+                if (currentItem.ItemBuffs()[i].itemEffectType != buffs[j].buffType) continue;
 
                 for (int k = 0; k < buffs[j].buffRarityStats.Length; k++)
                 {
@@ -57,7 +57,7 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         }
     }
 
-    public int GetBuffValue(BuffType buff, Rarities currentRarity, int level)
+    public int GetBuffValue(ItemEffectType buff, Rarities currentRarity, int level)
     {
         for (int i = 0; i < buffs.Length; i++)
         {
@@ -70,7 +70,7 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         return 0;
     }
 
-    public BuffInfo GetBuffInfo(BuffType buff)
+    public BuffInfo GetBuffInfo(ItemEffectType buff)
     {
         for (int i = 0; i < buffs.Length; i++)
         {

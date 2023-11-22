@@ -8,26 +8,35 @@ public class InventorySystem : MonoBehaviour
     [SerializeField] private ItemDatabaseSO itemDatabaseSO;
     [SerializeField] private Dictionary<string, Item> itemDictionary = new Dictionary<string, Item>();
 
+    [Header("Test Item")]
+    [SerializeField] private ItemSO testItem;
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            //AddToInventory(itemDatabaseSO.GetItemSOByID("1"));
+            AddToInventory(testItem);
         }
     }
 
     public Item AddToInventory(ItemSO itemSO, int level = 1)
     {
-        ItemData itemData = new ItemData(itemSO, level);
-        itemDictionary.Add(itemData.instanceID, new Item(itemSO, itemData));
-        mainItemInventorySO.AddToInventory(itemData);
+        ItemData itemData = mainItemInventorySO.AddToItemInventory(itemSO, level);
+        if (itemDictionary.ContainsKey(itemData.instanceID))
+        {
+            itemDictionary[itemData.instanceID].ItemData().value = itemData.value;
+        }
+        else
+        {
+            itemDictionary.Add(itemData.instanceID, new Item(itemSO, itemData));
+        }
         return itemDictionary[itemData.instanceID];
     }
 
     public void RemoveFromInventory(Item item)
     {
         itemDictionary.Remove(item.ItemData().instanceID);
-        mainItemInventorySO.RemoveFromInventory(item.ItemData());
+        mainItemInventorySO.RemoveItemFromInventory(item.itemObject, item.ItemData());
     }
 
     public void LoadInventoryItems()

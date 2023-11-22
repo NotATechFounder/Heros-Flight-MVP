@@ -40,19 +40,19 @@ public class Item
 {
     public ItemSO itemObject;
     [SerializeField] ItemData itemData;
-    [SerializeField] ItemBuff[] buffs;
+    [SerializeField] ItemEffect[] itemEffects;
 
     public Item(ItemSO itemObject, ItemData itemData)
     {
         this.itemObject = itemObject;
         this.itemData = itemData;
 
-        if (itemObject is EquipmentObject) AddBuffs(itemObject as EquipmentObject);
+        if (itemObject is EquipmentObject) AddEffects(itemObject as EquipmentObject);
     }
 
     public ItemData ItemData() => itemData;
 
-    public ItemBuff[] ItemBuffs() => buffs;
+    public ItemEffect[] ItemBuffs() => itemEffects;
 
     public void LevelUp()
     {
@@ -60,13 +60,13 @@ public class Item
        // InventoryManager.Instance.ItemManager().SetItemBuffStat(this);
     }
 
-    public void AddBuffs(EquipmentObject item)
+    public void AddEffects(EquipmentObject item)
     {
-        buffs = new ItemBuff[item.buffs.Length];
-        for (int i = 0; i < buffs.Length; i++)
+        itemEffects = new ItemEffect[item.effects.Length];
+        for (int i = 0; i < itemEffects.Length; i++)
         {
-            buffs[i] = new ItemBuff();
-            buffs[i].buffType = item.buffs[i];
+            itemEffects[i] = new ItemEffect();
+            itemEffects[i].itemEffectType = item.effects[i];
         }
     }
 }

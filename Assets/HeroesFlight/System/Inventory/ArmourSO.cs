@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Armour", menuName = "Inventory System/Items/Equipment/Armour")]
-public class ArmourObject : EquipmentObject
+public class ArmourSO : EquipmentObject
 {
     private void Awake() => equipmentType = EquipmentType.Armour;
 }
