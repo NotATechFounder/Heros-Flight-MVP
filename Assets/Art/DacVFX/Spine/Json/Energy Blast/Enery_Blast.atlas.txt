@@ -1,9 +1,11 @@
 Enery_Blast.png
-size:502,104
+size:574,142
 filter:Linear,Linear
 pma:true
 scale:0.5
 Cannon_1
-bounds:310,34,190,68
+bounds:346,37,226,103
+offsets:1,2,229,107
 Cannon_3
-bounds:2,2,306,100
+bounds:2,2,342,138
+offsets:18,2,378,142
