@@ -5,11 +5,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class BossAbilityBase : AbilityBaseNPC
     {
-        [Range(0, 100)][SerializeField] float useChance;
         [SerializeField] protected float modifier = 0f;
-        [SerializeField] protected ParticleSystem abilityParticle;
         protected CameraShakerInterface cameraShaker;
-        public float UseChance => useChance;
+      
 
         public void InjectShaker(CameraShakerInterface shaker)
         {

@@ -11,9 +11,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         [SerializeField] protected AnimationReferenceAsset targetAnimation;
         [SerializeField] protected Vector2 coolDown;
+        [Range(0, 100)][SerializeField] float useChance;
         [SerializeField] protected bool stopOnUse = true;
+        [SerializeField] protected ParticleSystem abilityParticle;
         protected AiAnimatorInterface animator;
        [SerializeField] protected float currentCooldown;
+       public float UseChance => useChance;
        protected virtual void Awake()
         {
             animator = GetComponentInParent<AiAnimatorInterface>();

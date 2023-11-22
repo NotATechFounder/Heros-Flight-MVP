@@ -8,7 +8,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected bool canCrit;
         [Range(0,100)]
         [SerializeField] protected float critChance;
-
         [SerializeField] protected float critModifier = 1f;
         
 

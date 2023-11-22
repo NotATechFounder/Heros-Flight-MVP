@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class BossAreaDamageAbility : BossAttackAbilityBase
+    public class AreaDamageAbilityVisualZones : BossAttackAbilityBase
     {
         [SerializeField] AbilityZone[] abilityZones;
         [SerializeField] float preDamageDelay;

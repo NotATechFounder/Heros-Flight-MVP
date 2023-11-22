@@ -30,6 +30,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public float Damage => currentDamage;
         public float TimeSinceLastAttack => timeSinceLastAttack;
 
+        public IHealthController Target => target;
+
         public WorldBarUI specialBar => throw new NotImplementedException();
 
         public virtual void Init()
@@ -112,7 +114,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             damageZone.DetectOverlap();
         }
 
-        public void SetAttackStats(float damage, float attackRange, float attackSpeed,float criticalChance)
+        public virtual void SetAttackStats(float damage, float attackRange, float attackSpeed,float criticalChance)
         {
             timeBetweenAttacks = attackSpeed;
             this.attackRange = attackRange;
