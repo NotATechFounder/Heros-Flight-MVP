@@ -1210,6 +1210,9 @@ namespace HeroesFlight.System.Gameplay
             }
 
             uiSystem.UiEventHandler.SummaryMenu.Open();
+
+            // TODO: Add exp to player
+            dataSystem.AccountLevelManager.AddExp(100);
         }
 
         void HandleLvlRestart()
