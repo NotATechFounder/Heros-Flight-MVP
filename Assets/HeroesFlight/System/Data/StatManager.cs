@@ -14,17 +14,12 @@ public class StatManager : MonoBehaviour
     private StatModel statModel = new StatModel(new PlayerStatData());
 
 
-    private void Awake()
-    {
-        Init();
-    }
-
     public StatModel GetStatModel()
     {
         return statModel;
     }
 
-    private void Init()
+    public void Init()
     {
         foreach (StatPointSO statPointSo in statPointSO)
         {

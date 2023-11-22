@@ -33,6 +33,7 @@ public class DataSystem : DataSystemInterface
         CurrencyManager.LoadCurrencies();
 
         StatManager = scene.GetComponent<StatManager>();
+        StatManager.Init();
 
         StatPoints = scene.GetComponent<StatPoints>();
         StatPoints.OnValueChanged += StatManager.ProcessStatPointsModifiers;
