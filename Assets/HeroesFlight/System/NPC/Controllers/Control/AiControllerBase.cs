@@ -17,7 +17,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         [SerializeField] protected AiAgentModel m_Model;
 
-      
+
         public event Action OnInitialized;
         public event Action<AiControllerInterface> OnDisabled;
         public EnemyType EnemyType => m_Model.EnemyType;
@@ -47,7 +47,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         float timeSinceAggravated = Mathf.Infinity;
         Vector2 wanderPosition;
-      
+
         public virtual void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier,
             Sprite currentCardIcon)
         {
@@ -90,7 +90,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             stateMachine?.Process();
             UpdateTimers();
-            if(!healthController.IsDead())
+            if (!healthController.IsDead())
                 animator.SetMovementDirection(GetVelocity());
         }
 
@@ -124,15 +124,18 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             isDisabled = true;
             attackCollider.enabled = false;
-            //  rigidBody.bodyType = RigidbodyType2D.Static;
+
+            if (m_Model.EnemySpawmType == SpawnType.FlyingMob)
+                rigidBody.gravityScale = 1;
+
             animator.PlayDeathAnimation(() =>
             {
+                OnDisabled?.Invoke(this);
                 if (gameObject != null)
                 {
-                    gameObject.SetActive(false);
+                  //  gameObject.SetActive(false);
+                  Destroy(gameObject);
                 }
-
-                OnDisabled?.Invoke(this);
             });
         }
 
@@ -147,8 +150,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
             return false;
         }
 
-
-        
 
         public bool IsAggravated()
         {
@@ -195,7 +196,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             mover.SetMovementState(canMove);
         }
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
             if (stateMachine != null && stateMachine.CurrentState != null)
@@ -203,6 +204,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 Handles.Label(transform.position, stateMachine.CurrentState.GetType().ToString());
             }
         }
-        #endif
+#endif
     }
 }
