@@ -17,16 +17,14 @@ public class ActiveAbilityManager : MonoBehaviour
     public event Action<int> OnSpChanged;
     public event Action<int, int, float> OnEXPAdded;
 
-    [SerializeField] private int spPerLevel;
-    [SerializeField] private float expToNextLevelBase;
-    [SerializeField] private float expToNextLevelMultiplier;
-
     public Action<int, RegularAbilityVisualData> OnActiveAbilityEquipped;
     public Action<PassiveAbilityVisualData> OnPassiveAbilityEquipped;
     public Action<PassiveAbilityType> OnPassiveAbilityRemoved;
     public Action<RegularActiveAbilityType, RegularActiveAbilityType> OnRegularActiveAbilitySwapped;
     public Action<RegularActiveAbilityType, int> OnRegularActiveAbilityUpgraded;
 
+    [SerializeField] private CustomAnimationCurve levelCurve;
+    [SerializeField] LevelSystem levelSystem;
     [SerializeField] private RegularActiveAbilityDatabase allActiveAbilities;
     [SerializeField] private PassiveAbilityDatabase allPassiveAbilities;
 
@@ -57,10 +55,6 @@ public class ActiveAbilityManager : MonoBehaviour
     private HealthController characterHealthController;
     private BaseCharacterAttackController characterAttackController;
     private CombatEffectsController characterEffectsController;
-
-    [SerializeField] private int currentLevel;
-    [SerializeField] private float currentExp;
-    [SerializeField] private float expToNextLevel;
 
     private float chanceToMulticast = 0;
 
@@ -112,7 +106,12 @@ public class ActiveAbilityManager : MonoBehaviour
         this.characterHealthController = characterStatController.GetComponent<HealthController>();
         this.characterAttackController = characterStatController.GetComponent<BaseCharacterAttackController>();
         characterEffectsController = this.characterStatController.GetComponent<CharacterCombatEffectsController>();
-        expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
+
+        levelSystem = new LevelSystem(0,0, levelCurve);
+        levelSystem.OnLevelUp += (response) =>
+        {
+            OnEXPAdded.Invoke(response.currentLevel,response.numberOfLevelsGained, response.normalizedExp);
+        };
     }
 
     public void Cache()
@@ -584,35 +583,20 @@ public class ActiveAbilityManager : MonoBehaviour
 
     public void AddExp(float exp)
     {
-        currentExp += exp;
-        if (currentExp >= expToNextLevel)
-        {
-            LevelUp();
-        }
-        else
-        {
-            OnEXPAdded?.Invoke(0, 0, currentExp / expToNextLevel);
-        }
+        levelSystem.AddExp(exp);
     }
 
-    private void LevelUpOnce()
+    private void OnDrawGizmosSelected()
     {
-        currentLevel++;
-        currentExp -= expToNextLevel;
-        expToNextLevel = expToNextLevelBase * Mathf.Pow(expToNextLevelMultiplier, currentLevel);
-    }
-
-    private void LevelUp()
-    {
-        int currentLvl = currentLevel;
-        int numberOfLevelsGained = 0;
-        do
+        if (levelCurve != null)
         {
-            LevelUpOnce();
-            ++numberOfLevelsGained;
-        } while (currentExp >= expToNextLevel);
-
-        OnEXPAdded?.Invoke(currentLvl, numberOfLevelsGained, currentExp / expToNextLevel);
+            levelCurve.UpdateCurve();
+            Gizmos.color = Color.red;
+            for (int i = 0; i < levelCurve.maxLevel; i++)
+            {
+                Gizmos.DrawSphere(new Vector3(i, levelCurve.GetCurrentValueInt(i) / 10) + transform.position, 1f);
+            }
+        }
     }
 }
 

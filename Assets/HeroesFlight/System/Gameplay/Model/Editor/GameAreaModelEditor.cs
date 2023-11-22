@@ -21,6 +21,9 @@ public class GameAreaModelEditor : Editor
     SerializedProperty mobDifficultyArray;
     SerializedProperty mobDropTableArray;
 
+    SerializedProperty levelComplectionExpCurveProperty;
+    SerializedProperty runComplectionExpCurveProperty;
+
     SerializedProperty bossDropProperty;
     SerializedProperty timeStopRestoreSpeedProperty;
     SerializedProperty timeStopDurationProperty;
@@ -42,6 +45,10 @@ public class GameAreaModelEditor : Editor
         mobDifficultyArray = mobDifficultyProperty.FindPropertyRelative("mobDifficulties");
         mobDropTableArray = serializedObject.FindProperty("mobDropTable");
         bossDropProperty = serializedObject.FindProperty("bossDrop");
+
+        levelComplectionExpCurveProperty = serializedObject.FindProperty("levelComplectionExpCurve");
+        runComplectionExpCurveProperty = serializedObject.FindProperty("runComplectionExpCurve");
+
         timeStopRestoreSpeedProperty = serializedObject.FindProperty("timeStopRestoreSpeed");
         timeStopDurationProperty = serializedObject.FindProperty("timeStopDuration");
 
@@ -68,6 +75,8 @@ public class GameAreaModelEditor : Editor
         DisplayDiffiulties();
 
         EditorGUILayout.PropertyField(mobDropTableArray);
+
+        DisplayExpCurves();
 
         EditorGUILayout.PropertyField(timeStopRestoreSpeedProperty);
         EditorGUILayout.PropertyField(timeStopDurationProperty);
@@ -126,12 +135,12 @@ public class GameAreaModelEditor : Editor
 
             EditorGUILayout.BeginVertical(GUI.skin.box);
             EditorGUILayout.LabelField("Health", EditorStyles.boldLabel);
-            DrawData(healthStat, i);
+            DrawData(healthStat);
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.BeginVertical(GUI.skin.box);
             EditorGUILayout.LabelField("Damage", EditorStyles.boldLabel);
-            DrawData(damageStat, i);
+            DrawData(damageStat);
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.EndVertical();
@@ -142,7 +151,18 @@ public class GameAreaModelEditor : Editor
         EditorGUILayout.EndVertical();
     }
 
-    public void DrawData(SerializedProperty customAnimationCurveProperty, int index)
+    void DisplayExpCurves()
+    {
+        EditorGUILayout.Space(20);
+        EditorGUILayout.LabelField("Level Complection ExpCurve", EditorStyles.boldLabel);
+        DrawData(levelComplectionExpCurveProperty);
+        EditorGUILayout.Space(10);
+        EditorGUILayout.LabelField("Run Complection ExpCurve", EditorStyles.boldLabel);
+        DrawData(runComplectionExpCurveProperty);
+        EditorGUILayout.Space(20);
+    }
+
+    public void DrawData(SerializedProperty customAnimationCurveProperty)
     {
         SerializedProperty animationCurveProperty = customAnimationCurveProperty.FindPropertyRelative("animationCurve");
         SerializedProperty curveTypeProperty = customAnimationCurveProperty.FindPropertyRelative("curveType");
