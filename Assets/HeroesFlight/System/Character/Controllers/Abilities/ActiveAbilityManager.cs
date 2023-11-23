@@ -203,7 +203,7 @@ public class ActiveAbilityManager : MonoBehaviour
                 (passiveActiveAbility as LightningArrow).Initialize(level, (int)characterStatController.CurrentMagicDamage, characterSystem);
                 break;
             case RegularActiveAbilityType.ChainRotate:
-                (passiveActiveAbility as ChainRotate).Initialize(level, (int)characterStatController.CurrentPhysicalDamage, characterSystem);
+                (passiveActiveAbility as ChainRotate).Initialize(level, (int)characterStatController.CurrentPhysicalDamage);
                 break;
             default:  break;
         }

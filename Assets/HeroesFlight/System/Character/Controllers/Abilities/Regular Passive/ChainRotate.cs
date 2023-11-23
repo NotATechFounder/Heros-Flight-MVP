@@ -32,7 +32,6 @@ public class ChainRotate : RegularActiveAbility
     private int baseDamage;
     private float currentDamagePercentage;
     private int currentDamage;
-    private CharacterSimpleController characterControllerInterface;
     private bool canRotate = false;
     private float currentTime;
 
@@ -95,20 +94,12 @@ public class ChainRotate : RegularActiveAbility
         }
     }
 
-    public void Initialize(int level, int baseDamage, CharacterSimpleController characterControllerInterface)
+    public void Initialize(int level, int baseDamage)
     {
         this.currentLevel = level;
         this.baseDamage = baseDamage;
-        this.characterControllerInterface = characterControllerInterface;
-        characterControllerInterface.OnFaceDirectionChange += Flip;
         skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
         overlapChecker.OnDetect += OnOverlap;
-    }
-
-    private void Flip(bool facingLeft)
-    {
-       // visual.localScale = new Vector3(facingLeft ? 1 : -1, 1, 1);
-        //overlapChecker.SetDirection(!facingLeft ? OverlapChecker.Direction.Left : OverlapChecker.Direction.Right);
     }
 
     private void OnOverlap(int count, Collider2D[] colliders)
@@ -123,11 +114,6 @@ public class ChainRotate : RegularActiveAbility
 
             Debug.Log("Hit");
         }
-    }
-
-    private void OnDestroy()
-    {
-        characterControllerInterface.OnFaceDirectionChange -= Flip;
     }
 
     private void OnDrawGizmosSelected()
