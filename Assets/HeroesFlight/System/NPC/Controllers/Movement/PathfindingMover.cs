@@ -1,4 +1,5 @@
-﻿using HeroesFlightProject.System.NPC.Data;
+﻿using System.Collections;
+using HeroesFlightProject.System.NPC.Data;
 using HeroesFlightProject.System.NPC.Enum;
 using Pathfinding;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace HeroesFlight.System.NPC.Controllers.Movement
         IAstarAI ai;
         AIDestinationSetter setter;
         Coroutine knockBackRoutine;
+        private Rigidbody2D rigiBody;
+        private bool isInknockback;
 
         public override void Init(AiAgentModel model)
         {
@@ -19,6 +22,7 @@ namespace HeroesFlight.System.NPC.Controllers.Movement
             ai = GetComponent<IAstarAI>();
             ai.canMove = false;
             ai.maxSpeed =model.AiData.MoveSpeed;
+            rigiBody = GetComponent<Rigidbody2D>();
         }
 
       
@@ -52,8 +56,18 @@ namespace HeroesFlight.System.NPC.Controllers.Movement
 
         public override void SetMovementState(bool canMove)
         {
-            ai.isStopped = !canMove;
-            ai.canMove = canMove;
+            base.SetMovementState(canMove);
+            if (isDisabled)
+            {
+                ai.isStopped = true;
+                ai.canMove = false;
+            }
+            else
+            {
+                ai.isStopped = !canMove;
+                ai.canMove = canMove;    
+            }
+            
         }
         
         public override Vector2 GetVelocity()
@@ -74,6 +88,26 @@ namespace HeroesFlight.System.NPC.Controllers.Movement
         public override void SetMovementSpeed(float newSpeed)
         {
             ai.maxSpeed = newSpeed;
+        }
+
+        public override void ProcessKnockBack(Vector2 direction,float force,float duration)
+        {
+            if (isInknockback || !canMove)
+                return;
+            isInknockback = true;
+            SetMovementState(false);
+            knockBackRoutine = StartCoroutine(KnockBackRoutine(direction,force,duration));
+        }
+        
+        IEnumerator KnockBackRoutine(Vector2 forceVector,float force,float duration)
+        {
+            yield return new WaitForEndOfFrame();
+            rigiBody.AddForce(forceVector * force, ForceMode2D.Impulse);
+            yield return new WaitForSeconds(duration);
+            
+            isInknockback = false;
+            rigiBody.velocity = Vector2.zero;
+            SetMovementState(true);
         }
     }
 }

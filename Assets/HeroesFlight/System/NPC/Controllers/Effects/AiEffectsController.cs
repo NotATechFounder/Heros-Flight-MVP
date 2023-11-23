@@ -1,12 +1,13 @@
-﻿using System;
-using HeroesFlight.Common.Enum;
+﻿using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Combat.Effects.Effects;
-using HeroesFlight.System.Combat.Enum;
+using HeroesFlight.System.Combat.Effects.Effects.Data;
 using HeroesFlight.System.Combat.StatusEffects.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Controllers.Movement;
+using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
+using UnityEngine;
 
 namespace HeroesFlight.System.NPC.Controllers.Effects
 {
@@ -14,6 +15,7 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
     {
         private AiControllerBase controller;
         private AiBaseMovementController mover;
+
         protected override void Awake()
         {
             base.Awake();
@@ -23,34 +25,39 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
 
         protected override void HandleStatusEffectTick(StatusEffectRuntimeModel effectModel)
         {
-          
             switch (effectModel.Effect.EffectType)
             {
                 case EffectType.Burn:
-                    healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value *effectModel.CurrentStacks ,
-                        DamageCritType.NoneCritical,AttackType.DoT,CalculationType.Percentage,null));
+                    var burnData = effectModel.Effect.GetData<BurnEffectData>();
+                    healthController.TryDealDamage(new HealthModificationIntentModel(
+                        burnData.Damage.GetCurrentValue(effectModel.LVL) * effectModel.CurrentStacks,
+                        DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
-                case EffectType.Freeze:
-                    if(mover==null)
-                        return;
-                    var speedModifier = controller.AgentModel.AiData.MoveSpeed/100 * effectModel.Effect.Value;
-                    mover.SetMovementSpeed( controller.AgentModel.AiData.MoveSpeed-speedModifier);
-                    break;
+
                 case EffectType.Root:
+                    var rootData = effectModel.Effect.GetData<RootEffectData>();
+                    healthController.TryDealDamage(new HealthModificationIntentModel(
+                        rootData.Damage.GetCurrentValue(effectModel.LVL),
+                        DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
                 case EffectType.Poison:
+                    var poisonData = effectModel.Effect.GetData<PoisonEffectData>();
+                    healthController.TryDealDamage(new HealthModificationIntentModel(
+                        poisonData.Damage.GetCurrentValue(effectModel.LVL) * effectModel.CurrentStacks,
+                        DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
                 case EffectType.Shock:
+                    var shockData = effectModel.Effect.GetData<ShockEffectData>();
+                    healthController.TryDealDamage(new HealthModificationIntentModel(
+                        shockData.MainDamage.GetCurrentValue(effectModel.LVL),
+                        DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
+                    var shockController = effectModel.Visual.GetComponent<ShockEffectController>();
+                    ParticleManager.instance.Spawn(shockController.MainParticle,
+                        healthController.HealthTransform.position);
+                    shockController.TriggerEffect(healthController, new HealthModificationIntentModel(
+                        shockData.SecondaryDamage.GetCurrentValue(effectModel.LVL),
+                        DamageCritType.NoneCritical, AttackType.DoT, effectModel.Effect.CalculationType, null));
                     break;
-                case EffectType.Reflect:
-                    healthController.TryDealDamage(new HealthModificationIntentModel(effectModel.Effect.Value,
-                        DamageCritType.NoneCritical,AttackType.DoT,CalculationType.Flat,null));
-                    break;
-                case EffectType.Sacrifice:
-                    break;
-                case EffectType.FullCounter:
-                    break;
-              
             }
         }
 
@@ -59,14 +66,32 @@ namespace HeroesFlight.System.NPC.Controllers.Effects
             switch (effectModel.Effect.EffectType)
             {
                 case EffectType.Freeze:
-                    if(mover==null)
+                    if (mover == null)
                         return;
-                    mover.SetMovementSpeed( controller.AgentModel.AiData.MoveSpeed);
+                    mover.SetMovementSpeed(controller.AgentModel.AiData.MoveSpeed);
                     break;
                 case EffectType.Root:
+                    if (mover == null)
+                        return;
+                    mover.SetMovementState(true);
                     break;
-               
             }
+        }
+
+        protected override void ApplyRootEffect(StatusEffect effect, out GameObject visual, int modelLvl)
+        {
+            base.ApplyRootEffect(effect, out visual,modelLvl);
+            mover.SetMovementState(false);
+        }
+
+        protected override void ApplyFreezeEffect(StatusEffect effect, out GameObject visual, int modelLvl)
+        {
+            base.ApplyFreezeEffect(effect, out visual,modelLvl);
+            if (mover == null)
+                return;
+            var data = effect.GetData<FreezeEffectData>();
+            var speedModifier = controller.AgentModel.AiData.MoveSpeed / 100 * data.SlowAmount.GetCurrentValue(modelLvl);
+            mover.SetMovementSpeed(controller.AgentModel.AiData.MoveSpeed - speedModifier);
         }
     }
 }

@@ -10,8 +10,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
         void MoveToTarget(Transform target);
         void MoveToRandomPosition();
         void SetMovementState(bool canMove);
-        void ProcessKnockBack(Vector2 direction);
+        void ProcessKnockBack(Vector2 direction,float force,float duration);
         void SetMovementSpeed(float newSpeed);
         Vector2 GetVelocity();
+        void Disable();
     }
 }

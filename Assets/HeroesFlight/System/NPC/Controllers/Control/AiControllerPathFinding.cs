@@ -65,6 +65,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void ProcessKnockBack()
         {
+            
             if (!m_Model.UseKnockBack)
             {
                 animator.PlayHitAnimation(m_Model.AttacksInteruptable);
@@ -74,17 +75,15 @@ namespace HeroesFlightProject.System.NPC.Controllers
             {
                 animator.PlayHitAnimation(m_Model.AttacksInteruptable, () =>
                 {
-                  SetMovementState(!isDisabled);
+                 // SetMovementState(!isDisabled);
                 });
                 hitEffect.Flash();
 
 
-                if (isInknockback)
-                    return;
-                isInknockback = true;
-                SetMovementState(false);
+              
 
                 var forceVector = currentTarget.position.x >= transform.position.x ? Vector2.left : Vector2.right;
+                mover.ProcessKnockBack(forceVector, m_Model.KnockBackForce,m_Model.KnockBackDuration);
                 // var forceVector = (transform.position - currentTarget.position).normalized;
                 knockBackRoutine = StartCoroutine(KnockBackRoutine(forceVector));
             }

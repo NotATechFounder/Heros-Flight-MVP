@@ -83,6 +83,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected virtual void HandleDeath(IHealthController obj)
         {
             Disable();
+            mover.Disable();
         }
 
         protected virtual void Update()
