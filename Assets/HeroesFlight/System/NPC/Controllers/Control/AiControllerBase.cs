@@ -14,7 +14,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
     public abstract class AiControllerBase : MonoBehaviour, AiControllerInterface
     {
         [SerializeField] protected SpriteRenderer buffDebuffIcon;
-
         [SerializeField] protected AiAgentModel m_Model;
 
 
@@ -74,8 +73,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             OnInit();
 
             DisplayModifiyer(currentCardIcon);
-            viewController.StartFadeIn(2f, Enable);
-           // Enable();
+            viewController.StartFadeIn(1f, Enable);
         }
 
         protected virtual void HandleDeath(IHealthController obj)

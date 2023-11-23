@@ -30,13 +30,13 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 new AiDeathState(this, animator, stateMachine)
             });
             base.Init(player, health, damage, monsterStatModifier, currentCardIcon);
-            stateMachine.SetState(typeof(AiWanderingState));
         }
 
         public override void Enable()
         {
             base.Enable();
             SetMovementState(true);
+            stateMachine.SetState(typeof(AiWanderingState));
         }
 
         public override void Disable()

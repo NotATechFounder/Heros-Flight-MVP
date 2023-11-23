@@ -17,7 +17,7 @@ namespace HeroesFlightProject.System.NPC.State
         }
 
        
-        public void Process() => m_CurrentState.Process();
+        public void Process() => m_CurrentState?.Process();
 
         public void SetState(Type newState)
         {
