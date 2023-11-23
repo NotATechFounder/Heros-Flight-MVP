@@ -70,8 +70,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
             {
                 SetMovementState(true);
             });
-            hitEffect.Flash();
-
+         
             if (!m_Model.UseKnockBack)
                 return;
 

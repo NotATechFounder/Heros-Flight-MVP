@@ -30,13 +30,13 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 new AiDeathState(this, animator, stateMachine)
             });
             base.Init(player, health, damage, monsterStatModifier, currentCardIcon);
-            stateMachine.SetState(typeof(AiWanderingState));
         }
 
         public override void Enable()
         {
             base.Enable();
             SetMovementState(true);
+            stateMachine.SetState(typeof(AiWanderingState));
         }
 
         public override void Disable()
@@ -69,7 +69,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             if (!m_Model.UseKnockBack)
             {
                 animator.PlayHitAnimation(m_Model.AttacksInteruptable);
-                hitEffect.Flash();
+              
             }
             else
             {
@@ -77,11 +77,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 {
                  // SetMovementState(!isDisabled);
                 });
-                hitEffect.Flash();
-
-
               
-
                 var forceVector = currentTarget.position.x >= transform.position.x ? Vector2.left : Vector2.right;
                 mover.ProcessKnockBack(forceVector, m_Model.KnockBackForce,m_Model.KnockBackDuration);
                 // var forceVector = (transform.position - currentTarget.position).normalized;

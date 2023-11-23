@@ -9,14 +9,22 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
         public AiChaseState(AiControllerBase aiController, AiAnimationController animatorController,
             IFSM stateMachine) : base(aiController, animatorController, stateMachine)
         {
-            aiController.TryGetController(out mover);
-            aiController.TryGetController(out attackController);
+            this.aiController = aiController;
+            this.aiController.TryGetController(out mover);
+            this.aiController.TryGetController(out attackController);
         }
 
         private AiMoverInterface mover;
         private EnemyAttackControllerBase attackController;
-        
-      
+        private AiControllerBase aiController;
+
+        public override void Enter()
+        {
+            mover.SetMovementSpeed(aiController.AgentModel.AiData.MoveSpeed *
+                                   aiController.AgentModel.AiData.SpeedModifier);
+            base.Enter();
+        }
+
         protected override void Update()
         {
             if (!aiController.IsAggravated())
@@ -25,7 +33,7 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
                 m_StateMachine.SetState(typeof(AiWanderingState));
                 return;
             }
-            
+
             if (!attackController.InAttackRange())
             {
                 mover.MoveToTarget(aiController.CurrentTarget);
@@ -39,8 +47,9 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
 
         public override void Exit()
         {
-          mover.MoveToTarget(null);
-          base.Exit();
+            mover.MoveToTarget(null);
+            mover.SetMovementSpeed(aiController.AgentModel.AiData.MoveSpeed);
+            base.Exit();
         }
     }
 }
