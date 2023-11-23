@@ -28,7 +28,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public float GetDamage => currentDamage;
 
-        protected FlashEffect hitEffect;
         protected AiViewController viewController;
         protected AiAnimatorInterface animator;
         protected Collider2D attackCollider;
@@ -56,7 +55,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
             attackCollider = GetComponent<Collider2D>();
             animator = GetComponent<AiAnimatorInterface>();
             viewController = GetComponent<AiViewController>();
-            hitEffect = GetComponentInChildren<FlashEffect>();
             healthController = GetComponent<AiHealthController>();
             healthController.SetHealthStats(health,
                 GetMonsterStatModifier().CalculateDefence(AgentModel.AiData.Defense));
@@ -109,7 +107,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public virtual void ProcessKnockBack()
         {
             animator.PlayHitAnimation(m_Model.AttacksInteruptable);
-            hitEffect.Flash();
         }
 
         public virtual void Enable()
