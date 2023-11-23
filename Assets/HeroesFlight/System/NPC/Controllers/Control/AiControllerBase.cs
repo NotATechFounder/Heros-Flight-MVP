@@ -73,9 +73,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
             attacker.SetTarget(player.GetComponent<IHealthController>());
             OnInit();
 
-            // viewController.StartFadeIn(2f, Enable);
             DisplayModifiyer(currentCardIcon);
-            Enable();
+            viewController.StartFadeIn(2f, Enable);
+           // Enable();
         }
 
         protected virtual void HandleDeath(IHealthController obj)
