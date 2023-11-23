@@ -10,53 +10,63 @@ using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
+using StansAssets.Foundation;
 
 public class ChainRotate : RegularActiveAbility
 {
     [SerializeField] private float roatationSpeed = 1f;
 
     [Header("Damage")]
+    [SerializeField] private float damageRate = 1f;
     [SerializeField] private CustomAnimationCurve damagePercentageCurve;
     [SerializeField] private OverlapChecker overlapChecker;
 
     [Header("Animation and Viusal Settings")]
     [SerializeField] private Transform visual;
     [SerializeField] SkeletonAnimation skeletonAnimation;
-    [SerializeField] public const string attackAnimation1Name = "animation";
+
+    public const string ChainOutAnimationName = "Chain_Out";
+    public const string ChainLoopAnimationName = "Loop";
+    public const string ChainInAnimationName = "Chain_In";
 
     private int baseDamage;
     private float currentDamagePercentage;
     private int currentDamage;
     private CharacterSimpleController characterControllerInterface;
     private bool canRotate = false;
+    private float currentTime;
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            OnActivated();
-        }
-
         if (canRotate)
         {
             visual.Rotate(0, 0, roatationSpeed * Time.deltaTime);
+
+            if (currentTime <= 0)
+            {
+                currentTime = damageRate;
+                overlapChecker.DetectOverlap();
+            }
+            else
+            {
+                currentTime -= Time.deltaTime;
+            }
         }
     }
 
     public override void OnActivated()
     {
-        GetEffectParticleByLevel().Play();
-
         currentDamagePercentage = damagePercentageCurve.GetCurrentValueFloat(currentLevel);
         currentDamage = (int)StatCalc.GetPercentage(baseDamage, currentDamagePercentage);
-
-        skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
-        canRotate = true;
+        skeletonAnimation.gameObject.SetActive(true);
+        skeletonAnimation.AnimationState.SetAnimation(0, ChainOutAnimationName, false);
     }
 
     public override void OnDeactivated()
     {
-
+        canRotate = false;
+        skeletonAnimation.AnimationState.SetAnimation(0, ChainInAnimationName, false);
+        GetEffectParticleByLevel().gameObject.SetActive(false);
     }
 
     public override void OnCoolDownEnded()
@@ -69,20 +79,17 @@ public class ChainRotate : RegularActiveAbility
         base.LevelUp();
     }
 
-    private void AnimationState_Event(TrackEntry trackEntry, Spine.Event e)
-    {
-        if (e.Data.Name == "Attack")
-        {
-
-        }
-    }
-
     private void AnimationState_Complete(TrackEntry trackEntry)
     {
         switch (trackEntry.Animation.Name)
         {
-            case attackAnimation1Name:
-                skeletonAnimation.AnimationState.SetEmptyAnimation(0, 0);
+            case ChainOutAnimationName:
+                canRotate = true;
+                skeletonAnimation.AnimationState.SetAnimation(0, ChainLoopAnimationName, true);
+                GetEffectParticleByLevel().gameObject.SetActive(true);
+                break;
+            case ChainInAnimationName:
+                skeletonAnimation.gameObject.SetActive(false);
                 break;
             default: break;
         }
@@ -95,13 +102,13 @@ public class ChainRotate : RegularActiveAbility
         this.characterControllerInterface = characterControllerInterface;
         characterControllerInterface.OnFaceDirectionChange += Flip;
         skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
-        skeletonAnimation.AnimationState.Event += AnimationState_Event;
         overlapChecker.OnDetect += OnOverlap;
     }
 
     private void Flip(bool facingLeft)
     {
-        visual.localScale = new Vector3(facingLeft ? 1 : -1, 1, 1);
+       // visual.localScale = new Vector3(facingLeft ? 1 : -1, 1, 1);
+        //overlapChecker.SetDirection(!facingLeft ? OverlapChecker.Direction.Left : OverlapChecker.Direction.Right);
     }
 
     private void OnOverlap(int count, Collider2D[] colliders)
@@ -113,6 +120,8 @@ public class ChainRotate : RegularActiveAbility
                 healthController.TryDealDamage(new HealthModificationIntentModel(currentDamage,
                     DamageCritType.Critical, AttackType.Regular, CalculationType.Flat, null));
             }
+
+            Debug.Log("Hit");
         }
     }
 

@@ -88,7 +88,7 @@ public class ActiveAbilityManager : MonoBehaviour
 
             EquippedAbility(RegularActiveAbilityType.HeavenStab);
             EquippedAbility(RegularActiveAbilityType.SwordWhirlwind);
-            EquippedAbility(RegularActiveAbilityType.LightNova);
+            EquippedAbility(RegularActiveAbilityType.ChainRotate);
         }
 
         if (Input.GetKeyDown(KeyCode.Keypad1))
