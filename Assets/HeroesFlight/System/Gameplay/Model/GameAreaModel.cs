@@ -24,6 +24,9 @@ namespace HeroesFlight.System.Gameplay.Model
         [SerializeField] private MobDifficultyHolder mobDifficulty;
         [SerializeField] private MobDropTableHolder mobDropTable;
 
+        [SerializeField] private CustomAnimationCurve levelComplectionExpCurve;
+        [SerializeField] private CustomAnimationCurve runComplectionExpCurve;
+
         [Header("Time Stop Testing")]
         [SerializeField] float timeStopRestoreSpeed;
         [SerializeField] float timeStopDuration;

@@ -17,7 +17,6 @@ public class LightNova : RegularActiveAbility
 {
     [Header("LightNova")] 
     [SerializeField] private float damageMultiplier = 1;
-    [SerializeField] private ParticleSystem chargeEffect;
     [SerializeField] private OverlapChecker overlapChecker;
 
     [Header("Animation and Viusal Settings")]
@@ -55,15 +54,11 @@ public class LightNova : RegularActiveAbility
         characterAttackController.ToggleControllerState(false);
 
         skeletonAnimation.gameObject.SetActive(true);
-
-        if (characterHealthController.CurrentHealth == characterHealthController.MaxHealth)
-        {
-            StartCoroutine(FullHealth(ActiveAbilitySO.Duration));
-        }
-        else
-        {
-            StartCoroutine(HealthRegen(ActiveAbilitySO.Duration));
-        }
+        skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
+        GetEffectParticleByLevel().Play();
+        overlapChecker.DetectOverlap();
+        AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Hero);
+        characterHealthController.Heal(characterHealthController.MaxHealth, false);
     }
 
     public override void OnDeactivated()
@@ -85,59 +80,9 @@ public class LightNova : RegularActiveAbility
             case attackAnimation1Name:
                 skeletonAnimation.AnimationState.SetEmptyAnimation(0, 0);
                 skeletonAnimation.gameObject.SetActive(false);
-                Debug.Log("Animation Complete");
                 break;
             default: break;
         }
-    }
-
-    private IEnumerator HealthRegen(float regenTime)
-    {
-        AudioManager.PlaySoundEffect("ValSkillActivation", SoundEffectCategory.Hero);
-
-        chargeEffect.transform.localScale = Vector3.one;
-        chargeEffect.Play();
-
-        float elapsedTime = 0.0f;
-        float startHealth = characterStatController.GetCurrentHealth();
-        while (characterHealthController.CurrentHealth < characterHealthController.MaxHealth)
-        {
-            elapsedTime += Time.deltaTime;
-            float amountToRegen =
-                Mathf.Lerp(startHealth, characterHealthController.MaxHealth, elapsedTime / regenTime) -
-                characterHealthController.CurrentHealth;
-            characterHealthController.Heal(amountToRegen, false);
-            chargeEffect.transform.localScale = Vector3.one + (Vector3.one * (elapsedTime / regenTime));
-            yield return null;
-        }
-
-        chargeEffect.Stop();
-        skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
-        GetEffectParticleByLevel().Play();
-        overlapChecker.DetectOverlap();
-        AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Hero);
-    }
-
-    private IEnumerator FullHealth(float regenTime)
-    {
-        AudioManager.PlaySoundEffect("ValSkillActivation", SoundEffectCategory.Hero);
-
-        chargeEffect.Play();
-
-        float elapsedTime = 0.0f;
-
-        while (elapsedTime < regenTime)
-        {
-            elapsedTime += Time.deltaTime;
-            chargeEffect.transform.localScale = Vector3.one + (Vector3.one * (elapsedTime / regenTime));
-            yield return null;
-        }
-
-        chargeEffect.Stop();
-        skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
-        GetEffectParticleByLevel().Play();
-        overlapChecker.DetectOverlap();
-        AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Hero);
     }
 
     private void Explode(int hits, Collider2D[] colliders)
