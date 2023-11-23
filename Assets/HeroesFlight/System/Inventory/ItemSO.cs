@@ -21,11 +21,6 @@ public class ItemSO : ScriptableObject, IHasID
     public string GetID() => ID;
 
 #if UNITY_EDITOR
-    private void OnValidate()
-    {
-        RenameFile();
-    }
-
     [ContextMenu("ResetName")]
     public void RenameFile()
     {

@@ -1,6 +1,7 @@
 using ScriptableObjectDatabase;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Item Database", menuName = "Inventory System/Item Database")]
@@ -78,4 +79,15 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         }
         return default;
     }
+
+#if UNITY_EDITOR
+    [ContextMenu("RenameAllItems")]
+    public void RenameAllItems()
+    {
+        for (int i = 0; i < Items.Length; i++)
+        {
+            Items[i].RenameFile();
+        }
+    }
+#endif
 }
