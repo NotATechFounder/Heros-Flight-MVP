@@ -133,8 +133,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 OnDisabled?.Invoke(this);
                 if (gameObject != null)
                 {
-                  //  gameObject.SetActive(false);
-                  Destroy(gameObject);
+                  gameObject.SetActive(false);
+                 // Destroy(gameObject);
                 }
             });
         }
