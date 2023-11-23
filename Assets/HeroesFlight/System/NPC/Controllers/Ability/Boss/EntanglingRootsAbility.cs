@@ -1,26 +1,24 @@
 using System;
 using Cinemachine;
-using HeroesFlight.Common.Enum;
-using HeroesFlight.System.Combat.Enum;
-using HeroesFlight.System.Gameplay.Enum;
-using HeroesFlight.System.Gameplay.Model;
+using HeroesFlight.System.Combat.Effects.Effects;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using StansAssets.Foundation.Async;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace HeroesFlight.System.NPC.Controllers.Ability
 {
-    public class BossEntityTriggerAbilityDynamic : BossAttackAbilityBase
+    public class EntanglingRootsAbility : BossAbilityBase
     {
         [SerializeField] GameObject entityHolder;
-        [SerializeField] float preDamageDelay = 2f;
+         [SerializeField] float logicTriggerDelay = 2f;
 
         [Header("Parameters for optional visual zone usage")]
         [SerializeField] WarningLine zone;
-
         [SerializeField] float zoneWidth;
-
+        [Header("Effect To Apply on Target")]
+        [SerializeField] RootStatusEffect rootEffect;
         AreaDamageEntity[] mushrooms;
         GameObject runtimeEntityHolder;
         protected override void Awake()
@@ -41,10 +39,10 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
         {
             for (int i = 0; i < count; i++)
             {
-                if(targets[i].TryGetComponent<IHealthController>(out var health))
+               
+                if(targets[i].TryGetComponent<CombatEffectsController>(out var controller))
                 {
-                    health.TryDealDamage(new HealthModificationIntentModel(CalculateDamage(),
-                        DamageCritType.NoneCritical,AttackType.Regular,CalculationType.Flat,null));
+                    controller.ApplyStatusEffect(rootEffect,1);
                 }
             }
         }
@@ -61,7 +59,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
             if (zone == null)
             {
                 
-                CoroutineUtility.WaitForSeconds(preDamageDelay,() =>
+                CoroutineUtility.WaitForSeconds(logicTriggerDelay,() =>
                 {
                     cameraShaker?.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,.5f);
                     foreach (var mushroom in mushrooms)
@@ -80,7 +78,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
                         mushroom.StartDetection();
                     }
                    
-                },preDamageDelay,zoneWidth);
+                },logicTriggerDelay,zoneWidth);
             }
            
             

@@ -5,7 +5,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 {
     public class BossAbilityBase : AbilityBaseNPC
     {
-        [SerializeField] protected float modifier = 0f;
+        protected float modifier = 0f;
         protected CameraShakerInterface cameraShaker;
       
 

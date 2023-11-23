@@ -15,7 +15,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected bool stopOnUse = true;
         [SerializeField] protected ParticleSystem abilityParticle;
         protected AiAnimatorInterface animator;
-       [SerializeField] protected float currentCooldown;
+        protected float currentCooldown;
        public float UseChance => useChance;
        protected virtual void Awake()
         {
