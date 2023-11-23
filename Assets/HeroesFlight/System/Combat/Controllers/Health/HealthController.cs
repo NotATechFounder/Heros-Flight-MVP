@@ -7,6 +7,7 @@ using HeroesFlight.System.Combat.Model;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System.Collections;
+using HeroesFlight.System.NPC.Controllers;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -24,11 +25,28 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected bool useHit;
         [SerializeField] protected int maxHit;
         [SerializeField] protected int currentHit;
+
+        [Header("Immortality")] 
+        [SerializeField] protected bool becomeImmortalOnHit;
+        [SerializeField] protected float immortalityDuration=.5f;
+        [SerializeField] private bool isCurrentlyImmortal;
         public event Action<Transform> OnBeingHitDamaged;
 
         public int MaxHit => maxHit;
         public int CurrentHit => currentHit;
-        public bool IsImmortal { get; protected set; }
+
+        public bool IsImmortal
+        {
+            get
+            {
+                return isCurrentlyImmortal;
+            }
+            protected set
+            {
+                isCurrentlyImmortal = value;
+            }
+        }
+
         public bool IsShielded { get; protected set; }
         public HealthType HealthType => healthType;
         public Transform HealthTransform => transform;
@@ -39,10 +57,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public event Action<HealthModificationIntentModel> OnHitWhileIsShielded;
         public event Action<IHealthController> OnDeath;
         public event Action OnDodged;
+        private FlashEffect flashEffect;
 
+        private float currentImmortalityDuration;
         private void OnEnable()
         {
             if (autoInit) Init();
+            flashEffect = GetComponentInChildren<FlashEffect>();
         }
 
         public virtual void Init()
@@ -50,6 +71,23 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             currentHealth = maxHealth;
             heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
             currentHit = maxHit;
+        }
+
+        protected virtual void Update()
+        {
+            UpdateTimers();
+        }
+
+        protected virtual void UpdateTimers()
+        {
+            if (currentImmortalityDuration > 0)
+            {
+                currentImmortalityDuration -= Time.deltaTime;
+                if (currentImmortalityDuration <= 0)
+                {
+                    IsImmortal = false;
+                }
+            }
         }
 
         public virtual void TryDealDamage(HealthModificationIntentModel healthModificationIntent)
@@ -96,6 +134,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                var resultDamage = modificationIntentModel.Amount -
                                    StatCalc.GetPercentage(modificationIntentModel.Amount, defence);
                 currentHealth -= resultDamage;
+                flashEffect?.Flash();
+                if (becomeImmortalOnHit && modificationIntentModel.AttackType != AttackType.DoT)
+                {
+                    IsImmortal = true;
+                    currentImmortalityDuration = immortalityDuration;
+                }
             }
             else
             {
@@ -105,9 +149,12 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
            
             heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
-          
+
             if (IsDead())
+            {
                 ProcessDeath();
+            }
+               
         }
 
         public virtual void Heal(float amount, bool notify = true)
@@ -156,7 +203,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public virtual void SetInvulnerableState(bool isImmortal)
         {
-            IsImmortal = isImmortal;
+            this.IsImmortal = isImmortal;
         }
 
         public virtual void SetShieldedState(bool isShielded)

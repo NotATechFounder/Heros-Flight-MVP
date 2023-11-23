@@ -20,8 +20,8 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
         protected override void Awake()
         {
             animator = GetComponentInParent<AiAnimatorInterface>();
-            attackController = GetComponent<EnemyAttackControllerBase>();
-            healthController = GetComponent<AiHealthController>();
+            attackController = GetComponentInParent<EnemyAttackControllerBase>();
+            healthController = GetComponentInParent<AiHealthController>();
             currentCooldown = 0;
             foreach (var zone in abilityZones)
             {

@@ -1,5 +1,6 @@
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Gameplay.Model;
+using HeroesFlight.System.NPC.Controllers;
 using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
@@ -10,7 +11,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         BaseCharacterAttackController attackController;
         CharacterAnimationControllerInterface animator;
         CharacterStatController characterStatController;
-
+        
         private void Awake()
         {
             characterStatController = GetComponent<CharacterStatController>();
@@ -30,12 +31,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             base.Init();
         }
 
-        // private void ModifyHealth(float value, bool increase)
-        // {
-        //     if (increase)
-        //         Heal(value);
-        // }
-
+      
         protected override void ProcessDeath()
         {
             controller.SetActionState(false);

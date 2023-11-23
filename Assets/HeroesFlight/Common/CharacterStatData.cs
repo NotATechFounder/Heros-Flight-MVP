@@ -22,7 +22,8 @@ public class CharacterStatData
 [Serializable]
 public class MonsterStatData : CharacterStatData
 {
-   
+    [SerializeField] private float aggravatedSpeedModifier = 1;
+    public float SpeedModifier => aggravatedSpeedModifier;
 }
 
 [Serializable]
