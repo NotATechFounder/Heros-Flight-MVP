@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Gameplay.Enum;
@@ -13,6 +14,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
     public class DamageDashAbility : AttackAbilityBaseNPC
     {
         [SerializeField] GameObject targetObject;
+        [SerializeField] private float preDashDelay = 1f;
         [SerializeField] private float dashForce=100;
         [SerializeField] Trigger2DObserver observer;
 
@@ -44,8 +46,8 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
                     onComplete?.Invoke();
                 });
                 var direction = (attackController.Target.HealthTransform.position - transform.position).normalized;
-                rigidbody2D.AddForce(direction * dashForce, ForceMode2D.Impulse);
                 currentCooldown = CoolDown;
+                StartCoroutine(DashMovement(direction));
             }
         }
 
@@ -76,5 +78,13 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
                     DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, healthController));
             }
         }
+
+        IEnumerator DashMovement(Vector3 direction)
+        {
+            yield return new WaitForSeconds(preDashDelay);
+            rigidbody2D.AddForce(direction * dashForce, ForceMode2D.Impulse);
+        }
     }
+    
+    
 }
