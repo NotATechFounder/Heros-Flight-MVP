@@ -9,6 +9,6 @@ namespace HeroesFlightProject.System.NPC.Enum
         MiniBoss,
         EliteTree,
         HornedMushroom,
-        Fairy
+        WoodFairy
     }
 }
