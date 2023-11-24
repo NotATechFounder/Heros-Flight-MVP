@@ -43,7 +43,7 @@ public class ItemInventorySO : InventorySO <ItemData>
 
     public void RemoveItemFromInventory(Item item, int amount = 1)
     {
-        RemoveItemFromInventory (item.itemObject, item.ItemData(), amount);
+        RemoveItemFromInventory (item.itemSO, item.ItemData(), amount);
     }
 
     public void RemoveItemFromInventory(ItemSO itemSO, ItemData itemData, int amount = 1)

@@ -6,7 +6,7 @@ using UnityEngine;
 public enum Rarities { Common, UnCommon, Rare, Epic, Legendary };
 public enum EquipmentType { Weapon, Armour, Ring, Belt, Necklace };
 
-public class EquipmentObject : ItemSO
+public class EquipmentSO : ItemSO
 {
     public Rarities rarity;
     public EquipmentType equipmentType;

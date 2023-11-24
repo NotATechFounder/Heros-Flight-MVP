@@ -31,7 +31,7 @@ public class AccountLevelManager : MonoBehaviour
 
     private void Update()
     {
-        Test();
+        //Test();
     }
 
     public void Test()

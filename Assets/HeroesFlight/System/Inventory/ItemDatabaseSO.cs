@@ -22,12 +22,12 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
     public int GetCostToLevel(ItemData currentItem)
     {
         ItemSO itemBase = GetItemSOByID(currentItem.ID);
-        return itemGoldCostStat.GetCurrentValueInt(currentItem.GetValue()) / 2 + GetRarityInfo((itemBase as EquipmentObject).rarity).defaultSellPrice;
+        return itemGoldCostStat.GetCurrentValueInt(currentItem.GetValue()) / 2 + GetRarityInfo((itemBase as EquipmentSO).rarity).defaultSellPrice;
     }
 
     public int GetItemMaxLevel(Item currentItem)
     {
-        return GetRarityInfo((currentItem.itemObject as EquipmentObject).rarity).maxLevel;
+        return GetRarityInfo((currentItem.itemSO as EquipmentSO).rarity).maxLevel;
     }
 
     public RarityInfo GetRarityInfo(Rarities currentRarity)
@@ -38,7 +38,7 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
 
     public void SetItemBuffStat(Item currentItem)
     {
-        ItemSO itemBase = currentItem.itemObject;
+        ItemSO itemBase = currentItem.itemSO;
 
         for (int i = 0; i < currentItem.ItemBuffs().Length; i++)
         {
@@ -48,7 +48,7 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
 
                 for (int k = 0; k < buffs[j].buffRarityStats.Length; k++)
                 {
-                    if (buffs[j].buffRarityStats[k].rarity == (itemBase as EquipmentObject).rarity)
+                    if (buffs[j].buffRarityStats[k].rarity == (itemBase as EquipmentSO).rarity)
                     {
                         currentItem.ItemBuffs()[i].value = buffs[j].buffRarityStats[k].statCurve.GetCurrentValueInt(currentItem.ItemData().GetValue());
                         break;
