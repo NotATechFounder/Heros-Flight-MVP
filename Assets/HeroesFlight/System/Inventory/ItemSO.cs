@@ -64,6 +64,19 @@ public class Item
             itemEffects[i].itemEffectType = item.effects[i];
         }
     }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType()) return false;
+
+        Item item = (Item)obj;
+        return itemData.instanceID == item.itemData.instanceID;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(itemSO, itemData, itemEffects);
+    }
 }
 
 [Serializable]

@@ -11,11 +11,14 @@ public class MenuTester : MonoBehaviour
     private void Start()
     {
         inventorySystem.OnItemAdded += inventoryMenu.SpawnItemUI;
+        inventorySystem.OnItemModified += inventoryMenu.UpdateItemUI;
 
         inventoryMenu.GetInventoryItems += inventorySystem.GetInventoryItems;
         inventoryMenu.OnItemEquipped += inventorySystem.EquipItem;
         inventoryMenu.OnItemUnEquipped += inventorySystem.UnEquipItem;
         inventoryMenu.OnItemDismantled += inventorySystem.DismantleItem;
+        inventoryMenu.OnItemUpgraded += inventorySystem.TryUpgradeItem;
+
         inventoryMenu.InitInventoryUI();
     }
 

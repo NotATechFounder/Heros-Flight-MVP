@@ -33,6 +33,13 @@ public class ItemUI : MonoBehaviour
     {
         this.item = item;
         itemIcon.sprite = item.itemSO.icon;
+        SetItemInfo();
+    }
+
+    public void SetItemInfo()
+    {
+        string valueType = item.itemSO.itemType == ItemType.Equipment ? "LV." : "QTY.";
+        itemInfo.text = valueType + item.ItemData().value.ToString();
     }
 
     private void SelectItem()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static Codice.CM.WorkspaceServer.WorkspaceTreeDataStore;
@@ -13,6 +14,7 @@ public class EquippedSlot : MonoBehaviour
     [SerializeField] AdvanceButton selectButton;
     [SerializeField] GameObject content;
     [SerializeField] Image itemIcon;
+    [SerializeField] TextMeshProUGUI itemInfo;
 
     private bool isOccupied;
     private Item itemInSlot;
@@ -32,6 +34,12 @@ public class EquippedSlot : MonoBehaviour
         isOccupied = true;
         itemInSlot = item;
         itemIcon.sprite = GetItem.itemSO.icon;
+        SetItemInfo();
+    }
+
+    public void SetItemInfo()
+    {
+        itemInfo.text = "LV." + itemInSlot.ItemData().value.ToString();
     }
 
     private void SelectItem()

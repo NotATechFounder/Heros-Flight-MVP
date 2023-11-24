@@ -20,7 +20,7 @@ namespace UISystem
         public event Action<Item> OnItemEquipped;
         public event Action<Item> OnItemUnEquipped;
         public event Action<Item> OnItemDismantled;
-        public event Action<Item> OnItemUpgraded;
+        public event Func<Item, bool> OnItemUpgraded;
 
         [Header("Buttons")]
         [SerializeField] private AdvanceButton changeHeroButton;
@@ -109,7 +109,7 @@ namespace UISystem
         {
             itemInfoDisplayUI.OnEquipAction += EquipItem;
             itemInfoDisplayUI.OnDismantleAction += DismantleItem;
-            itemInfoDisplayUI.OnUpgradeAction += UpgradeItem;
+            itemInfoDisplayUI.OnUpgradeAction += TryUpgradeItem;
             itemInfoDisplayUI.OnUnequipAction += UnEquipItem;
 
             foreach (EquippedSlot slot in equippedSlots)
@@ -152,9 +152,13 @@ namespace UISystem
             }
         }
 
-        private void UpgradeItem()
+        private bool TryUpgradeItem()
         {
-            OnItemUpgraded?.Invoke(selectedItemUI.GetItem);
+            if(OnItemUpgraded?.Invoke(selectedItemUI.GetItem) == true)
+            {
+                return true;
+            }
+            return false;
         }
 
         private void DismantleItem()
@@ -242,6 +246,30 @@ namespace UISystem
                 case ItemType.Material:
                     break;
             }
+        }
+
+        public void UpdateItemUI(Item item)
+        {
+            if (itemUIDic.ContainsKey(item.ItemData().instanceID))
+            {
+                itemUIDic[item.ItemData().instanceID].SetItemInfo();
+            }
+            else
+            {
+                GetEquippedSlot (item)?.SetItemInfo();
+            }
+        }
+
+        private EquippedSlot GetEquippedSlot(Item item)
+        {
+            foreach (EquippedSlot slot in equippedSlots)
+            {
+                if (slot.GetItem == item)
+                {
+                    return slot;
+                }
+            }
+            return null;
         }
 
         private EquippedSlot GetEquipmentSlot(EquipmentType equipmentType)

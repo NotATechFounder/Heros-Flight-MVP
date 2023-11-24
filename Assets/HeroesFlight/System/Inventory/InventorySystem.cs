@@ -14,6 +14,7 @@ public class InventorySystem : MonoBehaviour
 
     [Header("Test Item")]
     [SerializeField] private ItemSO[] testItem;
+    [SerializeField] private ItemSO[] testMaterialItem;
 
     private void Start()
     {
@@ -25,6 +26,14 @@ public class InventorySystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A))
         {
             foreach (ItemSO item in testItem)
+            {
+                AddToInventory(item);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            foreach (ItemSO item in testMaterialItem)
             {
                 AddToInventory(item);
             }
@@ -78,6 +87,15 @@ public class InventorySystem : MonoBehaviour
     public void DismantleItem(Item item)
     {
         RemoveFromInventory(item);
+    }
+
+    public bool TryUpgradeItem(Item item)
+    {
+        // check if the level is not maxed and if they have enough materials
+        item.LevelUp();
+        OnItemModified?.Invoke(item);
+        mainItemInventorySO.Save();
+        return true;
     }
 
     public void SaveInventoryItems()

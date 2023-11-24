@@ -1,3 +1,4 @@
+using Codice.CM.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 public class ItemInfoDisplayUI : MonoBehaviour
 {
     public event Action OnDismantleAction;
-    public event Action OnUpgradeAction;
+    public event Func<bool> OnUpgradeAction;
     public event Action OnEquipAction;
     public event Action OnUnequipAction;
 
@@ -50,7 +51,7 @@ public class ItemInfoDisplayUI : MonoBehaviour
     {
         closeButton.onClick.AddListener(Close);
         dismantleButton.onClick.AddListener(() => OnDismantleAction?.Invoke());
-        upgradeButton.onClick.AddListener(() => OnUpgradeAction?.Invoke());
+        upgradeButton.onClick.AddListener(HandleUpgrade);
         equipOrUnequipButton.onClick.AddListener(() => equipOrUnequipAction?.Invoke());
     }
 
@@ -61,6 +62,22 @@ public class ItemInfoDisplayUI : MonoBehaviour
         bool isEquipped = item.ItemData().eqquiped;
         equipOrUnequipAction = isEquipped ? OnUnequipAction : OnEquipAction;
         equipOrUnequipText.text = isEquipped ? "Unequip" : "Equip";
+        itemLevel.text = "LV." + item.ItemData().value.ToString();
+        itemIcon.sprite = item.itemSO.icon;
+        SetItemInfo();
+    }
+
+    private void HandleUpgrade()
+    {
+        if (OnUpgradeAction?.Invoke() == true)
+        {
+            SetItemInfo();
+        }
+    }
+
+    public void SetItemInfo()
+    {
+        itemLevel.text = "LV." + item.ItemData().value.ToString();
     }
 
     public void Close()
