@@ -1,10 +1,8 @@
 using StansAssets.Foundation.Extensions;
 using System;
-using System.Collections.Generic;
-using HeroesFlight.Common.Enum;
+
 using HeroesFlight.System.FileManager.Rewards;
 using UnityEngine.SceneManagement;
-using log4net.Core;
 
 public class DataSystem : DataSystemInterface
 {
@@ -14,6 +12,11 @@ public class DataSystem : DataSystemInterface
     }
 
     public RewardsHandlerInterface RewardHandler { get; private set; }
+    public event Action OnApplicationQuit;
+    public void RequestDataSave()
+    {
+        OnApplicationQuit?.Invoke();
+    }
 
     public CharacterManager CharacterManager { get; private set; }
 

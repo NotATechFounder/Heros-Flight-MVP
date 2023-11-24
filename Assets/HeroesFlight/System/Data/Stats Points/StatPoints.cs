@@ -1,9 +1,7 @@
 using HeroesFlight.Common.Progression;
 using HeroesFlight.System.FileManager;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 public class StatPoints : MonoBehaviour

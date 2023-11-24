@@ -53,7 +53,6 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 
         private void HandleTargetEntered(Collider2D obj)
         {
-            Debug.Log("Trigered");
             var health = obj.GetComponent<IHealthController>();
             if (health != attackController.Target)
                 return;
@@ -82,7 +81,11 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
         IEnumerator DashMovement(Vector3 direction)
         {
             yield return new WaitForSeconds(preDashDelay);
-            rigidbody2D.AddForce(direction * dashForce, ForceMode2D.Impulse);
+            if (!healthController.IsDead())
+            {
+                rigidbody2D.AddForce(direction * dashForce, ForceMode2D.Impulse);    
+            }
+            
         }
     }
     

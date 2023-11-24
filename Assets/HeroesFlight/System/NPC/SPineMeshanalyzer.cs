@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections;
 using System.Collections.Generic;
 using Spine.Unity;
@@ -10,13 +11,15 @@ public class SPineMeshanalyzer : MonoBehaviour
     public  void LogVisuals()
     {
         var skeleton = Selection.activeObject as GameObject;
-         var spineSkeleton=  skeleton.GetComponent<SkeletonAnimation>();
-         foreach (var slot in spineSkeleton.skeleton.Slots)
-         {
-             Debug.Log(slot.Data.Name);
-         }
+        var spineSkeleton=  skeleton.GetComponent<SkeletonAnimation>();
+        foreach (var slot in spineSkeleton.skeleton.Slots)
+        {
+            Debug.Log(slot.Data.Name);
+        }
 
         var bone= spineSkeleton.skeleton.FindSlot("Face");
         bone.A = 1;
     }
 }
+#endif
+

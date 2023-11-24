@@ -1,4 +1,5 @@
-﻿using HeroesFlight.Core.Application;
+﻿using System;
+using HeroesFlight.Core.Application;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Combat;
 using HeroesFlight.System.Dice;
@@ -57,6 +58,24 @@ namespace HeroesFlight.Core.Bootstrapper
             m_ServiceLocator.Register(traitSystem);
             m_ServiceLocator.Register(diceSystem);
             return m_ServiceLocator;
+        }
+
+        private void OnDestroy()
+        {
+            m_ServiceLocator.Get<DataSystemInterface>().RequestDataSave();
+        }
+
+        private void OnApplicationQuit()
+        {
+            m_ServiceLocator.Get<DataSystemInterface>().RequestDataSave();
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus)
+            {
+                m_ServiceLocator.Get<DataSystemInterface>().RequestDataSave();
+            }
         }
     }
 }

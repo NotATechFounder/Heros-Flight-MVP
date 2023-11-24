@@ -12,6 +12,7 @@ namespace HeroesFlight.System.Stats.Handlers
         event Action<Dictionary<StatAttributeType, int>> OnTraitsStateChange;
         bool HasTraitOfType(TraitType targetType, out List<TraitStateModel> model);
         TraitEffect GetTraitEffect(string id);
-        List<TraitStateModel> GetUnlockedEffects();
+        Dictionary<StatAttributeType, int> GetUnlockedEffects();
+       
     }
 }
