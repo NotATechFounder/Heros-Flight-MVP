@@ -1,6 +1,7 @@
 using ScriptableObjectDatabase;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Item Database", menuName = "Inventory System/Item Database")]
@@ -21,12 +22,12 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
     public int GetCostToLevel(ItemData currentItem)
     {
         ItemSO itemBase = GetItemSOByID(currentItem.ID);
-        return itemGoldCostStat.GetCurrentValueInt(currentItem.GetValue()) / 2 + GetRarityInfo((itemBase as EquipmentObject).rarity).defaultSellPrice;
+        return itemGoldCostStat.GetCurrentValueInt(currentItem.GetValue()) / 2 + GetRarityInfo((itemBase as EquipmentSO).rarity).defaultSellPrice;
     }
 
     public int GetItemMaxLevel(Item currentItem)
     {
-        return GetRarityInfo((currentItem.itemObject as EquipmentObject).rarity).maxLevel;
+        return GetRarityInfo((currentItem.itemSO as EquipmentSO).rarity).maxLevel;
     }
 
     public RarityInfo GetRarityInfo(Rarities currentRarity)
@@ -37,7 +38,7 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
 
     public void SetItemBuffStat(Item currentItem)
     {
-        ItemSO itemBase = currentItem.itemObject;
+        ItemSO itemBase = currentItem.itemSO;
 
         for (int i = 0; i < currentItem.ItemBuffs().Length; i++)
         {
@@ -47,7 +48,7 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
 
                 for (int k = 0; k < buffs[j].buffRarityStats.Length; k++)
                 {
-                    if (buffs[j].buffRarityStats[k].rarity == (itemBase as EquipmentObject).rarity)
+                    if (buffs[j].buffRarityStats[k].rarity == (itemBase as EquipmentSO).rarity)
                     {
                         currentItem.ItemBuffs()[i].value = buffs[j].buffRarityStats[k].statCurve.GetCurrentValueInt(currentItem.ItemData().GetValue());
                         break;
@@ -78,4 +79,15 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         }
         return default;
     }
+
+#if UNITY_EDITOR
+    [ContextMenu("RenameAllItems")]
+    public void RenameAllItems()
+    {
+        for (int i = 0; i < Items.Length; i++)
+        {
+            Items[i].RenameFile();
+        }
+    }
+#endif
 }

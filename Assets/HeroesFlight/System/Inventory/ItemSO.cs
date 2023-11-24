@@ -21,11 +21,6 @@ public class ItemSO : ScriptableObject, IHasID
     public string GetID() => ID;
 
 #if UNITY_EDITOR
-    private void OnValidate()
-    {
-        RenameFile();
-    }
-
     [ContextMenu("ResetName")]
     public void RenameFile()
     {
@@ -38,16 +33,16 @@ public class ItemSO : ScriptableObject, IHasID
 [Serializable]
 public class Item
 {
-    public ItemSO itemObject;
+    public ItemSO itemSO;
     [SerializeField] ItemData itemData;
     [SerializeField] ItemEffect[] itemEffects;
 
     public Item(ItemSO itemObject, ItemData itemData)
     {
-        this.itemObject = itemObject;
+        this.itemSO = itemObject;
         this.itemData = itemData;
 
-        if (itemObject is EquipmentObject) AddEffects(itemObject as EquipmentObject);
+        if (itemObject is EquipmentSO) AddEffects(itemObject as EquipmentSO);
     }
 
     public ItemData ItemData() => itemData;
@@ -56,11 +51,11 @@ public class Item
 
     public void LevelUp()
     {
-        if (itemObject is EquipmentObject) itemData.LevelUp();
+        if (itemSO is EquipmentSO) itemData.LevelUp();
        // InventoryManager.Instance.ItemManager().SetItemBuffStat(this);
     }
 
-    public void AddEffects(EquipmentObject item)
+    public void AddEffects(EquipmentSO item)
     {
         itemEffects = new ItemEffect[item.effects.Length];
         for (int i = 0; i < itemEffects.Length; i++)
@@ -68,6 +63,19 @@ public class Item
             itemEffects[i] = new ItemEffect();
             itemEffects[i].itemEffectType = item.effects[i];
         }
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType()) return false;
+
+        Item item = (Item)obj;
+        return itemData.instanceID == item.itemData.instanceID;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(itemSO, itemData, itemEffects);
     }
 }
 
@@ -77,7 +85,6 @@ public class ItemData
     public string ID;
     public string instanceID;
     public bool eqquiped;
-    public bool deleted;
     public int value;
 
     public ItemData(ItemSO item, int newValue = 1) 

@@ -5,36 +5,28 @@ using UnityEngine;
 
 public class MenuTester : MonoBehaviour
 {
-    [SerializeField] private StatPoints statPoints;
-    [SerializeField] private StatPointsMenu statPointsMenu;
+    [SerializeField] private InventoryMenu inventoryMenu;
+    [SerializeField] private InventorySystem inventorySystem;
 
     private void Start()
     {
+        inventorySystem.OnItemAdded += inventoryMenu.SpawnItemUI;
+        inventorySystem.OnItemModified += inventoryMenu.UpdateItemUI;
 
+        inventoryMenu.GetInventoryItems += inventorySystem.GetInventoryItems;
+        inventoryMenu.OnItemEquipped += inventorySystem.EquipItem;
+        inventoryMenu.OnItemUnEquipped += inventorySystem.UnEquipItem;
+        inventoryMenu.OnItemDismantled += inventorySystem.DismantleItem;
+        inventoryMenu.OnItemUpgraded += inventorySystem.TryUpgradeItem;
+
+        inventoryMenu.InitInventoryUI();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            statPointsMenu.GetCurrentSpLevel += statPoints.GetSp;
-            statPointsMenu.OnAddSpClicked += statPoints.TryAddSp;
-            statPointsMenu.OnRemoveSpClicked += statPoints.TrytRemoveSp;
-            statPointsMenu.GetAvailabletSp += statPoints.GetAvailableSp;
-            statPointsMenu.OnCompletePressed += statPoints.Confirm;
-
-            statPointsMenu.CacheStatUI();
-            statPointsMenu.InitStatUI();
-        }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            statPointsMenu.OnCreated();
-        }
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
-
+            inventoryMenu.LoadInventoryItems();
         }
     }
 }
