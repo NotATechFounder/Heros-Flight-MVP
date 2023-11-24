@@ -37,7 +37,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 {
                    mushroom.Init(player,health,damage,new MonsterStatModifier(),null);
                    OnEnemySpawned?.Invoke( mushroom.GetComponent<IHealthController>());
-                   mushroom.gameObject.SetActive(true);
                 }
             });
             

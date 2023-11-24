@@ -1,8 +1,5 @@
-using Codice.CM.Common;
 using HeroesFlight.System.FileManager;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AccountLevelManager : MonoBehaviour

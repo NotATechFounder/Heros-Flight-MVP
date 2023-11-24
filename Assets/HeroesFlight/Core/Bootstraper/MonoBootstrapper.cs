@@ -64,5 +64,18 @@ namespace HeroesFlight.Core.Bootstrapper
         {
             m_ServiceLocator.Get<DataSystemInterface>().RequestDataSave();
         }
+
+        private void OnApplicationQuit()
+        {
+            m_ServiceLocator.Get<DataSystemInterface>().RequestDataSave();
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus)
+            {
+                m_ServiceLocator.Get<DataSystemInterface>().RequestDataSave();
+            }
+        }
     }
 }

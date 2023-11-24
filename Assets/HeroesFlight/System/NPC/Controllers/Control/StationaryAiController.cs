@@ -19,6 +19,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 new AiAttackState(this, animator, stateMachine),
                 new AiDeathState(this, animator, stateMachine)
             });
+            Debug.Log("Initied stationary");
             base.Init(player, health, damage, monsterStatModifier, currentCardIcon);
             stateMachine.SetState(typeof(AiWanderingState));
             

@@ -71,9 +71,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 m_Model.AiData.AttackSpeed, m_Model.AiData.CriticalHitChance);
             attacker.SetTarget(player.GetComponent<IHealthController>());
             OnInit();
-
             DisplayModifiyer(currentCardIcon);
             healthController.SetInvulnerableState(true);
+            Debug.Log("Inited base");
+            gameObject.SetActive(true);
             viewController.StartFadeIn(.5f, Enable);
         }
 
@@ -111,9 +112,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public virtual void Enable()
         {
             rigidBody.bodyType = RigidbodyType2D.Dynamic;
-            gameObject.SetActive(true);
             attackCollider.enabled = true;
             isDisabled = false;
+            Debug.Log("enabled "+name);
             healthController.SetInvulnerableState(false);
         }
 

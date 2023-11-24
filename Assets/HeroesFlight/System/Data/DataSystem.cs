@@ -1,10 +1,8 @@
 using StansAssets.Foundation.Extensions;
 using System;
-using System.Collections.Generic;
-using HeroesFlight.Common.Enum;
+
 using HeroesFlight.System.FileManager.Rewards;
 using UnityEngine.SceneManagement;
-using log4net.Core;
 
 public class DataSystem : DataSystemInterface
 {
