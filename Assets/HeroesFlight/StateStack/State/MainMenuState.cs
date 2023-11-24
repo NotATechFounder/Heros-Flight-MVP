@@ -39,9 +39,7 @@ namespace HeroesFlight.StateStack.State
                     var traitSystem = GetService<TraitSystemInterface>();
                     var diceSystem = GetService<DiceSystemInterface>();
                     traitSystem.OnTraitsStateChange += HandleTraitStateChange;
-                    dataSystem.StatManager.ProcessTraitsStatsModifiers(traitSystem.GetUnlockedEffects());
                     TraitSystemInterface traitSystemInterface = GetService<TraitSystemInterface>();
-                    Debug.Log("Initing trait system");
                     traitSystemInterface.Init();
                     uiSystem.UiEventHandler.MainMenu.Open();
 
@@ -80,7 +78,7 @@ namespace HeroesFlight.StateStack.State
 
                     dataSystem.CharacterManager.OnCharacterChanged += uiSystem.UiEventHandler.InventoryMenu.UpdateCharacter;
                     dataSystem.StatManager.OnValueChanged += uiSystem.UiEventHandler.InventoryMenu.OnStatValueChanged;
-
+            
                     //dataSystem.StatPoints.OnSpChanged += uiSystem.UiEventHandler.StatePointsMenu.Open;
 
                     void HandleGameStartRequest()
@@ -98,6 +96,7 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed += HandleGameStartRequest;
                     dataSystem.CurrencyManager.OnCurrencyChanged += uiSystem.UiEventHandler.MainMenu.CurrencyChanged;
                     dataSystem.CurrencyManager.TriggerAllCurrencyChange();
+                    dataSystem.StatManager.ProcessTraitsStatsModifiers(traitSystem.GetUnlockedEffects());
 
                     break;
                 case StackAction.Paused:

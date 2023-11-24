@@ -79,6 +79,7 @@ namespace HeroesFlight.System.Stats.Handlers
                         uiSystem.UiEventHandler.MainMenu.UpdateGoldText(data.CurrencyManager
                             .GetCurrecy(request.Model.TargetCurrency.GetKey).GetCurrencyAmount);
                         uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
+                        NotifyTraitStateChanged();
                     }
 
                     break;
@@ -91,6 +92,7 @@ namespace HeroesFlight.System.Stats.Handlers
                             {
                                 uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
                                 uiSystem.UiEventHandler.DiceMenu.ModifyDiceRollResultUi($"+{rolledValue}");
+                                NotifyTraitStateChanged();
                             }
                         });
                     });
@@ -99,7 +101,7 @@ namespace HeroesFlight.System.Stats.Handlers
                     break;
             }
 
-            NotifyTraitStateChanged();
+          
         }
 
 
@@ -141,31 +143,29 @@ namespace HeroesFlight.System.Stats.Handlers
         public void LoadData()
         {
             var saveData = FileManager.FileManager.Load<TraitsMapSaveModel>(SaveKey);
-            Debug.Log(Application.persistentDataPath);
             if (saveData != null)
             {
                 traitHandler.LoadData(saveData.savedModels);
-                NotifyTraitStateChanged();
             }
-           
         }
 
 
         void NotifyTraitStateChanged()
         {
+            Debug.Log("Notifying traits changed");
             OnTraitsStateChange?.Invoke(GetUnlockedEffects());
         }
 
         void SaveTraitData()
         {
             var unlockedTraits = traitHandler.GetUnlockedTraits();
-            
+
             var saveData = new TraitsMapSaveModel();
             foreach (var model in unlockedTraits)
             {
-                saveData.savedModels.Add(new TraitSaveModel(model.TargetTrait.Id,model.Value.Value));
+                saveData.savedModels.Add(new TraitSaveModel(model.TargetTrait.Id, model.Value.Value));
             }
-            
+
             FileManager.FileManager.Save(SaveKey, saveData);
         }
     }
