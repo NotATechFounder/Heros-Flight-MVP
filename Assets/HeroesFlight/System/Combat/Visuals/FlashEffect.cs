@@ -32,10 +32,17 @@ namespace HeroesFlight.System.NPC.Controllers
         public void Flash () 
         {
             meshRenderer.GetPropertyBlock(mpb);
-            StartCoroutine(FlashRoutine());
+            StartCoroutine(FlashRoutine(interval));
         }
 
-        IEnumerator FlashRoutine () {
+        public void Flash(float duration)
+        {
+            meshRenderer.GetPropertyBlock(mpb);
+            StartCoroutine(FlashRoutine(duration));
+        }
+
+        IEnumerator FlashRoutine (float duration) {
+            wait = new WaitForSeconds(duration);
             if (flashCount < 0) flashCount = DefaultFlashCount;
             var fillPhase = Shader.PropertyToID(fillPhaseProperty);
             var fillColor = Shader.PropertyToID(fillColorProperty);

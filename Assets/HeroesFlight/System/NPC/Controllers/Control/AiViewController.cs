@@ -31,7 +31,6 @@ namespace HeroesFlight.System.NPC.Controllers
         IEnumerator FadeInRoutine(float duration, Action onComplete)
         {
             var currentDuration = duration;
-            Debug.Log(currentDuration);
             var step =Time.deltaTime / duration;
             var fillPhase = Shader.PropertyToID(fillPhaseProperty);
             var fillColor = Shader.PropertyToID(fillColorProperty);
@@ -48,9 +47,9 @@ namespace HeroesFlight.System.NPC.Controllers
                 mesh.SetPropertyBlock(propertyBlock);
                 yield return null;
             }
+            propertyBlock.SetFloat(fillPhase, 0);
             propertyBlock.SetColor(fillColor, Color.white);
             mesh.SetPropertyBlock(propertyBlock);
-            Debug.Log(currentDuration);
             onComplete.Invoke();
         }
     }

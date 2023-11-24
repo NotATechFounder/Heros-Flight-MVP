@@ -73,7 +73,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
             OnInit();
 
             DisplayModifiyer(currentCardIcon);
-            viewController.StartFadeIn(1f, Enable);
+            healthController.SetInvulnerableState(true);
+            viewController.StartFadeIn(.5f, Enable);
         }
 
         protected virtual void HandleDeath(IHealthController obj)
@@ -113,6 +114,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             gameObject.SetActive(true);
             attackCollider.enabled = true;
             isDisabled = false;
+            healthController.SetInvulnerableState(false);
         }
 
         public virtual void Disable()

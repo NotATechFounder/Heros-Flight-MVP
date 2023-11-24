@@ -134,7 +134,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                var resultDamage = modificationIntentModel.Amount -
                                    StatCalc.GetPercentage(modificationIntentModel.Amount, defence);
                 currentHealth -= resultDamage;
-                flashEffect?.Flash();
+                flashEffect?.Flash(immortalityDuration);
                 if (becomeImmortalOnHit && modificationIntentModel.AttackType != AttackType.DoT)
                 {
                     IsImmortal = true;
