@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Belt", menuName = "Inventory System/Items/Equipment/Belt")]
-public class BeltSO : EquipmentObject
+public class BeltSO : EquipmentSO
 {
     private void Awake() => equipmentType = EquipmentType.Belt;
 }

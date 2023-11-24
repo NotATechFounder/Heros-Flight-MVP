@@ -41,21 +41,33 @@ public class ItemInventorySO : InventorySO <ItemData>
         return itemData;
     }
 
+    public void RemoveItemFromInventory(Item item, int amount = 1)
+    {
+        RemoveItemFromInventory (item.itemSO, item.ItemData(), amount);
+    }
+
     public void RemoveItemFromInventory(ItemSO itemSO, ItemData itemData, int amount = 1)
     {
-        switch (itemSO.itemType)
+        RemoveItemFromInventory (itemSO.itemType, itemData, amount);
+    }
+
+    public void RemoveItemFromInventory(ItemType itemType, ItemData itemData, int amount = 1)
+    {
+        switch (itemType)
         {
             case ItemType.Material:
                 itemData.value -= amount;
                 if (itemData.value <= 0) RemoveFromInventory(itemData);
-                else OnItemModified?.Invoke(itemData);
+                else
+                {
+                    OnItemModified?.Invoke(itemData);
+                    Save();
+                }
                 break;
             case ItemType.Equipment:
-
                 RemoveFromInventory(itemData);
                 break;
         }
-        Save();
     }
 
     public ItemData GetItemDataByID (string id)
@@ -68,6 +80,7 @@ public class ItemInventorySO : InventorySO <ItemData>
         string id = itemSO.ID;
         return inventoryData.savedData.FirstOrDefault(x => x.ID == id && x.value < ((MaterialObject)itemSO).maxStackAmount);
     }
+
     public ItemData GetItemDataByInstanceID(string id)
     {
         return inventoryData.savedData.FirstOrDefault(x => x.instanceID == id);

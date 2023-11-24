@@ -88,7 +88,7 @@ public class ActiveAbilityManager : MonoBehaviour
 
             EquippedAbility(RegularActiveAbilityType.HeavenStab);
             EquippedAbility(RegularActiveAbilityType.SwordWhirlwind);
-            EquippedAbility(RegularActiveAbilityType.LightNova);
+            EquippedAbility(RegularActiveAbilityType.ChainRotate);
         }
 
         if (Input.GetKeyDown(KeyCode.Keypad1))
@@ -203,7 +203,7 @@ public class ActiveAbilityManager : MonoBehaviour
                 (passiveActiveAbility as LightningArrow).Initialize(level, (int)characterStatController.CurrentMagicDamage, characterSystem);
                 break;
             case RegularActiveAbilityType.ChainRotate:
-                (passiveActiveAbility as ChainRotate).Initialize(level, (int)characterStatController.CurrentPhysicalDamage, characterSystem);
+                (passiveActiveAbility as ChainRotate).Initialize(level, (int)characterStatController.CurrentPhysicalDamage);
                 break;
             default:  break;
         }
