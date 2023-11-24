@@ -14,6 +14,11 @@ public class DataSystem : DataSystemInterface
     }
 
     public RewardsHandlerInterface RewardHandler { get; private set; }
+    public event Action OnApplicationQuit;
+    public void RequestDataSave()
+    {
+        OnApplicationQuit?.Invoke();
+    }
 
     public CharacterManager CharacterManager { get; private set; }
 

@@ -10,7 +10,6 @@ using HeroesFlight.System.Stats.Traits.Model;
 using HeroesFlight.System.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Random = UnityEngine.Random;
 
 namespace HeroesFlight.System.Stats.Handlers
 {
@@ -19,9 +18,11 @@ namespace HeroesFlight.System.Stats.Handlers
         public TraitsSystem(DataSystemInterface dataSystem, IUISystem uiSystem, DiceSystemInterface diceSystemInterface)
         {
             data = dataSystem;
+            data.OnApplicationQuit += SaveTraitData;
             this.uiSystem = uiSystem;
             diceSystem = diceSystemInterface;
             traitHandler = new TraitHandler(new Vector2Int(4, 8));
+            LoadData();
         }
 
 
@@ -31,6 +32,7 @@ namespace HeroesFlight.System.Stats.Handlers
         private IUISystem uiSystem;
 
         private TraitHandler traitHandler;
+        private const string SaveKey = "Traits";
 
 
         public void Init(Scene scene = default, Action onComplete = null)
@@ -111,15 +113,9 @@ namespace HeroesFlight.System.Stats.Handlers
             return traitHandler.GetTraitEffect(id);
         }
 
-        public List<TraitStateModel> GetUnlockedEffects()
+        public Dictionary<StatAttributeType, int> GetUnlockedEffects()
         {
-            return traitHandler.GetUnlockedTraits();
-        }
-
-
-       void  NotifyTraitStateChanged()
-        {
-            var unlockedTraits = GetUnlockedEffects();
+            var unlockedTraits = traitHandler.GetUnlockedTraits();
             var modifiedStatsMap = new Dictionary<StatAttributeType, int>();
             foreach (var trait in unlockedTraits)
             {
@@ -138,7 +134,39 @@ namespace HeroesFlight.System.Stats.Handlers
                     }
                 }
             }
-            OnTraitsStateChange?.Invoke(modifiedStatsMap);
+
+            return modifiedStatsMap;
+        }
+
+        public void LoadData()
+        {
+            var saveData = FileManager.FileManager.Load<TraitsMapSaveModel>(SaveKey);
+            Debug.Log(Application.persistentDataPath);
+            if (saveData != null)
+            {
+                traitHandler.LoadData(saveData.savedModels);
+                NotifyTraitStateChanged();
+            }
+           
+        }
+
+
+        void NotifyTraitStateChanged()
+        {
+            OnTraitsStateChange?.Invoke(GetUnlockedEffects());
+        }
+
+        void SaveTraitData()
+        {
+            var unlockedTraits = traitHandler.GetUnlockedTraits();
+            
+            var saveData = new TraitsMapSaveModel();
+            foreach (var model in unlockedTraits)
+            {
+                saveData.savedModels.Add(new TraitSaveModel(model.TargetTrait.Id,model.Value.Value));
+            }
+            
+            FileManager.FileManager.Save(SaveKey, saveData);
         }
     }
 }

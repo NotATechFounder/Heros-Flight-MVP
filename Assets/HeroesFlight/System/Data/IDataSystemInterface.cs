@@ -20,5 +20,8 @@ public interface DataSystemInterface : SystemInterface
 
     RewardsHandlerInterface RewardHandler { get; }
 
+    event Action OnApplicationQuit;
+    void RequestDataSave();
+
     //TraitSystemInterface TraitSystem { get; }
 }

@@ -104,7 +104,7 @@ namespace HeroesFlight.System.Stats.Handlers
             var featTreeData = new Dictionary<string, TraitModel>();
             foreach (var pair in traitMap)
             {
-                featTreeData.Add(pair.Key, GenerateFeatModel(pair.Value));
+                featTreeData.Add(pair.Key, GenerateTraitModel(pair.Value));
             }
 
             return new TraitTreeModel(size.y, size.x, featTreeData);
@@ -123,7 +123,7 @@ namespace HeroesFlight.System.Stats.Handlers
         }
 
 
-        TraitModel GenerateFeatModel(Trait targetTrait)
+        TraitModel GenerateTraitModel(Trait targetTrait)
         {
             TraitModelState state;
             if (IsFeatUnlocked(targetTrait.DependantId))
@@ -146,6 +146,17 @@ namespace HeroesFlight.System.Stats.Handlers
                 targetTrait.Effect.Value,
                 GetTraitModificationValue(targetTrait.Id).Value, targetTrait.Description,
                 targetTrait.Effect.CanBeRerolled);
+        }
+
+        public void LoadData(List<TraitSaveModel> savedData)
+        {
+            foreach (var data in savedData)
+            {
+                if (traitMap.TryGetValue(data.ID, out var model))
+                {
+                    unlockedTraits.Add(data.ID,new TraitStateModel(model,new IntValue(data.Value)));
+                }
+            }
         }
     }
 }
