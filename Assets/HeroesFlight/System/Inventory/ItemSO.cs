@@ -52,7 +52,6 @@ public class Item
     public void LevelUp()
     {
         if (itemSO is EquipmentSO) itemData.LevelUp();
-       // InventoryManager.Instance.ItemManager().SetItemBuffStat(this);
     }
 
     public void AddEffects(EquipmentSO item)

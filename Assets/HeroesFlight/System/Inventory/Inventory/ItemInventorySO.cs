@@ -16,10 +16,9 @@ public class ItemInventorySO : InventorySO <ItemData>
         {
             case ItemType.Material:
 
-                itemData = GetFreeMaterialDataByID(itemSO);
+                itemData = GetItemDataByID(itemSO.ID);
                 MaterialObject materialObject = (MaterialObject)itemSO;
-
-                if (itemData == null || itemData.value >= materialObject.maxStackAmount)
+                if (itemData == null)
                 {
                     itemData = new ItemData(itemSO, amount);
                     AddToInventory(itemData);
@@ -75,14 +74,8 @@ public class ItemInventorySO : InventorySO <ItemData>
         return inventoryData.savedData.FirstOrDefault(x => x.ID == id);
     }
 
-    public ItemData GetFreeMaterialDataByID(ItemSO itemSO)
+    public ItemData GetItemDataByInstanceID(string instanceID)
     {
-        string id = itemSO.ID;
-        return inventoryData.savedData.FirstOrDefault(x => x.ID == id && x.value < ((MaterialObject)itemSO).maxStackAmount);
-    }
-
-    public ItemData GetItemDataByInstanceID(string id)
-    {
-        return inventoryData.savedData.FirstOrDefault(x => x.instanceID == id);
+        return inventoryData.savedData.FirstOrDefault(x => x.instanceID == instanceID);
     }
 }

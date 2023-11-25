@@ -3,14 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventorySystem : MonoBehaviour
+public class InventorySystem : MonoBehaviour, IInventoryItemHandler
 {
     public event Action<Item> OnItemAdded;
     public event Action<Item> OnItemModified;
 
     [SerializeField] private ItemInventorySO mainItemInventorySO;
     [SerializeField] private ItemDatabaseSO itemDatabaseSO;
-    [SerializeField] private Dictionary<string, Item> itemDictionary = new Dictionary<string, Item>();
+    [SerializeField] private Dictionary<string, Item> eqquipmentItemDic = new Dictionary<string, Item>();
+    [SerializeField] private Dictionary<string, Item> materialItemDic = new Dictionary<string, Item>();
 
     [Header("Test Item")]
     [SerializeField] private ItemSO[] testItem;
@@ -43,22 +44,45 @@ public class InventorySystem : MonoBehaviour
     public Item AddToInventory(ItemSO itemSO, int level = 1)
     {
         ItemData itemData = mainItemInventorySO.AddToItemInventory(itemSO, level);
-        if (itemDictionary.ContainsKey(itemData.instanceID))
+
+        switch (itemSO.itemType)
         {
-            itemDictionary[itemData.instanceID].ItemData().value = itemData.value;
-            OnItemModified?.Invoke(itemDictionary[itemData.instanceID]);
+            case ItemType.Material:
+
+                if (materialItemDic.ContainsKey(itemData.ID))
+                {
+                    materialItemDic[itemData.ID].ItemData().value = itemData.value;
+                    OnItemModified?.Invoke(materialItemDic[itemData.ID]);
+                }
+                else
+                {
+                    materialItemDic.Add(itemData.ID, new Item(itemSO, itemData));
+                    OnItemAdded?.Invoke(materialItemDic[itemData.ID]);
+                }
+
+                return materialItemDic[itemData.ID];
+
+            case ItemType.Equipment:
+                eqquipmentItemDic.Add(itemData.instanceID, new Item(itemSO, itemData));
+                OnItemAdded?.Invoke(eqquipmentItemDic[itemData.instanceID]);
+                return eqquipmentItemDic[itemData.instanceID];
         }
-        else
-        {
-            itemDictionary.Add(itemData.instanceID, new Item(itemSO, itemData));
-            OnItemAdded?.Invoke(itemDictionary[itemData.instanceID]);    
-        }
-        return itemDictionary[itemData.instanceID];
+        return null;
     }
 
     public void RemoveFromInventory(Item item)
-    {
-        itemDictionary.Remove(item.ItemData().instanceID);
+    {   
+        switch (item.itemSO.itemType)
+        {
+            case ItemType.Equipment:
+                eqquipmentItemDic.Remove(item.ItemData().instanceID);
+                break;
+            case ItemType.Material:
+                materialItemDic.Remove(item.ItemData().ID);
+                break;
+            default:  break;
+        }
+
         mainItemInventorySO.RemoveItemFromInventory(item.itemSO, item.ItemData());
     }
 
@@ -68,7 +92,20 @@ public class InventorySystem : MonoBehaviour
 
         foreach (ItemData itemData in mainItemInventorySO.inventoryData.savedData)
         {
-            itemDictionary.Add(itemData.instanceID, new Item(itemDatabaseSO.GetItemSOByID(itemData.ID), itemData));
+            ItemSO itemSO = itemDatabaseSO.GetItemSOByID(itemData.ID);
+
+            switch (itemSO.itemType)
+            {
+                case ItemType.Equipment:
+
+                    eqquipmentItemDic.Add(itemData.instanceID, new Item(itemSO, itemData));
+                    break;
+                case ItemType.Material:
+
+                    materialItemDic.Add(itemData.ID, new Item(itemSO, itemData));
+                    break;
+                default: break;
+            }
         }
     }
 
@@ -93,6 +130,7 @@ public class InventorySystem : MonoBehaviour
     {
         // check if the level is not maxed and if they have enough materials
         item.LevelUp();
+        itemDatabaseSO.SetItemBuffStat(item);
         OnItemModified?.Invoke(item);
         mainItemInventorySO.Save();
         return true;
@@ -103,8 +141,18 @@ public class InventorySystem : MonoBehaviour
         mainItemInventorySO.Save();
     }
 
-    public List<Item> GetInventoryItems()
+    public List<Item> GetInventoryEquippmentItems()
     {
-        return new List<Item>(itemDictionary.Values);
+        return new List<Item>(eqquipmentItemDic.Values);
+    }
+
+    public bool GetMaterialItemByID(string id, out Item item)
+    {
+        return materialItemDic.TryGetValue(id, out item);
+    }
+
+    public List<Item> GetInventoryMaterialItems()
+    {
+        return new List<Item>(materialItemDic.Values);
     }
 }

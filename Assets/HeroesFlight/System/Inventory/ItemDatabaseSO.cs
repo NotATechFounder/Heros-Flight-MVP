@@ -9,11 +9,13 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
 {
     [Header("Item Cost Stats")]
     [SerializeField] CustomAnimationCurve itemGoldCostStat;
+    [SerializeField] CustomAnimationCurve itemMaterialCostStat;
 
-    [Header("Rarities")]
+    [Header("Rarities Information")]
     [SerializeField] RarityInfo[] rarityInfos;
-    [Header("Buffs")]
-    [SerializeField] ItemEffectSO[] buffs;
+
+    [Header("ItemEffect")]
+    [SerializeField] ItemEffectSO[] itemEffects;
 
     public int GetLevelCost(ItemData currentItem)
     {
@@ -42,15 +44,15 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
 
         for (int i = 0; i < currentItem.ItemBuffs().Length; i++)
         {
-            for (int j = 0; j < buffs.Length; j++)
+            for (int j = 0; j < itemEffects.Length; j++)
             {
-                if (currentItem.ItemBuffs()[i].itemEffectType != buffs[j].buffType) continue;
+                if (currentItem.ItemBuffs()[i].itemEffectType != itemEffects[j].buffType) continue;
 
-                for (int k = 0; k < buffs[j].buffRarityStats.Length; k++)
+                for (int k = 0; k < itemEffects[j].buffRarityStats.Length; k++)
                 {
-                    if (buffs[j].buffRarityStats[k].rarity == (itemBase as EquipmentSO).rarity)
+                    if (itemEffects[j].buffRarityStats[k].rarity == (itemBase as EquipmentSO).rarity)
                     {
-                        currentItem.ItemBuffs()[i].value = buffs[j].buffRarityStats[k].statCurve.GetCurrentValueInt(currentItem.ItemData().GetValue());
+                        currentItem.ItemBuffs()[i].value = itemEffects[j].buffRarityStats[k].statCurve.GetCurrentValueInt(currentItem.ItemData().GetValue());
                         break;
                     }
                 }
@@ -60,12 +62,12 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
 
     public int GetBuffValue(ItemEffectType buff, Rarities currentRarity, int level)
     {
-        for (int i = 0; i < buffs.Length; i++)
+        for (int i = 0; i < itemEffects.Length; i++)
         {
-            if (buff != buffs[i].buffType) continue;
-            for (int j = 0; j < buffs[i].buffRarityStats.Length; j++)
+            if (buff != itemEffects[i].buffType) continue;
+            for (int j = 0; j < itemEffects[i].buffRarityStats.Length; j++)
             {
-                if (buffs[i].buffRarityStats[j].rarity == currentRarity) return buffs[i].buffRarityStats[j].statCurve.GetCurrentValueInt(level);
+                if (itemEffects[i].buffRarityStats[j].rarity == currentRarity) return itemEffects[i].buffRarityStats[j].statCurve.GetCurrentValueInt(level);
             }
         }
         return 0;
@@ -73,9 +75,9 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
 
     public BuffInfo GetBuffInfo(ItemEffectType buff)
     {
-        for (int i = 0; i < buffs.Length; i++)
+        for (int i = 0; i < itemEffects.Length; i++)
         {
-            if (buff == buffs[i].buffType) return buffs[i].buffInfo;
+            if (buff == itemEffects[i].buffType) return itemEffects[i].buffInfo;
         }
         return default;
     }
@@ -89,5 +91,17 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
             Items[i].RenameFile();
         }
     }
+
+    [ContextMenu("PopulateItemEffects")]
+    public void PopulateItemEffects()
+    {
+        string path = AssetDatabase.GetAssetPath(this);
+        path = path.Replace(this.name + ".asset", "");
+        List<ItemEffectSO> scriptableObjectBases = ScriptableObjectUtils.GetAllScriptableObjectBaseInFile<ItemEffectSO>(path);
+        itemEffects = scriptableObjectBases.ToArray();
+        EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssets();
+    }
+
 #endif
 }
