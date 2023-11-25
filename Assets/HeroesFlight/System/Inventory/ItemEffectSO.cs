@@ -24,7 +24,10 @@ public class ItemEffectSO : ScriptableObject
 
     private void OnValidate()
     {
-        RenameFile();
+        foreach (RarityBuffStat rarityBuffStat in buffRarityStats)
+        {
+            rarityBuffStat.statCurve.UpdateCurve();
+        }
     }
 
     public void RenameFile()
