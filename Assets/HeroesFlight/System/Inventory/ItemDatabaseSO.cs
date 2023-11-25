@@ -46,13 +46,13 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         {
             for (int j = 0; j < itemEffects.Length; j++)
             {
-                if (currentItem.ItemBuffs()[i].itemEffectType != itemEffects[j].buffType) continue;
+                if (currentItem.ItemBuffs()[i].itemEffectType != itemEffects[j].itemEffectType) continue;
 
-                for (int k = 0; k < itemEffects[j].buffRarityStats.Length; k++)
+                for (int k = 0; k < itemEffects[j].effectRarityStats.Length; k++)
                 {
-                    if (itemEffects[j].buffRarityStats[k].rarity == (itemBase as EquipmentSO).rarity)
+                    if (itemEffects[j].effectRarityStats[k].rarity == (itemBase as EquipmentSO).rarity)
                     {
-                        currentItem.ItemBuffs()[i].value = itemEffects[j].buffRarityStats[k].statCurve.GetCurrentValueInt(currentItem.ItemData().GetValue());
+                        currentItem.ItemBuffs()[i].value = itemEffects[j].effectRarityStats[k].statCurve.GetCurrentValueInt(currentItem.ItemData().GetValue());
                         break;
                     }
                 }
@@ -64,20 +64,20 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
     {
         for (int i = 0; i < itemEffects.Length; i++)
         {
-            if (buff != itemEffects[i].buffType) continue;
-            for (int j = 0; j < itemEffects[i].buffRarityStats.Length; j++)
+            if (buff != itemEffects[i].itemEffectType) continue;
+            for (int j = 0; j < itemEffects[i].effectRarityStats.Length; j++)
             {
-                if (itemEffects[i].buffRarityStats[j].rarity == currentRarity) return itemEffects[i].buffRarityStats[j].statCurve.GetCurrentValueInt(level);
+                if (itemEffects[i].effectRarityStats[j].rarity == currentRarity) return itemEffects[i].effectRarityStats[j].statCurve.GetCurrentValueInt(level);
             }
         }
         return 0;
     }
 
-    public BuffInfo GetBuffInfo(ItemEffectType buff)
+    public EffectInfo GetBuffInfo(ItemEffectType buff)
     {
         for (int i = 0; i < itemEffects.Length; i++)
         {
-            if (buff == itemEffects[i].buffType) return itemEffects[i].buffInfo;
+            if (buff == itemEffects[i].itemEffectType) return itemEffects[i].buffInfo;
         }
         return default;
     }

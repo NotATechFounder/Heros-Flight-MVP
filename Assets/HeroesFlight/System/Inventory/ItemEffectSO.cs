@@ -9,22 +9,22 @@ using System;
 public class ItemEffectSO : ScriptableObject
 {
     [System.Serializable]
-    public class RarityBuffStat
+    public class EffectRarityStat
     {
         public Rarities rarity;
         public CustomAnimationCurve statCurve;
     }
 
-    public ItemEffectType buffType;
-    public BuffInfo buffInfo;
-    public RarityBuffStat[] buffRarityStats;
+    public ItemEffectType itemEffectType;
+    public EffectInfo buffInfo;
+    public EffectRarityStat[] effectRarityStats;
 
 
 #if UNITY_EDITOR
 
     private void OnValidate()
     {
-        foreach (RarityBuffStat rarityBuffStat in buffRarityStats)
+        foreach (EffectRarityStat rarityBuffStat in effectRarityStats)
         {
             rarityBuffStat.statCurve.UpdateCurve();
         }
@@ -32,11 +32,11 @@ public class ItemEffectSO : ScriptableObject
 
     public void RenameFile()
     {
-        string thisFileNewName = AddSpacesToSentence(buffType.ToString());
+        string thisFileNewName = AddSpacesToSentence(itemEffectType.ToString());
         string assetPath = AssetDatabase.GetAssetPath(this.GetInstanceID());
         AssetDatabase.RenameAsset(assetPath, thisFileNewName);
 
-        foreach (RarityBuffStat rarityBuffStat in buffRarityStats)
+        foreach (EffectRarityStat rarityBuffStat in effectRarityStats)
         {
             rarityBuffStat.statCurve.UpdateCurve();
         }
@@ -58,9 +58,9 @@ public class ItemEffectSO : ScriptableObject
 }
 
 [System.Serializable]
-public struct BuffInfo
+public struct EffectInfo
 {
-    public string buffName;
-    public string buffSuffix;
+    public string effectName;
+    public string effectSuffix;
 }
 
