@@ -1,4 +1,4 @@
-skeleton.png
+Heaven_Hammer.png
 size:1317,1032
 filter:Linear,Linear
 pma:true
