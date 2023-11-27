@@ -80,7 +80,7 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
                 {
                     if (itemEffects[j].effectRarityStats[k].rarity == (itemBase as EquipmentSO).rarity)
                     {
-                        currentItem.ItemBuffs()[i].value = itemEffects[j].effectRarityStats[k].statCurve.GetCurrentValueInt(currentItem.GetItemData().GetValue());
+                        currentItem.ItemBuffs()[i].value = itemEffects[j].effectRarityStats[k].statCurve.GetCurrentValueInt(currentItem.GetItemData<ItemEquipmentData>().GetValue());
                         break;
                     }
                 }

@@ -57,7 +57,7 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
 
                 if (materialItemDic.ContainsKey(itemData.ID))
                 {
-                    materialItemDic[itemData.ID].GetItemData().value = itemData.value;
+                    materialItemDic[itemData.ID].GetItemData<ItemMaterialData>().value = itemData.value;
                     OnItemModified?.Invoke(materialItemDic[itemData.ID]);
                 }
                 else
@@ -69,9 +69,10 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
                 return materialItemDic[itemData.ID];
 
             case ItemType.Equipment:
-                eqquipmentItemDic.Add(itemData.instanceID, new Item(itemSO, itemData));
-                OnItemAdded?.Invoke(eqquipmentItemDic[itemData.instanceID]);
-                return eqquipmentItemDic[itemData.instanceID];
+                ItemEquipmentData itemEquipmentData = itemData as ItemEquipmentData;
+                eqquipmentItemDic.Add(itemEquipmentData.instanceID, new Item(itemSO, itemData));
+                OnItemAdded?.Invoke(eqquipmentItemDic[itemEquipmentData.instanceID]);
+                return eqquipmentItemDic[itemEquipmentData.instanceID];
         }
         return null;
     }
@@ -81,59 +82,54 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
         switch (item.itemSO.itemType)
         {
             case ItemType.Equipment:
-                eqquipmentItemDic.Remove(item.GetItemData().instanceID);
+                eqquipmentItemDic.Remove(item.GetItemData<ItemEquipmentData>().instanceID);
                 break;
             case ItemType.Material:
-                materialItemDic.Remove(item.GetItemData().ID);
+                materialItemDic.Remove(item.GetItemData<ItemMaterialData>().ID);
                 break;
             default:  break;
         }
 
-        mainItemInventorySO.RemoveItemFromInventory(item.itemSO, item.GetItemData());
+        mainItemInventorySO.RemoveItemFromInventory(item.itemSO, item.GetItemData<ItemData>());
     }
 
     public void LoadInventoryItems()
     {
         mainItemInventorySO.Load();
 
-        foreach (ItemData itemData in mainItemInventorySO.inventoryData.savedData)
+        foreach (ItemData itemData in mainItemInventorySO.inventoryData.equipmentData)
         {
             ItemSO itemSO = itemDatabaseSO.GetItemSOByID(itemData.ID);
+            ItemEquipmentData itemEquipmentData = itemData as ItemEquipmentData;
+            eqquipmentItemDic.Add(itemEquipmentData.instanceID, new Item(itemSO, itemData));
+        }
 
-            switch (itemSO.itemType)
-            {
-                case ItemType.Equipment:
-
-                    eqquipmentItemDic.Add(itemData.instanceID, new Item(itemSO, itemData));
-                    break;
-                case ItemType.Material:
-
-                    materialItemDic.Add(itemData.ID, new Item(itemSO, itemData));
-                    break;
-                default: break;
-            }
+        foreach (ItemData itemData in mainItemInventorySO.inventoryData.materialData)
+        {
+            ItemSO itemSO = itemDatabaseSO.GetItemSOByID(itemData.ID);
+            materialItemDic.Add(itemData.ID, new Item(itemSO, itemData));
         }
     }
 
     public void EquipItem(Item item)
     {
-        item.GetItemData().eqquiped = true;
+        item.GetItemData<ItemEquipmentData>().eqquiped = true;
         mainItemInventorySO.Save();
     }
 
     public void UnEquipItem(Item item)
     {
-        item.GetItemData().eqquiped = false;
+        item.GetItemData<ItemEquipmentData>().eqquiped = false;
         mainItemInventorySO.Save();
     }
 
     public void DismantleItem(Item item)
     {
-        currencyManager.AddCurrency(CurrencyKeys.Gold, itemDatabaseSO.GetTotalUpgradeGoldCost (item.GetItemData()));
+        currencyManager.AddCurrency(CurrencyKeys.Gold, itemDatabaseSO.GetTotalUpgradeGoldCost (item.GetItemData<ItemEquipmentData>()));
         GetMaterialItemByID("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString(), out Item materialItem);
         if (materialItem != null)
         {
-            materialItem.GetItemData().value += itemDatabaseSO.GetTotalUpgradeMaterialCost(item.GetItemData());
+            materialItem.GetItemData<ItemData>().value += itemDatabaseSO.GetTotalUpgradeMaterialCost(item.GetItemData<ItemData>());
             OnItemModified?.Invoke(materialItem);
         }
         else
@@ -141,7 +137,7 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
             ItemSO itemSO = GetItemSO("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString());
             if (itemSO != null)
             {
-               AddToInventory(itemSO, itemDatabaseSO.GetTotalUpgradeMaterialCost(item.GetItemData()));
+               AddToInventory(itemSO, itemDatabaseSO.GetTotalUpgradeMaterialCost(item.GetItemData<ItemEquipmentData>()));
             }
         }
 
@@ -150,7 +146,7 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
 
     public bool TryUpgradeItem(Item item)
     {
-        if (item.GetItemData().value >= GetItemMaxLevel(item))
+        if (item.GetItemData<ItemEquipmentData>().value >= GetItemMaxLevel(item))
         {
             Debug.Log("Item is maxed");
             return false;
@@ -172,14 +168,14 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
             return false;
         }
 
-        if (materialItem.GetItemData().value < GetMaterialUpgradeRequiredAmount(item))
+        if (materialItem.GetItemData<ItemMaterialData>().value < GetMaterialUpgradeRequiredAmount(item))
         {
             Debug.Log("Not enough material");
             return false;
         }
 
         currencyManager.ReduceCurency(CurrencyKeys.Gold, goldCost);
-        materialItem.GetItemData().value -= GetMaterialUpgradeRequiredAmount(item);
+        materialItem.GetItemData<ItemMaterialData>().value -= GetMaterialUpgradeRequiredAmount(item);
         item.LevelUp();
         itemDatabaseSO.SetItemBuffStat(item);
         OnItemModified?.Invoke(item);
@@ -194,12 +190,12 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
 
     public int GetGoldUpgradeRequiredAmount(Item item)
     {
-        return itemDatabaseSO.GetUpgradeGoldCost(item.GetItemData());
+        return itemDatabaseSO.GetUpgradeGoldCost(item.GetItemData<ItemData>());
     }
 
     public int GetMaterialUpgradeRequiredAmount(Item item)
     {
-        return itemDatabaseSO.GetUpgradeMaterialCost(item.GetItemData());
+        return itemDatabaseSO.GetUpgradeMaterialCost(item.GetItemData<ItemData>());
     }
 
     public ItemSO GetItemSO(string id)

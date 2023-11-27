@@ -139,7 +139,7 @@ namespace UISystem
 
             foreach (Item item in inventoryItemHandler.GetInventoryEquippmentItems())
             {
-                if (item.GetItemData().eqquiped)
+                if (item.GetItemData<ItemEquipmentData>().eqquiped)
                 {
                     EquippedSlot equippedSlot = GetEquipmentSlot((item.itemSO as EquipmentSO).equipmentType);
                     if (equippedSlot != null)
@@ -176,7 +176,7 @@ namespace UISystem
             if (selectedItem != null)
             {
                 inventoryItemHandler.DismantleItem(selectedItem);
-                itemUIDic.Remove(selectedItem.GetItemData().instanceID);
+                itemUIDic.Remove(selectedItem.GetItemData<ItemEquipmentData>().instanceID);
             }
 
             if (selectedItemUI != null)
@@ -207,7 +207,7 @@ namespace UISystem
 
                 inventoryItemHandler.EquipItem(selectedItemUI.GetItem);
                 equippedSlot.Occupy(selectedItemUI.GetItem);
-                itemUIDic.Remove(selectedItemUI.GetItem.GetItemData().instanceID);
+                itemUIDic.Remove(selectedItemUI.GetItem.GetItemData<ItemEquipmentData>().instanceID);
                 Destroy(selectedItemUI.gameObject);
                 selectedItemUI = null;
             }
@@ -237,13 +237,16 @@ namespace UISystem
         public void SpawnItemUI(Item item)
         {
             ItemUI itemUI = Instantiate(itemUIPrefab, itemHolder);
+            string id = "";
             switch (item.itemSO.itemType)
             {
                 case ItemType.Equipment:
                     itemUI.SetItem(item, inventoryItemHandler.GetPalette(item.GetItemSO<EquipmentSO>().rarity));
+                    id = item.GetItemData<ItemEquipmentData>().instanceID;
                     break;
                 case ItemType.Material:
                     itemUI.SetItem(item, inventoryItemHandler.GetPalette(Rarity.Common));
+                    id = item.GetItemData<ItemMaterialData>().ID;
                     break;
                 default:
                     break;
@@ -255,7 +258,7 @@ namespace UISystem
                 ItemSelected(itemUI.GetItem);
             };
 
-            itemUIDic.Add(item.GetItemData().instanceID, itemUI);
+            itemUIDic.Add(id, itemUI);
         }
 
         private void ItemSelected(Item item)
@@ -273,9 +276,20 @@ namespace UISystem
 
         public void UpdateItemUI(Item item)
         {
-            if (itemUIDic.ContainsKey(item.GetItemData().instanceID))
+            string id = "";
+            switch (item.itemSO.itemType)
             {
-                itemUIDic[item.GetItemData().instanceID].SetItemInfo();
+                case ItemType.Equipment:
+                    id = item.GetItemData<ItemEquipmentData>().instanceID;
+                    break;
+                case ItemType.Material:
+                    id = item.GetItemData<ItemMaterialData>().ID;
+                    break;
+            }
+
+            if (itemUIDic.ContainsKey(id))
+            {
+                itemUIDic[id].SetItemInfo();
             }
             else
             {

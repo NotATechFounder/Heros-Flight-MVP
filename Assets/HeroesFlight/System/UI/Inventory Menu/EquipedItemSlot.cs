@@ -36,7 +36,7 @@ public class EquippedSlot : MonoBehaviour
 
     public void SetItemInfo()
     {
-        itemInfo.text = "LV." + itemInSlot.GetItemData().value.ToString();
+        itemInfo.text = "LV." + itemInSlot.GetItemData<ItemEquipmentData>().value.ToString();
     }
 
     private void SelectItem()

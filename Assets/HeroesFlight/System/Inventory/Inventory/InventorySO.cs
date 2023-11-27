@@ -6,15 +6,13 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-public interface IInventoryData<T>
+public abstract class InventoryData<T>
 {
-    int Count { get; }
-    void Add(T itemBaseData);
-    void Remove(T itemBaseData);
-    T GetByID(string id);
-    bool Contains(T itemBaseData);
-
-    void Clear();
+    public abstract int Count { get; }
+    public abstract void Add(T itemBaseData);
+    public abstract void Remove(T itemBaseData);
+    public abstract bool Contains(T itemBaseData);
+    public abstract void Clear();
 }
 
 public interface IInventorySO
@@ -25,38 +23,38 @@ public interface IInventorySO
     void Delete();
 }
 
-public class InventorySO<T> : ScriptableObject, IInventorySO
+public class InventorySO<IInventoryData, T1> : ScriptableObject, IInventorySO where IInventoryData : InventoryData<T1>
 {
     public int max;
     public string inventoryID;
-    public InventoryData<T> inventoryData;
-    public event Action<T> OnValueAdded;
-    public event Action<T> OnValueRemoved;
+    public IInventoryData inventoryData;
+    public event Action<T1> OnValueAdded;
+    public event Action<T1> OnValueRemoved;
     public event Action OnMaxReachError;
 
-    public virtual bool AddToInventory(T data, bool notify = true)
+    public virtual bool AddToInventory(T1 data, bool notify = true)
     {
-        if (inventoryData.savedData.Count >= max)
+        if (inventoryData.Count >= max)
         {
             OnMaxReachError?.Invoke();
             return false;
         }
-        inventoryData.savedData.Add(data);
+        inventoryData.Add(data);
         if (notify)  OnValueAdded?.Invoke(data);
         Save();
         return true;
     }
 
-    public virtual void RemoveFromInventory(T data, bool notify = true)
+    public virtual void RemoveFromInventory(T1 data, bool notify = true)
     {
-        inventoryData.savedData.Remove(data);
+        inventoryData.Remove(data);
         if (notify) OnValueRemoved?.Invoke(data);
         Save();
     }
 
-    public bool ExitsInInventory(T data)
+    public bool ExitsInInventory(T1 data)
     {
-        return inventoryData.savedData.Contains(data);
+        return inventoryData.Contains(data);
     }
 
     public virtual void Save()
@@ -76,14 +74,14 @@ public class InventorySO<T> : ScriptableObject, IInventorySO
             Debug.LogError("Inventory ID is null or empty", this);
             return;
         }
-        inventoryData.savedData.Clear();
-        InventoryData<T> savedInventoryData = FileManager.Load<InventoryData<T>>(inventoryID);
-        inventoryData = savedInventoryData != null ? savedInventoryData : new InventoryData<T>();
+        inventoryData.Clear();
+        IInventoryData savedInventoryData = FileManager.Load<IInventoryData>(inventoryID);
+        inventoryData = savedInventoryData != null ? savedInventoryData : default;
     }
 
     public virtual void Clear()
     {
-        inventoryData.savedData.Clear();
+        if (inventoryData != null) inventoryData.Clear();
         Save();
     }
 
@@ -93,15 +91,9 @@ public class InventorySO<T> : ScriptableObject, IInventorySO
     }
 }
 
-[Serializable]
-public class InventoryData<T>
-{
-    public List<T> savedData = new List<T>();
-}
-
 #if UNITY_EDITOR
 
-[CustomEditor(typeof(InventorySO<>), true)]
+[CustomEditor(typeof(InventorySO<,>), true)]
 public class InventorySOEditor : Editor
 {
     public override void OnInspectorGUI()

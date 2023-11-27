@@ -46,8 +46,7 @@ public class Item
     }
 
     public T GetItemSO<T>() where T : ItemSO => itemSO as T;
-
-    public ItemData GetItemData() => itemData;
+    public T GetItemData<T>() where T : ItemData => itemData as T;
 
     public ItemEffect[] ItemBuffs() => itemEffects;
 
@@ -71,7 +70,15 @@ public class Item
         if (obj == null || GetType() != obj.GetType()) return false;
 
         Item item = (Item)obj;
-        return itemData.instanceID == item.itemData.instanceID;
+
+        switch (itemData)
+        {
+            case ItemEquipmentData itemEquipmentData:
+                return itemEquipmentData.instanceID == item.GetItemData <ItemEquipmentData>().instanceID;
+            case ItemMaterialData itemMaterialData:
+                return itemMaterialData.ID == item.itemData.ID;
+                default: return false;
+        }
     }
 
     public override int GetHashCode()
@@ -81,43 +88,12 @@ public class Item
 }
 
 [Serializable]
-public class ItemData
-{
-    public string ID;
-    public string instanceID;
-    public bool eqquiped;
-    public int value;
-
-    public ItemData(ItemSO item, int newValue = 1) 
-    {
-        ID = item.ID; 
-        value = newValue;
-        instanceID = "Item :" + Guid.NewGuid().ToString();
-    }
-
-    public int GetValue()
-    {
-        return value;
-    }
-
-    public void IncrementValue(int increment)
-    {
-        value += increment;
-    }
-
-    public void LevelUp()
-    {
-        value++;
-    }
-}
-
-[Serializable]
-public class ItemBaseData
+public abstract class ItemData
 {
     public string ID;
     public int value;
 
-    public ItemBaseData ( ItemSO item, int newValue = 1)
+    public ItemData ( ItemSO item, int newValue = 1)
     {
         ID = item.ID;
         value = newValue;
@@ -140,7 +116,7 @@ public class ItemBaseData
 }
 
 [Serializable]
-public class ItemEquipmentData : ItemBaseData
+public class ItemEquipmentData : ItemData
 {
     public string instanceID;
     public bool eqquiped;
@@ -153,12 +129,8 @@ public class ItemEquipmentData : ItemBaseData
 }
 
 [Serializable]
-public class ItemMaterialData : ItemBaseData
+public class ItemMaterialData : ItemData
 {
-    public ItemMaterialData(ItemSO item, int newValue = 1) : base(item, newValue)
-    {
-        ID = item.ID;
-        value = newValue;
-    }
+    public ItemMaterialData(ItemSO item, int newValue = 1) : base(item, newValue){}
 }
 

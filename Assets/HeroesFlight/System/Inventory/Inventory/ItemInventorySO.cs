@@ -5,22 +5,15 @@ using System.Linq;
 using UnityEngine;
 
 
-public class ItemInventoryData : IInventoryData<ItemBaseData>
+[Serializable]
+public class InventoryItemData : InventoryData<ItemData>
 {
     public List<ItemEquipmentData> equipmentData = new List<ItemEquipmentData>();
     public List<ItemMaterialData> materialData = new List<ItemMaterialData>();
 
-    public int Count => equipmentData.Count + materialData.Count;
+    public override int Count => equipmentData.Count + materialData.Count;
 
-    public ItemBaseData GetByID(string id)
-    {
-        ItemBaseData itemBaseData = equipmentData.FirstOrDefault(x => x.ID == id);
-        if (itemBaseData == null) itemBaseData = materialData.FirstOrDefault(x => x.ID == id);
-        return itemBaseData;
-    }
-
-
-    public T GetByID<T>(string id) where T : ItemBaseData
+    public T GetByID<T>(string id) where T : ItemData
     {
         if (typeof(T) == typeof(ItemEquipmentData))
         {
@@ -33,7 +26,13 @@ public class ItemInventoryData : IInventoryData<ItemBaseData>
         return null;
     }
 
-    public void Add(ItemBaseData itemBaseData)
+    public ItemEquipmentData GetItemEquipmentByUniqueID(string id)
+    {
+        ItemEquipmentData itemEquipmentData = equipmentData.FirstOrDefault(x => x.instanceID == id);
+        return itemEquipmentData;
+    }
+    
+    public override void Add(ItemData itemBaseData)
     {
         switch (itemBaseData)
         {
@@ -45,7 +44,7 @@ public class ItemInventoryData : IInventoryData<ItemBaseData>
                 break;
         }
     }
-    public void Remove(ItemBaseData itemBaseData)
+    public override void Remove(ItemData itemBaseData)
     {
         switch (itemBaseData)
         {
@@ -58,7 +57,7 @@ public class ItemInventoryData : IInventoryData<ItemBaseData>
         }
     }
 
-    public bool Contains(ItemBaseData itemBaseData)
+    public override bool Contains(ItemData itemBaseData)
     {
         switch (itemBaseData)
         {
@@ -70,7 +69,7 @@ public class ItemInventoryData : IInventoryData<ItemBaseData>
         return false;
     }
 
-    public void Clear()
+    public override void Clear()
     {
         equipmentData.Clear();
         materialData.Clear();
@@ -78,7 +77,7 @@ public class ItemInventoryData : IInventoryData<ItemBaseData>
 }
 
 [CreateAssetMenu(fileName = "ItemInventoryS0", menuName = "Inventory System/ItemInventoryS0", order = 1)]
-public class ItemInventorySO : InventorySO <ItemData>
+public class ItemInventorySO : InventorySO <InventoryItemData,ItemData>
 {
     public event Action<ItemData> OnItemModified;
 
@@ -89,11 +88,11 @@ public class ItemInventorySO : InventorySO <ItemData>
         {
             case ItemType.Material:
 
-                itemData = GetItemDataByID(itemSO.ID);
+                itemData = GetMaterialItemByID(itemSO.ID);
                 MaterialObject materialObject = (MaterialObject)itemSO;
                 if (itemData == null)
                 {
-                    itemData = new ItemData(itemSO, amount);
+                    itemData = new ItemMaterialData(itemSO, amount);
                     AddToInventory(itemData);
                     return itemData;
                 }
@@ -106,7 +105,7 @@ public class ItemInventorySO : InventorySO <ItemData>
                 return itemData;
 
             case ItemType.Equipment:
-                itemData = new ItemData(itemSO, amount);
+                itemData = new ItemEquipmentData(itemSO, amount);
                 AddToInventory(itemData);
                 return itemData;
         }
@@ -115,7 +114,7 @@ public class ItemInventorySO : InventorySO <ItemData>
 
     public void RemoveItemFromInventory(Item item, int amount = 1)
     {
-        RemoveItemFromInventory (item.itemSO, item.GetItemData(), amount);
+        RemoveItemFromInventory (item.itemSO, item.GetItemData<ItemEquipmentData>(), amount);
     }
 
     public void RemoveItemFromInventory(ItemSO itemSO, ItemData itemData, int amount = 1)
@@ -144,11 +143,21 @@ public class ItemInventorySO : InventorySO <ItemData>
 
     public ItemData GetItemDataByID (string id)
     {
-        return inventoryData.savedData.FirstOrDefault(x => x.ID == id);
+        return inventoryData.GetByID<ItemData>(id);
     }
 
-    public ItemData GetItemDataByInstanceID(string instanceID)
+    public ItemMaterialData GetMaterialItemByID(string id)
     {
-        return inventoryData.savedData.FirstOrDefault(x => x.instanceID == instanceID);
+        return inventoryData.GetByID<ItemMaterialData>(id);
+    }
+
+    public ItemEquipmentData GetEquipmentItemByID(string id)
+    {
+        return inventoryData.GetByID<ItemEquipmentData>(id);
+    }
+
+    public ItemEquipmentData GetEquipmentItemByInstanceID(string instanceID)
+    {
+        return inventoryData.GetItemEquipmentByUniqueID(instanceID);
     }
 }

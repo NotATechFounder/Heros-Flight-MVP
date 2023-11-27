@@ -44,7 +44,7 @@ public class ItemUI : MonoBehaviour
     public void SetItemInfo()
     {
         string valueType = item.itemSO.itemType == ItemType.Equipment ? "LV." : "QTY.";
-        itemInfo.text = valueType + item.GetItemData().value.ToString();
+        itemInfo.text = valueType + item.GetItemData<ItemData>().value.ToString();
     }
 
     private void SelectItem()
