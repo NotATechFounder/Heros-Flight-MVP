@@ -29,7 +29,8 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
         {
             foreach (ItemSO item in testItem)
             {
-                AddToInventory(item);
+                Rarity randomRarity = (Rarity)UnityEngine.Random.Range(0, 5);
+                AddToInventory(item, 1, randomRarity);
             }
         }
 
@@ -47,13 +48,13 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
         this.currencyManager = currencyManager;
     }
 
-    public Item AddToInventory(ItemSO itemSO, int level = 1)
+    public Item AddToInventory(ItemSO itemSO, int level = 1, Rarity rarity = Rarity.Common)
     {
-        ItemData itemData = mainItemInventorySO.AddToItemInventory(itemSO, level);
-
         switch (itemSO.itemType)
         {
             case ItemType.Material:
+
+                ItemData itemData = mainItemInventorySO.AddMaterialToInventory(itemSO, level);
 
                 if (materialItemDic.ContainsKey(itemData.ID))
                 {
@@ -69,6 +70,9 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
                 return materialItemDic[itemData.ID];
 
             case ItemType.Equipment:
+
+                itemData = mainItemInventorySO.AddEquipmentToInventory(itemSO, level, rarity);
+
                 ItemEquipmentData itemEquipmentData = itemData as ItemEquipmentData;
                 eqquipmentItemDic.Add(itemEquipmentData.instanceID, new Item(itemSO, itemData));
                 OnItemAdded?.Invoke(eqquipmentItemDic[itemEquipmentData.instanceID]);
@@ -125,11 +129,11 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
 
     public void DismantleItem(Item item)
     {
-        currencyManager.AddCurrency(CurrencyKeys.Gold, itemDatabaseSO.GetTotalUpgradeGoldCost (item.GetItemData<ItemEquipmentData>()));
+        currencyManager.AddCurrency(CurrencyKeys.Gold, itemDatabaseSO.GetEquipmentTotalUpgradeGoldCost (item.GetItemData<ItemEquipmentData>()));
         GetMaterialItemByID("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString(), out Item materialItem);
         if (materialItem != null)
         {
-            materialItem.GetItemData<ItemData>().value += itemDatabaseSO.GetTotalUpgradeMaterialCost(item.GetItemData<ItemData>());
+            materialItem.GetItemData<ItemData>().value += itemDatabaseSO.GetEquipmentTotalUpgradeMaterialCost(item.GetItemData<ItemEquipmentData>());
             OnItemModified?.Invoke(materialItem);
         }
         else
@@ -137,7 +141,7 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
             ItemSO itemSO = GetItemSO("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString());
             if (itemSO != null)
             {
-               AddToInventory(itemSO, itemDatabaseSO.GetTotalUpgradeMaterialCost(item.GetItemData<ItemEquipmentData>()));
+               AddToInventory(itemSO, itemDatabaseSO.GetEquipmentTotalUpgradeMaterialCost(item.GetItemData<ItemEquipmentData>()));
             }
         }
 
@@ -228,13 +232,13 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
         return itemDatabaseSO.GetRarityPalette(rarity);
     }
 
-    public int GetTotalUpgradeGoldSpent(ItemData itemData)
+    public int GetTotalUpgradeGoldSpent(ItemEquipmentData itemEquipmentData)
     {
-        return itemDatabaseSO.GetTotalUpgradeGoldCost(itemData);
+        return itemDatabaseSO.GetEquipmentTotalUpgradeGoldCost(itemEquipmentData);
     }
 
-    public int GetTotalUpgradeMaterialSpent(ItemData itemData)
+    public int GetTotalUpgradeMaterialSpent(ItemEquipmentData itemEquipmentData)
     {
-        return itemDatabaseSO.GetTotalUpgradeMaterialCost(itemData);
+        return itemDatabaseSO.GetEquipmentTotalUpgradeMaterialCost(itemEquipmentData);
     }
 }

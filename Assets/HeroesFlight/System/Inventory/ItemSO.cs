@@ -57,12 +57,12 @@ public class Item
 
     public void AddEffects(EquipmentSO item)
     {
-        itemEffects = new ItemEffect[item.effects.Length];
-        for (int i = 0; i < itemEffects.Length; i++)
-        {
-            itemEffects[i] = new ItemEffect();
-            itemEffects[i].itemEffectType = item.effects[i];
-        }
+        //itemEffects = new ItemEffect[item.effects.Length];
+        //for (int i = 0; i < itemEffects.Length; i++)
+        //{
+        //    itemEffects[i] = new ItemEffect();
+        //    itemEffects[i].itemEffectType = item.effects[i];
+        //}
     }
 
     public override bool Equals(object obj)
@@ -119,12 +119,21 @@ public abstract class ItemData
 public class ItemEquipmentData : ItemData
 {
     public string instanceID;
+    public Rarity rarity;
     public bool eqquiped;
-    public ItemEquipmentData(ItemSO item, int newValue = 1) : base(item, newValue)
+
+    public ItemEquipmentData(ItemSO item, int newValue = 1, Rarity rarity = Rarity.Common) : base(item, newValue)
     {
         ID = item.ID;
         value = newValue;
+        this.rarity = rarity;
         instanceID = "Item :" + Guid.NewGuid().ToString();
+        //instanceID = instanceID.Substring(instanceID.Length - 5);
+    }
+
+    public void SetRarity(Rarity rarity)
+    {
+        this.rarity = rarity;
     }
 }
 

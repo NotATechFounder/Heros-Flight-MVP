@@ -17,7 +17,6 @@ public class ItemInfoDisplayUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI itemTypeDisplay;
     [SerializeField] TextMeshProUGUI itemName;
     [SerializeField] TextMeshProUGUI itemLevel;
-    [SerializeField] TextMeshProUGUI itemLevelDetails;
     [SerializeField] TextMeshProUGUI equipOrUnequipText;
 
     [Header("Stats")]
@@ -69,7 +68,11 @@ public class ItemInfoDisplayUI : MonoBehaviour
         itemLevel.text = "LV." + item.GetItemData<ItemEquipmentData>().value.ToString();
         itemIcon.sprite = item.itemSO.icon;
 
-        RarityPalette rarityPalette = inventoryItemHandler.GetPalette(item.GetItemSO<EquipmentSO>().rarity);
+        itemRairityDisplay.text = item.GetItemData<ItemEquipmentData>().rarity.ToString();
+        itemTypeDisplay.text = item.GetItemSO<EquipmentSO>().equipmentType.ToString();
+        itemName.text = item.itemSO.Name;
+
+        RarityPalette rarityPalette = inventoryItemHandler.GetPalette(item.GetItemData<ItemEquipmentData>().rarity);
         itemBackground.color = rarityPalette.backgroundColour;
         itemFrame.color = rarityPalette.frameColour;
 
@@ -121,8 +124,8 @@ public class ItemInfoDisplayUI : MonoBehaviour
         materialAmountDisplay.text = inventoryItemHandler.GetMaterialUpgradeRequiredAmount(item) + " / " + materialItem.GetItemData<ItemData>().value.ToString();
         materialAmountDisplay.color = materialItem.GetItemData<ItemData>().value >= inventoryItemHandler.GetMaterialUpgradeRequiredAmount(item) ? Color.green : Color.red;
 
-        dismantleMaterialDisplay.text = inventoryItemHandler.GetTotalUpgradeMaterialSpent(item.GetItemData<ItemData>()).ToString();
-        dismantleGoldDisplay.text = inventoryItemHandler.GetTotalUpgradeGoldSpent(item.GetItemData<ItemData>()).ToString();
+        dismantleMaterialDisplay.text = inventoryItemHandler.GetTotalUpgradeMaterialSpent(item.GetItemData<ItemEquipmentData>()).ToString();
+        dismantleGoldDisplay.text = inventoryItemHandler.GetTotalUpgradeGoldSpent(item.GetItemData<ItemEquipmentData>()).ToString();
     }
 
     public void Close()

@@ -8,11 +8,17 @@ public enum EquipmentType { Weapon, Armour, Ring, Belt, Necklace };
 
 public class EquipmentSO : ItemSO
 {
-    public Rarity rarity;
     public EquipmentType equipmentType;
-    public ItemEffectType[] effects;
+    public ItemRarityStat[] itemRarityStats;
 
     private void Awake() => itemType = ItemType.Equipment;
+}
+
+[Serializable]
+public class ItemRarityStat
+{
+    public Rarity rarity;
+    public ItemEffectType[] effects;
 }
 
 [Serializable]
@@ -29,8 +35,19 @@ public class RarityInfo
     public RarityPalette palette;
     public int maxLevel;
     public int nextRarityFuseRequirement;
+
+    [Header("Default Prices")]
     public int defaultDisamatlePrice;
     public int defaultMaterial;
+
+    [Header("Stat")]
+    public int baseValue;
+    public int incrementPerLevel;
+
+    public int GetValue(int level)
+    {
+        return baseValue + incrementPerLevel * (level - 1);
+    }
 }
 
 

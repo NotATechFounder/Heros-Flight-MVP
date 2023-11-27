@@ -81,7 +81,17 @@ public class ItemInventorySO : InventorySO <InventoryItemData,ItemData>
 {
     public event Action<ItemData> OnItemModified;
 
-    public ItemData AddToItemInventory(ItemSO itemSO, int amount = 1)
+    public ItemEquipmentData AddEquipmentToInventory(ItemSO itemSO, int level = 1, Rarity rarity = Rarity.Common)
+    {
+      return  AddToItemInventory (itemSO, level, rarity) as ItemEquipmentData;
+    }
+
+    public ItemMaterialData AddMaterialToInventory(ItemSO itemSO, int amount = 1)
+    {
+        return AddToItemInventory(itemSO, amount) as ItemMaterialData;
+    }
+
+    private ItemData AddToItemInventory(ItemSO itemSO, int amount = 1, Rarity rarity = Rarity.Common)
     {
         ItemData itemData = null;
         switch (itemSO.itemType)
@@ -105,7 +115,7 @@ public class ItemInventorySO : InventorySO <InventoryItemData,ItemData>
                 return itemData;
 
             case ItemType.Equipment:
-                itemData = new ItemEquipmentData(itemSO, amount);
+                itemData = new ItemEquipmentData(itemSO, amount, rarity);
                 AddToInventory(itemData);
                 return itemData;
         }

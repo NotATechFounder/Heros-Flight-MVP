@@ -144,7 +144,7 @@ namespace UISystem
                     EquippedSlot equippedSlot = GetEquipmentSlot((item.itemSO as EquipmentSO).equipmentType);
                     if (equippedSlot != null)
                     {
-                        equippedSlot.Occupy(item);
+                        equippedSlot.Occupy(item, inventoryItemHandler.GetPalette(item.GetItemData<ItemEquipmentData>().rarity));
                     }
                 }
                 else
@@ -206,7 +206,7 @@ namespace UISystem
                 }
 
                 inventoryItemHandler.EquipItem(selectedItemUI.GetItem);
-                equippedSlot.Occupy(selectedItemUI.GetItem);
+                equippedSlot.Occupy(selectedItemUI.GetItem, inventoryItemHandler.GetPalette(selectedItemUI.GetItem.GetItemData<ItemEquipmentData>().rarity));
                 itemUIDic.Remove(selectedItemUI.GetItem.GetItemData<ItemEquipmentData>().instanceID);
                 Destroy(selectedItemUI.gameObject);
                 selectedItemUI = null;
@@ -241,7 +241,7 @@ namespace UISystem
             switch (item.itemSO.itemType)
             {
                 case ItemType.Equipment:
-                    itemUI.SetItem(item, inventoryItemHandler.GetPalette(item.GetItemSO<EquipmentSO>().rarity));
+                    itemUI.SetItem(item, inventoryItemHandler.GetPalette(item.GetItemData<ItemEquipmentData>().rarity));
                     id = item.GetItemData<ItemEquipmentData>().instanceID;
                     break;
                 case ItemType.Material:

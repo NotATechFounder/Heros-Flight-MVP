@@ -28,10 +28,9 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         return itemUpgradeGoldCost.GetCurrentValueInt(currentItem.GetValue());
     }
 
-    public int GetTotalUpgradeGoldCost(ItemData currentItem)
+    public int GetEquipmentTotalUpgradeGoldCost(ItemEquipmentData currentItem)
     {
-        ItemSO itemSO = GetItemSOByID(currentItem.ID);
-        return itemUpgradeGoldCost.GetTotalValue(currentItem.GetValue()) + GetRarityInfo((itemSO as EquipmentSO).rarity).defaultDisamatlePrice;
+        return itemUpgradeGoldCost.GetTotalValue(currentItem.GetValue()) + GetRarityInfo(currentItem.rarity).defaultDisamatlePrice;
     }
 
     public int GetUpgradeMaterialCost(ItemData currentItem)
@@ -39,15 +38,14 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         return itemUpgradeMaterialCost.GetCurrentValueInt(currentItem.GetValue());
     }
 
-    public int GetTotalUpgradeMaterialCost(ItemData currentItem)
+    public int GetEquipmentTotalUpgradeMaterialCost(ItemEquipmentData currentItem)
     {
-        ItemSO itemSO = GetItemSOByID(currentItem.ID);
-        return itemUpgradeMaterialCost.GetTotalValue(currentItem.GetValue()) + GetRarityInfo((itemSO as EquipmentSO).rarity).defaultMaterial;
+        return itemUpgradeMaterialCost.GetTotalValue(currentItem.GetValue()) + GetRarityInfo(currentItem.rarity).defaultMaterial;
     }
 
     public int GetItemMaxLevel(Item currentItem)
     {
-        return GetRarityInfo(currentItem.GetItemSO<EquipmentSO>().rarity).maxLevel;
+        return GetRarityInfo(currentItem.GetItemData<ItemEquipmentData>().rarity).maxLevel;
     }
 
     public RarityInfo GetRarityInfo(Rarity currentRarity)
@@ -78,7 +76,7 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
 
                 for (int k = 0; k < itemEffects[j].effectRarityStats.Length; k++)
                 {
-                    if (itemEffects[j].effectRarityStats[k].rarity == (itemBase as EquipmentSO).rarity)
+                    if (itemEffects[j].effectRarityStats[k].rarity == currentItem.GetItemData<ItemEquipmentData>().rarity)
                     {
                         currentItem.ItemBuffs()[i].value = itemEffects[j].effectRarityStats[k].statCurve.GetCurrentValueInt(currentItem.GetItemData<ItemEquipmentData>().GetValue());
                         break;
@@ -108,19 +106,6 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
             if (buff == itemEffects[i].itemEffectType) return itemEffects[i].buffInfo;
         }
         return default;
-    }
-
-    public ItemSO GetNextRarityItemSO(ItemSO itemSO)
-    {
-        Rarity currentRarity = (itemSO as EquipmentSO).rarity;
-        for (int i = 0; i < Items.Length; i++)
-        {
-            if(itemSO.Name == Items[i].Name && (Items[i] as EquipmentSO).rarity == currentRarity + 1)
-            {
-                return Items[i];
-            }
-        }
-        return null;
     }
 
 

@@ -18,7 +18,7 @@ public interface IInventoryItemHandler
     int GetItemMaxLevel(Item item);
     int GetGoldUpgradeRequiredAmount(Item item);
     int GetMaterialUpgradeRequiredAmount(Item item);
-    int GetTotalUpgradeGoldSpent(ItemData itemData);
-    int GetTotalUpgradeMaterialSpent(ItemData itemData);
+    int GetTotalUpgradeGoldSpent(ItemEquipmentData itemData);
+    int GetTotalUpgradeMaterialSpent(ItemEquipmentData itemData);
     ItemSO GetItemSO(string id);
 }
