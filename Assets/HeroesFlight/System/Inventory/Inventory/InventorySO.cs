@@ -23,16 +23,16 @@ public interface IInventorySO
     void Delete();
 }
 
-public class InventorySO<IInventoryData, T1> : ScriptableObject, IInventorySO where IInventoryData : InventoryData<T1>
+public abstract class InventorySO<IInventoryData, DataType> : ScriptableObject, IInventorySO where IInventoryData : InventoryData<DataType>
 {
     public int max;
     public string inventoryID;
     public IInventoryData inventoryData;
-    public event Action<T1> OnValueAdded;
-    public event Action<T1> OnValueRemoved;
+    public event Action<DataType> OnValueAdded;
+    public event Action<DataType> OnValueRemoved;
     public event Action OnMaxReachError;
 
-    public virtual bool AddToInventory(T1 data, bool notify = true)
+    public virtual bool AddToInventory(DataType data, bool notify = true)
     {
         if (inventoryData.Count >= max)
         {
@@ -45,14 +45,14 @@ public class InventorySO<IInventoryData, T1> : ScriptableObject, IInventorySO wh
         return true;
     }
 
-    public virtual void RemoveFromInventory(T1 data, bool notify = true)
+    public virtual void RemoveFromInventory(DataType data, bool notify = true)
     {
         inventoryData.Remove(data);
         if (notify) OnValueRemoved?.Invoke(data);
         Save();
     }
 
-    public bool ExitsInInventory(T1 data)
+    public bool ExitsInInventory(DataType data)
     {
         return inventoryData.Contains(data);
     }
