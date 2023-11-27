@@ -3,17 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Rarity { Common, UnCommon, Rare, Epic, Legendary };
+public enum Rarity { Common, UnCommon, Rare, Epic};
 public enum EquipmentType { Weapon, Armour, Ring, Belt, Necklace };
 
 public class EquipmentSO : ItemSO
 {
     public EquipmentType equipmentType;
     public StatType statType;
+    public ItemBaseStatByRarity[] itemBaseStats;
     public BonusStat bonusStat;
     public ItemRarityStat[] itemRarityStats;
 
     private void Awake() => itemType = ItemType.Equipment;
+}
+
+
+[Serializable]
+public class ItemBaseStatByRarity
+{
+    public Rarity rarity;
+    public int value;
 }
 
 [Serializable]
@@ -50,10 +59,9 @@ public class RarityInfo
     public int defaultMaterial;
 
     [Header("Stat")]
-    public int baseValue;
     public int incrementPerLevel;
 
-    public int GetValue(int level)
+    public int GetValue(int baseValue, int level)
     {
         return baseValue + incrementPerLevel * (level - 1);
     }

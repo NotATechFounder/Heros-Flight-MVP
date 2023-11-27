@@ -29,7 +29,7 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
         {
             foreach (ItemSO item in testItem)
             {
-                Rarity randomRarity = (Rarity)UnityEngine.Random.Range(0, 5);
+                Rarity randomRarity = (Rarity)UnityEngine.Random.Range(0, 4);
                 AddToInventory(item, 1, randomRarity);
             }
         }
