@@ -28,6 +28,8 @@ public class DataSystem : DataSystemInterface
 
     public AccountLevelManager AccountLevelManager { get; private set; }
 
+    public InventorySystem InventorySystem { get; private set; }
+
 
     public void Init(Scene scene = default, Action onComplete = null)
     {
@@ -48,6 +50,8 @@ public class DataSystem : DataSystemInterface
 
         AccountLevelManager = scene.GetComponent<AccountLevelManager>();
         AccountLevelManager.OnLevelUp += StatPoints.AddPoints;
+
+        InventorySystem.Init(CurrencyManager);
 
         onComplete?.Invoke();
     }
