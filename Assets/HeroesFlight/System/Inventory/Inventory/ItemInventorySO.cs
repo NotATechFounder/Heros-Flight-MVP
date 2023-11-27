@@ -19,6 +19,20 @@ public class ItemInventoryData : IInventoryData<ItemBaseData>
         return itemBaseData;
     }
 
+
+    public T GetByID<T>(string id) where T : ItemBaseData
+    {
+        if (typeof(T) == typeof(ItemEquipmentData))
+        {
+            return equipmentData.FirstOrDefault(x => x.ID == id) as T;
+        }
+        else if (typeof(T) == typeof(ItemMaterialData))
+        {
+            return materialData.FirstOrDefault(x => x.ID == id) as T;
+        }
+        return null;
+    }
+
     public void Add(ItemBaseData itemBaseData)
     {
         switch (itemBaseData)
