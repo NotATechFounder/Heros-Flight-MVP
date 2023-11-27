@@ -10,8 +10,7 @@ public class ItemInfoDisplayUI : MonoBehaviour
     public event Action OnEquipAction;
     public event Action OnUnequipAction;
 
-    [SerializeField] GameObject displayUI;
-    [SerializeField] Image itemRarityColour;
+    [SerializeField] Image itemBackground;
     [SerializeField] Image itemFrame;
     [SerializeField] Image itemIcon;
     [SerializeField] TextMeshProUGUI itemRairityDisplay;
@@ -25,13 +24,15 @@ public class ItemInfoDisplayUI : MonoBehaviour
     [SerializeField] Transform statsHolder;
 
     [Header("Dismantle")]
-    [SerializeField] TextMeshProUGUI sellScrollDisplay;
-    [SerializeField] TextMeshProUGUI sellPriceDisplay;
+    [SerializeField] TextMeshProUGUI dismantleMaterialDisplay;
+    [SerializeField] TextMeshProUGUI dismantleGoldDisplay;
 
     [Header("Upgrade")]
-    [SerializeField] TextMeshProUGUI upgradePriceDisplay;
-    [SerializeField] TextMeshProUGUI requiredScrollDisplay;
-    [SerializeField] TextMeshProUGUI scrollAmountDisplay;
+    [SerializeField] TextMeshProUGUI upgradeGoldPriceDisplay;
+    [SerializeField] GameObject upgradeMaterialHolder;
+    [SerializeField] Image upgradeMaterialIcon;
+    [SerializeField] TextMeshProUGUI requiredMaterialName;
+    [SerializeField] TextMeshProUGUI materialAmountDisplay;
 
     [Header("Buttons")]
     [SerializeField] AdvanceButton closeButton;
@@ -43,6 +44,7 @@ public class ItemInfoDisplayUI : MonoBehaviour
     [SerializeField] Item item;
 
     private Action equipOrUnequipAction;
+    IInventoryItemHandler inventoryItemHandler;
 
     private void Start()
     {
@@ -52,29 +54,75 @@ public class ItemInfoDisplayUI : MonoBehaviour
         equipOrUnequipButton.onClick.AddListener(() => equipOrUnequipAction?.Invoke());
     }
 
+    public void Init(IInventoryItemHandler inventoryItemHandler)
+    {
+        this.inventoryItemHandler = inventoryItemHandler;
+    }
+
     public void Display (Item item)
     {
         gameObject.SetActive(true);
         this.item = item;
-        bool isEquipped = item.ItemData().eqquiped;
+        bool isEquipped = item.GetItemData().eqquiped;
         equipOrUnequipAction = isEquipped ? OnUnequipAction : OnEquipAction;
         equipOrUnequipText.text = isEquipped ? "Unequip" : "Equip";
-        itemLevel.text = "LV." + item.ItemData().value.ToString();
+        itemLevel.text = "LV." + item.GetItemData().value.ToString();
         itemIcon.sprite = item.itemSO.icon;
-        SetItemInfo();
+
+        RarityPalette rarityPalette = inventoryItemHandler.GetPalette(item.GetItemSO<EquipmentSO>().rarity);
+        itemBackground.color = rarityPalette.backgroundColour;
+        itemFrame.color = rarityPalette.frameColour;
+
+        SetItemLevel();
+        SeUpgradeInfo();
     }
 
     private void HandleUpgrade()
     {
         if (OnUpgradeAction?.Invoke() == true)
         {
-            SetItemInfo();
+            SetItemLevel();
+            SeUpgradeInfo();
         }
     }
 
-    public void SetItemInfo()
+    public void SetItemLevel()
     {
-        itemLevel.text = "LV." + item.ItemData().value.ToString();
+        itemLevel.text = "LV." + item.GetItemData().value.ToString() + " / " + inventoryItemHandler.GetItemMaxLevel(item).ToString();
+
+        if (item.GetItemData().value >= inventoryItemHandler.GetItemMaxLevel(item))
+        {
+            upgradeMaterialHolder.SetActive(false);
+            upgradeGoldPriceDisplay.text = "MAX";
+            upgradeGoldPriceDisplay.color = Color.red;
+        }
+        else
+        {
+            upgradeMaterialHolder.SetActive(true);
+            upgradeGoldPriceDisplay.text = inventoryItemHandler.GetGoldUpgradeRequiredAmount(item).ToString();
+            upgradeGoldPriceDisplay.color = Color.white;
+        }
+    }
+
+    void SeUpgradeInfo()
+    {
+        inventoryItemHandler.GetMaterialItemByID("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString(), out Item materialItem);
+        if (materialItem == null)
+        {        
+            ItemSO itemSO = inventoryItemHandler.GetItemSO("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString());
+            upgradeMaterialIcon.sprite = itemSO.icon;
+            requiredMaterialName.text = itemSO.Name;
+            materialAmountDisplay.text = inventoryItemHandler.GetMaterialUpgradeRequiredAmount(item) + " / " + 0.ToString();
+            materialAmountDisplay.color = Color.red;
+            return;
+        }
+        upgradeMaterialIcon.sprite = materialItem.itemSO.icon;
+        requiredMaterialName.text = materialItem.itemSO.Name;
+        materialAmountDisplay.text = inventoryItemHandler.GetMaterialUpgradeRequiredAmount(item) + " / " + materialItem.GetItemData().value.ToString();
+        materialAmountDisplay.color = materialItem.GetItemData().value >= inventoryItemHandler.GetMaterialUpgradeRequiredAmount(item) ? Color.green : Color.red;
+
+        dismantleMaterialDisplay.text = inventoryItemHandler.GetTotalUpgradeMaterialSpent(item.GetItemData()).ToString();
+        dismantleGoldDisplay.text = inventoryItemHandler.GetTotalUpgradeGoldSpent(item.GetItemData()).ToString();
     }
 
     public void Close()

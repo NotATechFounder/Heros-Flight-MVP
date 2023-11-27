@@ -63,6 +63,7 @@ namespace UISystem
             canvasGroup.alpha = 0;
             openEffectBG.Start();
             UpdateCharacter(GetSelectedCharacterSO.Invoke());
+            LoadInventoryItems();
         }
 
         public void UpdateCharacter(CharacterSO characterSO)
@@ -111,6 +112,8 @@ namespace UISystem
             itemInfoDisplayUI.OnUpgradeAction += TryUpgradeItem;
             itemInfoDisplayUI.OnUnequipAction += UnEquipItem;
 
+            itemInfoDisplayUI.Init(inventoryItemHandler);
+
             foreach (EquippedSlot slot in equippedSlots)
             {
                 slot.OnSelectItem += (item) =>
@@ -136,7 +139,7 @@ namespace UISystem
 
             foreach (Item item in inventoryItemHandler.GetInventoryEquippmentItems())
             {
-                if (item.ItemData().eqquiped)
+                if (item.GetItemData().eqquiped)
                 {
                     EquippedSlot equippedSlot = GetEquipmentSlot((item.itemSO as EquipmentSO).equipmentType);
                     if (equippedSlot != null)
@@ -173,8 +176,7 @@ namespace UISystem
             if (selectedItem != null)
             {
                 inventoryItemHandler.DismantleItem(selectedItem);
-                itemUIDic.Remove(selectedItem.ItemData().instanceID);
-                selectedItemUI = null;
+                itemUIDic.Remove(selectedItem.GetItemData().instanceID);
             }
 
             if (selectedItemUI != null)
@@ -205,7 +207,7 @@ namespace UISystem
 
                 inventoryItemHandler.EquipItem(selectedItemUI.GetItem);
                 equippedSlot.Occupy(selectedItemUI.GetItem);
-                itemUIDic.Remove(selectedItemUI.GetItem.ItemData().instanceID);
+                itemUIDic.Remove(selectedItemUI.GetItem.GetItemData().instanceID);
                 Destroy(selectedItemUI.gameObject);
                 selectedItemUI = null;
             }
@@ -235,7 +237,17 @@ namespace UISystem
         public void SpawnItemUI(Item item)
         {
             ItemUI itemUI = Instantiate(itemUIPrefab, itemHolder);
-            itemUI.SetItem(item);
+            switch (item.itemSO.itemType)
+            {
+                case ItemType.Equipment:
+                    itemUI.SetItem(item, inventoryItemHandler.GetPalette(item.GetItemSO<EquipmentSO>().rarity));
+                    break;
+                case ItemType.Material:
+                    itemUI.SetItem(item, inventoryItemHandler.GetPalette(Rarity.Common));
+                    break;
+                default:
+                    break;
+            }
 
             itemUI.OnSelectItem += (itemUI) =>
             {
@@ -243,7 +255,7 @@ namespace UISystem
                 ItemSelected(itemUI.GetItem);
             };
 
-            itemUIDic.Add(item.ItemData().instanceID, itemUI);
+            itemUIDic.Add(item.GetItemData().instanceID, itemUI);
         }
 
         private void ItemSelected(Item item)
@@ -261,9 +273,9 @@ namespace UISystem
 
         public void UpdateItemUI(Item item)
         {
-            if (itemUIDic.ContainsKey(item.ItemData().instanceID))
+            if (itemUIDic.ContainsKey(item.GetItemData().instanceID))
             {
-                itemUIDic[item.ItemData().instanceID].SetItemInfo();
+                itemUIDic[item.GetItemData().instanceID].SetItemInfo();
             }
             else
             {

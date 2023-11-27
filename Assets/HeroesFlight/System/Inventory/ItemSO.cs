@@ -45,7 +45,9 @@ public class Item
         if (itemObject is EquipmentSO) AddEffects(itemObject as EquipmentSO);
     }
 
-    public ItemData ItemData() => itemData;
+    public T GetItemSO<T>() where T : ItemSO => itemSO as T;
+
+    public ItemData GetItemData() => itemData;
 
     public ItemEffect[] ItemBuffs() => itemEffects;
 
@@ -92,6 +94,7 @@ public class ItemData
         value = newValue;
         instanceID = "Item :" + Guid.NewGuid().ToString();
     }
+
     public int GetValue()
     {
         return value;
@@ -105,6 +108,57 @@ public class ItemData
     public void LevelUp()
     {
         value++;
+    }
+}
+
+[Serializable]
+public class ItemBaseData
+{
+    public string ID;
+    public int value;
+
+    public ItemBaseData ( ItemSO item, int newValue = 1)
+    {
+        ID = item.ID;
+        value = newValue;
+    }
+
+    public int GetValue()
+    {
+        return value;
+    }
+
+    public void IncrementValue(int increment)
+    {
+        value += increment;
+    }
+
+    public void LevelUp()
+    {
+        value++;
+    }
+}
+
+[Serializable]
+public class ItemEquipmentData : ItemBaseData
+{
+    public string instanceID;
+    public bool eqquiped;
+    public ItemEquipmentData(ItemSO item, int newValue = 1) : base(item, newValue)
+    {
+        ID = item.ID;
+        value = newValue;
+        instanceID = "Item :" + Guid.NewGuid().ToString();
+    }
+}
+
+[Serializable]
+public class ItemMaterialData : ItemBaseData
+{
+    public ItemMaterialData(ItemSO item, int newValue = 1) : base(item, newValue)
+    {
+        ID = item.ID;
+        value = newValue;
     }
 }
 

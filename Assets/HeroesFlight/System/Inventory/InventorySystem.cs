@@ -16,6 +16,7 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
     [Header("Test Item")]
     [SerializeField] private ItemSO[] testItem;
     [SerializeField] private ItemSO[] testMaterialItem;
+    [SerializeField] private CurrencyManager currencyManager;
 
     private void Start()
     {
@@ -41,6 +42,11 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
         }
     }
 
+    public void Init(CurrencyManager currencyManager)
+    {
+        this.currencyManager = currencyManager;
+    }
+
     public Item AddToInventory(ItemSO itemSO, int level = 1)
     {
         ItemData itemData = mainItemInventorySO.AddToItemInventory(itemSO, level);
@@ -51,7 +57,7 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
 
                 if (materialItemDic.ContainsKey(itemData.ID))
                 {
-                    materialItemDic[itemData.ID].ItemData().value = itemData.value;
+                    materialItemDic[itemData.ID].GetItemData().value = itemData.value;
                     OnItemModified?.Invoke(materialItemDic[itemData.ID]);
                 }
                 else
@@ -75,15 +81,15 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
         switch (item.itemSO.itemType)
         {
             case ItemType.Equipment:
-                eqquipmentItemDic.Remove(item.ItemData().instanceID);
+                eqquipmentItemDic.Remove(item.GetItemData().instanceID);
                 break;
             case ItemType.Material:
-                materialItemDic.Remove(item.ItemData().ID);
+                materialItemDic.Remove(item.GetItemData().ID);
                 break;
             default:  break;
         }
 
-        mainItemInventorySO.RemoveItemFromInventory(item.itemSO, item.ItemData());
+        mainItemInventorySO.RemoveItemFromInventory(item.itemSO, item.GetItemData());
     }
 
     public void LoadInventoryItems()
@@ -111,29 +117,94 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
 
     public void EquipItem(Item item)
     {
-        item.ItemData().eqquiped = true;
+        item.GetItemData().eqquiped = true;
         mainItemInventorySO.Save();
     }
 
     public void UnEquipItem(Item item)
     {
-        item.ItemData().eqquiped = false;
+        item.GetItemData().eqquiped = false;
         mainItemInventorySO.Save();
     }
 
     public void DismantleItem(Item item)
     {
+        currencyManager.AddCurrency(CurrencyKeys.Gold, itemDatabaseSO.GetTotalUpgradeGoldCost (item.GetItemData()));
+        GetMaterialItemByID("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString(), out Item materialItem);
+        if (materialItem != null)
+        {
+            materialItem.GetItemData().value += itemDatabaseSO.GetTotalUpgradeMaterialCost(item.GetItemData());
+            OnItemModified?.Invoke(materialItem);
+        }
+        else
+        {
+            ItemSO itemSO = GetItemSO("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString());
+            if (itemSO != null)
+            {
+               AddToInventory(itemSO, itemDatabaseSO.GetTotalUpgradeMaterialCost(item.GetItemData()));
+            }
+        }
+
         RemoveFromInventory(item);
     }
 
     public bool TryUpgradeItem(Item item)
     {
-        // check if the level is not maxed and if they have enough materials
+        if (item.GetItemData().value >= GetItemMaxLevel(item))
+        {
+            Debug.Log("Item is maxed");
+            return false;
+        }
+
+        int goldCost = GetGoldUpgradeRequiredAmount(item);
+
+        if (currencyManager.GetCurrencyAmount(CurrencyKeys.Gold) < goldCost)
+        {
+            Debug.Log("Not enough gold");
+            return false;
+        }
+
+        GetMaterialItemByID("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString(), out Item materialItem);
+
+        if (materialItem == null)
+        {
+            Debug.Log("Not enough material");
+            return false;
+        }
+
+        if (materialItem.GetItemData().value < GetMaterialUpgradeRequiredAmount(item))
+        {
+            Debug.Log("Not enough material");
+            return false;
+        }
+
+        currencyManager.ReduceCurency(CurrencyKeys.Gold, goldCost);
+        materialItem.GetItemData().value -= GetMaterialUpgradeRequiredAmount(item);
         item.LevelUp();
         itemDatabaseSO.SetItemBuffStat(item);
         OnItemModified?.Invoke(item);
         mainItemInventorySO.Save();
         return true;
+    }
+
+    public int GetItemMaxLevel(Item item)
+    {
+        return itemDatabaseSO.GetItemMaxLevel(item);
+    }
+
+    public int GetGoldUpgradeRequiredAmount(Item item)
+    {
+        return itemDatabaseSO.GetUpgradeGoldCost(item.GetItemData());
+    }
+
+    public int GetMaterialUpgradeRequiredAmount(Item item)
+    {
+        return itemDatabaseSO.GetUpgradeMaterialCost(item.GetItemData());
+    }
+
+    public ItemSO GetItemSO(string id)
+    {
+        return itemDatabaseSO.GetItemSOByID(id);
     }
 
     public void SaveInventoryItems()
@@ -154,5 +225,20 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
     public List<Item> GetInventoryMaterialItems()
     {
         return new List<Item>(materialItemDic.Values);
+    }
+
+    public RarityPalette GetPalette(Rarity rarity)
+    {
+        return itemDatabaseSO.GetRarityPalette(rarity);
+    }
+
+    public int GetTotalUpgradeGoldSpent(ItemData itemData)
+    {
+        return itemDatabaseSO.GetTotalUpgradeGoldCost(itemData);
+    }
+
+    public int GetTotalUpgradeMaterialSpent(ItemData itemData)
+    {
+        return itemDatabaseSO.GetTotalUpgradeMaterialCost(itemData);
     }
 }

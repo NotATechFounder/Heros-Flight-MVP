@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Rarities { Common, UnCommon, Rare, Epic, Legendary };
+public enum Rarity { Common, UnCommon, Rare, Epic, Legendary };
 public enum EquipmentType { Weapon, Armour, Ring, Belt, Necklace };
 
 public class EquipmentSO : ItemSO
 {
-    public Rarities rarity;
+    public Rarity rarity;
     public EquipmentType equipmentType;
     public ItemEffectType[] effects;
 
@@ -25,9 +25,18 @@ public class ItemEffect
 [Serializable]
 public class RarityInfo
 {
-    public Rarities rarity;
+    public Rarity rarity;
+    public RarityPalette palette;
     public int maxLevel;
     public int nextRarityFuseRequirement;
-    public int defaultSellPrice;
-    public int defaultScroll;
+    public int defaultDisamatlePrice;
+    public int defaultMaterial;
+}
+
+
+[Serializable]
+public class RarityPalette
+{
+    public Color frameColour;
+    public Color backgroundColour;
 }

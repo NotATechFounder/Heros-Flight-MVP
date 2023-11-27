@@ -69,7 +69,7 @@ public class EnergyManager : MonoBehaviour
 
             if (ammountToAdd > 0 && currencyManager.GetCurrencyAmount(CurrencyKeys.Energy) < maxEnergy)
             {
-                currencyManager.AddCurency(CurrencyKeys.Energy, ammountToAdd);
+                currencyManager.AddCurrency(CurrencyKeys.Energy, ammountToAdd);
                 if (currencyManager.GetCurrencyAmount(CurrencyKeys.Energy) > maxEnergy) currencyManager.SetCurencyAmount(CurrencyKeys.Energy, maxEnergy);
                 UpdateNextEnergyTime();
             }
@@ -106,7 +106,7 @@ public class EnergyManager : MonoBehaviour
 
         if (isEnergyRestored)
         {
-            currencyManager.AddCurency(CurrencyKeys.Energy, 1);
+            currencyManager.AddCurrency(CurrencyKeys.Energy, 1);
             UpdateNextEnergyTime();
         }
     }

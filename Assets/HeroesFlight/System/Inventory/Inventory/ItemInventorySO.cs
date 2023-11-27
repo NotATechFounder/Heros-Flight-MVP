@@ -4,6 +4,65 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+
+public class ItemInventoryData : IInventoryData<ItemBaseData>
+{
+    public List<ItemEquipmentData> equipmentData = new List<ItemEquipmentData>();
+    public List<ItemMaterialData> materialData = new List<ItemMaterialData>();
+
+    public int Count => equipmentData.Count + materialData.Count;
+
+    public ItemBaseData GetByID(string id)
+    {
+        ItemBaseData itemBaseData = equipmentData.FirstOrDefault(x => x.ID == id);
+        if (itemBaseData == null) itemBaseData = materialData.FirstOrDefault(x => x.ID == id);
+        return itemBaseData;
+    }
+
+    public void Add(ItemBaseData itemBaseData)
+    {
+        switch (itemBaseData)
+        {
+            case ItemEquipmentData:
+                equipmentData.Add(itemBaseData as ItemEquipmentData);
+                break;
+            case ItemMaterialData:
+                materialData.Add(itemBaseData as ItemMaterialData);
+                break;
+        }
+    }
+    public void Remove(ItemBaseData itemBaseData)
+    {
+        switch (itemBaseData)
+        {
+            case ItemEquipmentData:
+                equipmentData.Remove(itemBaseData as ItemEquipmentData);
+                break;
+            case ItemMaterialData:
+                materialData.Remove(itemBaseData as ItemMaterialData);
+                break;
+        }
+    }
+
+    public bool Contains(ItemBaseData itemBaseData)
+    {
+        switch (itemBaseData)
+        {
+            case ItemEquipmentData:
+                return equipmentData.Contains(itemBaseData as ItemEquipmentData);
+            case ItemMaterialData:
+                return materialData.Contains(itemBaseData as ItemMaterialData);
+        }
+        return false;
+    }
+
+    public void Clear()
+    {
+        equipmentData.Clear();
+        materialData.Clear();
+    }
+}
+
 [CreateAssetMenu(fileName = "ItemInventoryS0", menuName = "Inventory System/ItemInventoryS0", order = 1)]
 public class ItemInventorySO : InventorySO <ItemData>
 {
@@ -42,7 +101,7 @@ public class ItemInventorySO : InventorySO <ItemData>
 
     public void RemoveItemFromInventory(Item item, int amount = 1)
     {
-        RemoveItemFromInventory (item.itemSO, item.ItemData(), amount);
+        RemoveItemFromInventory (item.itemSO, item.GetItemData(), amount);
     }
 
     public void RemoveItemFromInventory(ItemSO itemSO, ItemData itemData, int amount = 1)

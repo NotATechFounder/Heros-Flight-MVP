@@ -6,6 +6,17 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
+public interface IInventoryData<T>
+{
+    int Count { get; }
+    void Add(T itemBaseData);
+    void Remove(T itemBaseData);
+    T GetByID(string id);
+    bool Contains(T itemBaseData);
+
+    void Clear();
+}
+
 public interface IInventorySO
 {
     void Save();

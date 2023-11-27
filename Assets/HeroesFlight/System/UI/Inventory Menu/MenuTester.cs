@@ -11,13 +11,14 @@ public class MenuTester : MonoBehaviour
     private void Start()
     {
         inventoryMenu.InitInventory(inventorySystem);
+        inventoryMenu.LoadInventoryItems();
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            inventoryMenu.LoadInventoryItems();
+
         }
     }
 }

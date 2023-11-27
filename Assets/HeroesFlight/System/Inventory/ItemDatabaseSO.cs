@@ -8,8 +8,8 @@ using UnityEngine;
 public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
 {
     [Header("Item Cost Stats")]
-    [SerializeField] CustomAnimationCurve itemGoldCostStat;
-    [SerializeField] CustomAnimationCurve itemMaterialCostStat;
+    [SerializeField] CustomAnimationCurve itemUpgradeGoldCost;
+    [SerializeField] CustomAnimationCurve itemUpgradeMaterialCost;
 
     [Header("Rarities Information")]
     [SerializeField] RarityInfo[] rarityInfos;
@@ -17,24 +17,52 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
     [Header("ItemEffect")]
     [SerializeField] ItemEffectSO[] itemEffects;
 
-    public int GetLevelCost(ItemData currentItem)
+    private void OnValidate()
     {
-        return itemGoldCostStat.GetCurrentValueInt(currentItem.GetValue());
+        itemUpgradeGoldCost.UpdateCurve();
+        itemUpgradeMaterialCost.UpdateCurve();
     }
-    public int GetCostToLevel(ItemData currentItem)
+
+    public int GetUpgradeGoldCost(ItemData currentItem)
     {
-        ItemSO itemBase = GetItemSOByID(currentItem.ID);
-        return itemGoldCostStat.GetCurrentValueInt(currentItem.GetValue()) / 2 + GetRarityInfo((itemBase as EquipmentSO).rarity).defaultSellPrice;
+        return itemUpgradeGoldCost.GetCurrentValueInt(currentItem.GetValue());
+    }
+
+    public int GetTotalUpgradeGoldCost(ItemData currentItem)
+    {
+        ItemSO itemSO = GetItemSOByID(currentItem.ID);
+        return itemUpgradeGoldCost.GetTotalValue(currentItem.GetValue()) + GetRarityInfo((itemSO as EquipmentSO).rarity).defaultDisamatlePrice;
+    }
+
+    public int GetUpgradeMaterialCost(ItemData currentItem)
+    {
+        return itemUpgradeMaterialCost.GetCurrentValueInt(currentItem.GetValue());
+    }
+
+    public int GetTotalUpgradeMaterialCost(ItemData currentItem)
+    {
+        ItemSO itemSO = GetItemSOByID(currentItem.ID);
+        return itemUpgradeMaterialCost.GetTotalValue(currentItem.GetValue()) + GetRarityInfo((itemSO as EquipmentSO).rarity).defaultMaterial;
     }
 
     public int GetItemMaxLevel(Item currentItem)
     {
-        return GetRarityInfo((currentItem.itemSO as EquipmentSO).rarity).maxLevel;
+        return GetRarityInfo(currentItem.GetItemSO<EquipmentSO>().rarity).maxLevel;
     }
 
-    public RarityInfo GetRarityInfo(Rarities currentRarity)
+    public RarityInfo GetRarityInfo(Rarity currentRarity)
     {
         for (int i = 0; i < rarityInfos.Length; i++) if (currentRarity == rarityInfos[i].rarity) return rarityInfos[i];
+        return null;
+    }
+
+    public RarityPalette GetRarityPalette(Rarity rarity)
+    {
+        for (int i = 0; i < rarityInfos.Length; i++)
+        {
+            if (rarityInfos[i].rarity == rarity)
+                return rarityInfos[i].palette;
+        }
         return null;
     }
 
@@ -52,7 +80,7 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
                 {
                     if (itemEffects[j].effectRarityStats[k].rarity == (itemBase as EquipmentSO).rarity)
                     {
-                        currentItem.ItemBuffs()[i].value = itemEffects[j].effectRarityStats[k].statCurve.GetCurrentValueInt(currentItem.ItemData().GetValue());
+                        currentItem.ItemBuffs()[i].value = itemEffects[j].effectRarityStats[k].statCurve.GetCurrentValueInt(currentItem.GetItemData().GetValue());
                         break;
                     }
                 }
@@ -60,7 +88,7 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         }
     }
 
-    public int GetBuffValue(ItemEffectType buff, Rarities currentRarity, int level)
+    public int GetBuffValue(ItemEffectType buff, Rarity currentRarity, int level)
     {
         for (int i = 0; i < itemEffects.Length; i++)
         {
@@ -81,6 +109,20 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         }
         return default;
     }
+
+    public ItemSO GetNextRarityItemSO(ItemSO itemSO)
+    {
+        Rarity currentRarity = (itemSO as EquipmentSO).rarity;
+        for (int i = 0; i < Items.Length; i++)
+        {
+            if(itemSO.Name == Items[i].Name && (Items[i] as EquipmentSO).rarity == currentRarity + 1)
+            {
+                return Items[i];
+            }
+        }
+        return null;
+    }
+
 
 #if UNITY_EDITOR
     [ContextMenu("RenameAllItems")]

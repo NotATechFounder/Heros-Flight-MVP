@@ -12,5 +12,13 @@ public interface IInventoryItemHandler
     List<Item> GetInventoryMaterialItems();
     bool TryUpgradeItem(Item item);
     void UnEquipItem(Item item);
+
     bool GetMaterialItemByID(string id, out Item item);
+    RarityPalette GetPalette(Rarity rarity);
+    int GetItemMaxLevel(Item item);
+    int GetGoldUpgradeRequiredAmount(Item item);
+    int GetMaterialUpgradeRequiredAmount(Item item);
+    int GetTotalUpgradeGoldSpent(ItemData itemData);
+    int GetTotalUpgradeMaterialSpent(ItemData itemData);
+    ItemSO GetItemSO(string id);
 }

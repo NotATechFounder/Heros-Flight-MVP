@@ -11,7 +11,7 @@ public class ItemEffectSO : ScriptableObject
     [System.Serializable]
     public class EffectRarityStat
     {
-        public Rarities rarity;
+        public Rarity rarity;
         public CustomAnimationCurve statCurve;
     }
 
