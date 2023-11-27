@@ -9,16 +9,25 @@ public enum EquipmentType { Weapon, Armour, Ring, Belt, Necklace };
 public class EquipmentSO : ItemSO
 {
     public EquipmentType equipmentType;
+    public StatType statType;
+    public BonusStat bonusStat;
     public ItemRarityStat[] itemRarityStats;
 
     private void Awake() => itemType = ItemType.Equipment;
 }
 
 [Serializable]
+public class BonusStat
+{
+    public HeroType heroType;
+    public int value;
+}
+
+[Serializable]
 public class ItemRarityStat
 {
     public Rarity rarity;
-    public ItemEffectType[] effects;
+    public ItemEffectType effects;
 }
 
 [Serializable]

@@ -53,7 +53,7 @@ public class PlayerStatData: CharacterStatData
 
 public enum HeroType
 {
-    Melee,
-    Archer,
+    Warrior,
+    Adventurer,
     Mage
 }
