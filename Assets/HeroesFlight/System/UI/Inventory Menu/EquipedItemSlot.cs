@@ -10,6 +10,7 @@ public class EquippedSlot : MonoBehaviour
     [SerializeField] private EquipmentType equipmentType;
     [SerializeField] AdvanceButton selectButton;
     [SerializeField] GameObject content;
+    [SerializeField] Image itemRarityColour;
     [SerializeField] Image itemIcon;
     [SerializeField] TextMeshProUGUI itemInfo;
 
@@ -25,18 +26,19 @@ public class EquippedSlot : MonoBehaviour
         selectButton.onClick.AddListener(SelectItem);
     }
 
-    public void Occupy(Item item)
+    public void Occupy(Item item, RarityPalette rarityPalette)
     {
         content.SetActive(true);
         isOccupied = true;
         itemInSlot = item;
         itemIcon.sprite = GetItem.itemSO.icon;
+        itemRarityColour.color = rarityPalette.backgroundColour;
         SetItemInfo();
     }
 
     public void SetItemInfo()
     {
-        itemInfo.text = "LV." + itemInSlot.ItemData().value.ToString();
+        itemInfo.text = "LV." + itemInSlot.GetItemData<ItemEquipmentData>().value.ToString();
     }
 
     private void SelectItem()

@@ -8,10 +8,12 @@ public class StatManager : MonoBehaviour
     public event Action<StatModel> OnValueChanged;
 
     [SerializeField] private StatPointSO[] statPointSO;
-    private Dictionary<StatAttributeType, int> trailAttributeModifiedDic = new Dictionary<StatAttributeType, int>();
-    private Dictionary<StatAttributeType, int> statPointsDic = new Dictionary<StatAttributeType, int>();
     private Dictionary<StatType, StatPointInfo> statTypePerSp = new Dictionary<StatType, StatPointInfo>();
     private StatModel statModel = new StatModel(new PlayerStatData());
+
+    private Dictionary<StatAttributeType, int> traitAttributeModifiedDic = new Dictionary<StatAttributeType, int>();
+    private Dictionary<StatAttributeType, int> statPointsDic = new Dictionary<StatAttributeType, int>();
+    private new List<StatTypeWithValue> equippedItemsStatDic  = new List<StatTypeWithValue>();
 
 
     public StatModel GetStatModel()
@@ -32,86 +34,103 @@ public class StatManager : MonoBehaviour
         }
     }
 
-    public void AddStats(Dictionary<StatAttributeType, int> attributes)
+    public void ModifyStatAttribute(Dictionary<StatAttributeType, int> attributes, StatModel.StatModificationType statModificationType)
     {
         foreach (KeyValuePair<StatAttributeType, int> attribute in attributes)
         {
             switch (attribute.Key)
             {
                 case StatAttributeType.Power:
-                    statModel.ModifyAttribute(StatType.PhysicalDamage, attribute.Value * statTypePerSp[StatType.PhysicalDamage].valuePerSp, StatModel.StatModificationType.Addition, statTypePerSp[StatType.PhysicalDamage].statCalculationType);
-                    statModel.ModifyAttribute(StatType.MagicDamage, attribute.Value * statTypePerSp[StatType.MagicDamage].valuePerSp, StatModel.StatModificationType.Addition, statTypePerSp[StatType.MagicDamage].statCalculationType);
+                    statModel.ModifyAttribute(StatType.PhysicalDamage, attribute.Value * statTypePerSp[StatType.PhysicalDamage].valuePerSp, statModificationType, statTypePerSp[StatType.PhysicalDamage].statCalculationType);
+                    statModel.ModifyAttribute(StatType.MagicDamage, attribute.Value * statTypePerSp[StatType.MagicDamage].valuePerSp, statModificationType, statTypePerSp[StatType.MagicDamage].statCalculationType);
                     break;
                 case StatAttributeType.Vitality:
-                    statModel.ModifyAttribute(StatType.MaxHealth, attribute.Value * statTypePerSp[StatType.MaxHealth].valuePerSp, StatModel.StatModificationType.Addition, statTypePerSp[StatType.MaxHealth].statCalculationType);
+                    statModel.ModifyAttribute(StatType.MaxHealth, attribute.Value * statTypePerSp[StatType.MaxHealth].valuePerSp, statModificationType, statTypePerSp[StatType.MaxHealth].statCalculationType);
                     break;
                 case StatAttributeType.Agility:
-                    statModel.ModifyAttribute(StatType.MoveSpeed, attribute.Value * statTypePerSp[StatType.MoveSpeed].valuePerSp, StatModel.StatModificationType.Addition, statTypePerSp[StatType.MoveSpeed].statCalculationType);
-                    statModel.ModifyAttribute(StatType.AttackSpeed, attribute.Value * statTypePerSp[StatType.AttackSpeed].valuePerSp, StatModel.StatModificationType.Addition, statTypePerSp[StatType.AttackSpeed].statCalculationType);
-                    statModel.ModifyAttribute(StatType.DodgeChance, attribute.Value * statTypePerSp[StatType.DodgeChance].valuePerSp, StatModel.StatModificationType.Addition, statTypePerSp[StatType.DodgeChance].statCalculationType);
+                    statModel.ModifyAttribute(StatType.MoveSpeed, attribute.Value * statTypePerSp[StatType.MoveSpeed].valuePerSp, statModificationType, statTypePerSp[StatType.MoveSpeed].statCalculationType);
+                    statModel.ModifyAttribute(StatType.AttackSpeed, attribute.Value * statTypePerSp[StatType.AttackSpeed].valuePerSp, statModificationType, statTypePerSp[StatType.AttackSpeed].statCalculationType);
+                    statModel.ModifyAttribute(StatType.DodgeChance, attribute.Value * statTypePerSp[StatType.DodgeChance].valuePerSp, statModificationType, statTypePerSp[StatType.DodgeChance].statCalculationType);
                     break;
                 case StatAttributeType.Defense:
-                    statModel.ModifyAttribute(StatType.Defense, attribute.Value * statTypePerSp[StatType.Defense].valuePerSp, StatModel.StatModificationType.Addition, statTypePerSp[StatType.Defense].statCalculationType);
+                    statModel.ModifyAttribute(StatType.Defense, attribute.Value * statTypePerSp[StatType.Defense].valuePerSp, statModificationType, statTypePerSp[StatType.Defense].statCalculationType);
                     break;
                 case StatAttributeType.CriticalHit:
-                    statModel.ModifyAttribute(StatType.CriticalHitChance, attribute.Value * statTypePerSp[StatType.CriticalHitChance].valuePerSp, StatModel.StatModificationType.Addition, statTypePerSp[StatType.CriticalHitChance].statCalculationType);
+                    statModel.ModifyAttribute(StatType.CriticalHitChance, attribute.Value * statTypePerSp[StatType.CriticalHitChance].valuePerSp, statModificationType, statTypePerSp[StatType.CriticalHitChance].statCalculationType);
                     break;
             }
         }
     }
 
-    public void RemoveStats(Dictionary<StatAttributeType, int> attributes)
+    public void ModifyStatType(List<StatTypeWithValue> stats, StatModel.StatModificationType statModificationType)
     {
-        foreach (KeyValuePair<StatAttributeType, int> attribute in attributes)
+        foreach (StatTypeWithValue attribute in stats)
         {
-            switch (attribute.Key)
+            Debug.Log(attribute.statType + " " + attribute.value);
+
+            switch (attribute.statType)
             {
-                case StatAttributeType.Power:
-                    statModel.ModifyAttribute(StatType.PhysicalDamage, attribute.Value * statTypePerSp[StatType.PhysicalDamage].valuePerSp, StatModel.StatModificationType.Subtraction, statTypePerSp[StatType.PhysicalDamage].statCalculationType);
-                    statModel.ModifyAttribute(StatType.MagicDamage, attribute.Value * statTypePerSp[StatType.MagicDamage].valuePerSp, StatModel.StatModificationType.Subtraction, statTypePerSp[StatType.MagicDamage].statCalculationType);
+                case StatType.PhysicalDamage:
+                    statModel.ModifyAttribute(StatType.PhysicalDamage, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
-                case StatAttributeType.Vitality:
-                    statModel.ModifyAttribute(StatType.MaxHealth, attribute.Value * statTypePerSp[StatType.MaxHealth].valuePerSp, StatModel.StatModificationType.Subtraction, statTypePerSp[StatType.MaxHealth].statCalculationType);
+                case StatType.MagicDamage:
+                    statModel.ModifyAttribute(StatType.MagicDamage, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
-                case StatAttributeType.Agility:
-                    statModel.ModifyAttribute(StatType.MoveSpeed, attribute.Value * statTypePerSp[StatType.MoveSpeed].valuePerSp, StatModel.StatModificationType.Subtraction, statTypePerSp[StatType.MoveSpeed].statCalculationType);
-                    statModel.ModifyAttribute(StatType.AttackSpeed, attribute.Value * statTypePerSp[StatType.AttackSpeed].valuePerSp, StatModel.StatModificationType.Subtraction, statTypePerSp[StatType.AttackSpeed].statCalculationType);
-                    statModel.ModifyAttribute(StatType.DodgeChance, attribute.Value * statTypePerSp[StatType.DodgeChance].valuePerSp, StatModel.StatModificationType.Subtraction, statTypePerSp[StatType.DodgeChance].statCalculationType);
+                case StatType.MaxHealth:
+                    statModel.ModifyAttribute(StatType.MaxHealth, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
-                case StatAttributeType.Defense:
-                    statModel.ModifyAttribute(StatType.Defense, attribute.Value * statTypePerSp[StatType.Defense].valuePerSp, StatModel.StatModificationType.Subtraction, statTypePerSp[StatType.Defense].statCalculationType);
+                case StatType.MoveSpeed:
+                    statModel.ModifyAttribute(StatType.MoveSpeed, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
-                case StatAttributeType.CriticalHit:
-                    statModel.ModifyAttribute(StatType.CriticalHitChance, attribute.Value * statTypePerSp[StatType.CriticalHitChance].valuePerSp, StatModel.StatModificationType.Subtraction, statTypePerSp[StatType.CriticalHitChance].statCalculationType);
+                case StatType.AttackSpeed:
+                    statModel.ModifyAttribute(StatType.AttackSpeed, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
+                case StatType.DodgeChance:
+                    statModel.ModifyAttribute(StatType.DodgeChance, attribute.value, statModificationType, attribute.statCalculationType);
+                    break;
+                case StatType.Defense:
+                    statModel.ModifyAttribute(StatType.Defense, attribute.value, statModificationType, attribute.statCalculationType);
+                    break;
+                case StatType.CriticalHitChance:
+                    statModel.ModifyAttribute(StatType.CriticalHitChance, attribute.value, statModificationType, attribute.statCalculationType);
+                    break;
+                default:   break;
             }
         }
     }
 
     public void ProcessTraitsStatsModifiers(Dictionary<StatAttributeType, int> modifiedStatsMap)
     {
-        RemoveStats(trailAttributeModifiedDic);
-        trailAttributeModifiedDic = new Dictionary<StatAttributeType, int>(modifiedStatsMap);
-        AddStats(trailAttributeModifiedDic);
+        ModifyStatAttribute(traitAttributeModifiedDic, StatModel.StatModificationType.Subtraction);
+        traitAttributeModifiedDic = new Dictionary<StatAttributeType, int>(modifiedStatsMap);
+        ModifyStatAttribute(traitAttributeModifiedDic , StatModel.StatModificationType.Addition);
 
         OnValueChanged?.Invoke(statModel);
     }
 
     public void ProcessStatPointsModifiers(Dictionary<StatAttributeType, int> modifiedStatsMap)
     {
-        RemoveStats(statPointsDic);
+        ModifyStatAttribute(statPointsDic , StatModel.StatModificationType.Subtraction);
         statPointsDic = new Dictionary<StatAttributeType, int>(modifiedStatsMap);
-        AddStats(statPointsDic);
+        ModifyStatAttribute(statPointsDic, StatModel.StatModificationType.Addition);
 
+        OnValueChanged?.Invoke(statModel);
+    }
+
+    public void ProcessEquippedItemsModifiers(List<StatTypeWithValue> modifiedStatsMap)
+    {
+        ModifyStatType(equippedItemsStatDic, StatModel.StatModificationType.Subtraction);
+        equippedItemsStatDic = new List<StatTypeWithValue>(modifiedStatsMap);
+        ModifyStatType(equippedItemsStatDic, StatModel.StatModificationType.Addition);
         OnValueChanged?.Invoke(statModel);
     }
 
     public void ProcessAllModifiers(PlayerStatData playerStatData)
     {
         statModel = new StatModel(playerStatData);
-        AddStats(statPointsDic);
-        AddStats(trailAttributeModifiedDic);
-
+        ModifyStatAttribute(statPointsDic, StatModel.StatModificationType.Addition);
+        ModifyStatAttribute(traitAttributeModifiedDic, StatModel.StatModificationType .Addition);
+        ModifyStatType(equippedItemsStatDic, StatModel.StatModificationType.Addition);
         OnValueChanged?.Invoke(statModel);
     }
 
@@ -139,7 +158,11 @@ public enum StatType
     AttackSpeed,
     DodgeChance,
     Defense,
-    CriticalHitChance
+    CriticalHitChance,
+    AllStats,
+    HealingBooster,
+    AbilityDamage,
+
 }
 
 public class StatModel

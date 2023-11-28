@@ -44,8 +44,8 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.UiEventHandler.MainMenu.Open();
 
                     uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += uiSystem.UiEventHandler.InventoryMenu.Open;
-                    uiSystem.UiEventHandler.MainMenu.AddGem += () => dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Gem, 10000);
-                    uiSystem.UiEventHandler.MainMenu.AddGold += () => dataSystem.CurrencyManager.AddCurency(CurrencyKeys.Gold, 10000);
+                    uiSystem.UiEventHandler.MainMenu.AddGem += () => dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, 10000);
+                    uiSystem.UiEventHandler.MainMenu.AddGold += () => dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, 10000);
 
                     uiSystem.UiEventHandler.InventoryMenu.OnChangeHeroButtonClicked += uiSystem.UiEventHandler.CharacterSelectMenu.Open;
                     uiSystem.UiEventHandler.InventoryMenu.OnStatPointButtonClicked += uiSystem.UiEventHandler.StatePointsMenu.Open;
@@ -97,6 +97,8 @@ namespace HeroesFlight.StateStack.State
                     dataSystem.CurrencyManager.OnCurrencyChanged += uiSystem.UiEventHandler.MainMenu.CurrencyChanged;
                     dataSystem.CurrencyManager.TriggerAllCurrencyChange();
                     dataSystem.StatManager.ProcessTraitsStatsModifiers(traitSystem.GetUnlockedEffects());
+
+                    uiSystem.UiEventHandler.InventoryMenu.InitInventory(dataSystem.InventorySystem);
 
                     break;
                 case StackAction.Paused:

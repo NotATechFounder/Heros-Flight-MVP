@@ -163,44 +163,45 @@ public class ActiveAbilityManager : MonoBehaviour
         Debug.LogError("No more ability slots");
     }
 
-    public void InitialiseAbility(RegularActiveAbilityType passiveActiveAbilityType,
-        TimedAbilityController timedAbilityController, int level = 1)
+    public void InitialiseAbility(RegularActiveAbilityType passiveActiveAbilityType, TimedAbilityController timedAbilityController, int level = 1)
     {
-        RegularActiveAbility passiveActiveAbility = allRegularActiveAbilitiesDic[passiveActiveAbilityType]
-            .GetAbility(characterStatController.transform.position);
-        passiveActiveAbility.transform.SetParent(characterStatController.transform);
+        RegularActiveAbility passiveActiveAbility = allRegularActiveAbilitiesDic[passiveActiveAbilityType].GetAbility(characterStatController.transform.position);
 
         AttachAbility(timedAbilityController, passiveActiveAbility);
 
         switch (passiveActiveAbilityType)
         {
             case RegularActiveAbilityType.HeavenStab:
-                (passiveActiveAbility as HeavenStab).Initialize(level,
-                    (int)characterStatController.CurrentPhysicalDamage, characterSystem);
+                (passiveActiveAbility as HeavenStab).Initialize(level,  (int)characterStatController.CurrentPhysicalDamage, characterSystem);
+                passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case RegularActiveAbilityType.OrbOfLightning:
                 (passiveActiveAbility as OrbOfLightning).Initialize(level, characterStatController);
+                passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case RegularActiveAbilityType.MagicShield:
                 (passiveActiveAbility as MagicShield).Initialize(level, characterHealthController);
+                passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case RegularActiveAbilityType.KnifeFluffy:
-                (passiveActiveAbility as KnifeFluffy).Initialize(level,
-                    (int)characterStatController.CurrentPhysicalDamage);
+                (passiveActiveAbility as KnifeFluffy).Initialize(level,  (int)characterStatController.CurrentPhysicalDamage);
+                passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case RegularActiveAbilityType.Immolation:
                 (passiveActiveAbility as Immolation).Initialize(level, (int)characterStatController.CurrentMagicDamage);
+                passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case RegularActiveAbilityType.LightNova:
-                (passiveActiveAbility as LightNova).Initialize(level, characterStatController, characterSystem,
-                    characterHealthController, characterAttackController);
+                (passiveActiveAbility as LightNova).Initialize(level, characterStatController, characterSystem,  characterHealthController, characterAttackController);
+                passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case RegularActiveAbilityType.SwordWhirlwind:
-                (passiveActiveAbility as SwordWhirlwind).Initialize(level,
-                    (int)characterStatController.CurrentPhysicalDamage);
+                (passiveActiveAbility as SwordWhirlwind).Initialize(level, (int)characterStatController.CurrentPhysicalDamage);
+                passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case RegularActiveAbilityType.LightningArrow:
                 (passiveActiveAbility as LightningArrow).Initialize(level, (int)characterStatController.CurrentMagicDamage, characterSystem);
+                passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case RegularActiveAbilityType.ChainRotate:
                 (passiveActiveAbility as ChainRotate).Initialize(level, (int)characterStatController.CurrentPhysicalDamage);
@@ -429,6 +430,8 @@ public class ActiveAbilityManager : MonoBehaviour
                     regularActiveAbility.StartCoroutine(regularActiveAbility.MultiCast());
                 }
             }
+
+            regularActiveAbility.transform.position = characterStatController.transform.position;
         }
     }
 

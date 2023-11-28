@@ -16,12 +16,6 @@ namespace UISystem
         public event Action OnChangeHeroButtonClicked;
         public event Action OnStatPointButtonClicked;
 
-        public event Func <List<Item>> GetInventoryItems;
-        public event Action<Item> OnItemEquipped;
-        public event Action<Item> OnItemUnEquipped;
-        public event Action<Item> OnItemDismantled;
-        public event Func<Item, bool> OnItemUpgraded;
-
         [Header("Buttons")]
         [SerializeField] private AdvanceButton changeHeroButton;
         [SerializeField] private AdvanceButton statPointButton;
@@ -48,6 +42,9 @@ namespace UISystem
         private Dictionary<string, ItemUI> itemUIDic = new Dictionary<string, ItemUI>();
         [SerializeField] private ItemUI selectedItemUI;
         [SerializeField] private EquippedSlot selectedEquippedSlot;
+        [SerializeField] Item selectedItem;
+
+        IInventoryItemHandler inventoryItemHandler;
 
         public override void OnCreated()
         {
@@ -59,8 +56,6 @@ namespace UISystem
             changeHeroButton.onClick.AddListener(() => OnChangeHeroButtonClicked?.Invoke());
             statPointButton.onClick.AddListener(() => OnStatPointButtonClicked?.Invoke());
             quitButton.onClick.AddListener(Close);
-
-            InitInventoryUI();
         }
 
         public override void OnOpened()
@@ -68,6 +63,7 @@ namespace UISystem
             canvasGroup.alpha = 0;
             openEffectBG.Start();
             UpdateCharacter(GetSelectedCharacterSO.Invoke());
+            LoadInventoryItems();
         }
 
         public void UpdateCharacter(CharacterSO characterSO)
@@ -105,19 +101,25 @@ namespace UISystem
             }
         }
 
-        public void InitInventoryUI()
+        public void InitInventory(IInventoryItemHandler inventoryItemHandler)
         {
+            this.inventoryItemHandler = inventoryItemHandler;
+            inventoryItemHandler.OnItemAdded += SpawnItemUI;
+            inventoryItemHandler.OnItemModified += UpdateItemUI;
+
             itemInfoDisplayUI.OnEquipAction += EquipItem;
             itemInfoDisplayUI.OnDismantleAction += DismantleItem;
             itemInfoDisplayUI.OnUpgradeAction += TryUpgradeItem;
             itemInfoDisplayUI.OnUnequipAction += UnEquipItem;
+
+            itemInfoDisplayUI.Init(inventoryItemHandler);
 
             foreach (EquippedSlot slot in equippedSlots)
             {
                 slot.OnSelectItem += (item) =>
                 {
                     selectedEquippedSlot = slot;
-                    itemInfoDisplayUI.Display(item);
+                    ItemSelected (item);
                 };
             }
         }
@@ -135,14 +137,14 @@ namespace UISystem
         {
             ClearInventoryItems();
 
-            foreach (Item item in GetInventoryItems?.Invoke() ?? new List<Item>())
+            foreach (Item item in inventoryItemHandler.GetInventoryEquippmentItems())
             {
-                if (item.ItemData().eqquiped)
+                if (item.GetItemData<ItemEquipmentData>().eqquiped)
                 {
                     EquippedSlot equippedSlot = GetEquipmentSlot((item.itemSO as EquipmentSO).equipmentType);
                     if (equippedSlot != null)
                     {
-                        equippedSlot.Occupy(item);
+                        equippedSlot.Occupy(item, inventoryItemHandler.GetPalette(item.GetItemData<ItemEquipmentData>().rarity));
                     }
                 }
                 else
@@ -150,31 +152,41 @@ namespace UISystem
                     SpawnItemUI(item);
                 }
             }
+
+            foreach (Item item in inventoryItemHandler.GetInventoryMaterialItems())
+            {
+                SpawnItemUI(item);
+            }
         }
 
-        private bool TryUpgradeItem()
+        private bool TryUpgradeItem()   
         {
-            if(OnItemUpgraded?.Invoke(selectedItemUI.GetItem) == true)
+            if (selectedItem != null)
             {
-                return true;
+                if (inventoryItemHandler.TryUpgradeItem(selectedItem) == true)
+                {
+                    return true;
+                }
             }
             return false;
         }
 
         private void DismantleItem()
         {
+            if (selectedItem != null)
+            {
+                inventoryItemHandler.DismantleItem(selectedItem);
+                itemUIDic.Remove(selectedItem.GetItemData<ItemEquipmentData>().instanceID);
+            }
+
             if (selectedItemUI != null)
             {
-                OnItemDismantled?.Invoke(selectedItemUI.GetItem);
-                itemUIDic.Remove(selectedItemUI.GetItem.ItemData().instanceID);
                 Destroy(selectedItemUI.gameObject);
                 selectedItemUI = null;
             }
 
             if (selectedEquippedSlot != null)
             {
-                OnItemDismantled?.Invoke(selectedEquippedSlot.GetItem);
-                itemUIDic.Remove(selectedEquippedSlot.GetItem.ItemData().instanceID);
                 selectedEquippedSlot.UnOccupy();
                 selectedItemUI = null;
             }
@@ -193,9 +205,9 @@ namespace UISystem
                     equippedSlot.UnOccupy();
                 }
 
-                OnItemEquipped?.Invoke(selectedItemUI.GetItem);
-                equippedSlot.Occupy(selectedItemUI.GetItem);
-                itemUIDic.Remove(selectedItemUI.GetItem.ItemData().instanceID);
+                inventoryItemHandler.EquipItem(selectedItemUI.GetItem);
+                equippedSlot.Occupy(selectedItemUI.GetItem, inventoryItemHandler.GetPalette(selectedItemUI.GetItem.GetItemData<ItemEquipmentData>().rarity));
+                itemUIDic.Remove(selectedItemUI.GetItem.GetItemData<ItemEquipmentData>().instanceID);
                 Destroy(selectedItemUI.gameObject);
                 selectedItemUI = null;
             }
@@ -205,8 +217,8 @@ namespace UISystem
         public void UnEquipItem()
         {
             if (selectedEquippedSlot != null)
-            {  
-                OnItemUnEquipped?.Invoke(selectedEquippedSlot.GetItem);
+            {
+                inventoryItemHandler.UnEquipItem(selectedEquippedSlot.GetItem);
                 SpawnItemUI(selectedEquippedSlot.GetItem);
                 selectedEquippedSlot.UnOccupy();
                 selectedEquippedSlot = null;
@@ -225,7 +237,20 @@ namespace UISystem
         public void SpawnItemUI(Item item)
         {
             ItemUI itemUI = Instantiate(itemUIPrefab, itemHolder);
-            itemUI.SetItem(item);
+            string id = "";
+            switch (item.itemSO.itemType)
+            {
+                case ItemType.Equipment:
+                    itemUI.SetItem(item, inventoryItemHandler.GetPalette(item.GetItemData<ItemEquipmentData>().rarity));
+                    id = item.GetItemData<ItemEquipmentData>().instanceID;
+                    break;
+                case ItemType.Material:
+                    itemUI.SetItem(item, inventoryItemHandler.GetPalette(Rarity.Common));
+                    id = item.GetItemData<ItemMaterialData>().ID;
+                    break;
+                default:
+                    break;
+            }
 
             itemUI.OnSelectItem += (itemUI) =>
             {
@@ -233,7 +258,7 @@ namespace UISystem
                 ItemSelected(itemUI.GetItem);
             };
 
-            itemUIDic.Add(item.ItemData().instanceID, itemUI);
+            itemUIDic.Add(id, itemUI);
         }
 
         private void ItemSelected(Item item)
@@ -242,6 +267,7 @@ namespace UISystem
             {
                 case ItemType.Equipment:    
                     itemInfoDisplayUI.Display(item);
+                    selectedItem = item;
                     break;
                 case ItemType.Material:
                     break;
@@ -250,9 +276,20 @@ namespace UISystem
 
         public void UpdateItemUI(Item item)
         {
-            if (itemUIDic.ContainsKey(item.ItemData().instanceID))
+            string id = "";
+            switch (item.itemSO.itemType)
             {
-                itemUIDic[item.ItemData().instanceID].SetItemInfo();
+                case ItemType.Equipment:
+                    id = item.GetItemData<ItemEquipmentData>().instanceID;
+                    break;
+                case ItemType.Material:
+                    id = item.GetItemData<ItemMaterialData>().ID;
+                    break;
+            }
+
+            if (itemUIDic.ContainsKey(id))
+            {
+                itemUIDic[id].SetItemInfo();
             }
             else
             {
