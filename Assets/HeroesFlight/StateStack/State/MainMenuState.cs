@@ -98,6 +98,8 @@ namespace HeroesFlight.StateStack.State
                     dataSystem.CurrencyManager.TriggerAllCurrencyChange();
                     dataSystem.StatManager.ProcessTraitsStatsModifiers(traitSystem.GetUnlockedEffects());
 
+                    uiSystem.UiEventHandler.InventoryMenu.InitInventory(dataSystem.InventorySystem);
+
                     break;
                 case StackAction.Paused:
                     break;

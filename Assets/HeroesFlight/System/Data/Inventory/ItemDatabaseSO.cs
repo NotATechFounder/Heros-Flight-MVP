@@ -47,6 +47,11 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
     {
         return GetRarityInfo(currentItem.GetItemData<ItemEquipmentData>().rarity).maxLevel;
     }
+    
+    public int GetNextRarityFuseRequirement(Item currentItem)
+    {
+        return GetRarityInfo(currentItem.GetItemData<ItemEquipmentData>().rarity).nextRarityFuseRequirement;
+    }
 
     public RarityInfo GetRarityInfo(Rarity currentRarity)
     {

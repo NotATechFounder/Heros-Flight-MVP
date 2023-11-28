@@ -34,23 +34,26 @@ public class DataSystem : DataSystemInterface
     public void Init(Scene scene = default, Action onComplete = null)
     {
         CurrencyManager = scene.GetComponent<CurrencyManager>();
+        StatManager = scene.GetComponent<StatManager>();
+        InventorySystem = scene.GetComponent<InventorySystem>();
+        StatPoints = scene.GetComponent<StatPoints>();
+        CharacterManager = scene.GetComponent<CharacterManager>();
+        AccountLevelManager = scene.GetComponent<AccountLevelManager>();
 
         CurrencyManager.LoadCurrencies();
 
-        StatManager = scene.GetComponent<StatManager>();
         StatManager.Init();
 
-        StatPoints = scene.GetComponent<StatPoints>();
         StatPoints.OnValueChanged += StatManager.ProcessStatPointsModifiers;
         StatPoints.Init();
-
-        CharacterManager = scene.GetComponent<CharacterManager>();
+  
         CharacterManager.OnCharacterChanged += (characterSO) => StatManager.ProcessAllModifiers(characterSO.GetPlayerStatData);
         CharacterManager.Init(CurrencyManager);
 
-        AccountLevelManager = scene.GetComponent<AccountLevelManager>();
+
         AccountLevelManager.OnLevelUp += StatPoints.AddPoints;
 
+        InventorySystem.OnEqiuppedItemsStatChanged += StatManager.ProcessEquippedItemsModifiers;
         InventorySystem.Init(CurrencyManager);
 
         onComplete?.Invoke();
