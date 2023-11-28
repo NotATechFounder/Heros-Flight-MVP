@@ -158,7 +158,11 @@ public enum StatType
     AttackSpeed,
     DodgeChance,
     Defense,
-    CriticalHitChance
+    CriticalHitChance,
+    AllStats,
+    HealingBooster,
+    AbilityDamage,
+
 }
 
 public class StatModel
