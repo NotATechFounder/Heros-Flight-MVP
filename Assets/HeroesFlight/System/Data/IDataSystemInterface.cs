@@ -20,6 +20,8 @@ public interface DataSystemInterface : SystemInterface
 
     public InventorySystem InventorySystem { get; }
 
+    public WorldManager WorldManger { get; }
+
     RewardsHandlerInterface RewardHandler { get; }
 
     event Action OnApplicationQuit;

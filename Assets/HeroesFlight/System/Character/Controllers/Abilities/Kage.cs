@@ -5,6 +5,7 @@ using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using Spine;
 using Spine.Unity;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,14 +22,22 @@ public class Kage : MonoBehaviour
     private void Awake()
     {
         overlapChecker.OnDetect += OnOverlap;
-        skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
+        skeletonAnimation.AnimationState.Event += AnimationState_Event;
+      skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
+    }
+
+    private void AnimationState_Event(TrackEntry trackEntry, Spine.Event e)
+    {
+        if (e.Data.Name == "Attack")
+        {
+            overlapChecker.DetectOverlap();
+        }
     }
 
     public void Init(int damage, string animation)
     {
         this.damage = damage;
         skeletonAnimation.AnimationState.SetAnimation(0, animation, false);
-        overlapChecker.DetectOverlap();
     }
 
     private void AnimationState_Complete(TrackEntry trackEntry)

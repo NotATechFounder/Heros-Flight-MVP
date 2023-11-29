@@ -7,7 +7,7 @@ namespace HeroesFlight.System.Gameplay.Model
     [CreateAssetMenu(fileName = "GameAreaModel", menuName = "Model/GameAreaModel", order = 0)]
     public class GameAreaModel : ScriptableObject
     {
-        [SerializeField] private string areaName;
+        [SerializeField] private WorldType worldType;   
         [SerializeField] float heroProgressionExpEarnedPerKill = 20f;
         [SerializeField] LevelPortal portalPrefab;
         [SerializeField] private Environment.Objects.Crystal crystalPrefab;
@@ -26,7 +26,7 @@ namespace HeroesFlight.System.Gameplay.Model
         [SerializeField] float timeStopRestoreSpeed;
         [SerializeField] float timeStopDuration;
        
-        public string AreaName => areaName;
+        public WorldType WorldType => worldType;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
         public Level AngelsGambitLevel => angelsGambitLevel;
         public BoosterDropSO BossDrop => bossDrop;

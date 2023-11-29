@@ -30,6 +30,8 @@ public class DataSystem : DataSystemInterface
 
     public InventorySystem InventorySystem { get; private set; }
 
+    public WorldManager WorldManger { get; private set; }
+
 
     public void Init(Scene scene = default, Action onComplete = null)
     {
@@ -39,6 +41,7 @@ public class DataSystem : DataSystemInterface
         StatPoints = scene.GetComponent<StatPoints>();
         CharacterManager = scene.GetComponent<CharacterManager>();
         AccountLevelManager = scene.GetComponent<AccountLevelManager>();
+        WorldManger = scene.GetComponent<WorldManager>();
 
         CurrencyManager.LoadCurrencies();
 

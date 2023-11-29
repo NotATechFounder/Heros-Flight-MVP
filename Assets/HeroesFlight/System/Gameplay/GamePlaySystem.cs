@@ -130,7 +130,7 @@ namespace HeroesFlight.System.Gameplay
 
             GameEffectController = scene.GetComponentInChildren<GameEffectController>();
 
-            container.Init();
+            container.Init(dataSystem.WorldManger.SelectedWorld);
             container.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
             container.SetStartingIndex(0);
 
