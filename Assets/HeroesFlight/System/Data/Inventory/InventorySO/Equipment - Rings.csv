@@ -1,0 +1,14 @@
+Id,Name,Description,Common,Uncommon,Rare,Epic
+common_ring_1,Simple Gold Ring,A simple ring,40,45,52,62
+common_ring_2,Aristocrat's Ring,A fancy ring fitting for royalty,40,45,52,62
+common_ring_3,Ruby Ring,There's some power flowing here,40,45,52,62
+common_ring_4,Flower Ring,A Karen's ring,80,85,92,102
+common_ring_5,Jade Ring,Carved from a jade statue,80,85,92,102
+common_ring_6,Astral Ring,Designed from the stars,80,85,92,102
+common_ring_7,Serpent Ring,Sssssss...,120,125,132,142
+common_ring_8,Power Stone Ring,Embedded with a power stone,120,125,132,142
+common_ring_9,Mithril Ring,Lightweight and resilient,120,125,132,142
+common_ring_10,Runic Ring,Etched by the dwarves,160,165,172,182
+common_ring_11,Emerald Diamond Ring,Fusion of emeralds and diamonds,160,165,172,182
+common_ring_12,Warrior Ring,Probably Aragorns ring,160,165,172,182
+common_ring_13,Star Ring,The ring of constellations,200,205,212,222

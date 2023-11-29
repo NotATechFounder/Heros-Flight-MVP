@@ -1,0 +1,28 @@
+Id,Name,Description,Common,Uncommon,Rare,Epic
+weapon_lance_1,Warrior Lance,Stabby-stab stick for the budding warrior.,125,150,175,205
+weapon_lance_2,Gold Lance,A blingy lance even dragons would trade their hoards for.,137.5,162.5,187.5,217.5
+weapon_lance_3,Magenta Lance,Battle in style with this vibrant choice.,150,175,200,230
+weapon_lance_4,Cross Lance,Your holy-pointy stick for medieval superhero vibes.,162.5,187.5,212.5,242.5
+weapon_lance_5,Piercing Ruby,A gem that pierces hearts and armor.,175,200,225,255
+weapon_lance_6,Lance of Inarius,Lance of the fallen angel* Inarius,187.5,212.5,237.5,267.5
+weapon_lance_7,Obsidian Trident,A dark trident.,200,225,250,280
+weapon_lance_8,Royal Spear,Symbol of authority for rulers in a fantasy monarchy.,212.5,237.5,262.5,292.5
+weapon_lance_9,Serpent's Tongue,A whispering weapon for those sly stabs.,225,250,275,305
+weapon_lance_10,Dragoon Lance,Made to slay dragons.,237.5,262.5,287.5,317.5
+weapon_staff_1,Wooden Staff,Gandalf's original choice—simple and effective.,250,275,300,330
+weapon_staff_2,Druid's Rod,Balanced rod for nature communion* favored by druids.,262.5,287.5,312.5,342.5
+weapon_staff_3,Sorcerer's Staff,A magical conduit for your wildest spellcasting dreams.,275,300,325,355
+weapon_staff_4,Purple Thorn,More than a sharp stick; it's a fashion statement.,287.5,312.5,337.5,367.5
+weapon_staff_5,Emerald Tusk Staff,Crafted from enchanted elephant tusks—or maybe not.,300,325,350,380
+weapon_staff_6,Magic Ruby Staff,Because plain rubies are so last season.,312.5,337.5,362.5,392.5
+weapon_staff_7,Staff of the Ancients,Generations of action packed into one staff.,325,350,375,405
+weapon_staff_8,Staff of Inferno,Scorching magic for your fiery side.,337.5,362.5,387.5,417.5
+weapon_staff_9,Staff of the Winds,Control the windy part of the weather.,350,375,400,430
+weapon_staff_10,Dragon Wand,Crafted from both dragon scales and blood,362.5,387.5,412.5,442.5
+weapon_sword_1,Broadsword,Not just wide but broad—because real heroes swing big.,375,400,425,455
+weapon_sword_2,Beastslayer Sword,For monster-slaying or dealing with annoying neighbors.,387.5,412.5,437.5,467.5
+weapon_sword_3,Heroic Sword,A sword that practically infringes on copyrights.,400,425,450,480
+weapon_sword_4,Smooth Edge,Blade emphasizing finesse* smoother than a James Bond one-liner.,412.5,437.5,462.5,492.5
+weapon_sword_5,Demonslayer Sword,Once beat a demon in rock-paper-scissors.,425,450,475,505
+weapon_sword_6,Stonecutter's Edge,A DIY tool for the medieval handyman.,437.5,462.5,487.5,517.5
+weapon_sword_7,Galactic Sword,From a galaxy far* far away* out-of-this-world sword.,450,475,500,530

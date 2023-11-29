@@ -10,8 +10,8 @@ public class EquipmentSO : ItemSO
 {
     public EquipmentType equipmentType;
     public StatType statType;
+    public HeroType heroType;
     public ItemStatByRarity[] itemBaseStats;
-    public BonusStat bonusStat;
     public ItemRarityStat[] itemRarityStats;
 
     private void Awake() => itemType = ItemType.Equipment;
@@ -20,7 +20,7 @@ public class EquipmentSO : ItemSO
     {
         foreach (ItemStatByRarity itemBaseStat in itemBaseStats)
         {
-            if (itemBaseStat.rarity == rarity) return itemBaseStat.value;
+            if (itemBaseStat.rarity == rarity) return (int)itemBaseStat.value;
         }
         return 0;
     }
@@ -31,7 +31,7 @@ public class EquipmentSO : ItemSO
 public class ItemStatByRarity
 {
     public Rarity rarity;
-    public int value;
+    public float value;
 }
 
 [Serializable]
@@ -50,11 +50,10 @@ public class StatTypeWithValue
 }
 
 [Serializable]
-public class BonusStat
+public class UniqueEffect
 {
-    public Rarity rarity;
-    public HeroType heroType;
-    public StatTypeWithValue statTypeWithValue;
+    public EquipmentType equipmentType;
+    public ItemRarityStat[] itemRarityStats;
 }
 
 [Serializable]

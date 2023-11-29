@@ -42,9 +42,9 @@ public abstract class RegularActiveAbility : MonoBehaviour
         return baseValue + (Mathf.FloorToInt((currentLevel - 1) / majorBoostLevel) * increasePerLevel);
     }
 
-    public float GetMajorValueByLevel(float baseValue, float increasePerLevel)
+    public int GetNormalisedLevel()
     {
-        return baseValue + (Mathf.FloorToInt((currentLevel - 1) / majorBoostLevel) * increasePerLevel);
+        return Mathf.FloorToInt((currentLevel - 1) / majorBoostLevel);
     }
 
     public ParticleSystem GetEffectParticleByLevel()

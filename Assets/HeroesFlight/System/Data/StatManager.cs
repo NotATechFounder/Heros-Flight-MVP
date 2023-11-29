@@ -94,6 +94,26 @@ public class StatManager : MonoBehaviour
                 case StatType.CriticalHitChance:
                     statModel.ModifyAttribute(StatType.CriticalHitChance, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
+                    case StatType.PhysicalMagicDamage:
+                    statModel.ModifyAttribute(StatType.PhysicalDamage, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyAttribute(StatType.MagicDamage, attribute.value, statModificationType, attribute.statCalculationType);
+                    break;
+                case StatType.AllStats:
+                    statModel.ModifyAttribute(StatType.PhysicalDamage, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyAttribute(StatType.MagicDamage, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyAttribute(StatType.MaxHealth, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyAttribute(StatType.MoveSpeed, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyAttribute(StatType.AttackSpeed, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyAttribute(StatType.DodgeChance, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyAttribute(StatType.Defense, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyAttribute(StatType.CriticalHitChance, attribute.value, statModificationType, attribute.statCalculationType);
+                    break;
+                case StatType.HealingBooster:
+                    statModel.ModifyAttribute(StatType.HealingBooster, attribute.value, statModificationType, attribute.statCalculationType);
+                    break;
+                case StatType.AbilityDamage:
+                    statModel.ModifyAttribute(StatType.AbilityDamage, attribute.value, statModificationType, attribute.statCalculationType);
+                    break;
                 default:   break;
             }
         }
@@ -159,6 +179,7 @@ public enum StatType
     DodgeChance,
     Defense,
     CriticalHitChance,
+    PhysicalMagicDamage,
     AllStats,
     HealingBooster,
     AbilityDamage,
@@ -198,6 +219,10 @@ public class StatModel
         baseStatDic.Add(StatType.DodgeChance, playerStatData.DodgeChance);
         baseStatDic.Add(StatType.Defense, playerStatData.Defense);
         baseStatDic.Add(StatType.CriticalHitChance, playerStatData.CriticalHitChance);
+        baseStatDic.Add(StatType.PhysicalMagicDamage, playerStatData.PhysicalDamage.max);
+        baseStatDic.Add(StatType.AllStats, playerStatData.PhysicalDamage.max);
+        baseStatDic.Add(StatType.HealingBooster, playerStatData.PhysicalDamage.max);
+        baseStatDic.Add(StatType.AbilityDamage, playerStatData.PhysicalDamage.max);
         currentStatDic  = new Dictionary<StatType, float>(baseStatDic);
     }
 

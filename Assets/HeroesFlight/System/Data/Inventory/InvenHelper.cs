@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using System;
+using System.IO;
+using System.Text.RegularExpressions;
 
 [CreateAssetMenu(fileName = "New Helper", menuName = "Inventory System/Helper")]
 public class InvenHelper : ScriptableObject
@@ -13,20 +16,85 @@ public class InvenHelper : ScriptableObject
     [SerializeField]  Rarity rarity;  
     [SerializeField] private EquipmentSO[] equipmentSOs;
 
-    [SerializeField] private string spritePath;
-    [SerializeField] private Sprite[] sprites;  
+    [Header("Sprite")]
+    [SerializeField] private Sprite[] sprites;
+
+    [Header("Item Info")]
+    [SerializeField] private TextAsset itemInfo;
+    [SerializeField] private int columnLeft;
+    [SerializeField] private int rowUp;
+    [SerializeField] private ItemInfoList itemInfoList = new ItemInfoList();
+
+    [Serializable]
+    public class ItemInfoCSV
+    {
+        public string Id;
+        public string Name;
+        public string Description;
+        public float Common;
+        public float Uncommon;
+        public float Rare;
+        public float Epic;
+    }
+
+
+    [Serializable]
+    public class ItemInfoList
+    {
+        public ItemInfoCSV[] itemInfoCSVs;
+    }
+
+    [ContextMenu("ReadCSV")]
+    public void ReadCSV()
+    {
+        string[] lines = itemInfo.text.Split(new char[] { '\n' });
+        itemInfoList.itemInfoCSVs = new ItemInfoCSV[lines.Length - 1];
+
+        for (int i = 1; i < lines.Length; i++)
+        {
+            string[] row = lines[i].Split(new char[] { ',' });
+            itemInfoList.itemInfoCSVs[i - 1] = new ItemInfoCSV();
+            itemInfoList.itemInfoCSVs[i - 1].Id = row[0];
+            itemInfoList.itemInfoCSVs[i - 1].Name = row[1];
+            itemInfoList.itemInfoCSVs[i - 1].Description = row[2];
+            itemInfoList.itemInfoCSVs[i - 1].Common = float.Parse(row[3]);
+            itemInfoList.itemInfoCSVs[i - 1].Uncommon = float.Parse(row[4]);
+            itemInfoList.itemInfoCSVs[i - 1].Rare = float.Parse(row[5]);
+            itemInfoList.itemInfoCSVs[i - 1].Epic = float.Parse(row[6]);
+        }
+    }
 
 
     [ContextMenu("Update Base Value")]
     public void UpdateBaseValue()
     {
-        for (int i = 0; i < equipmentSOs.Length; i++)
+        for (int i = 0; i < itemInfoList.itemInfoCSVs.Length; i++)
         {
-            for (int j = 0; j < equipmentSOs[i].itemBaseStats.Length; j++)
+            for (int j = 0; j < equipmentSOs.Length; j++)
             {
-                if (equipmentSOs[i].itemBaseStats[j].rarity == rarity)
+                if (itemInfoList.itemInfoCSVs[i].Name == equipmentSOs[j].Name)
                 {
-                    equipmentSOs[i].itemBaseStats[j].value = min + (difference * j);
+                    equipmentSOs[j].ID = itemInfoList.itemInfoCSVs[i].Id;
+                    equipmentSOs[j].description = itemInfoList.itemInfoCSVs[i].Description;
+                    for (int k = 0; k < equipmentSOs[j].itemBaseStats.Length; k++)
+                    {
+                        switch (equipmentSOs[j].itemBaseStats[k].rarity)
+                        {
+                            case Rarity.Common:
+                                equipmentSOs[j].itemBaseStats[k].value = itemInfoList.itemInfoCSVs[i].Common;
+                                break;
+                            case Rarity.UnCommon:
+                                equipmentSOs[j].itemBaseStats[k].value = itemInfoList.itemInfoCSVs[i].Uncommon;
+                                break;
+                            case Rarity.Rare:
+                                equipmentSOs[j].itemBaseStats[k].value = itemInfoList.itemInfoCSVs[i].Rare;
+                                break;
+                            case Rarity.Epic:
+                                equipmentSOs[j].itemBaseStats[k].value = itemInfoList.itemInfoCSVs[i].Epic;
+                                break;
+                            default:break;
+                        }
+                    }
                 }
             }
         }
