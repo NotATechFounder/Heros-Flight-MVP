@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static StatModel;
 
 public class AngelEffectManager : MonoBehaviour
 {
@@ -46,14 +47,14 @@ public class AngelEffectManager : MonoBehaviour
         {
             if (angelCard.angelCardSO == newAngelCard.angelCardSO)
             {
-                ModifyPlayerStatRaw(angelCard.tier, angelCard.angelCardSO.AffterBonusEffect, false);
+                ModifyPlayerStatRaw(angelCard.tier, angelCard.angelCardSO.AffterBonusEffect, StatModel.StatModificationType.Addition);
                 permanetStatEffect.Remove(angelCard);
                 break;
             }
         }
 
         permanetStatEffect.Add(newAngelCard);
-        ModifyPlayerStatRaw(angelCardTier, newAngelCard.angelCardSO.AffterBonusEffect, true);
+        ModifyPlayerStatRaw(angelCardTier, newAngelCard.angelCardSO.AffterBonusEffect, StatModel.StatModificationType.Addition);
         OnPermanetCard?.Invoke(newAngelCard);
         currentAngelCard = null;
         characterStatController.SetCurrentCardIcon(null);
@@ -115,11 +116,11 @@ public class AngelEffectManager : MonoBehaviour
         switch (effect.targetType)
         {
             case TargetType.All:
-                ModifyPlayerStatDifference(angelCardTier, effect, true);
+                ModifyPlayerStatDifference(angelCardTier, effect, StatModel.StatModificationType.Addition);
                 ModifyMonsterStatRaw(angelCardTier, effect, true);
                 break;
             case TargetType.Player:
-                ModifyPlayerStatDifference(angelCardTier, effect,true);
+                ModifyPlayerStatDifference(angelCardTier, effect, StatModel.StatModificationType.Addition);
                 break;
             case TargetType.Monster:
                 ModifyMonsterStatRaw(angelCardTier, effect, true);
@@ -132,11 +133,11 @@ public class AngelEffectManager : MonoBehaviour
         switch (effect.targetType)
         {
             case TargetType.All:
-                ModifyPlayerStatRaw(angelCardTier, effect,false);
+                ModifyPlayerStatRaw(angelCardTier, effect, StatModel.StatModificationType.Subtraction);
                 ModifyMonsterStatRaw(angelCardTier, effect,false);
                 break;
             case TargetType.Player:
-                ModifyPlayerStatRaw(angelCardTier, effect, false);
+                ModifyPlayerStatRaw(angelCardTier, effect, StatModel.StatModificationType.Subtraction);
                 break;
             case TargetType.Monster:
                 ModifyMonsterStatRaw(angelCardTier, effect, false);
@@ -144,56 +145,56 @@ public class AngelEffectManager : MonoBehaviour
         }
     }
 
-    private void ModifyPlayerStatDifference(AngelCardTier angelCardTier, StatEffect effect, bool positive)
+    private void ModifyPlayerStatDifference(AngelCardTier angelCardTier, StatEffect effect, StatModel.StatModificationType statModificationType)
     {
         switch (effect.effect)
         {
             case BuffDebuff.AttackUp:
-                characterStatController.ModifyPhysicalDamage(effect.GetValueDifference(angelCardTier), positive);
-                characterStatController.ModifyMagicDamage(effect.GetValueDifference(angelCardTier), positive);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.PhysicalDamage, effect.GetValueDifference(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.MagicDamage, effect.GetValueDifference(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
                 break;
             case BuffDebuff.AttackDown:
-                characterStatController.ModifyPhysicalDamage(effect.GetValueDifference(angelCardTier), !positive);
-                characterStatController.ModifyMagicDamage(effect.GetValueDifference(angelCardTier), !positive);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.PhysicalDamage, effect.GetValueDifference(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.MagicDamage, effect.GetValueDifference(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
                 break;
             case BuffDebuff.DefenseUp:
-                characterStatController.ModifyDefense(effect.GetValueDifference(angelCardTier), positive);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.Defense, effect.GetValueDifference(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
                 break;
             case BuffDebuff.DefenseDown:
-                characterStatController.ModifyDefense(effect.GetValueDifference(angelCardTier), !positive);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.Defense, effect.GetValueDifference(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
                 break;
             case BuffDebuff.AttackSpeedUp:
-                characterStatController.ModifyAttackSpeed(effect.GetValueDifference(angelCardTier), positive);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.AttackSpeed, effect.GetValueDifference(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
                 break;
             case BuffDebuff.AttackSpeedDown:
-                characterStatController.ModifyAttackSpeed(effect.GetValueDifference(angelCardTier), !positive);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.AttackSpeed, effect.GetValueDifference(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
                 break;
         }
     }
 
-    private void ModifyPlayerStatRaw(AngelCardTier angelCardTier, StatEffect effect, bool positive)
+    private void ModifyPlayerStatRaw(AngelCardTier angelCardTier, StatEffect effect, StatModel.StatModificationType statModificationType)
     {
         switch (effect.effect)
         {
             case BuffDebuff.AttackUp:
-                characterStatController.ModifyPhysicalDamage(effect.GetValue(angelCardTier), positive);
-                characterStatController.ModifyMagicDamage(effect.GetValue(angelCardTier), positive);
+                characterStatController.GetStatModel. ModifyCurrentStat(StatType.PhysicalDamage, effect.GetValue(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.MagicDamage, effect.GetValue(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
                 break;
             case BuffDebuff.AttackDown:
-                characterStatController.ModifyPhysicalDamage(effect.GetValue(angelCardTier), !positive);
-                characterStatController.ModifyMagicDamage(effect.GetValue(angelCardTier), !positive);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.PhysicalDamage, effect.GetValue(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.MagicDamage, effect.GetValue(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
                 break;
             case BuffDebuff.DefenseUp:
-                characterStatController.ModifyDefense(effect.GetValue(angelCardTier), positive);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.Defense, effect.GetValue(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
                 break;
             case BuffDebuff.DefenseDown:
-                characterStatController.ModifyDefense(effect.GetValue(angelCardTier), !positive);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.Defense, effect.GetValue(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
                 break;
             case BuffDebuff.AttackSpeedUp:
-                characterStatController.ModifyAttackSpeed(effect.GetValue(angelCardTier), positive);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.AttackSpeed, effect.GetValue(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
                 break;
             case BuffDebuff.AttackSpeedDown:
-                characterStatController.ModifyAttackSpeed(effect.GetValue(angelCardTier), !positive);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.AttackSpeed, effect.GetValue(angelCardTier), statModificationType, StatModel.StatCalculationType.Percentage);
                 break;
         }
     }

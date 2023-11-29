@@ -20,7 +20,7 @@ public class OrbOfLightning : RegularActiveAbility
         {
             this.autoShooter = autoShooter;
         }
-        baseDamage = characterStatController.CurrentMagicDamage;
+        baseDamage = characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage);
     }
 
     public override void OnActivated()

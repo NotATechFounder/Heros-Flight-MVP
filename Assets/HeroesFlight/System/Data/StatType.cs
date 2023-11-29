@@ -12,5 +12,10 @@
     AllStats,
     HealingBooster,
     AbilityDamage,
-
+    ExperienceBoost,
+    GoldBoost,
+    LifeSteal,
+    CurrentHealth,
+    AttackRange,
+    CriticalHitDamage
 }

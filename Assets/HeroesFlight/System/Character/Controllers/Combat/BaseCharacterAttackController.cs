@@ -20,7 +20,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] WorldBarUI specialBar;
         public event Action<AttackControllerState> OnStateChange;
 
-        public float Damage => characterController.CharacterStatController.CurrentPhysicalDamage;
+        public float Damage => characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage);
 
         public float TimeSinceLastAttack => m_TimeSinceLastAttack;
 
@@ -117,7 +117,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
 
 
-            attackDuration = m_CharacterAnimationController.PlayAttackSequence(statController.CurrentAttackSpeed);
+            attackDuration = m_CharacterAnimationController.PlayAttackSequence(statController.GetStatModel.GetCurrentStatValue(StatType.AttackSpeed));
             m_TimeSinceLastAttack = 0;
         }
 
@@ -125,7 +125,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         void ResetAttack()
         {
             m_CharacterAnimationController.StopAttackSequence();
-            m_TimeSinceLastAttack = attackDuration / statController.CurrentAttackSpeed;
+            m_TimeSinceLastAttack = attackDuration / statController.GetStatModel.GetCurrentStatValue(StatType.AttackSpeed);
         }
 
 
@@ -148,10 +148,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected void ApplyLifeSteal()
         {
-            if (characterController.CharacterStatController.CurrentLifeSteal <= 0)
+            if (characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.LifeSteal) <= 0)
                 return;
             float healthInc = StatCalc.GetPercentage(characterController.CharacterStatController.PlayerStatData.Health,
-                characterController.CharacterStatController.CurrentLifeSteal);
+                characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.LifeSteal));
             characterController.CharacterStatController.ModifyHealth(healthInc, true);
         }
 
@@ -163,7 +163,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public bool CanAttack()
         {
-            return m_TimeSinceLastAttack > attackDuration / statController.CurrentAttackSpeed;
+            return m_TimeSinceLastAttack > attackDuration / statController.GetStatModel.GetCurrentStatValue(StatType.AttackSpeed);
         }
 
 
@@ -174,11 +174,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 if (colliders[i].TryGetComponent<IHealthController>(out var health))
                 {
-                    float criticalChance = characterController.CharacterStatController.CurrentCriticalHitChance;
+                    float criticalChance = characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.AttackSpeed);
                     bool isCritical = Random.Range(0, 100) <= criticalChance;
 
                     float damageToDeal = isCritical
-                        ? baseDamage * characterController.CharacterStatController.CurrentCriticalHitDamage
+                        ? baseDamage * characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.CriticalHitDamage)
                         : baseDamage;
 
                     var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
@@ -197,11 +197,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 if (colliders[i].TryGetComponent<IHealthController>(out var health))
                 {
-                    float criticalChance = characterController.CharacterStatController.CurrentCriticalHitChance;
+                    float criticalChance = characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.CriticalHitChance);
                     bool isCritical = Random.Range(0, 100) <= criticalChance;
 
                     float damageToDeal = isCritical
-                        ? baseDamage * characterController.CharacterStatController.CurrentCriticalHitDamage
+                        ? baseDamage * characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.CriticalHitDamage)
                         : baseDamage;
 
                     var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;

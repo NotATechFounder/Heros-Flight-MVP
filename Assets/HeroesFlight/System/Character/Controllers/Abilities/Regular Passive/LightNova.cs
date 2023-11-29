@@ -92,7 +92,7 @@ public class LightNova : RegularActiveAbility
             if (colliders[i].TryGetComponent<IHealthController>(out var health))
             {
                 health.TryDealDamage(new HealthModificationIntentModel(
-                    characterStatController.CurrentMagicDamage * damageMultiplier,
+                    characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage) * damageMultiplier,
                     DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat,null));
             }
         }

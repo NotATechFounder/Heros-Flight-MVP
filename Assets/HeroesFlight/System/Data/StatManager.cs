@@ -13,7 +13,7 @@ public class StatManager : MonoBehaviour
 
     private Dictionary<StatAttributeType, int> traitAttributeModifiedDic = new Dictionary<StatAttributeType, int>();
     private Dictionary<StatAttributeType, int> statPointsDic = new Dictionary<StatAttributeType, int>();
-    private new List<StatTypeWithValue> equippedItemsStatDic  = new List<StatTypeWithValue>();
+    private List<StatTypeWithValue> equippedItemsStatDic  = new List<StatTypeWithValue>();
 
 
     public StatModel GetStatModel()
@@ -41,22 +41,22 @@ public class StatManager : MonoBehaviour
             switch (attribute.Key)
             {
                 case StatAttributeType.Power:
-                    statModel.ModifyAttribute(StatType.PhysicalDamage, attribute.Value * statTypePerSp[StatType.PhysicalDamage].valuePerSp, statModificationType, statTypePerSp[StatType.PhysicalDamage].statCalculationType);
-                    statModel.ModifyAttribute(StatType.MagicDamage, attribute.Value * statTypePerSp[StatType.MagicDamage].valuePerSp, statModificationType, statTypePerSp[StatType.MagicDamage].statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.PhysicalDamage, attribute.Value * statTypePerSp[StatType.PhysicalDamage].valuePerSp, statModificationType, statTypePerSp[StatType.PhysicalDamage].statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.MagicDamage, attribute.Value * statTypePerSp[StatType.MagicDamage].valuePerSp, statModificationType, statTypePerSp[StatType.MagicDamage].statCalculationType);
                     break;
                 case StatAttributeType.Vitality:
-                    statModel.ModifyAttribute(StatType.MaxHealth, attribute.Value * statTypePerSp[StatType.MaxHealth].valuePerSp, statModificationType, statTypePerSp[StatType.MaxHealth].statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.MaxHealth, attribute.Value * statTypePerSp[StatType.MaxHealth].valuePerSp, statModificationType, statTypePerSp[StatType.MaxHealth].statCalculationType);
                     break;
                 case StatAttributeType.Agility:
-                    statModel.ModifyAttribute(StatType.MoveSpeed, attribute.Value * statTypePerSp[StatType.MoveSpeed].valuePerSp, statModificationType, statTypePerSp[StatType.MoveSpeed].statCalculationType);
-                    statModel.ModifyAttribute(StatType.AttackSpeed, attribute.Value * statTypePerSp[StatType.AttackSpeed].valuePerSp, statModificationType, statTypePerSp[StatType.AttackSpeed].statCalculationType);
-                    statModel.ModifyAttribute(StatType.DodgeChance, attribute.Value * statTypePerSp[StatType.DodgeChance].valuePerSp, statModificationType, statTypePerSp[StatType.DodgeChance].statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.MoveSpeed, attribute.Value * statTypePerSp[StatType.MoveSpeed].valuePerSp, statModificationType, statTypePerSp[StatType.MoveSpeed].statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.AttackSpeed, attribute.Value * statTypePerSp[StatType.AttackSpeed].valuePerSp, statModificationType, statTypePerSp[StatType.AttackSpeed].statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.DodgeChance, attribute.Value * statTypePerSp[StatType.DodgeChance].valuePerSp, statModificationType, statTypePerSp[StatType.DodgeChance].statCalculationType);
                     break;
                 case StatAttributeType.Defense:
-                    statModel.ModifyAttribute(StatType.Defense, attribute.Value * statTypePerSp[StatType.Defense].valuePerSp, statModificationType, statTypePerSp[StatType.Defense].statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.Defense, attribute.Value * statTypePerSp[StatType.Defense].valuePerSp, statModificationType, statTypePerSp[StatType.Defense].statCalculationType);
                     break;
                 case StatAttributeType.CriticalHit:
-                    statModel.ModifyAttribute(StatType.CriticalHitChance, attribute.Value * statTypePerSp[StatType.CriticalHitChance].valuePerSp, statModificationType, statTypePerSp[StatType.CriticalHitChance].statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.CriticalHitChance, attribute.Value * statTypePerSp[StatType.CriticalHitChance].valuePerSp, statModificationType, statTypePerSp[StatType.CriticalHitChance].statCalculationType);
                     break;
             }
         }
@@ -71,48 +71,48 @@ public class StatManager : MonoBehaviour
             switch (attribute.statType)
             {
                 case StatType.PhysicalDamage:
-                    statModel.ModifyAttribute(StatType.PhysicalDamage, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.PhysicalDamage, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
                 case StatType.MagicDamage:
-                    statModel.ModifyAttribute(StatType.MagicDamage, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.MagicDamage, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
                 case StatType.MaxHealth:
-                    statModel.ModifyAttribute(StatType.MaxHealth, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.MaxHealth, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
                 case StatType.MoveSpeed:
-                    statModel.ModifyAttribute(StatType.MoveSpeed, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.MoveSpeed, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
                 case StatType.AttackSpeed:
-                    statModel.ModifyAttribute(StatType.AttackSpeed, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.AttackSpeed, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
                 case StatType.DodgeChance:
-                    statModel.ModifyAttribute(StatType.DodgeChance, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.DodgeChance, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
                 case StatType.Defense:
-                    statModel.ModifyAttribute(StatType.Defense, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.Defense, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
                 case StatType.CriticalHitChance:
-                    statModel.ModifyAttribute(StatType.CriticalHitChance, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.CriticalHitChance, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
                     case StatType.PhysicalMagicDamage:
-                    statModel.ModifyAttribute(StatType.PhysicalDamage, attribute.value, statModificationType, attribute.statCalculationType);
-                    statModel.ModifyAttribute(StatType.MagicDamage, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.PhysicalDamage, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.MagicDamage, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
                 case StatType.AllStats:
-                    statModel.ModifyAttribute(StatType.PhysicalDamage, attribute.value, statModificationType, attribute.statCalculationType);
-                    statModel.ModifyAttribute(StatType.MagicDamage, attribute.value, statModificationType, attribute.statCalculationType);
-                    statModel.ModifyAttribute(StatType.MaxHealth, attribute.value, statModificationType, attribute.statCalculationType);
-                    statModel.ModifyAttribute(StatType.MoveSpeed, attribute.value, statModificationType, attribute.statCalculationType);
-                    statModel.ModifyAttribute(StatType.AttackSpeed, attribute.value, statModificationType, attribute.statCalculationType);
-                    statModel.ModifyAttribute(StatType.DodgeChance, attribute.value, statModificationType, attribute.statCalculationType);
-                    statModel.ModifyAttribute(StatType.Defense, attribute.value, statModificationType, attribute.statCalculationType);
-                    statModel.ModifyAttribute(StatType.CriticalHitChance, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.PhysicalDamage, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.MagicDamage, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.MaxHealth, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.MoveSpeed, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.AttackSpeed, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.DodgeChance, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.Defense, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.CriticalHitChance, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
                 case StatType.HealingBooster:
-                    statModel.ModifyAttribute(StatType.HealingBooster, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.HealingBooster, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
                 case StatType.AbilityDamage:
-                    statModel.ModifyAttribute(StatType.AbilityDamage, attribute.value, statModificationType, attribute.statCalculationType);
+                    statModel.ModifyCurrentStat(StatType.AbilityDamage, attribute.value, statModificationType, attribute.statCalculationType);
                     break;
                 default:   break;
             }
@@ -193,28 +193,35 @@ public class StatModel
     public StatModel(PlayerStatData playerStatData)
     {
         this.playerStatData = playerStatData;
-        baseStatDic = new Dictionary<StatType, float>();
-        baseStatDic.Add(StatType.PhysicalDamage, playerStatData.PhysicalDamage.max);
-        baseStatDic.Add(StatType.MagicDamage, playerStatData.MagicDamage.max);
-        baseStatDic.Add(StatType.MaxHealth, playerStatData.Health);
-        baseStatDic.Add(StatType.MoveSpeed, playerStatData.MoveSpeed);
-        baseStatDic.Add(StatType.AttackSpeed, playerStatData.AttackSpeed);
-        baseStatDic.Add(StatType.DodgeChance, playerStatData.DodgeChance);
-        baseStatDic.Add(StatType.Defense, playerStatData.Defense);
-        baseStatDic.Add(StatType.CriticalHitChance, playerStatData.CriticalHitChance);
-        baseStatDic.Add(StatType.PhysicalMagicDamage, playerStatData.PhysicalDamage.max);
-        baseStatDic.Add(StatType.AllStats, playerStatData.PhysicalDamage.max);
-        baseStatDic.Add(StatType.HealingBooster, playerStatData.PhysicalDamage.max);
-        baseStatDic.Add(StatType.AbilityDamage, playerStatData.PhysicalDamage.max);
+        baseStatDic = new Dictionary<StatType, float>
+        {
+            { StatType.PhysicalDamage, playerStatData.PhysicalDamage.max },
+            { StatType.MagicDamage, playerStatData.MagicDamage.max },
+            { StatType.MaxHealth, playerStatData.Health },
+            { StatType.MoveSpeed, playerStatData.MoveSpeed },
+            { StatType.AttackSpeed, playerStatData.AttackSpeed },
+            { StatType.DodgeChance, playerStatData.DodgeChance },
+            { StatType.Defense, playerStatData.Defense },
+            { StatType.CriticalHitChance, playerStatData.CriticalHitChance },
+            { StatType.PhysicalMagicDamage, playerStatData.PhysicalDamage.max },
+            { StatType.AllStats, playerStatData.PhysicalDamage.max },
+            { StatType.HealingBooster, playerStatData.PhysicalDamage.max },
+            { StatType.AbilityDamage, playerStatData.PhysicalDamage.max }
+        };
         currentStatDic  = new Dictionary<StatType, float>(baseStatDic);
     }
 
-    public float GetStatValue(StatType statType)
+    public float GetBaseStatValue(StatType statType)
+    {
+        return baseStatDic[statType];
+    }
+
+    public float GetCurrentStatValue(StatType statType)
     {
         return currentStatDic[statType];
     }
 
-    public void ModifyAttribute(StatType StatType, float amount, StatModificationType statModificationType, StatCalculationType statCalculationType)
+    public void ModifyCurrentStat(StatType StatType, float amount, StatModificationType statModificationType, StatCalculationType statCalculationType)
     {
         currentStatDic[StatType] = ModifyStat(baseStatDic[StatType], currentStatDic[StatType], amount, statModificationType, statCalculationType);
     }

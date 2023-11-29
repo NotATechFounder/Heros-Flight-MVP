@@ -117,7 +117,7 @@ public class EffectMushroomHazard : EnironmentHazard
 
         if (collider2D.TryGetComponent(out CharacterStatController characterStatController))
         {
-            characterStatController.ModifyMoveSpeed(slowPercentageDecrease, false);
+            characterStatController.GetStatModel.ModifyCurrentStat( StatType.MoveSpeed, slowPercentageDecrease, StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
         }
     }
 
@@ -138,8 +138,7 @@ public class EffectMushroomHazard : EnironmentHazard
     {
         if (collider2D.TryGetComponent(out CharacterStatController characterStatController))
         {
-            characterStatController.ModifyMoveSpeed(slowPercentageDecrease, true);
-
+            characterStatController.GetStatModel.ModifyCurrentStat(StatType.MoveSpeed, slowPercentageDecrease, StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
         }
     }
 
