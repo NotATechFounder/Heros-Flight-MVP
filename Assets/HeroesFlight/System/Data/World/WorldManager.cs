@@ -9,9 +9,9 @@ public class WorldManager : MonoBehaviour
 
     [SerializeField] private WorldVisualSO[] worlds;
     [SerializeField] private WorldType selectedWorld;
-    [Header("Data")]
-    [SerializeField] private Data data;
 
+    private Data data;
+    public WorldVisualSO[] Worlds => worlds;
     public WorldType SelectedWorld => selectedWorld;
 
     public void Init()

@@ -100,6 +100,10 @@ namespace HeroesFlight.StateStack.State
 
                     uiSystem.UiEventHandler.InventoryMenu.InitInventory(dataSystem.InventorySystem);
 
+                    uiSystem.UiEventHandler.MainMenu.LoadWorlds(dataSystem.WorldManger.Worlds);
+                    uiSystem.UiEventHandler.MainMenu.IsWorldUnlocked += dataSystem.WorldManger.IsWorldUnlocked;
+                    uiSystem.UiEventHandler.MainMenu.OnWorldChanged += dataSystem.WorldManger.SetSelectedWorld;
+
                     break;
                 case StackAction.Paused:
                     break;

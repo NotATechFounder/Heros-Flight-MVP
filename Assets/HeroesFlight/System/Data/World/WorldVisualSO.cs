@@ -7,5 +7,6 @@ using UnityEngine.UI;
 public class WorldVisualSO : ScriptableObject
 {
     public WorldType worldType;
-    public Image icon;
+    public string worldName;
+    public Sprite icon;
 }
