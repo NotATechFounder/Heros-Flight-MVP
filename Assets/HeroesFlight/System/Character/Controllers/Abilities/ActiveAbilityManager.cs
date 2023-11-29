@@ -87,7 +87,7 @@ public class ActiveAbilityManager : MonoBehaviour
             AddPassiveAbility(PassiveAbilityType.LuckyHit);
 
             EquippedAbility(RegularActiveAbilityType.HeavenStab);
-            EquippedAbility(RegularActiveAbilityType.SwordWhirlwind);
+            EquippedAbility(RegularActiveAbilityType.KageBunshin);
             EquippedAbility(RegularActiveAbilityType.ChainRotate);
         }
 

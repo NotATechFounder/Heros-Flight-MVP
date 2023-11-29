@@ -15,6 +15,7 @@ public class Kage : MonoBehaviour
     [SerializeField] private Transform visual;
     [SerializeField] SkeletonAnimation skeletonAnimation;
     [SerializeField] private OverlapChecker overlapChecker;
+
     private int damage;
 
     private void Awake()
@@ -42,10 +43,8 @@ public class Kage : MonoBehaviour
             if (colliders[i].TryGetComponent(out IHealthController healthController))
             {
                 healthController.TryDealDamage(new HealthModificationIntentModel(damage,
-                    DamageCritType.Critical, AttackType.Regular, CalculationType.Flat, null));
+                DamageCritType.Critical, AttackType.Regular, CalculationType.Flat, null));
             }
-
-            Debug.Log("Hit");
         }
     }
 }

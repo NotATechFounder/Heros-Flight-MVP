@@ -21,8 +21,6 @@ public class InvenHelper : ScriptableObject
 
     [Header("Item Info")]
     [SerializeField] private TextAsset itemInfo;
-    [SerializeField] private int columnLeft;
-    [SerializeField] private int rowUp;
     [SerializeField] private ItemInfoList itemInfoList = new ItemInfoList();
 
     [Serializable]
@@ -44,13 +42,15 @@ public class InvenHelper : ScriptableObject
         public ItemInfoCSV[] itemInfoCSVs;
     }
 
+#if UNITY_EDITOR
+
     [ContextMenu("ReadCSV")]
     public void ReadCSV()
     {
         string[] lines = itemInfo.text.Split(new char[] { '\n' });
         itemInfoList.itemInfoCSVs = new ItemInfoCSV[lines.Length - 1];
 
-        for (int i = 1; i < lines.Length; i++)
+        for (int i = 1; i < lines.Length - 1; i++)
         {
             string[] row = lines[i].Split(new char[] { ',' });
             itemInfoList.itemInfoCSVs[i - 1] = new ItemInfoCSV();
@@ -65,8 +65,8 @@ public class InvenHelper : ScriptableObject
     }
 
 
-    [ContextMenu("Update Base Value")]
-    public void UpdateBaseValue()
+    [ContextMenu("UpdateItemInfo")]
+    public void UpdateItemInfo()
     {
         for (int i = 0; i < itemInfoList.itemInfoCSVs.Length; i++)
         {
@@ -81,16 +81,16 @@ public class InvenHelper : ScriptableObject
                         switch (equipmentSOs[j].itemBaseStats[k].rarity)
                         {
                             case Rarity.Common:
-                                equipmentSOs[j].itemBaseStats[k].value = itemInfoList.itemInfoCSVs[i].Common;
+                                equipmentSOs[j].itemBaseStats[k].value = (int)itemInfoList.itemInfoCSVs[i].Common;
                                 break;
                             case Rarity.UnCommon:
-                                equipmentSOs[j].itemBaseStats[k].value = itemInfoList.itemInfoCSVs[i].Uncommon;
+                                equipmentSOs[j].itemBaseStats[k].value = (int)itemInfoList.itemInfoCSVs[i].Uncommon;
                                 break;
                             case Rarity.Rare:
-                                equipmentSOs[j].itemBaseStats[k].value = itemInfoList.itemInfoCSVs[i].Rare;
+                                equipmentSOs[j].itemBaseStats[k].value = (int)itemInfoList.itemInfoCSVs[i].Rare;
                                 break;
                             case Rarity.Epic:
-                                equipmentSOs[j].itemBaseStats[k].value = itemInfoList.itemInfoCSVs[i].Epic;
+                                equipmentSOs[j].itemBaseStats[k].value = (int)itemInfoList.itemInfoCSVs[i].Epic;
                                 break;
                             default:break;
                         }
@@ -98,9 +98,12 @@ public class InvenHelper : ScriptableObject
                 }
             }
         }
+
+        EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssets();
     }
 
-#if UNITY_EDITOR
+
     [ContextMenu("InsertItemIcon")]
     public void InsertItemIcon()
     {
@@ -114,6 +117,8 @@ public class InvenHelper : ScriptableObject
                 }
             }
         }
+        EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssets();
     }
 
     [ContextMenu("PopulateItemEffects")]

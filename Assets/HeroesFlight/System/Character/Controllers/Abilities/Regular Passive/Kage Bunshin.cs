@@ -43,14 +43,14 @@ public class KageBunshin : RegularActiveAbility
 
     public override void OnDeactivated()
     {
-        GetEffectParticleByLevel().gameObject.SetActive(false);
+
     }
 
     public override void OnCoolDownEnded()
     {
 
     }
-
+     
     public override void LevelUp()
     {
         base.LevelUp();
@@ -68,7 +68,8 @@ public class KageBunshin : RegularActiveAbility
     {
         for (int i = 0; i < count; i++)
         {
-            Kage kage = Instantiate(kagepPrefab, colliders[i].transform);
+            Kage kage = Instantiate(kagepPrefab, colliders[i].transform.position, Quaternion.identity);
+            kage.transform.SetParent(colliders[i].transform);
             kage.Init(currentDamage, GetAnimatonID());
         }
     }

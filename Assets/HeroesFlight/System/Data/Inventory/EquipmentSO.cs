@@ -20,7 +20,7 @@ public class EquipmentSO : ItemSO
     {
         foreach (ItemStatByRarity itemBaseStat in itemBaseStats)
         {
-            if (itemBaseStat.rarity == rarity) return (int)itemBaseStat.value;
+            if (itemBaseStat.rarity == rarity) return itemBaseStat.value;
         }
         return 0;
     }
@@ -31,7 +31,7 @@ public class EquipmentSO : ItemSO
 public class ItemStatByRarity
 {
     public Rarity rarity;
-    public float value;
+    public int value;
 }
 
 [Serializable]
