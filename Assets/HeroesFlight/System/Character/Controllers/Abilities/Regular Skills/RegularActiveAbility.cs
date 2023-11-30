@@ -10,13 +10,13 @@ public abstract class RegularActiveAbility : MonoBehaviour
     protected int maxLevel = 9;
     protected int majorBoostLevel = 3;
 
-    private RegularActiveAbilitySO activeAbilitySO;
+    private ActiveAbilitySO activeAbilitySO;
 
-    public RegularActiveAbilityType PassiveActiveAbilityType => activeAbilitySO.GetAbilityVisualData.RegularActiveAbilityType;
+    public ActiveAbilityType PassiveActiveAbilityType => activeAbilitySO.GetAbilityVisualData.RegularActiveAbilityType;
     public int Level => currentLevel;
-    public RegularActiveAbilitySO ActiveAbilitySO => activeAbilitySO;
+    public ActiveAbilitySO ActiveAbilitySO => activeAbilitySO;
 
-    public void Init(RegularActiveAbilitySO activeAbilitySO)
+    public void Init(ActiveAbilitySO activeAbilitySO)
     {
         this.activeAbilitySO = activeAbilitySO;
     }

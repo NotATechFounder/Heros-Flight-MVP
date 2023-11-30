@@ -11,11 +11,11 @@ public class ActiveAbilityRerollerNPCMenu : BaseMenu<ActiveAbilityRerollerNPCMen
     public event Func<ShrineNPCCurrencyType, int> GetCurrencyPrice;
     public event Func<ShrineNPCCurrencyType, bool> OnPurchaseRequested;
 
-    public event Func<RegularActiveAbilityType, int> GetActiveAbilityLevel;
-    public event Func<List<RegularActiveAbilityType>> GetEqquipedActiveAbilityTypes;
-    public event Func<int, List<RegularActiveAbilityType>, List<RegularActiveAbilityType>> GetRandomActiveAbilityTypes;
-    public event Func<RegularActiveAbilityType, RegularAbilityVisualData> GetActiveAbilityVisualData;
-    public event Action<RegularActiveAbilityType, RegularActiveAbilityType> OnActiveAbilitySwapped;
+    public event Func<ActiveAbilityType, int> GetActiveAbilityLevel;
+    public event Func<List<ActiveAbilityType>> GetEqquipedActiveAbilityTypes;
+    public event Func<int, List<ActiveAbilityType>, List<ActiveAbilityType>> GetRandomActiveAbilityTypes;
+    public event Func<ActiveAbilityType, RegularAbilityVisualData> GetActiveAbilityVisualData;
+    public event Action<ActiveAbilityType, ActiveAbilityType> OnActiveAbilitySwapped;
 
     [Header("Buttons")]
     [SerializeField] private Transform container;
@@ -40,8 +40,8 @@ public class ActiveAbilityRerollerNPCMenu : BaseMenu<ActiveAbilityRerollerNPCMen
     JuicerRuntime closeEffectBG;
 
     [Header("Debug")]
-    [SerializeField] List<RegularActiveAbilityType> eqquipedActiveAbilities= new List<RegularActiveAbilityType>();
-    [SerializeField] private RegularActiveAbilityType selectedNewAbility = RegularActiveAbilityType.None;
+    [SerializeField] List<ActiveAbilityType> eqquipedActiveAbilities= new List<ActiveAbilityType>();
+    [SerializeField] private ActiveAbilityType selectedNewAbility = ActiveAbilityType.None;
 
     public override void OnCreated()
     {
@@ -106,23 +106,23 @@ public class ActiveAbilityRerollerNPCMenu : BaseMenu<ActiveAbilityRerollerNPCMen
     {
         for (int i = 0; i < eqquipedActiveAbilities.Count; i++)
         {
-            RegularActiveAbilityType oldAbiity = eqquipedActiveAbilities[i];
+            ActiveAbilityType oldAbiity = eqquipedActiveAbilities[i];
             eqquipedAbilityRerollButtonUIs[i].Init(GetActiveAbilityVisualData.Invoke(eqquipedActiveAbilities[i]).Icon, GetActiveAbilityLevel(eqquipedActiveAbilities[i]));
             eqquipedAbilityRerollButtonUIs[i].OnClick = () =>
             {
-                if (selectedNewAbility != RegularActiveAbilityType.None)
+                if (selectedNewAbility != ActiveAbilityType.None)
                 {
                     OnActiveAbilitySwapped?.Invoke(oldAbiity, selectedNewAbility);
-                    selectedNewAbility = RegularActiveAbilityType.None;
+                    selectedNewAbility = ActiveAbilityType.None;
                     ReRollComplected();
                 }
             };
         }
 
-        List<RegularActiveAbilityType> newAbilities = GetRandomActiveAbilityTypes?.Invoke(3, eqquipedActiveAbilities);
+        List<ActiveAbilityType> newAbilities = GetRandomActiveAbilityTypes?.Invoke(3, eqquipedActiveAbilities);
         for (int i = 0; i < newAbilities.Count; i++)
         {
-            RegularActiveAbilityType regularActiveAbilityType = newAbilities[i];
+            ActiveAbilityType regularActiveAbilityType = newAbilities[i];
             newAbilityRerollButtonUIs[i].Init(GetActiveAbilityVisualData.Invoke(newAbilities[i]).Icon);
             newAbilityRerollButtonUIs[i].OnToggle = (state) =>
             {

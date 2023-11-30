@@ -14,6 +14,11 @@ public class WorldManager : MonoBehaviour
     public WorldVisualSO[] Worlds => worlds;
     public WorldType SelectedWorld => selectedWorld;
 
+    private void Start()
+    {
+        Init();
+    }
+
     public void Init()
     {
         Load();
@@ -40,6 +45,19 @@ public class WorldManager : MonoBehaviour
             data.LastUnlockedWorld = (WorldType)Enum.GetValues(typeof(WorldType)).GetValue(nextWorldIndex);
         }
         Save();
+    }
+
+    public int GetMaxLevelReached(WorldType worldType)
+    {
+        WorldInfoData worldInfoData = data.worldInfoData.Find(x => x.worldType == worldType);
+        if (worldInfoData != null)
+        {
+            return worldInfoData.maxLevelReached;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     public void SetMaxLevelReached(WorldType worldType, int levelReached)

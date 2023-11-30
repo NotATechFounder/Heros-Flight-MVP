@@ -1,4 +1,4 @@
-﻿public enum RegularActiveAbilityType
+﻿public enum ActiveAbilityType
 {
     HeavenStab,
     OrbOfLightning,
@@ -32,4 +32,11 @@ public enum PassiveAbilityType
     DuckDodgeDip,
     FullCounter,
     None
+}
+
+
+public enum ActiveType
+{
+    Regular,
+    Special
 }

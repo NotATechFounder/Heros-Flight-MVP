@@ -17,7 +17,8 @@ namespace UISystem
         public event Action OnInventoryButtonPressed;
 
         public event Func<WorldType, bool> IsWorldUnlocked;
-        public event Action<WorldType> OnWorldChanged;  
+        public event Action<WorldType> OnWorldChanged;
+        public event Func<WorldType, int> GetMaxLevelReached;   
 
         public event Action AddGold;
         public event Action AddGem;
@@ -37,6 +38,7 @@ namespace UISystem
         [Header("World")]
         [SerializeField] private Image worldImage;
         [SerializeField] private TextMeshProUGUI worldNameText;
+        [SerializeField] private TextMeshProUGUI worldLevelText;
         [SerializeField] private AdvanceButton worldLeftButton;
         [SerializeField] private AdvanceButton worldRightButton;
 
@@ -138,7 +140,7 @@ namespace UISystem
                 worldVisualDic.Add(worldVisualSO.worldType, worldVisualSO);
             }
             worldInView = WorldType.World1;
-            DisplayWorldInfo(worldInView);
+            DisplayWorldInfo(worldInView, true);
         }
 
         private void NavigateWorld(int direction)
@@ -148,17 +150,19 @@ namespace UISystem
             {
                 worldInView = (WorldType)worldVisualSOList.Length - 1;
             }
-            DisplayWorldInfo(worldInView);
-            if (IsWorldUnlocked?.Invoke(worldInView) ?? false)
+            bool isUnlocked = IsWorldUnlocked?.Invoke(worldInView) ?? false;
+            DisplayWorldInfo(worldInView, isUnlocked);
+            if (isUnlocked)
             {
                 OnWorldChanged?.Invoke(worldInView);
             }
         }
 
-        private void DisplayWorldInfo(WorldType worldType)
+        private void DisplayWorldInfo(WorldType worldType, bool isUnlocked)
         {     
             worldImage.sprite = worldVisualDic[worldType].icon;
             worldNameText.text = worldVisualDic[worldType].worldName;
+            worldLevelText.text = isUnlocked ? GetMaxLevelReached?.Invoke(worldType).ToString() + " / 30" : "Locked";
         }
     }
 }

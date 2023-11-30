@@ -4,8 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Regular Active Ability", menuName = "Ability / Regular Active Ability")]
-public class RegularActiveAbilitySO : ScriptableObject, IHasID
+[CreateAssetMenu(fileName = "New Regular Active Ability", menuName = "Ability / Active Ability")]
+public class ActiveAbilitySO : ScriptableObject, IHasID
 {
     [SerializeField] RegularAbilityVisualData abilityVisualData;
     [SerializeField] protected float duration;
