@@ -96,6 +96,7 @@ public class InvenHelper : ScriptableObject
                         }
                     }
                 }
+                EditorUtility.SetDirty(equipmentSOs[j]);
             }
         }
         AssetDatabase.SaveAssets();
@@ -113,6 +114,7 @@ public class InvenHelper : ScriptableObject
                 {
                     equipmentSOs[j].icon = sprites[i];
                 }
+                EditorUtility.SetDirty(equipmentSOs[j]);
             }
         }
         AssetDatabase.SaveAssets();
