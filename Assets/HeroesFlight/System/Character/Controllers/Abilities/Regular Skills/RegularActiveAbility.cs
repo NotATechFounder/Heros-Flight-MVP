@@ -12,7 +12,7 @@ public abstract class RegularActiveAbility : MonoBehaviour
 
     private ActiveAbilitySO activeAbilitySO;
 
-    public ActiveAbilityType PassiveActiveAbilityType => activeAbilitySO.GetAbilityVisualData.RegularActiveAbilityType;
+    public ActiveAbilityType PassiveActiveAbilityType => activeAbilitySO.GetAbilityVisualData.ActiveAbilityType;
     public int Level => currentLevel;
     public ActiveAbilitySO ActiveAbilitySO => activeAbilitySO;
 

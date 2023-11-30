@@ -7,12 +7,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Regular Active Ability", menuName = "Ability / Active Ability")]
 public class ActiveAbilitySO : ScriptableObject, IHasID
 {
-    [SerializeField] RegularAbilityVisualData abilityVisualData;
+    [SerializeField] ActiveAbilityVisualData abilityVisualData;
     [SerializeField] protected float duration;
     [SerializeField] protected int cooldown;
     [SerializeField] RegularActiveAbility passiveActiveAbility;
 
-    public RegularAbilityVisualData GetAbilityVisualData => abilityVisualData;
+    public ActiveAbilityVisualData GetAbilityVisualData => abilityVisualData;
     public float Duration => duration;
     public int Cooldown => cooldown;
 
@@ -25,7 +25,7 @@ public class ActiveAbilitySO : ScriptableObject, IHasID
 
     public string GetID()
     {
-        return abilityVisualData.RegularActiveAbilityType.ToString();
+        return abilityVisualData.ActiveAbilityType.ToString();
     }
 }
 

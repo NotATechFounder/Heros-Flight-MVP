@@ -23,11 +23,6 @@ public class EnergyBlast : RegularActiveAbility
     private int currentDamage;
     CharacterSimpleController characterControllerInterface;
 
-    private void Start()
-    {
-
-    }
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -65,7 +60,7 @@ public class EnergyBlast : RegularActiveAbility
 
     private void Flip(bool facingLeft)
     {
-        visual.localScale = new Vector3(facingLeft ? 1 : -1, 1, 1);
+        transform.localScale = new Vector3(facingLeft ? 1 : -1, 1, 1);
         overlapChecker.SetDirection(facingLeft ? OverlapChecker.Direction.Left : OverlapChecker.Direction.Right);
     }
 

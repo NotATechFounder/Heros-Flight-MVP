@@ -10,6 +10,9 @@
     LightningArrow,
     ChainRotate,
     KageBunshin,
+    EnergyBlast,
+    HeavenHammer,
+    IlluminatedArrows,
     None
 }
 

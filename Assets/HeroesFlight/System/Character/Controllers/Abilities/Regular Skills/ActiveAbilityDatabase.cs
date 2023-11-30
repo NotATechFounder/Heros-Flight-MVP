@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Regular Active Ability Database", menuName = "Ability / Regular Active Ability Database")]
-public class RegularActiveAbilityDatabase : ScriptableObjectDatabase<ActiveAbilitySO>
+public class ActiveAbilityDatabase : ScriptableObjectDatabase<ActiveAbilitySO>
 {
 
 }
