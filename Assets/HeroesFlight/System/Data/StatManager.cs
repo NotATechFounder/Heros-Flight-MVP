@@ -204,9 +204,14 @@ public class StatModel
             { StatType.Defense, playerStatData.Defense },
             { StatType.CriticalHitChance, playerStatData.CriticalHitChance },
             { StatType.PhysicalMagicDamage, playerStatData.PhysicalDamage.max },
-            { StatType.AllStats, playerStatData.PhysicalDamage.max },
-            { StatType.HealingBooster, playerStatData.PhysicalDamage.max },
-            { StatType.AbilityDamage, playerStatData.PhysicalDamage.max }
+            { StatType.HealingBooster, 0},
+            { StatType.AbilityDamage, 0 },
+            { StatType.ExperienceBoost, 0 },
+            { StatType.GoldBoost, 0 },
+            { StatType.LifeSteal, 0 },
+            { StatType.CurrentHealth, 0 },
+            { StatType.AttackRange, 0 },
+            { StatType.CriticalHitDamage, 0 },
         };
         currentStatDic  = new Dictionary<StatType, float>(baseStatDic);
     }

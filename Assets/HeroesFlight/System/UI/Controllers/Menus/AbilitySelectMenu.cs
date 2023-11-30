@@ -12,7 +12,7 @@ namespace UISystem
         public event Func<int, List<PassiveAbilityType>, List<PassiveAbilityType>> GetRandomPassiveAbility;
         public event Func<PassiveAbilityType, int> GetPassiveAbilityLevel;
 
-        public event Func<ActiveAbilityType, RegularAbilityVisualData> GetRandomActiveAbilityVisualData;
+        public event Func<ActiveAbilityType, ActiveAbilityVisualData> GetRandomActiveAbilityVisualData;
         public event Func<PassiveAbilityType, PassiveAbilityVisualData> GetRandomPassiveAbilityVisualData;
         public event Func<ActiveAbilityType, int> GetActiveAbilityLevel;
 
@@ -75,7 +75,7 @@ namespace UISystem
                 {
                     ActiveAbilityType passiveActiveAbilityType = GetRandomActiveAbility.Invoke(1, new List<ActiveAbilityType>() { currentActiveDisplayed })[0];
                     currentActiveDisplayed = passiveActiveAbilityType;
-                    RegularAbilityVisualData regularAbilityVisualData = GetRandomActiveAbilityVisualData.Invoke(passiveActiveAbilityType);
+                    ActiveAbilityVisualData regularAbilityVisualData = GetRandomActiveAbilityVisualData.Invoke(passiveActiveAbilityType);
                     abilityButtonUIs[i].SetInfo(regularAbilityVisualData.Icon,"Active", regularAbilityVisualData.DisplayName, regularAbilityVisualData.Description, GetActiveAbilityLevel(passiveActiveAbilityType));
                     abilityButtonUIs[i].GetAdvanceButton.onClick.AddListener(() =>
                     {

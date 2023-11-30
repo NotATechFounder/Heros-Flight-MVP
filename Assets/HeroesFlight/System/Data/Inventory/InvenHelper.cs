@@ -98,8 +98,6 @@ public class InvenHelper : ScriptableObject
                 }
             }
         }
-
-        EditorUtility.SetDirty(this);
         AssetDatabase.SaveAssets();
     }
 
@@ -117,7 +115,6 @@ public class InvenHelper : ScriptableObject
                 }
             }
         }
-        EditorUtility.SetDirty(this);
         AssetDatabase.SaveAssets();
     }
 

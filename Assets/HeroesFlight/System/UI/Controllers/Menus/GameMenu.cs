@@ -419,9 +419,9 @@ namespace UISystem
             }
         }
 
-        public void ActiveAbilityEqquiped(int index, RegularAbilityVisualData data)
+        public void ActiveAbilityEqquiped(int index, ActiveAbilityVisualData data)
         {
-            currentActiveDisplayed.Add(data.RegularActiveAbilityType, activeAbilityButtons[index]);
+            currentActiveDisplayed.Add(data.ActiveAbilityType, activeAbilityButtons[index]);
             activeAbilityButtons[index].SetIcon(data.Icon);
         }
 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [System.Serializable]
-public class RegularAbilityVisualData
+public class ActiveAbilityVisualData
 {
     [Header("Regular Ability Visual Data")]
     [SerializeField] protected ActiveType regularActiveType;
@@ -11,7 +11,8 @@ public class RegularAbilityVisualData
     [TextArea(3, 5)]
     [SerializeField] protected string description;
 
-    public ActiveAbilityType RegularActiveAbilityType => regularActiveAbilityType;
+    public ActiveType ActiveType => regularActiveType;
+    public ActiveAbilityType ActiveAbilityType => regularActiveAbilityType;
     public Sprite Icon => icon;
     public string DisplayName => displayName;
     public string Description => description;

@@ -14,7 +14,7 @@ public class ActiveAbilityRerollerNPCMenu : BaseMenu<ActiveAbilityRerollerNPCMen
     public event Func<ActiveAbilityType, int> GetActiveAbilityLevel;
     public event Func<List<ActiveAbilityType>> GetEqquipedActiveAbilityTypes;
     public event Func<int, List<ActiveAbilityType>, List<ActiveAbilityType>> GetRandomActiveAbilityTypes;
-    public event Func<ActiveAbilityType, RegularAbilityVisualData> GetActiveAbilityVisualData;
+    public event Func<ActiveAbilityType, ActiveAbilityVisualData> GetActiveAbilityVisualData;
     public event Action<ActiveAbilityType, ActiveAbilityType> OnActiveAbilitySwapped;
 
     [Header("Buttons")]

@@ -4,16 +4,18 @@ using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
+using Spine;
 using Spine.Unity;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnergyBlast : RegularActiveAbility
+public class HeavenHammer : RegularActiveAbility
 {
     [SerializeField] private CustomAnimationCurve damagePercentageCurve;
     [SerializeField] private OverlapChecker overlapChecker;
+    [SerializeField] SkeletonAnimation skeletonAnimation;
     [SerializeField] private Transform visual;
     [SerializeField] private int linesOfDamage = 2;
     [SerializeField] private int linesOfDamagePerIncrease = 1;
@@ -33,15 +35,14 @@ public class EnergyBlast : RegularActiveAbility
 
     public override void OnActivated()
     {
-        GetEffectParticleByLevel().gameObject.SetActive(true);
         currentlinesOfDamage = GetMajorValueByLevel(linesOfDamage, linesOfDamagePerIncrease);
         currentDamage = (int)StatCalc.GetPercentage(baseDamage, damagePercentageCurve.GetCurrentValueFloat(currentLevel));
-        overlapChecker.DetectOverlap();
+        skeletonAnimation.gameObject.SetActive(true);
     }
 
     public override void OnDeactivated()
     {
-        GetEffectParticleByLevel().gameObject.SetActive(false);
+
     }
 
     public override void OnCoolDownEnded()
@@ -56,6 +57,22 @@ public class EnergyBlast : RegularActiveAbility
         overlapChecker.OnDetect += OnOverlap;
         this.characterControllerInterface = characterControllerInterface;
         characterControllerInterface.OnFaceDirectionChange += Flip;
+        skeletonAnimation.AnimationState.Event += AnimationState_Event;
+        skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
+    }
+
+    private void AnimationState_Event(TrackEntry trackEntry, Spine.Event e)
+    {
+        if (e.Data.Name == "Attack")
+        {
+            overlapChecker.DetectOverlap();
+            GetEffectParticleByLevel().gameObject.SetActive(true);
+        }
+    }
+
+    private void AnimationState_Complete(TrackEntry trackEntry)
+    {
+        skeletonAnimation.gameObject.SetActive(false);
     }
 
     private void Flip(bool facingLeft)
@@ -71,7 +88,7 @@ public class EnergyBlast : RegularActiveAbility
             if (collider2D[i].TryGetComponent(out IHealthController healthController))
             {
 
-                healthController.TryDealLineDamage(currentlinesOfDamage,0.25f,new HealthModificationIntentModel(currentDamage,
+                healthController.TryDealLineDamage(currentlinesOfDamage, 0.25f, new HealthModificationIntentModel(currentDamage,
                 DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, null));
             }
         }
