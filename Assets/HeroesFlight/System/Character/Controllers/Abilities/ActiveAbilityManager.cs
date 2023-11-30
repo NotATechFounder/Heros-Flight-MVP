@@ -65,8 +65,6 @@ public class ActiveAbilityManager : MonoBehaviour
     private BaseCharacterAttackController characterAttackController;
     private CombatEffectsController characterEffectsController;
 
-    private float chanceToMulticast = 0;
-
 
     private void Awake()
     {
@@ -115,10 +113,10 @@ public class ActiveAbilityManager : MonoBehaviour
         this.characterAttackController = characterStatController.GetComponent<BaseCharacterAttackController>();
         characterEffectsController = this.characterStatController.GetComponent<CharacterCombatEffectsController>();
 
-        levelSystem = new LevelSystem(0,0, levelCurve);
+        levelSystem = new LevelSystem(0, 0, levelCurve);
         levelSystem.OnLevelUp += (response) =>
         {
-            OnEXPAdded.Invoke(response.currentLevel,response.numberOfLevelsGained, response.normalizedExp);
+            OnEXPAdded.Invoke(response.currentLevel, response.numberOfLevelsGained, response.normalizedExp);
         };
     }
 
@@ -163,16 +161,20 @@ public class ActiveAbilityManager : MonoBehaviour
         Debug.LogError("No more ability slots");
     }
 
-    public void InitialiseAbility(ActiveAbilityType passiveActiveAbilityType, TimedAbilityController timedAbilityController, int level = 1)
+    public void InitialiseAbility(ActiveAbilityType passiveActiveAbilityType,
+        TimedAbilityController timedAbilityController, int level = 1)
     {
-        RegularActiveAbility passiveActiveAbility = allActiveAbilitiesDic[passiveActiveAbilityType].GetAbility(characterStatController.transform.position);
+        RegularActiveAbility passiveActiveAbility = allRegularActiveAbilitiesDic[passiveActiveAbilityType]
+            .GetAbility(characterStatController.transform.position);
 
         AttachAbility(timedAbilityController, passiveActiveAbility);
 
         switch (passiveActiveAbilityType)
         {
             case ActiveAbilityType.HeavenStab:
-                (passiveActiveAbility as HeavenStab).Initialize(level,  (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage), characterSystem);
+                (passiveActiveAbility as HeavenStab).Initialize(level,
+                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage),
+                    characterSystem);
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.OrbOfLightning:
@@ -184,30 +186,38 @@ public class ActiveAbilityManager : MonoBehaviour
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.KnifeFluffy:
-                (passiveActiveAbility as KnifeFluffy).Initialize(level,  (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage));
+                (passiveActiveAbility as KnifeFluffy).Initialize(level,
+                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage));
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.Immolation:
-                (passiveActiveAbility as Immolation).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage));
+                (passiveActiveAbility as Immolation).Initialize(level,
+                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage));
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.LightNova:
-                (passiveActiveAbility as LightNova).Initialize(level, characterStatController, characterSystem,  characterHealthController, characterAttackController);
+                (passiveActiveAbility as LightNova).Initialize(level, characterStatController, characterSystem,
+                    characterHealthController, characterAttackController);
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.SwordWhirlwind:
-                (passiveActiveAbility as SwordWhirlwind).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage));
+                (passiveActiveAbility as SwordWhirlwind).Initialize(level,
+                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage));
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.LightningArrow:
-                (passiveActiveAbility as LightningArrow).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage), characterSystem);
+                (passiveActiveAbility as LightningArrow).Initialize(level,
+                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage),
+                    characterSystem);
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.ChainRotate:
-                (passiveActiveAbility as ChainRotate).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage));
+                (passiveActiveAbility as ChainRotate).Initialize(level,
+                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage));
                 break;
             case ActiveAbilityType.KageBunshin:
-                (passiveActiveAbility as KageBunshin).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage));
+                (passiveActiveAbility as KageBunshin).Initialize(level,
+                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage));
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.EnergyBlast:
@@ -231,7 +241,8 @@ public class ActiveAbilityManager : MonoBehaviour
 
     public void AttachAbility(TimedAbilityController timedAbilityController, RegularActiveAbility activeAbility)
     {
-        timedAbilityController.Init(this, activeAbility.ActiveAbilitySO.Duration, activeAbility.ActiveAbilitySO.Cooldown);
+        timedAbilityController.Init(this, activeAbility.ActiveAbilitySO.Duration,
+            activeAbility.ActiveAbilitySO.Cooldown);
         timedAbilityController.OnActivated += activeAbility.OnActivated;
         timedAbilityController.OnCoolDownStarted += activeAbility.OnDeactivated;
         timedAbilityController.OnCoolDownEnded += activeAbility.OnCoolDownEnded;
@@ -456,7 +467,8 @@ public class ActiveAbilityManager : MonoBehaviour
             RegularActiveAbility regularActiveAbility = eqquipedActiveActivities[regularActiveAbilityType];
             if (regularActiveAbility.IsInstant())
             {
-                bool canMulticast = UnityEngine.Random.Range(0.0f, 100.0f) <= chanceToMulticast;
+                bool canMulticast = UnityEngine.Random.Range(0.0f, 100.0f) <=
+                                    characterStatController.GetStatModel.GetCurrentStatValue(StatType.MulticastChance);
                 if (canMulticast)
                 {
                     regularActiveAbility.StartCoroutine(regularActiveAbility.MultiCast());
@@ -515,153 +527,15 @@ public class ActiveAbilityManager : MonoBehaviour
 
     public void PassiveAbilityAction(PassiveAbilityType passiveAbilityType, bool isFirstLevel)
     {
-        switch (passiveAbilityType)
-        {
-            case PassiveAbilityType.FrostStrike:
-                characterEffectsController.AddCombatEffect(
-                    allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(0),
-                    eqquipedPassiveAbilities[passiveAbilityType] - 1);
-                break;
-            case PassiveAbilityType.FlameStrike:
-                characterEffectsController.AddCombatEffect(
-                    allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(0),
-                    eqquipedPassiveAbilities[passiveAbilityType] - 1);
-
-                break;
-            case PassiveAbilityType.LightningStrike:
-
-                break;
-            case PassiveAbilityType.LichArmor:
-                characterEffectsController.AddCombatEffect(
-                    allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(0),
-                    eqquipedPassiveAbilities[passiveAbilityType] - 1);
-                break;
-            case PassiveAbilityType.IfritsArmor:
-                characterEffectsController.AddCombatEffect(
-                    allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(0),
-                    eqquipedPassiveAbilities[passiveAbilityType] - 1);
-
-                break;
-            case PassiveAbilityType.HeartThief:
-                characterStatController.GetStatModel.ModifyCurrentStat(StatType.LifeSteal, allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("LifeSteal", isFirstLevel,
-                        eqquipedPassiveAbilities[passiveAbilityType]), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
-                break;
-            case PassiveAbilityType.Reflect:
-                characterEffectsController.AddCombatEffect(
-                    allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(0),
-                    eqquipedPassiveAbilities[passiveAbilityType] - 1);
-
-                break;
-            case PassiveAbilityType.LuckyHit:
-                characterStatController.GetStatModel.ModifyCurrentStat ( StatType.CriticalHitChance, allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("CriticalHitChance", isFirstLevel,
-                                           eqquipedPassiveAbilities[passiveAbilityType]), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
-                break;
-            case PassiveAbilityType.Flex:
-                characterStatController.GetStatModel.ModifyCurrentStat( StatType.Defense, allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("Defense", isFirstLevel,
-                                                              eqquipedPassiveAbilities[passiveAbilityType]), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
-                break;
-            case PassiveAbilityType.Multicast:
-
-                chanceToMulticast +=
-                    allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("Chance", isFirstLevel,
-                        eqquipedPassiveAbilities[passiveAbilityType]);
-
-                break;
-            case PassiveAbilityType.Sacrifice:
-                characterEffectsController.AddCombatEffect(
-                    allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(0),
-                    eqquipedPassiveAbilities[passiveAbilityType] - 1);
-
-                break;
-            case PassiveAbilityType.BoilingPoint:
-
-                break;
-            case PassiveAbilityType.GreedIsGood:
-                characterStatController.GetStatModel.ModifyCurrentStat( StatType.GoldBoost, allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("Increase ", isFirstLevel,
-                                                                                 eqquipedPassiveAbilities[passiveAbilityType]), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
-
-                characterStatController.GetStatModel.ModifyCurrentStat( StatType.ExperienceBoost, allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("Increase ", isFirstLevel,
-                                                                                                         eqquipedPassiveAbilities[passiveAbilityType]), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
-                break;
-            case PassiveAbilityType.DuckDodgeDip:
-                characterStatController.GetStatModel.ModifyCurrentStat( StatType.DodgeChance, allPassiveAbilitiesDic[passiveAbilityType].GetValueIncrease("DodgeChance", isFirstLevel,
-                                                                                                      eqquipedPassiveAbilities[passiveAbilityType]), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
-                break;
-            case PassiveAbilityType.FullCounter:
-                characterEffectsController.AddCombatEffect(
-                    allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(0),
-                    eqquipedPassiveAbilities[passiveAbilityType] - 1);
-
-                break;
-            default: break;
-        }
+        characterEffectsController.AddCombatEffect(
+            allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(0),
+            eqquipedPassiveAbilities[passiveAbilityType] - 1);
     }
 
     public void RemovePassiveAbility(PassiveAbilityType passiveAbilityType)
     {
-        switch (passiveAbilityType)
-        {
-            case PassiveAbilityType.FrostStrike:
-                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
-                break;
-            case PassiveAbilityType.FlameStrike:
-                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
-                break;
-            case PassiveAbilityType.LightningStrike:
-
-                break;
-            case PassiveAbilityType.LichArmor:
-                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
-                break;
-            case PassiveAbilityType.IfritsArmor:
-                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
-                break;
-            case PassiveAbilityType.HeartThief:
-                characterStatController.GetStatModel.ModifyCurrentStat( StatType.LifeSteal, allPassiveAbilitiesDic[passiveAbilityType]
-                        .GetLevelValue("LifeSteal", eqquipedPassiveAbilities[passiveAbilityType]), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
-                break;
-            case PassiveAbilityType.Reflect:
-                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
-                break;
-            case PassiveAbilityType.LuckyHit:
-                characterStatController.GetStatModel.ModifyCurrentStat( StatType.CriticalHitChance, allPassiveAbilitiesDic[passiveAbilityType]
-                        .GetLevelValue("CriticalHitChance", eqquipedPassiveAbilities[passiveAbilityType]), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
-
-                break;
-            case PassiveAbilityType.Flex:
-                characterStatController.GetStatModel.ModifyCurrentStat( StatType.Defense, allPassiveAbilitiesDic[passiveAbilityType]
-                        .GetLevelValue("Defense", eqquipedPassiveAbilities[passiveAbilityType]), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
-                break;
-            case PassiveAbilityType.Multicast:
-
-                chanceToMulticast -=
-                    allPassiveAbilitiesDic[passiveAbilityType]
-                        .GetLevelValue("Chance", eqquipedPassiveAbilities[passiveAbilityType]);
-
-                break;
-            case PassiveAbilityType.Sacrifice:
-                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
-                break;
-            case PassiveAbilityType.BoilingPoint:
-
-                break;
-            case PassiveAbilityType.GreedIsGood:
-                characterStatController.GetStatModel.ModifyCurrentStat( StatType.GoldBoost, allPassiveAbilitiesDic[passiveAbilityType]
-                        .GetLevelValue("Increase ", eqquipedPassiveAbilities[passiveAbilityType]), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
-
-                characterStatController.GetStatModel.ModifyCurrentStat(StatType.ExperienceBoost, allPassiveAbilitiesDic[passiveAbilityType]
-                    .GetLevelValue("Increase ", eqquipedPassiveAbilities[passiveAbilityType]), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
-                break;
-            case PassiveAbilityType.DuckDodgeDip:
-
-                characterStatController.GetStatModel.ModifyCurrentStat(StatType.DodgeChance, allPassiveAbilitiesDic[passiveAbilityType]
-                                       .GetLevelValue("DodgeChance", eqquipedPassiveAbilities[passiveAbilityType]), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
-                break;
-            case PassiveAbilityType.FullCounter:
-                characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
-                break;
-            default: break;
-        }
+        characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType]
+            .GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
 
         if (eqquipedPassiveAbilities.ContainsKey(passiveAbilityType))
         {

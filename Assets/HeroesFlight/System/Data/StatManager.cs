@@ -204,6 +204,7 @@ public class StatModel
             { StatType.Defense, playerStatData.Defense },
             { StatType.CriticalHitChance, playerStatData.CriticalHitChance },
             { StatType.PhysicalMagicDamage, playerStatData.PhysicalDamage.max },
+            { StatType.MulticastChance, 0 },
             { StatType.HealingBooster, 0},
             { StatType.AbilityDamage, 0 },
             { StatType.ExperienceBoost, 0 },
