@@ -16,29 +16,6 @@ public class PassiveAbilitySO : ScriptableObject, IHasID
         return regularAbilityVisualData.PassiveActiveAbilityType.ToString();
     }
 
-    public float GetLevelValue(string key, int currentLevel = 1)
-    {
-        foreach (var item in passiveAbilityKeyValues)
-        {
-            if (item.key == key)
-            {
-                return item.startValue + item.increasePerLevel * (currentLevel - 1);
-            }
-        }
-        return 0;
-    }
-
-    public float GetValueIncrease(string key, bool  isFirstLevel, int level = 0)
-    {
-        foreach (var item in passiveAbilityKeyValues)
-        {
-            if (item.key == key)
-            {
-                return isFirstLevel ? item.startValue + item.increasePerLevel  * (level - 1) : item.increasePerLevel;
-            }
-        }
-        return 0;
-    }
 
     public bool IsMaxLevel(int currentLevel)
     {
@@ -54,8 +31,6 @@ public class PassiveAbilitySO : ScriptableObject, IHasID
     public class PassiveAbilityKeyValue
     {
         public CombatEffect Effect;
-        public string key;
-        public float startValue;
-        public float increasePerLevel;
+     
     }
 }

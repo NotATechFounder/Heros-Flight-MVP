@@ -206,7 +206,11 @@ public class StatModel
             { StatType.PhysicalMagicDamage, playerStatData.PhysicalDamage.max },
             { StatType.AllStats, playerStatData.PhysicalDamage.max },
             { StatType.HealingBooster, playerStatData.PhysicalDamage.max },
-            { StatType.AbilityDamage, playerStatData.PhysicalDamage.max }
+            { StatType.AbilityDamage, playerStatData.PhysicalDamage.max },
+            { StatType.LifeSteal, 0 },
+            { StatType.CriticalHitDamage, playerStatData.CriticalHitDamage.max },
+            { StatType.MulticastChance, 0 },
+            
         };
         currentStatDic  = new Dictionary<StatType, float>(baseStatDic);
     }
