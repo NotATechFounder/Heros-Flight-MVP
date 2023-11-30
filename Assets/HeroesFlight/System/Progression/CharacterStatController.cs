@@ -46,12 +46,6 @@ public class CharacterStatController : MonoBehaviour
         }
     }
 
-    public void ModifyMaxHealth(float amount, StatModel.StatModificationType statModificationType, StatModel.StatCalculationType statCalculationType)
-    {
-        statModel.ModifyCurrentStat(StatType.MaxHealth, amount, statModificationType, statCalculationType);
-        OnMaxHealthChanged?.Invoke(statModel.CurrentStatDic[StatType.MaxHealth]);
-    }
-
     public void ModifyHealth(float percentageAmount, bool increase)
     {
         float value = StatCalc.GetPercentage(statModel.GetBaseStatValue(StatType.MaxHealth), percentageAmount);

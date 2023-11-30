@@ -164,7 +164,7 @@ public class ActiveAbilityManager : MonoBehaviour
     public void InitialiseAbility(ActiveAbilityType passiveActiveAbilityType,
         TimedAbilityController timedAbilityController, int level = 1)
     {
-        RegularActiveAbility passiveActiveAbility = allRegularActiveAbilitiesDic[passiveActiveAbilityType]
+        RegularActiveAbility passiveActiveAbility = allActiveAbilitiesDic[passiveActiveAbilityType]
             .GetAbility(characterStatController.transform.position);
 
         AttachAbility(timedAbilityController, passiveActiveAbility);
