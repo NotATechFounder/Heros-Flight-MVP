@@ -8,6 +8,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using System.Collections;
 using HeroesFlight.System.NPC.Controllers;
+using UnityEngine.Serialization;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -21,15 +22,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected float defence;
         [SerializeField] protected float dodgeChance;
 
-        [Header("Hit Settings")]
-        [SerializeField] protected bool useHit;
+        [Header("Hit Settings")] [SerializeField]
+        protected bool useHit;
+
         [SerializeField] protected int maxHit;
         [SerializeField] protected int currentHit;
 
-        [Header("Immortality")] 
-        [SerializeField] protected bool becomeImmortalOnHit;
-        [SerializeField] protected float immortalityDuration=.5f;
-        [SerializeField] private bool isCurrentlyImmortal;
+        [Header("Immortality")] [SerializeField]
+        protected bool becomeImmortalOnHit;
+
+        [SerializeField] protected float immortalityDuration = .5f;
+        [SerializeField] private bool isCurrentlyImmortalByTime;
+        [SerializeField] private bool isCurrentlyImmortalByState;
         public event Action<Transform> OnBeingHitDamaged;
 
         public int MaxHit => maxHit;
@@ -37,14 +41,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public bool IsImmortal
         {
-            get
-            {
-                return isCurrentlyImmortal;
-            }
-            protected set
-            {
-                isCurrentlyImmortal = value;
-            }
+            get { return isCurrentlyImmortalByTime; }
+            protected set { isCurrentlyImmortalByTime = value; }
         }
 
         public bool IsShielded { get; protected set; }
@@ -60,6 +58,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         private FlashEffect flashEffect;
 
         private float currentImmortalityDuration;
+
         private void OnEnable()
         {
             if (autoInit) Init();
@@ -105,33 +104,33 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 return;
             }
 
-            if (IsImmortal)
+            if (isCurrentlyImmortalByTime || isCurrentlyImmortalByState)
             {
+                Debug.Log(
+                    $"Trying to deal dmg but player is immortal {isCurrentlyImmortalByTime} and {isCurrentlyImmortalByState} ");
                 return;
             }
-  
-           
+
+
             if (IsDead())
                 return;
-           
+
             if (DodgeAttack())
             {
                 OnDodged?.Invoke();
                 return;
             }
-            
-           
-            healthModificationIntent.SetTarget(transform);
-            OnDamageReceiveRequest?.Invoke(new HealthModificationRequestModel(healthModificationIntent,this));
-            
 
+
+            healthModificationIntent.SetTarget(transform);
+            OnDamageReceiveRequest?.Invoke(new HealthModificationRequestModel(healthModificationIntent, this));
         }
 
         public virtual void ModifyHealth(HealthModificationIntentModel modificationIntentModel)
         {
             if (modificationIntentModel.AttackType != AttackType.Healing)
             {
-               var resultDamage = modificationIntentModel.Amount -
+                var resultDamage = modificationIntentModel.Amount -
                                    StatCalc.GetPercentage(modificationIntentModel.Amount, defence);
                 currentHealth -= resultDamage;
                 flashEffect?.Flash(immortalityDuration);
@@ -143,18 +142,17 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
             else
             {
-                currentHealth +=  modificationIntentModel.Amount;
+                currentHealth += modificationIntentModel.Amount;
                 if (currentHealth > maxHealth)
                     currentHealth = maxHealth;
             }
-           
+
             heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
 
             if (IsDead())
             {
                 ProcessDeath();
             }
-               
         }
 
         public virtual void Heal(float amount, bool notify = true)
@@ -169,8 +167,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (notify)
             {
-                var intent =new HealthModificationIntentModel(amount,
-                    DamageCritType.NoneCritical, AttackType.Healing, CalculationType.Flat,null);
+                var intent = new HealthModificationIntentModel(amount,
+                    DamageCritType.NoneCritical, AttackType.Healing, CalculationType.Flat, null);
                 OnDamageReceiveRequest?.Invoke(new HealthModificationRequestModel(intent, this));
             }
             else
@@ -196,13 +194,14 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public virtual void Revive(float healthPercentage)
         {
-            currentHealth = maxHealth/100 * healthPercentage;
+            currentHealth = maxHealth / 100 * healthPercentage;
             heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
             currentHit = maxHit;
         }
 
         public virtual void SetInvulnerableState(bool isImmortal)
         {
+            isCurrentlyImmortalByState = isImmortal;
             this.IsImmortal = isImmortal;
         }
 
@@ -243,22 +242,25 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public void DealHealthPercentageDamage(float percentage, DamageCritType damageCritType, AttackType attackType)
         {
             float damage = StatCalc.GetPercentage(maxHealth, percentage);
-            HealthModificationIntentModel healthModificationIntentModel = new HealthModificationIntentModel(damage, damageCritType, attackType,CalculationType.Flat,null);
+            HealthModificationIntentModel healthModificationIntentModel =
+                new HealthModificationIntentModel(damage, damageCritType, attackType, CalculationType.Flat, null);
             TryDealDamage(healthModificationIntentModel);
         }
 
-        public void TryDealLineDamage(int numberOfLines, float delayBetweenLines, HealthModificationIntentModel healthModificationIntent)
+        public void TryDealLineDamage(int numberOfLines, float delayBetweenLines,
+            HealthModificationIntentModel healthModificationIntent)
         {
             StartCoroutine(LineDamageRoutine(numberOfLines, delayBetweenLines, healthModificationIntent));
         }
 
-        public IEnumerator LineDamageRoutine(int numberOfLines, float delayBetweenLines, HealthModificationIntentModel healthModificationIntent)
+        public IEnumerator LineDamageRoutine(int numberOfLines, float delayBetweenLines,
+            HealthModificationIntentModel healthModificationIntent)
         {
             for (int i = 0; i < numberOfLines; i++)
             {
                 TryDealDamage(healthModificationIntent);
                 yield return new WaitForSeconds(delayBetweenLines);
             }
-        }   
+        }
     }
 }
