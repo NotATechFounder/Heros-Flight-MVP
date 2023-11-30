@@ -17,6 +17,7 @@ public class ItemInfoDisplayUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI itemTypeDisplay;
     [SerializeField] TextMeshProUGUI itemName;
     [SerializeField] TextMeshProUGUI itemLevel;
+    [SerializeField] TextMeshProUGUI itemDescription;
     [SerializeField] TextMeshProUGUI equipOrUnequipText;
 
     [Header("Stats")]
@@ -71,6 +72,7 @@ public class ItemInfoDisplayUI : MonoBehaviour
         itemRairityDisplay.text = item.GetItemData<ItemEquipmentData>().rarity.ToString();
         itemTypeDisplay.text = item.GetItemSO<EquipmentSO>().equipmentType.ToString();
         itemName.text = item.itemSO.Name;
+        itemDescription.text = item.itemSO.description; 
 
         RarityPalette rarityPalette = inventoryItemHandler.GetPalette(item.GetItemData<ItemEquipmentData>().rarity);
         itemBackground.color = rarityPalette.backgroundColour;
