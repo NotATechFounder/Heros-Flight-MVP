@@ -37,12 +37,16 @@ namespace HeroesFlight.System.Inventory
 
         private void HandleItemUnequipRequest(InventoryItemUiEntry obj)
         {
-            
+            if (InventoryHandler.TryUpgradeItem(obj))
+            {
+                uiSystem.UiEventHandler.InventoryMenu.UnEquipItem();
+            }
         }
 
         private void HandleItemDismantleRequest(InventoryItemUiEntry obj)
         {
-           
+           InventoryHandler.DismantleItem(obj);
+           uiSystem.UiEventHandler.InventoryMenu.DismantleItem();
         }
 
         private void HandleItemUpgradeRequest(InventoryItemUiEntry obj)
@@ -52,10 +56,16 @@ namespace HeroesFlight.System.Inventory
 
         private void HandleItemEquipRequest(InventoryItemUiEntry obj)
         {
-            
+            InventoryHandler.EquipItem(obj);
         }
 
         private void OpenInventory()
+        {
+            UpdateInventoryUi();
+            uiSystem.UiEventHandler.InventoryMenu.Open();
+        }
+
+        private void UpdateInventoryUi()
         {
             List<InventoryItemUiEntry> materials = new();
             List<EquipmentEntryUi> equipment = new();
@@ -64,19 +74,20 @@ namespace HeroesFlight.System.Inventory
                 var data = equipmentItem.GetItemData<ItemEquipmentData>();
                 equipment.Add(new EquipmentEntryUi(equipmentItem.itemSO.ID, equipmentItem.itemSO.icon, data.value,
                     equipmentItem.itemSO.itemType, InventoryHandler.GetPalette(data.rarity),
-                    equipmentItem.itemSO.Name,equipmentItem.itemSO.description, (equipmentItem.itemSO as EquipmentSO).equipmentType,
-                    data.eqquiped,data.rarity));
+                    equipmentItem.itemSO.Name, equipmentItem.itemSO.description,
+                    (equipmentItem.itemSO as EquipmentSO).equipmentType,
+                    data.eqquiped, data.rarity));
             }
+
             foreach (var equipmentItem in InventoryHandler.GetInventoryMaterialItems())
             {
                 var data = equipmentItem.GetItemData<ItemMaterialData>();
                 materials.Add(new InventoryItemUiEntry(equipmentItem.itemSO.ID, equipmentItem.itemSO.icon, data.value,
                     equipmentItem.itemSO.itemType, InventoryHandler.GetPalette(Rarity.Common),
-                    equipmentItem.itemSO.Name,equipmentItem.itemSO.description));
+                    equipmentItem.itemSO.Name, equipmentItem.itemSO.description));
             }
 
-            uiSystem.UiEventHandler.InventoryMenu.LoadInventoryItems(equipment,materials);
-            uiSystem.UiEventHandler.InventoryMenu.Open();
+            uiSystem.UiEventHandler.InventoryMenu.LoadInventoryItems(equipment, materials);
         }
 
         private void UpdateUiItem(Item obj)

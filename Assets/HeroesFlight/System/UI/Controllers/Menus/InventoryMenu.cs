@@ -104,29 +104,17 @@ namespace UISystem
             Func<EquipmentEntryUi, int> materialAmountCallback, Func<EquipmentEntryUi, int> materialSpent,
             Func<EquipmentEntryUi, int> goldSpent)
         {
-            itemInfoDisplayUI.OnEquipAction += () =>
-            {
-                OnEquipItemRequest?.Invoke(selectedItem);
-               //todo :Move to inventory system
-               // EquipItem;
-            };
+            itemInfoDisplayUI.OnEquipAction += EquipItem;
             itemInfoDisplayUI.OnDismantleAction += () =>
             {
                 OnDismantleRequest?.Invoke(selectedItem);
                 //todo :Move to inventory system
-               // DismantleItem;
+                // DismantleItem;
             };
-            itemInfoDisplayUI.OnUpgradeAction += () =>
-            {
-                //todo :Move to inventory system
-                 return TryUpgradeItem;
-            };
-            itemInfoDisplayUI.OnUnequipAction += () =>
-            {
-                OnUnEquipItemRequest?.Invoke(selectedItem);
-                //todo :Move to inventory system
-               // UnEquipItem;
-            };
+            itemInfoDisplayUI.OnUpgradeRequest += () => { OnUpgradeRequest?.Invoke(selectedItem); };
+            itemInfoDisplayUI.OnUpgradeAction += TryUpgradeItem;
+           
+            itemInfoDisplayUI.OnUnequipAction += UnEquipItem;
 
             itemInfoDisplayUI.Init(maxLvlCallback, goldcallback,
                 getMaterialCallback, getitemCallback,
@@ -178,34 +166,37 @@ namespace UISystem
                 SpawnItemUI(item);
             }
         }
-        
+
         /// <summary>
         /// Inventory systemn should do it
         /// </summary>
         /// <returns></returns>
-        private bool TryUpgradeItem()
+        public void TryUpgradeItem()
         {
             if (selectedItem != null)
             {
-                if (inventoryItemHandler.TryUpgradeItem(selectedItem) == true)
-                {
-                    return true;
-                }
+                OnUpgradeRequest?.Invoke(selectedItem);
             }
+        }
 
-            return false;
+        public void UpgradeItem()
+        {
+            if (selectedItem != null)
+            {
+                itemInfoDisplayUI.UpgradeItem();
+            }
+           
         }
 
         /// <summary>
         /// Inventory systemn should do it
         /// </summary>
         /// <returns></returns>
-        private void DismantleItem()
+        public void DismantleItem()
         {
             if (selectedItem != null)
             {
-                inventoryItemHandler.DismantleItem(selectedItem);
-                itemUIDic.Remove(selectedItem.GetItemData<ItemEquipmentData>().instanceID);
+                itemUIDic.Remove(selectedItem.ID);
             }
 
             if (selectedItemUI != null)
@@ -227,19 +218,19 @@ namespace UISystem
         /// Inventory systemn should do it
         /// </summary>
         /// <returns></returns>
-        private void EquipItem()
+        public void EquipItem()
         {
             EquippedSlot equippedSlot = GetEquipmentSlot((selectedItemUI.GetItem as EquipmentEntryUi).EquipmentType);
             if (equippedSlot != null)
             {
                 if (equippedSlot.IsOccupied)
                 {
-                    inventoryItemHandler.UnEquipItem(equippedSlot.GetItem);
+                    OnUnEquipItemRequest?.Invoke(equippedSlot.GetItem);
                     SpawnItemUI(equippedSlot.GetItem);
                     equippedSlot.UnOccupy();
                 }
 
-                inventoryItemHandler.EquipItem(selectedItemUI.GetItem);
+                OnEquipItemRequest?.Invoke(equippedSlot.GetItem);
                 equippedSlot.Occupy(selectedItemUI.GetItem, selectedItemUI.GetItem.RarityPallete);
                 itemUIDic.Remove(selectedItemUI.GetItem.ID);
                 Destroy(selectedItemUI.gameObject);
@@ -257,7 +248,7 @@ namespace UISystem
         {
             if (selectedEquippedSlot != null)
             {
-                inventoryItemHandler.UnEquipItem(selectedEquippedSlot.GetItem);
+                OnUnEquipItemRequest?.Invoke(selectedEquippedSlot.GetItem);
                 SpawnItemUI(selectedEquippedSlot.GetItem);
                 selectedEquippedSlot.UnOccupy();
                 selectedEquippedSlot = null;

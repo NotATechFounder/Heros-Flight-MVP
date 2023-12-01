@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class ItemInfoDisplayUI : MonoBehaviour
 {
     public event Action OnDismantleAction;
+    public Action OnUpgradeRequest;
     public event Func<bool> OnUpgradeAction;
     Func<EquipmentEntryUi, int> GetItemMaxLvlAction;
     Func<EquipmentEntryUi, int> GetGoldForUpdateAction;
@@ -90,17 +91,18 @@ public class ItemInfoDisplayUI : MonoBehaviour
         itemBackground.color = rarityPalette.backgroundColour;
         itemFrame.color = rarityPalette.frameColour;
 
-        SetItemLevel();
-        SeUpgradeInfo();
+        UpgradeItem();
     }
 
     private void HandleUpgrade()
     {
-        if (OnUpgradeAction?.Invoke() == true)
-        {
-            SetItemLevel();
-            SeUpgradeInfo();
-        }
+        OnUpgradeRequest?.Invoke();
+    }
+
+    public void UpgradeItem()
+    {
+        SetItemLevel();
+        SeUpgradeInfo();
     }
 
     public void SetItemLevel()
@@ -125,13 +127,11 @@ public class ItemInfoDisplayUI : MonoBehaviour
     void SeUpgradeInfo()
     {
         var materialItem = GetMaterialItemByIdAction?.Invoke("M_" + item.EquipmentType.ToString());
-        // inventoryItemHandler.GetMaterialItemByID(,
-        //     out Item materialItem);
+       
         if (materialItem == null)
         {
             var inventoryItem = GetInventoryItemByIdAction?.Invoke("M_" + item.EquipmentType.ToString());
-            //   inventoryItemHandler.GetItemSO("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString());
-
+           
             upgradeMaterialIcon.sprite = inventoryItem.Icon;
             requiredMaterialName.text = inventoryItem.Name;
             materialAmountDisplay.text =
