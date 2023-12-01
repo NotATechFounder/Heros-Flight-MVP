@@ -201,6 +201,7 @@ namespace UISystem
             {
                 if (equippedSlot.IsOccupied)
                 {
+                    inventoryItemHandler.UnEquipItem(equippedSlot.GetItem);
                     SpawnItemUI(equippedSlot.GetItem);
                     equippedSlot.UnOccupy();
                 }

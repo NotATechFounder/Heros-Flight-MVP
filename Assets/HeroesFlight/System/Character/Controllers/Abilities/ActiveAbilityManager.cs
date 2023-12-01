@@ -491,7 +491,6 @@ public class ActiveAbilityManager : MonoBehaviour
 
     public void EquipPassiveAbility(PassiveAbilityType passiveAbilityType, int level = 1)
     {
-        bool isFirstLevel = false;
         if (eqquipedPassiveAbilities.ContainsKey(passiveAbilityType))
         {
             if (allPassiveAbilitiesDic[passiveAbilityType].IsMaxLevel(eqquipedPassiveAbilities[passiveAbilityType]))
@@ -508,12 +507,10 @@ public class ActiveAbilityManager : MonoBehaviour
             {
                 return;
             }
-
-            isFirstLevel = true;
             eqquipedPassiveAbilities.Add(passiveAbilityType, level);
         }
 
-        PassiveAbilityAction(passiveAbilityType, isFirstLevel);
+        PassiveAbilityAction(passiveAbilityType);
 
         OnPassiveAbilityEquipped?.Invoke(GetPassiveAbilityVisualData(passiveAbilityType));
     }
@@ -525,17 +522,20 @@ public class ActiveAbilityManager : MonoBehaviour
         EquipPassiveAbility(newAbility, levelOfCurrentAbility);
     }
 
-    public void PassiveAbilityAction(PassiveAbilityType passiveAbilityType, bool isFirstLevel)
+    public void PassiveAbilityAction(PassiveAbilityType passiveAbilityType)
     {
-        characterEffectsController.AddCombatEffect(
-            allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffectByLvl(0),
-            eqquipedPassiveAbilities[passiveAbilityType] - 1);
+        foreach (CombatEffect combatEffect in allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffects)
+        {
+            characterEffectsController.AddCombatEffect(combatEffect, eqquipedPassiveAbilities[passiveAbilityType] - 1);
+        } 
     }
 
     public void RemovePassiveAbility(PassiveAbilityType passiveAbilityType)
     {
-        characterEffectsController.RemoveEffect(allPassiveAbilitiesDic[passiveAbilityType]
-            .GetCombatEffectByLvl(eqquipedPassiveAbilities[passiveAbilityType] - 1));
+        foreach (CombatEffect combatEffect in allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffects)
+        {
+            characterEffectsController.RemoveEffect(combatEffect);
+        }
 
         if (eqquipedPassiveAbilities.ContainsKey(passiveAbilityType))
         {

@@ -84,6 +84,7 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
                 OnItemAdded?.Invoke(equipmentItemDic[itemEquipmentData.instanceID]);
                 return equipmentItemDic[itemEquipmentData.instanceID];
         }
+        SaveInventoryItems();
         return null;
     }
 
@@ -137,19 +138,21 @@ public class InventorySystem : MonoBehaviour, IInventoryItemHandler
 
     public void EquipItem(Item item)
     {
+        item.GetItemData<ItemEquipmentData>().eqquiped = true;
         equippedItemDic.Add(item.GetItemData<ItemEquipmentData>().instanceID, item);
+
         ProcessEquippedItemStats();
 
-        item.GetItemData<ItemEquipmentData>().eqquiped = true;
         mainItemInventorySO.Save();
     }
 
     public void UnEquipItem(Item item)
     {
+        item.GetItemData<ItemEquipmentData>().eqquiped = false;
         equippedItemDic.Remove(item.GetItemData<ItemEquipmentData>().instanceID);
+
         ProcessEquippedItemStats();
 
-        item.GetItemData<ItemEquipmentData>().eqquiped = false;
         mainItemInventorySO.Save();
     }
 

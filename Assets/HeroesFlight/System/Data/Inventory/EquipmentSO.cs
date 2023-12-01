@@ -12,6 +12,7 @@ public class EquipmentSO : ItemSO
     public StatType statType;
     public HeroType heroType;
     public ItemStatByRarity[] itemBaseStats;
+    public ItemEffect specialHeroEffect;
     public ItemRarityStat[] itemRarityStats;
 
     private void Awake() => itemType = ItemType.Equipment;
