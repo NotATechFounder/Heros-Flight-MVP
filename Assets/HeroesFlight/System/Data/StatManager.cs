@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using HeroesFlight.Common.Progression;
+using HeroesFlight.System.FileManager.Stats;
 using UnityEngine;
 
 public class StatManager : MonoBehaviour

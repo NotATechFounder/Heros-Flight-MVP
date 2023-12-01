@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.Common.Enum;
 using UnityEngine;
 using UnityEditor;
 using ScriptableObjectDatabase;
 
-public enum ItemType { Equipment, Material};
 
 public class ItemSO : ScriptableObject, IHasID
 {
@@ -15,8 +15,7 @@ public class ItemSO : ScriptableObject, IHasID
 
     public ItemType itemType;
 
-    [TextArea]
-    public string description;
+    [TextArea] public string description;
 
     public string GetID() => ID;
 
@@ -74,10 +73,10 @@ public class Item
         switch (itemData)
         {
             case ItemEquipmentData itemEquipmentData:
-                return itemEquipmentData.instanceID == item.GetItemData <ItemEquipmentData>().instanceID;
+                return itemEquipmentData.instanceID == item.GetItemData<ItemEquipmentData>().instanceID;
             case ItemMaterialData itemMaterialData:
                 return itemMaterialData.ID == item.itemData.ID;
-                default: return false;
+            default: return false;
         }
     }
 
@@ -93,7 +92,7 @@ public abstract class ItemData
     public string ID;
     public int value;
 
-    public ItemData ( ItemSO item, int newValue = 1)
+    public ItemData(ItemSO item, int newValue = 1)
     {
         ID = item.ID;
         value = newValue;
@@ -140,6 +139,7 @@ public class ItemEquipmentData : ItemData
 [Serializable]
 public class ItemMaterialData : ItemData
 {
-    public ItemMaterialData(ItemSO item, int newValue = 1) : base(item, newValue){}
+    public ItemMaterialData(ItemSO item, int newValue = 1) : base(item, newValue)
+    {
+    }
 }
-

@@ -2,16 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UISystem;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MenuTester : MonoBehaviour
 {
     [SerializeField] private InventoryMenu inventoryMenu;
-    [SerializeField] private InventorySystem inventorySystem;
+    [FormerlySerializedAs("inventorySystem")] [SerializeField] private InventoryHandler inventoryHandler;
 
     private void Start()
     {
-        inventoryMenu.InitInventory(inventorySystem);
-        inventoryMenu.LoadInventoryItems();
+       // inventoryMenu.InitInventory();
+      //  inventoryMenu.LoadInventoryItems();
     }
 
     private void Update()

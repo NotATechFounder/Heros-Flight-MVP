@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.Common;
+using HeroesFlight.Common.Enum;
+using HeroesFlight.System.FileManager.Stats;
 using UnityEngine;
 
-public class InventorySystem : MonoBehaviour, IInventoryItemHandler
+public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 {
     public event Action<Item> OnItemAdded;
     public event Action<Item> OnItemModified;

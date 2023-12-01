@@ -1,5 +1,6 @@
 ﻿using System;
 using HeroesFlight.Core.StateStack.Enum;
+using HeroesFlight.System.Inventory;
 using JetBrains.Annotations;
 using StansAssets.Foundation.Patterns;
 using StansAssets.SceneManagement;
@@ -32,6 +33,8 @@ namespace HeroesFlight.StateStack.State
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(dataScene);
                         DataSystemInterface dataSystem = GetService<DataSystemInterface>();
                         dataSystem.Init(loadedScene);
+                        InventorySystemInterface inventorySystem = GetService<InventorySystemInterface>();
+                        inventorySystem.Init(loadedScene);
                         AppStateStack.State.Set(ApplicationState.Initialization);
                     });
                     break;

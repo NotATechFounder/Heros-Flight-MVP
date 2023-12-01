@@ -7,6 +7,7 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using HeroesFlight.Common.Enum;
 
 [CreateAssetMenu(fileName = "New Helper", menuName = "Inventory System/Helper")]
 public class InvenHelper : ScriptableObject

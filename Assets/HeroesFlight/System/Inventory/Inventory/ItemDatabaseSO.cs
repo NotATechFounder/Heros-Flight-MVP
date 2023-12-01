@@ -1,6 +1,8 @@
 using ScriptableObjectDatabase;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.Common;
+using HeroesFlight.Common.Enum;
 using UnityEditor;
 using UnityEngine;
 

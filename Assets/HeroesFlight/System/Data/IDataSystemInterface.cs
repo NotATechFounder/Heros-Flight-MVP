@@ -18,8 +18,7 @@ public interface DataSystemInterface : SystemInterface
 
     public AccountLevelManager AccountLevelManager { get; }
 
-    public InventorySystem InventorySystem { get; }
-
+  
     public WorldManager WorldManger { get; }
 
     RewardsHandlerInterface RewardHandler { get; }

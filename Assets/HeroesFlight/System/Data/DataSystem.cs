@@ -27,8 +27,7 @@ public class DataSystem : DataSystemInterface
     public StatPoints StatPoints { get; private set; }
 
     public AccountLevelManager AccountLevelManager { get; private set; }
-
-    public InventorySystem InventorySystem { get; private set; }
+ 
 
     public WorldManager WorldManger { get; private set; }
 
@@ -37,7 +36,6 @@ public class DataSystem : DataSystemInterface
     {
         CurrencyManager = scene.GetComponent<CurrencyManager>();
         StatManager = scene.GetComponent<StatManager>();
-        InventorySystem = scene.GetComponent<InventorySystem>();
         StatPoints = scene.GetComponent<StatPoints>();
         CharacterManager = scene.GetComponent<CharacterManager>();
         AccountLevelManager = scene.GetComponent<AccountLevelManager>();
@@ -49,16 +47,13 @@ public class DataSystem : DataSystemInterface
 
         StatPoints.OnValueChanged += StatManager.ProcessStatPointsModifiers;
         StatPoints.Init();
-  
+
         CharacterManager.OnCharacterChanged += (characterSO) => StatManager.ProcessAllModifiers(characterSO.GetPlayerStatData);
         CharacterManager.Init(CurrencyManager);
 
 
         AccountLevelManager.OnLevelUp += StatPoints.AddPoints;
-
-        InventorySystem.OnEqiuppedItemsStatChanged += StatManager.ProcessEquippedItemsModifiers;
-        InventorySystem.Init(CurrencyManager);
-
+     
         onComplete?.Invoke();
     }
 

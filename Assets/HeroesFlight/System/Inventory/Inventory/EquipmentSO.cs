@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.Common;
+using HeroesFlight.Common.Enum;
+using HeroesFlight.System.FileManager.Stats;
 using UnityEngine;
 
-public enum Rarity { Common, UnCommon, Rare, Epic};
-public enum EquipmentType { Weapon, Armour, Ring, Belt, Necklace };
+
 
 public class EquipmentSO : ItemSO
 {
@@ -35,20 +37,7 @@ public class ItemStatByRarity
     public int value;
 }
 
-[Serializable]
-public class StatTypeWithValue
-{
-    public StatType statType;
-    public int value;
-    public StatModel.StatCalculationType statCalculationType;
 
-    public StatTypeWithValue(StatType statType, int value, StatModel.StatCalculationType statCalculationType)
-    {
-        this.statType = statType;
-        this.value = value;
-        this.statCalculationType = statCalculationType;
-    }
-}
 
 [Serializable]
 public class UniqueEffect
@@ -93,9 +82,4 @@ public class RarityInfo
 }
 
 
-[Serializable]
-public class RarityPalette
-{
-    public Color frameColour;
-    public Color backgroundColour;
-}
+

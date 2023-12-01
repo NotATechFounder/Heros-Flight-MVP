@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Text;
 using System;
+using HeroesFlight.Common.Enum;
 
 [CreateAssetMenu(fileName = "New ItemEffectSO", menuName = "Inventory System/ItemEffectSO")]
 public class ItemEffectSO : ScriptableObject
