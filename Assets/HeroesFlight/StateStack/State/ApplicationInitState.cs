@@ -26,9 +26,7 @@ namespace HeroesFlight.StateStack.State
             switch (evt.Action)
             {
                 case StackAction.Added:
-
-                    DataSystemInterface dataSystem = GetService<DataSystemInterface>();
-                    dataSystem.Init(SceneManager.GetActiveScene());
+                    
                     EnvironmentSystemInterface environmentSystem = GetService<EnvironmentSystemInterface>();
                     progressReporter.SetDone();
                     var uiScene = $"{SceneType.UIScene}";
