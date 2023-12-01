@@ -27,8 +27,32 @@ namespace HeroesFlight.System.Inventory
             InventoryHandler.OnItemAdded += SpawnUiItem;
             InventoryHandler.OnItemModified += UpdateUiItem;
             uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += OpenInventory;
+            uiSystem.UiEventHandler.InventoryMenu.OnEquipItemRequest += HandleItemEquipRequest;
+            uiSystem.UiEventHandler.InventoryMenu.OnUpgradeRequest += HandleItemUpgradeRequest;
+            uiSystem.UiEventHandler.InventoryMenu.OnDismantleRequest += HandleItemDismantleRequest;
+            uiSystem.UiEventHandler.InventoryMenu.OnUnEquipItemRequest += HandleItemUnequipRequest;
             //TODO: pass methodes from InventoryHandler here
             //uiSystem.UiEventHandler.InventoryMenu.InitInventory();
+        }
+
+        private void HandleItemUnequipRequest(InventoryItemUiEntry obj)
+        {
+            
+        }
+
+        private void HandleItemDismantleRequest(InventoryItemUiEntry obj)
+        {
+           
+        }
+
+        private void HandleItemUpgradeRequest(InventoryItemUiEntry obj)
+        {
+            
+        }
+
+        private void HandleItemEquipRequest(InventoryItemUiEntry obj)
+        {
+            
         }
 
         private void OpenInventory()
