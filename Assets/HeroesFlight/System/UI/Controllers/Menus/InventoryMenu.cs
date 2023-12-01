@@ -112,7 +112,7 @@ namespace UISystem
                 // DismantleItem;
             };
             itemInfoDisplayUI.OnUpgradeRequest += () => { OnUpgradeRequest?.Invoke(selectedItem); };
-            itemInfoDisplayUI.OnUpgradeAction += TryUpgradeItem;
+           // itemInfoDisplayUI.OnUpgradeAction += TryUpgradeItem;
            
             itemInfoDisplayUI.OnUnequipAction += UnEquipItem;
 

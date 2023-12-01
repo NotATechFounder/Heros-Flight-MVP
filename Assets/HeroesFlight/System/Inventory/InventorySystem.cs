@@ -26,37 +26,35 @@ namespace HeroesFlight.System.Inventory
             InventoryHandler.Init(data.CurrencyManager);
             InventoryHandler.OnItemAdded += SpawnUiItem;
             InventoryHandler.OnItemModified += UpdateUiItem;
-            uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += OpenInventory;
-            uiSystem.UiEventHandler.InventoryMenu.OnEquipItemRequest += HandleItemEquipRequest;
-            uiSystem.UiEventHandler.InventoryMenu.OnUpgradeRequest += HandleItemUpgradeRequest;
-            uiSystem.UiEventHandler.InventoryMenu.OnDismantleRequest += HandleItemDismantleRequest;
-            uiSystem.UiEventHandler.InventoryMenu.OnUnEquipItemRequest += HandleItemUnequipRequest;
-            //TODO: pass methodes from InventoryHandler here
-            //uiSystem.UiEventHandler.InventoryMenu.InitInventory();
         }
 
         private void HandleItemUnequipRequest(InventoryItemUiEntry obj)
         {
-            if (InventoryHandler.TryUpgradeItem(obj))
-            {
-                uiSystem.UiEventHandler.InventoryMenu.UnEquipItem();
-            }
+            Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
+            InventoryHandler.UnEquipItem(targetItem);
+            uiSystem.UiEventHandler.InventoryMenu.UnEquipItem();
         }
 
         private void HandleItemDismantleRequest(InventoryItemUiEntry obj)
         {
-           InventoryHandler.DismantleItem(obj);
-           uiSystem.UiEventHandler.InventoryMenu.DismantleItem();
+            Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
+            InventoryHandler.DismantleItem(targetItem);
+            uiSystem.UiEventHandler.InventoryMenu.DismantleItem();
         }
 
         private void HandleItemUpgradeRequest(InventoryItemUiEntry obj)
         {
-            
+            Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
+            if (InventoryHandler.TryUpgradeItem(targetItem))
+            {
+                uiSystem.UiEventHandler.InventoryMenu.UpgradeItem();
+            }
         }
 
         private void HandleItemEquipRequest(InventoryItemUiEntry obj)
         {
-            InventoryHandler.EquipItem(obj);
+            Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
+            InventoryHandler.EquipItem(targetItem);
         }
 
         private void OpenInventory()
@@ -71,18 +69,20 @@ namespace HeroesFlight.System.Inventory
             List<EquipmentEntryUi> equipment = new();
             foreach (var equipmentItem in InventoryHandler.GetInventoryEquippmentItems())
             {
-                var data = equipmentItem.GetItemData<ItemEquipmentData>();
-                equipment.Add(new EquipmentEntryUi(equipmentItem.itemSO.ID, equipmentItem.itemSO.icon, data.value,
-                    equipmentItem.itemSO.itemType, InventoryHandler.GetPalette(data.rarity),
+                var equipmentData = equipmentItem.GetItemData<ItemEquipmentData>();
+                equipment.Add(new EquipmentEntryUi(equipmentItem.itemSO.ID, equipmentItem.itemSO.icon,
+                    equipmentData.value,
+                    equipmentItem.itemSO.itemType, InventoryHandler.GetPalette(equipmentData.rarity),
                     equipmentItem.itemSO.Name, equipmentItem.itemSO.description,
                     (equipmentItem.itemSO as EquipmentSO).equipmentType,
-                    data.eqquiped, data.rarity));
+                    equipmentData.eqquiped, equipmentData.rarity));
             }
 
             foreach (var equipmentItem in InventoryHandler.GetInventoryMaterialItems())
             {
-                var data = equipmentItem.GetItemData<ItemMaterialData>();
-                materials.Add(new InventoryItemUiEntry(equipmentItem.itemSO.ID, equipmentItem.itemSO.icon, data.value,
+                var itemData = equipmentItem.GetItemData<ItemMaterialData>();
+                materials.Add(new InventoryItemUiEntry(equipmentItem.itemSO.ID, equipmentItem.itemSO.icon,
+                    itemData.value,
                     equipmentItem.itemSO.itemType, InventoryHandler.GetPalette(Rarity.Common),
                     equipmentItem.itemSO.Name, equipmentItem.itemSO.description));
             }
@@ -92,12 +92,47 @@ namespace HeroesFlight.System.Inventory
 
         private void UpdateUiItem(Item obj)
         {
-            // uiSystem.UiEventHandler.InventoryMenu.UpdateItemUI(new InventoryItemUiEntry());
+            if (obj.itemSO.itemType == ItemType.Material)
+            {
+                var itemData = obj.GetItemData<ItemMaterialData>();
+
+                uiSystem.UiEventHandler.InventoryMenu.UpdateItemUI(new InventoryItemUiEntry(obj.itemSO.ID,
+                    obj.itemSO.icon, itemData.value,
+                    obj.itemSO.itemType, InventoryHandler.GetPalette(Rarity.Common),
+                    obj.itemSO.Name, obj.itemSO.description));
+            }
+            else
+            {
+                var equipmentData = obj.GetItemData<ItemEquipmentData>();
+                uiSystem.UiEventHandler.InventoryMenu.UpdateItemUI(new EquipmentEntryUi(obj.itemSO.ID, obj.itemSO.icon,
+                    equipmentData.value,
+                    obj.itemSO.itemType, InventoryHandler.GetPalette(equipmentData.rarity),
+                    obj.itemSO.Name, obj.itemSO.description,
+                    (obj.itemSO as EquipmentSO).equipmentType,
+                    equipmentData.eqquiped, equipmentData.rarity));
+            }
         }
 
         private void SpawnUiItem(Item obj)
         {
-            //uiSystem.UiEventHandler.InventoryMenu.SpawnItemUI(new InventoryItemUiEntry());
+            if (obj.itemSO.itemType == ItemType.Material)
+            {
+                var itemData = obj.GetItemData<ItemMaterialData>();
+                uiSystem.UiEventHandler.InventoryMenu.SpawnItemUI((new InventoryItemUiEntry(obj.itemSO.ID,
+                    obj.itemSO.icon, itemData.value,
+                    obj.itemSO.itemType, InventoryHandler.GetPalette(Rarity.Common),
+                    obj.itemSO.Name, obj.itemSO.description)));
+            }
+            else
+            {
+                var equipmentData = obj.GetItemData<ItemEquipmentData>();
+                uiSystem.UiEventHandler.InventoryMenu.SpawnItemUI(new EquipmentEntryUi(obj.itemSO.ID, obj.itemSO.icon,
+                    equipmentData.value,
+                    obj.itemSO.itemType, InventoryHandler.GetPalette(equipmentData.rarity),
+                    obj.itemSO.Name, obj.itemSO.description,
+                    (obj.itemSO as EquipmentSO).equipmentType,
+                    equipmentData.eqquiped, equipmentData.rarity));
+            }
         }
 
         public void Reset()
@@ -106,5 +141,17 @@ namespace HeroesFlight.System.Inventory
         }
 
         public InventoryHandler InventoryHandler { get; private set; }
+
+        public void InitConnections()
+        {
+            uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += OpenInventory;
+            uiSystem.UiEventHandler.InventoryMenu.OnEquipItemRequest += HandleItemEquipRequest;
+            uiSystem.UiEventHandler.InventoryMenu.OnUpgradeRequest += HandleItemUpgradeRequest;
+            uiSystem.UiEventHandler.InventoryMenu.OnDismantleRequest += HandleItemDismantleRequest;
+            uiSystem.UiEventHandler.InventoryMenu.OnUnEquipItemRequest += HandleItemUnequipRequest;
+
+            //TODO: pass methodes from InventoryHandler here
+            //uiSystem.UiEventHandler.InventoryMenu.InitInventory();
+        }
     }
 }

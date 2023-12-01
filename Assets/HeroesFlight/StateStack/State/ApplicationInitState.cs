@@ -1,6 +1,7 @@
 ﻿using System;
 using HeroesFlight.Core.StateStack.Enum;
 using HeroesFlight.System.Environment;
+using HeroesFlight.System.Inventory;
 using HeroesFlight.System.UI;
 using JetBrains.Annotations;
 using StansAssets.Foundation.Async;
@@ -26,24 +27,24 @@ namespace HeroesFlight.StateStack.State
             switch (evt.Action)
             {
                 case StackAction.Added:
-                    
+
                     EnvironmentSystemInterface environmentSystem = GetService<EnvironmentSystemInterface>();
                     progressReporter.SetDone();
                     var uiScene = $"{SceneType.UIScene}";
                     m_SceneActionsQueue.AddAction(SceneActionType.Load, uiScene);
                     m_SceneActionsQueue.Start(null, () =>
                     {
-                        
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(uiScene);
+
                         CoroutineUtility.WaitForEndOfFrame(() =>
                         {
                             environmentSystem.Init(loadedScene);
                             GetService<IUISystem>().Init(loadedScene, () =>
                             {
+                                GetService<InventorySystemInterface>().InitConnections();
                                 AppStateStack.State.Set(ApplicationState.EnvironmentInitialization);
                             });
                         });
-                       
                     });
                     break;
                 case StackAction.Paused:

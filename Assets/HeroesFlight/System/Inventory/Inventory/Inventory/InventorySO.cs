@@ -76,7 +76,11 @@ public abstract class InventorySO<IInventoryData, DataType> : ScriptableObject, 
         }
         inventoryData.Clear();
         IInventoryData savedInventoryData = FileManager.Load<IInventoryData>(inventoryID);
-        inventoryData = savedInventoryData != null ? savedInventoryData : default;
+        //inventoryData = savedInventoryData != null ? savedInventoryData : default;
+        if (savedInventoryData != null)
+        {
+           inventoryData = savedInventoryData ;
+        }
     }
 
     public virtual void Clear()

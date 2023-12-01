@@ -118,6 +118,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
     {
         mainItemInventorySO.Load();
 
+        Debug.Log( mainItemInventorySO.inventoryData==null);
         foreach (ItemData itemData in mainItemInventorySO.inventoryData.equipmentData)
         {
             ItemSO itemSO = itemDatabaseSO.GetItemSOByID(itemData.ID);
@@ -261,4 +262,14 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
     public int GetTotalUpgradeGoldSpent(ItemEquipmentData itemEquipmentData) => itemDatabaseSO.GetEquipmentTotalUpgradeGoldCost(itemEquipmentData);
 
     public int GetTotalUpgradeMaterialSpent(ItemEquipmentData itemEquipmentData) => itemDatabaseSO.GetEquipmentTotalUpgradeMaterialCost(itemEquipmentData);
+
+    public Item GetEqupItemById(string objID)
+    {
+        if (equipmentItemDic.TryGetValue(objID, out var item))
+        {
+            return item;
+        }
+
+        return null;
+    }
 }

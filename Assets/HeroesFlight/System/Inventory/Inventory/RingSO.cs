@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using HeroesFlight.Common.Enum;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Ring", menuName = "Inventory System/Items/Equipment/Ring")]
 public class RingSO : EquipmentSO
