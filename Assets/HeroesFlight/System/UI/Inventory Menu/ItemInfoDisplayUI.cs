@@ -115,7 +115,8 @@ public class ItemInfoDisplayUI : MonoBehaviour
        
         if (materialItem == null)
         {
-            var inventoryItem = converter.GetEquipment("M_" + item.EquipmentType.ToString());
+            Debug.Log(item.InstanceId);
+            var inventoryItem = converter.GetEquipment(item.InstanceId);
            
             upgradeMaterialIcon.sprite = inventoryItem.Icon;
             requiredMaterialName.text = inventoryItem.Name;

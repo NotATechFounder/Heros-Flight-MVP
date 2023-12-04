@@ -102,7 +102,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
                     equippedItemDic.Remove(item.GetItemData<ItemEquipmentData>().instanceID);
                     ProcessEquippedItemStats();
                 }
-
+                Debug.Log($"Removing item fro minventory {item.itemSO.ID}");
                 equipmentItemDic.Remove(item.GetItemData<ItemEquipmentData>().instanceID);
                 break;
             case ItemType.Material:
@@ -170,7 +170,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
         {
             materialItem.GetItemData<ItemData>().value +=
                 itemDatabaseSO.GetEquipmentTotalUpgradeMaterialCost(item.GetItemData<ItemEquipmentData>());
-            OnItemModified?.Invoke(materialItem);
+           // OnItemModified?.Invoke(materialItem);
         }
         else
         {
@@ -275,6 +275,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
     public Item GetEqupItemById(string objID)
     {
+       
         if (equipmentItemDic.TryGetValue(objID, out var item))
         {
             return item;
