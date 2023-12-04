@@ -232,7 +232,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects
 
                 foreach (var model in effects.Values)
                 {
-                    foreach (var status in model.Effect.StatusEffects)
+                    foreach (var status in model.Effect.EffectToApply)
                     {
                         TryTriggerEffect(status,model.Lvl, effectsHandler, requestModel);
                     }
