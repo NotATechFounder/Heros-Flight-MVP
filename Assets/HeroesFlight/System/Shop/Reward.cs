@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System;
-using Object = UnityEngine.Object;
 
 [Serializable]
 public class Reward
