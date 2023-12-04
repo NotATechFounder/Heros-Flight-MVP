@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Inventory.Inventory.Converter;
 using HeroesFlight.System.UI;
 using HeroesFlight.System.UI.Inventory_Menu;
 using StansAssets.Foundation.Extensions;
@@ -19,6 +20,7 @@ namespace HeroesFlight.System.Inventory
 
         private DataSystemInterface data;
         private IUISystem uiSystem;
+        private InventoryItemConverter converter;
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
@@ -26,6 +28,12 @@ namespace HeroesFlight.System.Inventory
             InventoryHandler.Init(data.CurrencyManager);
             InventoryHandler.OnItemAdded += SpawnUiItem;
             InventoryHandler.OnItemModified += UpdateUiItem;
+            converter = new InventoryItemConverter(InventoryHandler);
+        }
+
+        public void Reset()
+        {
+            //TODO: reset callback if needed 
         }
 
         private void HandleItemUnequipRequest(InventoryItemUiEntry obj)
@@ -135,14 +143,9 @@ namespace HeroesFlight.System.Inventory
             }
         }
 
-        public void Reset()
-        {
-            //TODO: reset callback if needed 
-        }
-
         public InventoryHandler InventoryHandler { get; private set; }
 
-        public void InitConnections()
+        public void UpdateUiConnections()
         {
             uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += OpenInventory;
             uiSystem.UiEventHandler.InventoryMenu.OnEquipItemRequest += HandleItemEquipRequest;
@@ -151,7 +154,9 @@ namespace HeroesFlight.System.Inventory
             uiSystem.UiEventHandler.InventoryMenu.OnUnEquipItemRequest += HandleItemUnequipRequest;
 
             //TODO: pass methodes from InventoryHandler here
-            //uiSystem.UiEventHandler.InventoryMenu.InitInventory();
+            uiSystem.UiEventHandler.InventoryMenu.InitInventory(converter);
         }
+        
+        
     }
 }

@@ -9,13 +9,7 @@ public class ItemInfoDisplayUI : MonoBehaviour
     public event Action OnDismantleAction;
     public Action OnUpgradeRequest;
     public event Func<bool> OnUpgradeAction;
-    Func<EquipmentEntryUi, int> GetItemMaxLvlAction;
-    Func<EquipmentEntryUi, int> GetGoldForUpdateAction;
-    Func<string, InventoryItemUiEntry> GetInventoryItemByIdAction;
-    Func<string, InventoryItemUiEntry> GetMaterialItemByIdAction;
-    Func<EquipmentEntryUi, int> GetMaterialUpgradeAmount;
-    Func<EquipmentEntryUi, int> GetTotalMaterialSpent;
-    Func<EquipmentEntryUi, int> GetTotalGoldSpent;
+   
     public event Action OnEquipAction;
     public event Action OnUnequipAction;
 
@@ -48,7 +42,7 @@ public class ItemInfoDisplayUI : MonoBehaviour
     [Header("Debug")] [SerializeField] EquipmentEntryUi item;
 
     private Action equipOrUnequipAction;
-
+    private InventoryDataConverterInterface converter;
 
     private void Start()
     {
@@ -58,18 +52,9 @@ public class ItemInfoDisplayUI : MonoBehaviour
         equipOrUnequipButton.onClick.AddListener(() => equipOrUnequipAction?.Invoke());
     }
 
-    public void Init(Func<EquipmentEntryUi, int> maxLvlCallback, Func<EquipmentEntryUi, int> goldcallback,
-        Func<string, InventoryItemUiEntry> getMaterialCallback, Func<string, InventoryItemUiEntry> getitemCallback,
-        Func<EquipmentEntryUi, int> materialAmountCallback, Func<EquipmentEntryUi, int> materialSpent,
-        Func<EquipmentEntryUi, int> goldSpent)
+    public void Init(InventoryDataConverterInterface dataConverter)
     {
-        GetItemMaxLvlAction = maxLvlCallback;
-        GetGoldForUpdateAction = goldcallback;
-        GetMaterialItemByIdAction = getMaterialCallback;
-        GetInventoryItemByIdAction = getitemCallback;
-        GetMaterialUpgradeAmount = materialAmountCallback;
-        GetTotalMaterialSpent = materialSpent;
-        GetTotalGoldSpent = goldSpent;
+        converter = dataConverter;
     }
 
     public void Display(EquipmentEntryUi item)
@@ -107,7 +92,7 @@ public class ItemInfoDisplayUI : MonoBehaviour
 
     public void SetItemLevel()
     {
-        var maxLvl = GetItemMaxLvlAction?.Invoke(item);
+        var maxLvl =converter.GetMaxItemLvl(item);
         itemLevel.text = "LV." + item.Value.ToString() + " / " + maxLvl.ToString();
 
         if (item.Value >= maxLvl)
@@ -119,28 +104,28 @@ public class ItemInfoDisplayUI : MonoBehaviour
         else
         {
             upgradeMaterialHolder.SetActive(true);
-            upgradeGoldPriceDisplay.text = GetGoldForUpdateAction?.Invoke(item).ToString();
+            upgradeGoldPriceDisplay.text = converter.GetGoldAmount(item).ToString();
             upgradeGoldPriceDisplay.color = Color.white;
         }
     }
 
     void SeUpgradeInfo()
     {
-        var materialItem = GetMaterialItemByIdAction?.Invoke("M_" + item.EquipmentType.ToString());
+        var materialItem = converter.GetMaterial("M_" + item.EquipmentType.ToString());
        
         if (materialItem == null)
         {
-            var inventoryItem = GetInventoryItemByIdAction?.Invoke("M_" + item.EquipmentType.ToString());
+            var inventoryItem = converter.GetEquipment("M_" + item.EquipmentType.ToString());
            
             upgradeMaterialIcon.sprite = inventoryItem.Icon;
             requiredMaterialName.text = inventoryItem.Name;
             materialAmountDisplay.text =
-                GetMaterialUpgradeAmount?.Invoke(item) + " / " + 0.ToString();
+              converter.GetMaterialAmount(item) + " / " + 0.ToString();
             materialAmountDisplay.color = Color.red;
             return;
         }
 
-        var materialsRequired = GetMaterialUpgradeAmount?.Invoke(item);
+        var materialsRequired =  converter.GetMaterialAmount(item);
         upgradeMaterialIcon.sprite = materialItem.Icon;
         requiredMaterialName.text = materialItem.Name;
         materialAmountDisplay.text = materialsRequired + " / " +
@@ -150,8 +135,8 @@ public class ItemInfoDisplayUI : MonoBehaviour
                 ? Color.green
                 : Color.red;
 
-        dismantleMaterialDisplay.text = GetTotalMaterialSpent?.Invoke(item).ToString();
-        dismantleGoldDisplay.text = GetTotalGoldSpent?.Invoke(item)
+        dismantleMaterialDisplay.text = converter.GetMaterialSpentAmount(item).ToString();
+        dismantleGoldDisplay.text =converter.GetGoldSpentAmount(item)
             .ToString();
     }
 

@@ -10,9 +10,9 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 {
     public event Action<Item> OnItemAdded;
     public event Action<Item> OnItemModified;
-    public event Action <List<StatTypeWithValue>> OnEqiuppedItemsStatChanged;
+    public event Action<List<StatTypeWithValue>> OnEqiuppedItemsStatChanged;
 
-   [SerializeField] private ItemInventorySO mainItemInventorySO;
+    [SerializeField] private ItemInventorySO mainItemInventorySO;
     [SerializeField] private ItemDatabaseSO itemDatabaseSO;
     [SerializeField] private Dictionary<string, Item> equipmentItemDic = new Dictionary<string, Item>();
     [SerializeField] private Dictionary<string, Item> materialItemDic = new Dictionary<string, Item>();
@@ -21,8 +21,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
     private List<StatTypeWithValue> equippedItemsStatDic = new List<StatTypeWithValue>();
 
-    [Header("Test Item")]
-    [SerializeField] private ItemSO[] testItem;
+    [Header("Test Item")] [SerializeField] private ItemSO[] testItem;
     [SerializeField] private ItemSO[] testMaterialItem;
     [SerializeField] private CurrencyManager currencyManager;
 
@@ -87,12 +86,13 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
                 OnItemAdded?.Invoke(equipmentItemDic[itemEquipmentData.instanceID]);
                 return equipmentItemDic[itemEquipmentData.instanceID];
         }
+
         SaveInventoryItems();
         return null;
     }
 
     public void RemoveFromInventory(Item item)
-    {   
+    {
         switch (item.itemSO.itemType)
         {
             case ItemType.Equipment:
@@ -108,7 +108,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
             case ItemType.Material:
                 materialItemDic.Remove(item.GetItemData<ItemMaterialData>().ID);
                 break;
-            default:  break;
+            default: break;
         }
 
         mainItemInventorySO.RemoveItemFromInventory(item.itemSO, item.GetItemData<ItemData>());
@@ -118,7 +118,8 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
     {
         mainItemInventorySO.Load();
 
-        Debug.Log( mainItemInventorySO.inventoryData==null);
+        if (mainItemInventorySO.inventoryData == null)
+            return;
         foreach (ItemData itemData in mainItemInventorySO.inventoryData.equipmentData)
         {
             ItemSO itemSO = itemDatabaseSO.GetItemSOByID(itemData.ID);
@@ -162,11 +163,13 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
     public void DismantleItem(Item item)
     {
-        currencyManager.AddCurrency(CurrencyKeys.Gold, itemDatabaseSO.GetEquipmentTotalUpgradeGoldCost (item.GetItemData<ItemEquipmentData>()));
+        currencyManager.AddCurrency(CurrencyKeys.Gold,
+            itemDatabaseSO.GetEquipmentTotalUpgradeGoldCost(item.GetItemData<ItemEquipmentData>()));
         GetMaterialItemByID("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString(), out Item materialItem);
         if (materialItem != null)
         {
-            materialItem.GetItemData<ItemData>().value += itemDatabaseSO.GetEquipmentTotalUpgradeMaterialCost(item.GetItemData<ItemEquipmentData>());
+            materialItem.GetItemData<ItemData>().value +=
+                itemDatabaseSO.GetEquipmentTotalUpgradeMaterialCost(item.GetItemData<ItemEquipmentData>());
             OnItemModified?.Invoke(materialItem);
         }
         else
@@ -174,7 +177,8 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
             ItemSO itemSO = GetItemSO("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString());
             if (itemSO != null)
             {
-               AddToInventory(itemSO, itemDatabaseSO.GetEquipmentTotalUpgradeMaterialCost(item.GetItemData<ItemEquipmentData>()));
+                AddToInventory(itemSO,
+                    itemDatabaseSO.GetEquipmentTotalUpgradeMaterialCost(item.GetItemData<ItemEquipmentData>()));
             }
         }
 
@@ -232,20 +236,24 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
         equippedItemsStatDic = new List<StatTypeWithValue>();
         foreach (Item item in equippedItemDic.Values)
         {
-            int baseValue =  item.GetItemSO<EquipmentSO>().GetBaseStatValue(item.GetItemData<ItemEquipmentData>().rarity);
-            int actualValue = itemDatabaseSO.GetRarityInfo(item.GetItemData<ItemEquipmentData>().rarity).GetValue(baseValue, item.GetItemData<ItemEquipmentData>().value);
+            int baseValue = item.GetItemSO<EquipmentSO>()
+                .GetBaseStatValue(item.GetItemData<ItemEquipmentData>().rarity);
+            int actualValue = itemDatabaseSO.GetRarityInfo(item.GetItemData<ItemEquipmentData>().rarity)
+                .GetValue(baseValue, item.GetItemData<ItemEquipmentData>().value);
             StatType statType = item.GetItemSO<EquipmentSO>().statType;
-            equippedItemsStatDic.Add( new StatTypeWithValue(statType, actualValue,  StatModel.StatCalculationType.Flat));
+            equippedItemsStatDic.Add(new StatTypeWithValue(statType, actualValue, StatModel.StatCalculationType.Flat));
         }
 
-        OnEqiuppedItemsStatChanged?.Invoke(equippedItemsStatDic);   
+        OnEqiuppedItemsStatChanged?.Invoke(equippedItemsStatDic);
     }
 
     public int GetItemMaxLevel(Item item) => itemDatabaseSO.GetItemMaxLevel(item);
 
-    public int GetGoldUpgradeRequiredAmount(Item item) => itemDatabaseSO.GetUpgradeGoldCost(item.GetItemData<ItemData>());
+    public int GetGoldUpgradeRequiredAmount(Item item) =>
+        itemDatabaseSO.GetUpgradeGoldCost(item.GetItemData<ItemData>());
 
-    public int GetMaterialUpgradeRequiredAmount(Item item) => itemDatabaseSO.GetUpgradeMaterialCost(item.GetItemData<ItemData>());
+    public int GetMaterialUpgradeRequiredAmount(Item item) =>
+        itemDatabaseSO.GetUpgradeMaterialCost(item.GetItemData<ItemData>());
 
     public ItemSO GetItemSO(string id) => itemDatabaseSO.GetItemSOByID(id);
 
@@ -259,9 +267,11 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
     public RarityPalette GetPalette(Rarity rarity) => itemDatabaseSO.GetRarityPalette(rarity);
 
-    public int GetTotalUpgradeGoldSpent(ItemEquipmentData itemEquipmentData) => itemDatabaseSO.GetEquipmentTotalUpgradeGoldCost(itemEquipmentData);
+    public int GetTotalUpgradeGoldSpent(ItemEquipmentData itemEquipmentData) =>
+        itemDatabaseSO.GetEquipmentTotalUpgradeGoldCost(itemEquipmentData);
 
-    public int GetTotalUpgradeMaterialSpent(ItemEquipmentData itemEquipmentData) => itemDatabaseSO.GetEquipmentTotalUpgradeMaterialCost(itemEquipmentData);
+    public int GetTotalUpgradeMaterialSpent(ItemEquipmentData itemEquipmentData) =>
+        itemDatabaseSO.GetEquipmentTotalUpgradeMaterialCost(itemEquipmentData);
 
     public Item GetEqupItemById(string objID)
     {

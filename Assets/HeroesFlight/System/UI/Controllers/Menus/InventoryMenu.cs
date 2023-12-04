@@ -62,7 +62,6 @@ namespace UISystem
             canvasGroup.alpha = 0;
             openEffectBG.Start();
             UpdateCharacter(GetSelectedCharacterSO.Invoke());
-            //LoadInventoryItems();
         }
 
         public void UpdateCharacter(CharacterSO characterSO)
@@ -99,10 +98,7 @@ namespace UISystem
             }
         }
 
-        public void InitInventory(Func<EquipmentEntryUi, int> maxLvlCallback, Func<EquipmentEntryUi, int> goldcallback,
-            Func<string, InventoryItemUiEntry> getMaterialCallback, Func<string, InventoryItemUiEntry> getitemCallback,
-            Func<EquipmentEntryUi, int> materialAmountCallback, Func<EquipmentEntryUi, int> materialSpent,
-            Func<EquipmentEntryUi, int> goldSpent)
+        public void InitInventory(InventoryDataConverterInterface converter)
         {
             itemInfoDisplayUI.OnEquipAction += EquipItem;
             itemInfoDisplayUI.OnDismantleAction += () =>
@@ -116,10 +112,7 @@ namespace UISystem
            
             itemInfoDisplayUI.OnUnequipAction += UnEquipItem;
 
-            itemInfoDisplayUI.Init(maxLvlCallback, goldcallback,
-                getMaterialCallback, getitemCallback,
-                materialAmountCallback, materialSpent,
-                goldSpent);
+            itemInfoDisplayUI.Init(converter);
 
             foreach (EquippedSlot slot in equippedSlots)
             {
