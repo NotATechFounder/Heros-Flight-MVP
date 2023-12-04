@@ -9,12 +9,11 @@ using UnityEngine;
 [CustomEditor(typeof(GameAreaModel))]
 public class GameAreaModelEditor : Editor
 {
-    SerializedProperty areaNameProperty;
+    SerializedProperty worldTypeProperty;
     SerializedProperty heroProgressionExpEarnedPerKillProperty;
     SerializedProperty portalPrefabProperty;
     SerializedProperty crystalPrefabProperty;
     SerializedProperty angelsGambitLevelProperty;
-    SerializedProperty worldBossProperty;
     SerializedProperty bossMusicKeyProperty;
     SerializedProperty spawnModelProperty;
     SerializedProperty mobDifficultyProperty;
@@ -33,12 +32,11 @@ public class GameAreaModelEditor : Editor
 
     private void OnEnable()
     {
-        areaNameProperty = serializedObject.FindProperty("areaName");
+        worldTypeProperty = serializedObject.FindProperty("worldType");
         heroProgressionExpEarnedPerKillProperty = serializedObject.FindProperty("heroProgressionExpEarnedPerKill");
         portalPrefabProperty = serializedObject.FindProperty("portalPrefab");
         crystalPrefabProperty = serializedObject.FindProperty("crystalPrefab");
         angelsGambitLevelProperty = serializedObject.FindProperty("angelsGambitLevel");
-        worldBossProperty = serializedObject.FindProperty("worldBoss");
         bossMusicKeyProperty = serializedObject.FindProperty("bossMusicKey");
         spawnModelProperty = serializedObject.FindProperty("spawnModel");
         mobDifficultyProperty = serializedObject.FindProperty("mobDifficulty");
@@ -62,12 +60,11 @@ public class GameAreaModelEditor : Editor
     {
         serializedObject.Update();
 
-        EditorGUILayout.PropertyField(areaNameProperty);
+        EditorGUILayout.PropertyField(worldTypeProperty);
         EditorGUILayout.PropertyField(heroProgressionExpEarnedPerKillProperty);
         EditorGUILayout.PropertyField(portalPrefabProperty);
         EditorGUILayout.PropertyField(crystalPrefabProperty);
         EditorGUILayout.PropertyField(angelsGambitLevelProperty);
-        EditorGUILayout.PropertyField(worldBossProperty);
         EditorGUILayout.PropertyField(bossDropProperty);
         EditorGUILayout.PropertyField(bossMusicKeyProperty);
         EditorGUILayout.PropertyField(spawnModelProperty);

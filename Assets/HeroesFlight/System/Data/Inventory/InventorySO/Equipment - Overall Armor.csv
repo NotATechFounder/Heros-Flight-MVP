@@ -1,0 +1,31 @@
+Id,Name,Description,Common,Uncommon,Rare,Epic
+overall_cloak_1,Novice Robe,A basic robe,5,7,10,14
+overall_cloak_2,Apprentice Robe,You look like a cultist in training,10,12,15,19
+overall_cloak_3,Worshipper Robe,It's starting to look like magic season,15,17,20,24
+overall_cloak_4,Wizard Robe,There's some magic flowing in this robe,20,22,25,29
+overall_cloak_5,Blue Magi Robe,It's a protagonists magic robe,25,27,30,34
+overall_cloak_6,Red Chaos Robe,Woke up and chose destruction,27,29,35,39
+overall_cloak_7,Black Legions Robe,Brimming with dark powers that defy the natural elements,30,37,40,44
+overall_common_1,Ragged Top,A basic top,5,7,10,14
+overall_common_2,Aristocrats Top,Ironically stronger than some leather equipment,10,17,20,24
+overall_leather_1,Green Leather Top,A basic leather top for a basic hero,10,12,15,19
+overall_leather_2,Red Fighters Top,A bit of extra padding for those adventures,15,17,20,24
+overall_leather_3,Padded Overalls,A padded overall for that extra protection,20,22,25,29
+overall_leather_4,Sellsword Armor,Finally a top that actually protects you,25,27,30,34
+overall_leather_5,Enhanced Leather Armor,When you spend money on the detail not the protection,30,32,35,39
+overall_leather_6,Noble Armor,Daddy what's the credit card number,35,37,40,44
+overall_leather_7,Frost Enhanced Armor,An ice priestess infused this armor with a magic aura,40,42,45,49
+overall_leather_8,Orc Skin Armor,Looks like orc is back on the table boys,45,47,50,54
+overall_leather_9,Black Drake Armor,Carved from the skin of the black dragons,50,52,55,59
+overall_leather_10,Roman Armor,Modern engineering of the Roman Empire,55,57,60,64
+overall_leather_11,Dragon Gem Armor,Carved from dragon skin and imbued with their ancient magic,60,62,65,69
+overall_plate_1,Plate Heavy Armor,A standard heavy armor,25,27,35,39
+overall_plate_2,Mithril Heavy Armor,Mithril feels much better than plate,30,32,40,44
+overall_plate_3,Emerald Heavy Armor,I hope they attack the parts with emerald gems,35,37,45,49
+overall_plate_4,Chainmail Heavy Overall,This is bloody heavy,40,42,50,54
+overall_plate_5,Dwarven Heavy Armor,Dwarven engineering at it's finest,45,47,55,59
+overall_plate_6,Platemail Heavy Overall,Did we really just add a layer of plates ontop of chainmail?,50,52,60,64
+overall_plate_7,Dragon Scale Mail,The scales are carefully placed on the dragon skin armor,55,57,65,69
+overall_plate_8,Anthracite Dragon Scale Mail,Anthracite with zero impurities imbued with dragon scales,60,62,70,74
+overall_plate_9,Dragonheart Armor,A dragon's heart powers this armor,65,67,75,79
+overall_plate_10,Magic Plate Armor,A perfect replica of King Arthurs armor,70,72,80,84

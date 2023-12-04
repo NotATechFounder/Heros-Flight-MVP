@@ -55,5 +55,6 @@ public enum HeroType
 {
     Warrior,
     Adventurer,
-    Mage
+    Mage,
+    All
 }

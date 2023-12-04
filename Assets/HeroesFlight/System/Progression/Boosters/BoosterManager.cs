@@ -104,10 +104,10 @@ public class BoosterManager : MonoBehaviour
     {
         return new Boost(boosterSO, ()=>
         {
-            characterStatController.ModifyDefense(boosterSO.BoosterValue, true);
+            characterStatController.GetStatModel.ModifyCurrentStat(StatType.Defense, boosterSO.BoosterValue, StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
         }, () =>
         {
-            characterStatController.ModifyDefense(boosterSO.BoosterValue, false);
+            characterStatController.GetStatModel.ModifyCurrentStat(StatType.Defense, boosterSO.BoosterValue, StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
         });
     }
 
@@ -115,10 +115,10 @@ public class BoosterManager : MonoBehaviour
     {
         return new Boost(boosterSO, () =>
         {
-            characterStatController.ModifyAttackSpeed(boosterSO.BoosterValue, true);
+            characterStatController.GetStatModel.ModifyCurrentStat(StatType.AttackSpeed, boosterSO.BoosterValue, StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
         }, () =>
         {
-            characterStatController.ModifyAttackSpeed(boosterSO.BoosterValue, false);
+            characterStatController.GetStatModel.ModifyCurrentStat(StatType.AttackSpeed, boosterSO.BoosterValue, StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
         });
     }
 
@@ -126,10 +126,10 @@ public class BoosterManager : MonoBehaviour
     {
         return new Boost(boosterSO, () =>
         {
-            characterStatController.ModifyMoveSpeed(boosterSO.BoosterValue, true);
+            characterStatController.GetStatModel.ModifyCurrentStat(StatType.MoveSpeed, boosterSO.BoosterValue, StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
         }, () =>
         {
-            characterStatController.ModifyMoveSpeed(boosterSO.BoosterValue, false);
+            characterStatController.GetStatModel.ModifyCurrentStat(StatType.MoveSpeed, boosterSO.BoosterValue, StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
         });
     }
 
@@ -153,12 +153,12 @@ public class BoosterManager : MonoBehaviour
     {
         return new Boost(boosterSO, () =>
         {
-            characterStatController.ModifyMagicDamage(boosterSO.BoosterValue, true);
-            characterStatController.ModifyPhysicalDamage(boosterSO.BoosterValue, true);
+            characterStatController.GetStatModel.ModifyCurrentStat(StatType.PhysicalDamage, boosterSO.BoosterValue, StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
+            characterStatController.GetStatModel.ModifyCurrentStat(StatType.MagicDamage, boosterSO.BoosterValue, StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
         }, () =>
         {
-            characterStatController.ModifyMagicDamage(boosterSO.BoosterValue, false);
-            characterStatController.ModifyPhysicalDamage(boosterSO.BoosterValue, false);
+            characterStatController.GetStatModel.ModifyCurrentStat(StatType.PhysicalDamage, boosterSO.BoosterValue, StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+            characterStatController.GetStatModel.ModifyCurrentStat(StatType.MagicDamage, boosterSO.BoosterValue, StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
         });
     }
 }

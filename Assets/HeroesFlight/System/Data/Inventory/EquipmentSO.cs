@@ -10,8 +10,9 @@ public class EquipmentSO : ItemSO
 {
     public EquipmentType equipmentType;
     public StatType statType;
+    public HeroType heroType;
     public ItemStatByRarity[] itemBaseStats;
-    public BonusStat bonusStat;
+    public ItemEffect specialHeroEffect;
     public ItemRarityStat[] itemRarityStats;
 
     private void Awake() => itemType = ItemType.Equipment;
@@ -50,11 +51,10 @@ public class StatTypeWithValue
 }
 
 [Serializable]
-public class BonusStat
+public class UniqueEffect
 {
-    public Rarity rarity;
-    public HeroType heroType;
-    public StatTypeWithValue statTypeWithValue;
+    public EquipmentType equipmentType;
+    public ItemRarityStat[] itemRarityStats;
 }
 
 [Serializable]

@@ -89,13 +89,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers.Hazard
                 case SkillType.Slow:
                     if (collider2D.TryGetComponent(out CharacterStatController characterStatController))
                     {
-                        characterStatController.ModifyMoveSpeed(slowPercentageDecrease, false);
+                        characterStatController.GetStatModel.ModifyCurrentStat( StatType.MoveSpeed, slowPercentageDecrease, StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
                     }
                     break;
                 case SkillType.Both:
                     if (collider2D.TryGetComponent(out characterStatController))
                     {
-                        characterStatController.ModifyMoveSpeed(slowPercentageDecrease, false);
+                        characterStatController.GetStatModel. ModifyCurrentStat(StatType.MoveSpeed, slowPercentageDecrease, StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
                     }
                     break;
                 default: break;
@@ -145,13 +145,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers.Hazard
                 case SkillType.Slow:
                     if (collider2D.TryGetComponent(out CharacterStatController characterStatController))
                     {
-                        characterStatController.ModifyMoveSpeed(slowPercentageDecrease, true);
+                        characterStatController.GetStatModel.ModifyCurrentStat( StatType.MoveSpeed, slowPercentageDecrease, StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
                     }
                     break;
                 case SkillType.Both:
                     if (collider2D.TryGetComponent(out characterStatController))
                     {
-                        characterStatController.ModifyMoveSpeed(slowPercentageDecrease, false);
+                        characterStatController.GetStatModel.ModifyCurrentStat(StatType.MoveSpeed, slowPercentageDecrease, StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
                     }
                     break;
                 default: break;

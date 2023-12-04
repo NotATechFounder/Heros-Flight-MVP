@@ -63,7 +63,7 @@ public class TagonSkillController : SkillAnimationEventHandler
 
     protected void ApplyLifeSteal(float percentage)
     {
-        float healthInc = StatCalc.GetPercentage(characterStatController.CurrentMaxHealth, percentage);
+        float healthInc = StatCalc.GetPercentage(characterStatController.GetStatModel.GetCurrentStatValue(StatType.MaxHealth), percentage);
         characterStatController.ModifyHealth(healthInc, true);
     }
 
