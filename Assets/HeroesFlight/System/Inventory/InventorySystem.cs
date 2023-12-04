@@ -156,7 +156,7 @@ namespace HeroesFlight.System.Inventory
 
         public InventoryHandler InventoryHandler { get; private set; }
 
-        public void UpdateUiConnections()
+        public void InjectUiConnection()
         {
             uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += OpenInventory;
             uiSystem.UiEventHandler.InventoryMenu.OnEquipItemRequest += HandleItemEquipRequest;
@@ -165,6 +165,8 @@ namespace HeroesFlight.System.Inventory
             uiSystem.UiEventHandler.InventoryMenu.OnUnEquipItemRequest += HandleItemUnequipRequest;
 
             uiSystem.UiEventHandler.InventoryMenu.InitInventory(converter);
+            
+            Debug.Log("SUBSCRIBED");
         }
     }
 }

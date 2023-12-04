@@ -41,7 +41,7 @@ namespace HeroesFlight.StateStack.State
                             environmentSystem.Init(loadedScene);
                             GetService<IUISystem>().Init(loadedScene, () =>
                             {
-                                GetService<InventorySystemInterface>().UpdateUiConnections();
+                                GetService<InventorySystemInterface>().InjectUiConnection();
                                 AppStateStack.State.Set(ApplicationState.EnvironmentInitialization);
                             });
                         });

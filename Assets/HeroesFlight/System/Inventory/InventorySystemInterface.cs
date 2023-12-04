@@ -4,6 +4,6 @@ namespace HeroesFlight.System.Inventory
     public interface InventorySystemInterface : SystemInterface
     {
         InventoryHandler InventoryHandler { get; }
-        void UpdateUiConnections();
+        void InjectUiConnection();
     }
 }
