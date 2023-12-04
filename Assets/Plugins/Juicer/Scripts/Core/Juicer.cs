@@ -351,13 +351,13 @@ namespace Pelumi.Juicer
             return juicerRuntime;
         }
 
-        public static JuicerRuntimeCore<Color> JuicyColour(this TMP_Text textMeshPro, Color to, float duration)
-        {
-            Init();
-            JuicerRuntimeCore<Color> juicerRuntime = new JuicerRuntimeCore<Color>
-            (textMeshPro, () => textMeshPro.color, (value) => textMeshPro.color = value, to, duration);
-            return juicerRuntime;
-        }
+        //public static JuicerRuntimeCore<Color> JuicyColour(this TMP_Text textMeshPro, Color to, float duration)
+        //{
+        //    Init();
+        //    JuicerRuntimeCore<Color> juicerRuntime = new JuicerRuntimeCore<Color>
+        //    (textMeshPro, () => textMeshPro.color, (value) => textMeshPro.color = value, to, duration);
+        //    return juicerRuntime;
+        //}
 
         public static JuicerRuntimeCore<float> JuicyAlpha(this TMP_Text textMeshPro, float to, float duration)
         {
