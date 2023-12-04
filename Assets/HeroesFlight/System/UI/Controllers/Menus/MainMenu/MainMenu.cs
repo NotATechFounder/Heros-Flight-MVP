@@ -135,6 +135,7 @@ namespace UISystem
         public void LoadWorlds(WorldVisualSO[] worldVisualSOs)
         {
             worldVisualSOList = worldVisualSOs;
+            worldVisualDic.Clear();
             foreach (WorldVisualSO worldVisualSO in worldVisualSOList)
             {
                 worldVisualDic.Add(worldVisualSO.worldType, worldVisualSO);

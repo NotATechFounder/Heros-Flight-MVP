@@ -67,7 +67,7 @@ namespace HeroesFlight.System.Character.Controllers.Effects
 
         protected override void ApplyEffectOnInit(CombatEffect combatEffect, int lvl)
         {
-            foreach (var effect in combatEffect.StatusEffects)
+            foreach (var effect in combatEffect.EffectToApply)
             {
                 if (effect.GetType() == typeof(StatModificationEffect))
                 {
@@ -81,7 +81,7 @@ namespace HeroesFlight.System.Character.Controllers.Effects
 
         protected override void RemoveCombatEffectsValues(CombatEffectRuntimeModel runtimeEffect)
         {
-            foreach (var effect in runtimeEffect.Effect.StatusEffects)
+            foreach (var effect in runtimeEffect.Effect.EffectToApply)
             {
                 if (effect.GetType() == typeof(StatModificationEffect))
                 {

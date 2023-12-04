@@ -6,6 +6,7 @@ using HeroesFlight.System.Dice;
 using HeroesFlight.System.Environment;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Input;
+using HeroesFlight.System.Inventory;
 using HeroesFlight.System.NPC;
 using HeroesFlight.System.Stats;
 using HeroesFlight.System.Stats.Handlers;
@@ -42,7 +43,7 @@ namespace HeroesFlight.Core.Bootstrapper
             ProgressionSystemInterface progressionSystem = new ProgressionSystem(dataSystem);
             DiceSystemInterface diceSystem = new DiceSystem(uiSystem);
             TraitSystemInterface traitSystem = new TraitsSystem(dataSystem, uiSystem,diceSystem);
-            
+            InventorySystemInterface inventorySystem = new InventorySystem(dataSystem,uiSystem);
             GamePlaySystemInterface gamePlaySystem =
                 new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem,traitSystem);
 
@@ -57,6 +58,7 @@ namespace HeroesFlight.Core.Bootstrapper
             m_ServiceLocator.Register(progressionSystem);
             m_ServiceLocator.Register(traitSystem);
             m_ServiceLocator.Register(diceSystem);
+            m_ServiceLocator.Register(inventorySystem);
             return m_ServiceLocator;
         }
 
