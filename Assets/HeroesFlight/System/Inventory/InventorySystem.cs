@@ -41,6 +41,7 @@ namespace HeroesFlight.System.Inventory
             Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
             InventoryHandler.UnEquipItem(targetItem);
             uiSystem.UiEventHandler.InventoryMenu.UnEquipItem();
+            UpdateInventoryUi();
         }
 
         private void HandleItemDismantleRequest(InventoryItemUiEntry obj)
@@ -48,6 +49,7 @@ namespace HeroesFlight.System.Inventory
             Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
             InventoryHandler.DismantleItem(targetItem);
             uiSystem.UiEventHandler.InventoryMenu.DismantleItem();
+            UpdateInventoryUi();
         }
 
         private void HandleItemUpgradeRequest(InventoryItemUiEntry obj)
@@ -56,6 +58,7 @@ namespace HeroesFlight.System.Inventory
             if (InventoryHandler.TryUpgradeItem(targetItem))
             {
                 uiSystem.UiEventHandler.InventoryMenu.UpgradeItem();
+                UpdateInventoryUi();
             }
         }
 
@@ -63,6 +66,7 @@ namespace HeroesFlight.System.Inventory
         {
             Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
             InventoryHandler.EquipItem(targetItem);
+            UpdateInventoryUi();
         }
 
         private void OpenInventory()
@@ -78,7 +82,7 @@ namespace HeroesFlight.System.Inventory
             foreach (var equipmentItem in InventoryHandler.GetInventoryEquippmentItems())
             {
                 var equipmentData = equipmentItem.GetItemData<ItemEquipmentData>();
-                equipment.Add(new EquipmentEntryUi(equipmentItem.itemSO.ID, equipmentItem.itemSO.icon,
+                equipment.Add(new EquipmentEntryUi(equipmentData.instanceID, equipmentItem.itemSO.icon,
                     equipmentData.value,
                     equipmentItem.itemSO.itemType, InventoryHandler.GetPalette(equipmentData.rarity),
                     equipmentItem.itemSO.Name, equipmentItem.itemSO.description,
@@ -119,6 +123,8 @@ namespace HeroesFlight.System.Inventory
                     (obj.itemSO as EquipmentSO).equipmentType,
                     equipmentData.eqquiped, equipmentData.rarity));
             }
+
+            UpdateInventoryUi();
         }
 
         private void SpawnUiItem(Item obj)
@@ -141,6 +147,8 @@ namespace HeroesFlight.System.Inventory
                     (obj.itemSO as EquipmentSO).equipmentType,
                     equipmentData.eqquiped, equipmentData.rarity));
             }
+
+            UpdateInventoryUi();
         }
 
         public InventoryHandler InventoryHandler { get; private set; }
@@ -156,7 +164,5 @@ namespace HeroesFlight.System.Inventory
             //TODO: pass methodes from InventoryHandler here
             uiSystem.UiEventHandler.InventoryMenu.InitInventory(converter);
         }
-        
-        
     }
 }
