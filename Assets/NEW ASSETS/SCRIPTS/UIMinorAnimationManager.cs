@@ -5,113 +5,107 @@ using UnityEngine;
 public class UIMinorAnimationManager : MonoBehaviour
 {
     [System.Serializable]
-    public class ObjectsAnimationProperties
+    public class AnimationObjectProperties
     {
-        [SerializeField] public string ObjectType;              // Type of the object
-        [SerializeField] public RectTransform[] moveableObjects; // Array of UI objects to be animated
-        [SerializeField] public Vector2 moveDirection;          // Direction of movement
-        [SerializeField] public Vector2 movementXOffset;        // Offset range on the X-axis for movement limits
-        [SerializeField] public Vector2 movementYOffset;        // Offset range on the Y-axis for movement limits
-        [SerializeField] public float moveSpeed;                // Speed of movement
-        [SerializeField] public float smoothing;                // Smoothing factor for movement
+        [SerializeField] public string ObjectName;
 
-        public Vector2[] initialPos;                             // Initial positions of the UI objects
+        [Header("Settings")]
+        [SerializeField] public RectTransform objectRectT;
+        
+        [SerializeField] public bool moveInScreenLoop;
+        [SerializeField] public bool inverseHLoop;
+        [SerializeField] public bool inverseVLoop;
+        [Space]
+        [SerializeField] public bool moveHorizontal;
+        [SerializeField] public bool moveVertical;
+
+        [SerializeField] public Vector2 moveXOffset;
+        [SerializeField] public Vector2 moveYOffset;
+
+        [SerializeField] public float moveSpeed;
+
+        [Header("Read Only")]
+        [SerializeField] public Vector2 initialPos;
+        [SerializeField] public Vector2 minMaxX;
+        [SerializeField] public Vector2 minMaxY;
     }
 
-    [SerializeField] private ObjectsAnimationProperties[] objectsAnimationProperties; // Array of animation properties
-
-    private Vector2 randomDir = Vector2.zero; // Random direction for random movement
+    [SerializeField] private AnimationObjectProperties[] totalAOP;
 
     private void Start()
     {
-        // Initialize initialPos array for each ObjectsAnimationProperties
-        for (int i = 0; i < objectsAnimationProperties.Length; i++)
+        for (int i = 0; i < totalAOP.Length; i++)
         {
-            objectsAnimationProperties[i].initialPos = new Vector2[objectsAnimationProperties[i].moveableObjects.Length];
+            totalAOP[i].initialPos = totalAOP[i].objectRectT.anchoredPosition;
 
-            // Store the initial positions of moveableObjects
-            for (int j = 0; j < objectsAnimationProperties[i].moveableObjects.Length; j++)
-            {
-                objectsAnimationProperties[i].initialPos[j] = objectsAnimationProperties[i].moveableObjects[j].anchoredPosition;
-            }
+            //totalAOP[i].minMaxX = new Vector2(totalAOP[i].initialPos.x - totalAOP[i].moveXOffset.x, totalAOP[i].initialPos.x + totalAOP[i].moveXOffset.y);
+            //totalAOP[i].minMaxY = new Vector2(totalAOP[i].initialPos.y - totalAOP[i].moveYOffset.x, totalAOP[i].initialPos.y + totalAOP[i].moveYOffset.y);
         }
-
-        // Generate a random direction vector for initial random movement
-        randomDir = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
     }
 
     private void Update()
     {
-        MoveObjects();
+        MoveAllObjects();
     }
 
-    private void MoveObjects()
+    private void MoveAllObjects()
     {
-        // Iterate through each ObjectsAnimationProperties
-        for (int i = 0; i < objectsAnimationProperties.Length; i++)
+        for (int i = 0; i < totalAOP.Length; i++)
         {
-            // Check if both x and y components of moveDirection are non-zero
-            bool doRandomizing = (objectsAnimationProperties[i].moveDirection.x != 0 && objectsAnimationProperties[i].moveDirection.y != 0);
+            totalAOP[i].minMaxX = new Vector2(totalAOP[i].initialPos.x - totalAOP[i].moveXOffset.x, totalAOP[i].initialPos.x + totalAOP[i].moveXOffset.y);
+            totalAOP[i].minMaxY = new Vector2(totalAOP[i].initialPos.y - totalAOP[i].moveYOffset.x, totalAOP[i].initialPos.y + totalAOP[i].moveYOffset.y);
+        }
 
-            // Define the movement vector
-            Vector2 movement;
-
-            // If randomizing, generate a random movement vector within a range
-            if (doRandomizing)
+        for (int i = 0; i < totalAOP.Length; i++)
+        {
+            if (totalAOP[i].moveHorizontal)
             {
-                movement = new Vector2(randomDir.x, randomDir.y).normalized * objectsAnimationProperties[i].moveSpeed * Time.deltaTime;
-            }
-            // If not randomizing, use the specified moveDirection
-            else
-            {
-                movement = objectsAnimationProperties[i].moveDirection * objectsAnimationProperties[i].moveSpeed * Time.deltaTime;
-            }
-
-            // Iterate through each moveable object in the current ObjectsAnimationProperties
-            for (int j = 0; j < objectsAnimationProperties[i].moveableObjects.Length; j++)
-            {
-                // Calculate the minimum and maximum positions based on anchoredPosition
-                float minPosX = objectsAnimationProperties[i].initialPos[j].x - objectsAnimationProperties[i].movementXOffset.x;
-                float maxPosX = objectsAnimationProperties[i].initialPos[j].x + objectsAnimationProperties[i].movementXOffset.y;
-
-                float minPosY = objectsAnimationProperties[i].initialPos[j].y - objectsAnimationProperties[i].movementYOffset.x;
-                float maxPosY = objectsAnimationProperties[i].initialPos[j].y + objectsAnimationProperties[i].movementYOffset.y;
-
-                Vector2 newPosition = objectsAnimationProperties[i].moveableObjects[j].anchoredPosition + movement;
-
-                // Check if the new position is within the specified offsets
-                if (newPosition.x < minPosX || newPosition.x > maxPosX)
+                if (totalAOP[i].moveInScreenLoop)
                 {
-                    // Reverse the direction when reaching the offset
-                    if (doRandomizing)
+                    float newX = totalAOP[i].objectRectT.anchoredPosition.x + (totalAOP[i].inverseHLoop ? totalAOP[i].moveSpeed : -totalAOP[i].moveSpeed) * Time.deltaTime;
+
+                    if (newX > totalAOP[i].minMaxX.y || newX < totalAOP[i].minMaxX.x)
                     {
-                        // If randomizing, generate a new random direction
-                        randomDir = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+                        newX = Mathf.Repeat(newX - totalAOP[i].minMaxX.x, totalAOP[i].minMaxX.y - totalAOP[i].minMaxX.x) + totalAOP[i].minMaxX.x;
+                        totalAOP[i].objectRectT.anchoredPosition = new Vector2(newX, totalAOP[i].objectRectT.anchoredPosition.y);
                     }
                     else
                     {
-                        // If not randomizing, reverse the moveDirection on the X-axis
-                        objectsAnimationProperties[i].moveDirection.x *= -1;
+                        totalAOP[i].objectRectT.anchoredPosition = new Vector2(newX, totalAOP[i].objectRectT.anchoredPosition.y);
                     }
                 }
-
-                if (newPosition.y < minPosY || newPosition.y > maxPosY)
+                else
                 {
-                    // Reverse the direction when reaching the offset
-                    if (doRandomizing)
+                    float targetX = totalAOP[i].minMaxX.x + Mathf.PingPong(Time.time * totalAOP[i].moveSpeed, totalAOP[i].minMaxX.y - totalAOP[i].minMaxX.x);
+                    float newX = Mathf.MoveTowards(totalAOP[i].objectRectT.anchoredPosition.x, targetX, totalAOP[i].moveSpeed * Time.deltaTime);
+
+                    totalAOP[i].objectRectT.anchoredPosition = new Vector2(newX, totalAOP[i].objectRectT.anchoredPosition.y);
+                }
+            }
+
+            if (totalAOP[i].moveVertical)
+            {
+                if (totalAOP[i].moveInScreenLoop)
+                {
+                    float newY = totalAOP[i].objectRectT.anchoredPosition.y + (totalAOP[i].inverseVLoop ? totalAOP[i].moveSpeed : -totalAOP[i].moveSpeed) * Time.deltaTime;
+
+                    if (newY > totalAOP[i].minMaxY.y || newY < totalAOP[i].minMaxY.x)
                     {
-                        // If randomizing, generate a new random direction
-                        randomDir = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+                        newY = Mathf.Repeat(newY - totalAOP[i].minMaxY.x, totalAOP[i].minMaxY.y - totalAOP[i].minMaxY.x) + totalAOP[i].minMaxY.x;
+                        totalAOP[i].objectRectT.anchoredPosition = new Vector2(totalAOP[i].objectRectT.anchoredPosition.x, newY);
                     }
                     else
                     {
-                        // If not randomizing, reverse the moveDirection on the Y-axis
-                        objectsAnimationProperties[i].moveDirection.y *= -1;
+                        totalAOP[i].objectRectT.anchoredPosition = new Vector2(totalAOP[i].objectRectT.anchoredPosition.x, newY);
                     }
                 }
+                else
+                {
+                    float targetY = totalAOP[i].minMaxY.x + Mathf.PingPong(Time.time * totalAOP[i].moveSpeed, totalAOP[i].minMaxY.y - totalAOP[i].minMaxY.x);
+                    float newY = Mathf.MoveTowards(totalAOP[i].objectRectT.anchoredPosition.y, targetY, totalAOP[i].moveSpeed * Time.deltaTime);
 
-                // Smoothly interpolate to the new position
-                objectsAnimationProperties[i].moveableObjects[j].anchoredPosition = Vector2.Lerp(objectsAnimationProperties[i].moveableObjects[j].anchoredPosition, newPosition, objectsAnimationProperties[i].smoothing);
+                    totalAOP[i].objectRectT.anchoredPosition = new Vector2(totalAOP[i].objectRectT.anchoredPosition.x, newY);
+                }
             }
         }
     }
