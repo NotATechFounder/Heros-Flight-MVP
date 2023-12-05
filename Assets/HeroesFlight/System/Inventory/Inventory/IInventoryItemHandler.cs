@@ -5,9 +5,7 @@ using HeroesFlight.Common.Enum;
 
 public interface IInventoryItemHandler
 {
-    event Action<Item> OnItemAdded;
-    event Action<Item> OnItemModified;
-
+    public event Action OnInventoryUpdated;
     void DismantleItem(Item item);
     void EquipItem(Item item);
     List<Item> GetInventoryEquippmentItems();

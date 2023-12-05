@@ -7,6 +7,7 @@ using TMPro;
 using Pelumi.Juicer;
 using HeroesFlight.Common.Progression;
 using HeroesFlight.System.UI.Inventory_Menu;
+using Pelumi.ObjectPool;
 
 namespace UISystem
 {
@@ -132,7 +133,8 @@ namespace UISystem
             }
             foreach (ItemUI itemUI in itemUIDic.Values)
             {
-                Destroy(itemUI.gameObject);
+                ObjectPoolManager.ReleaseObject(itemUI);
+                //Destroy(itemUI.gameObject);
             }
 
             itemUIDic.Clear();
@@ -159,6 +161,7 @@ namespace UISystem
 
                 if(selectedItem != null && selectedItem.ID == item.ID)
                 {
+                    Debug.Log("selected item found" + item.ID);
                     selectedItem = item;
                 }
             }
@@ -198,11 +201,13 @@ namespace UISystem
             if (selectedItem != null)
             {
                 itemUIDic.Remove(selectedItem.ID);
+                selectedItem = null;
             }
 
             if (selectedItemUI != null)
             {
-                Destroy(selectedItemUI.gameObject);
+                ObjectPoolManager.ReleaseObject(selectedItemUI);
+
                 selectedItemUI = null;
             }
 
@@ -220,8 +225,12 @@ namespace UISystem
         /// </summary>
         /// <returns></returns>
         public void EquipItem()
-        {       
-            EquippedSlot equippedSlot = GetEquipmentSlot((selectedItemUI.GetItem as EquipmentEntryUi).EquipmentType);
+        {
+            Debug.Log("Equipping item Start+ " + selectedItemUI.GetItem.ID);
+
+            EquipmentEntryUi equipmentEntryUi = selectedItemUI.GetItem as EquipmentEntryUi;
+            EquippedSlot equippedSlot = GetEquipmentSlot(equipmentEntryUi.EquipmentType);
+        
             if (equippedSlot != null)
             {
                 if (equippedSlot.IsOccupied)
@@ -232,8 +241,8 @@ namespace UISystem
                     //equippedSlot.UnOccupy();
                 }
 
-
-                OnEquipItemRequest?.Invoke(selectedItemUI.GetItem as EquipmentEntryUi);
+                Debug.Log("Equipping item Done + " + selectedItemUI.GetItem.ID);
+                OnEquipItemRequest?.Invoke(equipmentEntryUi);
               //  equippedSlot.Occupy(selectedItemUI.GetItem, selectedItemUI.GetItem.RarityPallete);
               //  itemUIDic.Remove(selectedItemUI.GetItem.ID);
              //   Destroy(selectedItemUI.gameObject);
@@ -241,6 +250,7 @@ namespace UISystem
             }
 
             itemInfoDisplayUI.Close();
+            selectedItem = null;
         }
 
         /// <summary>
@@ -258,6 +268,7 @@ namespace UISystem
             }
 
             itemInfoDisplayUI.Close();
+            selectedItem = null;
         }
 
         public void SpawnItemUI(List<InventoryItemUiEntry> items)
@@ -270,29 +281,16 @@ namespace UISystem
 
         public void SpawnItemUI(InventoryItemUiEntry item)
         {
-            ItemUI itemUI = Instantiate(itemUIPrefab, itemHolder);
-            string id = "";
-            switch (item.ItemType)
-            {
-                case ItemType.Equipment:
-                    itemUI.SetItem(item, item.RarityPallete);
-                    id = item.ID;
-                    break;
-                case ItemType.Material:
-                    itemUI.SetItem(item, item.RarityPallete);
-                    id = item.ID;
-                    break;
-                default:
-                    break;
-            }
+            ItemUI itemUI = ObjectPoolManager.SpawnObject(itemUIPrefab, itemHolder, PoolType.UI);
+            itemUI.SetItem(item, item.RarityPallete);
+            itemUI.OnSelectItem = OnItemSelected;
+            itemUIDic.Add(item.ID, itemUI);
+        }
 
-            itemUI.OnSelectItem += (itemUI) =>
-            {
-                selectedItemUI = itemUI;
-                ItemSelected(itemUI.GetItem as EquipmentEntryUi);
-            };
-
-            itemUIDic.Add(id, itemUI);
+        public void OnItemSelected(ItemUI itemUI)
+        {
+            selectedItemUI = itemUI;
+            ItemSelected(itemUI.GetItem as EquipmentEntryUi);
         }
 
         private void ItemSelected(InventoryItemUiEntry item)

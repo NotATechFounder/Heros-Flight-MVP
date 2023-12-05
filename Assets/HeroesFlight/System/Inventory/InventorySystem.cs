@@ -29,8 +29,9 @@ namespace HeroesFlight.System.Inventory
         {
             InventoryHandler = scene.GetComponent<InventoryHandler>();
             InventoryHandler.Init(data.CurrencyManager);
-            InventoryHandler.OnItemAdded += SpawnUiItem;
-            InventoryHandler.OnItemModified += UpdateUiItem;
+            //InventoryHandler.OnItemAdded += SpawnUiItem;
+           // InventoryHandler.OnItemModified += UpdateUiItem;
+            InventoryHandler.OnInventoryUpdated += UpdateInventoryUi;
             converter = new InventoryItemConverter(InventoryHandler);
             
             InventoryHandler.OnEqiuppedItemsStatChanged += data.StatManager.ProcessEquippedItemsModifiers;
@@ -110,54 +111,6 @@ namespace HeroesFlight.System.Inventory
             uiSystem.UiEventHandler.InventoryMenu.UpdateInventoryView(equipment, materials);
         }
 
-        private void UpdateUiItem(Item obj)
-        {
-            UpdateInventoryUi();
-            // if (obj.itemSO.itemType == ItemType.Material)
-            // {
-            //     var itemData = obj.GetItemData<ItemMaterialData>();
-            //
-            //     uiSystem.UiEventHandler.InventoryMenu.UpdateItemUI(new InventoryItemUiEntry(obj.itemSO.ID,
-            //         obj.itemSO.icon, itemData.value,
-            //         obj.itemSO.itemType, InventoryHandler.GetPalette(Rarity.Common),
-            //         obj.itemSO.Name, obj.itemSO.description));
-            // }
-            // else
-            // {
-            //     var equipmentData = obj.GetItemData<ItemEquipmentData>();
-            //     uiSystem.UiEventHandler.InventoryMenu.UpdateItemUI(new EquipmentEntryUi(obj.itemSO.ID, obj.itemSO.icon,
-            //         equipmentData.value,
-            //         obj.itemSO.itemType, InventoryHandler.GetPalette(equipmentData.rarity),
-            //         obj.itemSO.Name, obj.itemSO.description,
-            //         (obj.itemSO as EquipmentSO).equipmentType,
-            //         equipmentData.eqquiped, equipmentData.rarity,equipmentData.instanceID));
-            // }
-        }
-
-        private void SpawnUiItem(Item obj)
-        {
-            if (obj.itemSO.itemType == ItemType.Material)
-            {
-                var itemData = obj.GetItemData<ItemMaterialData>();
-                uiSystem.UiEventHandler.InventoryMenu.SpawnItemUI((new InventoryItemUiEntry(obj.itemSO.ID,
-                    obj.itemSO.icon, itemData.value,
-                    obj.itemSO.itemType, InventoryHandler.GetPalette(Rarity.Common),
-                    obj.itemSO.Name, obj.itemSO.description)));
-            }
-            else
-            {
-                var equipmentData = obj.GetItemData<ItemEquipmentData>();
-                uiSystem.UiEventHandler.InventoryMenu.SpawnItemUI(new EquipmentEntryUi(equipmentData.instanceID, obj.itemSO.icon,
-                    equipmentData.value,
-                    obj.itemSO.itemType, InventoryHandler.GetPalette(equipmentData.rarity),
-                    obj.itemSO.Name, obj.itemSO.description,
-                    (obj.itemSO as EquipmentSO).equipmentType,
-                    equipmentData.eqquiped, equipmentData.rarity));
-            }
-
-            UpdateInventoryUi();
-        }
-
         public InventoryHandler InventoryHandler { get; private set; }
 
         public void InjectUiConnection()
@@ -192,15 +145,26 @@ namespace HeroesFlight.System.Inventory
                             case BurnStatusEffect:
                                 {
                                     BurnStatusEffect effectInstance = ScriptableObject.CreateInstance(effets.GetType()) as BurnStatusEffect;
-                                    effectInstance.GetData<BurnEffectData>().Damage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
-                                    combatEffectInstance.EffectToApply.Add(effectInstance); 
+                                    effectInstance.SetData(effets as BurnStatusEffect);
+                                    BurnEffectData burnEffectData = effectInstance.GetData<BurnEffectData>();
+                                    burnEffectData.ProcChance.SetStartValue(effets.GetData<BurnEffectData>().ProcChance.StartValue);
+                                    burnEffectData.Damage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
+                                    combatEffectInstance.EffectToApply.Add(effectInstance);
+
+                                    //BurnStatusEffect effectInstance = GameObject.Instantiate(effets) as BurnStatusEffect;                
+                                    //BurnEffectData burnEffectData = effectInstance.GetData<BurnEffectData>();
+                                    //burnEffectData.Damage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
+                                    //combatEffectInstance.EffectToApply.Add(effectInstance); 
                                 }
                                 break;
 
                             case FreezeStatusEffect:
                                 {
                                     FreezeStatusEffect effectInstance = ScriptableObject.CreateInstance(effets.GetType()) as FreezeStatusEffect;
-                                    effectInstance.GetData<FreezeEffectData>().SlowAmount.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
+                                    effectInstance.SetData(effets as FreezeStatusEffect);
+                                    FreezeEffectData freezeEffectData = effectInstance.GetData<FreezeEffectData>();
+                                    freezeEffectData.ProcChance.SetStartValue(effets.GetData<FreezeEffectData>().ProcChance.StartValue);
+                                    freezeEffectData.SlowAmount.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
                                     combatEffectInstance.EffectToApply.Add(effectInstance);
                                 }
                                 break;
@@ -208,7 +172,10 @@ namespace HeroesFlight.System.Inventory
                             case PoisonStatusEffect:
                                 {
                                     PoisonStatusEffect effectInstance = ScriptableObject.CreateInstance(effets.GetType()) as PoisonStatusEffect;
-                                    effectInstance.GetData<PoisonEffectData>().Damage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
+                                    effectInstance.SetData(effets as PoisonStatusEffect);
+                                    PoisonEffectData poisonEffectData = effectInstance.GetData<PoisonEffectData>();
+                                    poisonEffectData.ProcChance.SetStartValue(effets.GetData<PoisonEffectData>().ProcChance.StartValue);
+                                    poisonEffectData.Damage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
                                     combatEffectInstance.EffectToApply.Add(effectInstance);
                                 }
                                 break;
@@ -216,7 +183,10 @@ namespace HeroesFlight.System.Inventory
                             case RootStatusEffect:
                                 {
                                     RootStatusEffect effectInstance = ScriptableObject.CreateInstance(effets.GetType()) as RootStatusEffect;
-                                    effectInstance.GetData<RootEffectData>().Damage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
+                                    effectInstance.SetData(effets as RootStatusEffect);
+                                    RootEffectData rootEffectData = effectInstance.GetData<RootEffectData>();
+                                    rootEffectData.ProcChance.SetStartValue(effets.GetData<RootEffectData>().ProcChance.StartValue);
+                                    rootEffectData.Damage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
                                     combatEffectInstance.EffectToApply.Add(effectInstance);
                                 }
                                 break;
@@ -224,8 +194,11 @@ namespace HeroesFlight.System.Inventory
                             case ShockStatusEffect:
                                 {
                                     ShockStatusEffect effectInstance = ScriptableObject.CreateInstance(effets.GetType()) as ShockStatusEffect;
-                                    effectInstance.GetData<ShockEffectData>().MainDamage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
-                                    effectInstance.GetData<ShockEffectData>().SecondaryDamage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
+                                    effectInstance.SetData(effets as ShockStatusEffect);
+                                    ShockEffectData shockEffectData = effectInstance.GetData<ShockEffectData>();    
+                                    shockEffectData.ProcChance.SetStartValue(effets.GetData<ShockEffectData>().ProcChance.StartValue);
+                                    shockEffectData.MainDamage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
+                                    shockEffectData.SecondaryDamage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
                                     combatEffectInstance.EffectToApply.Add(effectInstance);
                                 }
                                 break;

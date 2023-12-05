@@ -19,6 +19,10 @@ namespace HeroesFlight.System.Combat.Effects.Effects
     {
         [SerializeField] private Transform visualsParent;
 
+        [Header("Debug")]
+        [SerializeField] private List<CombatEffectRuntimeModel> combatEffectRuntimeModels = new List<CombatEffectRuntimeModel>();
+
+
         protected Dictionary<CombatEffectApplicationType, Dictionary<string, CombatEffectRuntimeModel>> effectsMap =
             new();
 
@@ -172,11 +176,21 @@ namespace HeroesFlight.System.Combat.Effects.Effects
             {
                 ApplyEffectOnInit(effect,lvl);
             }
+
+            combatEffectRuntimeModels.Add(new CombatEffectRuntimeModel(effect, visual, lvl));   
         }
 
         public void AddCombatEffect(CombatEffect effect)
         {
             AddCombatEffect(effect,1);
+        }
+
+        public void AddCombatEffect(List<CombatEffect> effect)
+        {
+            foreach (var combatEffect in effect)
+            {
+                AddCombatEffect(combatEffect);
+            }
         }
 
         public void RemoveEffect(CombatEffect effect)
