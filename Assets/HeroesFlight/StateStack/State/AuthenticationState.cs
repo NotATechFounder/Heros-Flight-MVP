@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using StansAssets.Foundation.Patterns;
 using StansAssets.SceneManagement;
 using UnityEngine;
+using static Codice.Client.Common.WebApi.WebApiEndpoints;
 
 
 namespace HeroesFlight.StateStack.State
@@ -28,7 +29,8 @@ namespace HeroesFlight.StateStack.State
                     var dataScene = $"{SceneType.DataScene}";
                     m_SceneActionsQueue.AddAction(SceneActionType.Load, dataScene);
                     progressReporter.SetDone();
-                    m_SceneActionsQueue.Start(null, () =>
+                    IAuthenticationInterface authentication = GetService<IAuthenticationInterface>();
+                    authentication.LL_Authentication.OnLoginComplected += () =>
                     {
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(dataScene);
                         DataSystemInterface dataSystem = GetService<DataSystemInterface>();
@@ -36,7 +38,16 @@ namespace HeroesFlight.StateStack.State
                         InventorySystemInterface inventorySystem = GetService<InventorySystemInterface>();
                         inventorySystem.Init(loadedScene);
                         AppStateStack.State.Set(ApplicationState.Initialization);
-                    });
+                    };
+                    //m_SceneActionsQueue.Start(null, () =>
+                    //{
+                    //    var loadedScene = m_SceneActionsQueue.GetLoadedScene(dataScene);
+                    //    DataSystemInterface dataSystem = GetService<DataSystemInterface>();
+                    //    dataSystem.Init(loadedScene);
+                    //    InventorySystemInterface inventorySystem = GetService<InventorySystemInterface>();
+                    //    inventorySystem.Init(loadedScene);
+                    //    AppStateStack.State.Set(ApplicationState.Initialization);
+                    //});
                     break;
                 case StackAction.Paused:
                     break;

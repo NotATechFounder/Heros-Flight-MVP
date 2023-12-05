@@ -135,6 +135,8 @@ namespace HeroesFlight.System.Inventory
                 EquipmentSO equipmentSO = item.itemSO as EquipmentSO;
                 foreach (UniqueCombatEffect uniqueCombatEffect in equipmentSO.uniqueCombatEffects)
                 {
+                    if (uniqueCombatEffect.rarity > item.GetItemData<ItemEquipmentData>().rarity) continue;
+
                     CombatEffect combatEffectInstance = uniqueCombatEffect.combatEffect.Clone();
                     combatEffects.Add(combatEffectInstance);
 
@@ -199,6 +201,15 @@ namespace HeroesFlight.System.Inventory
                                     shockEffectData.ProcChance.SetStartValue(effets.GetData<ShockEffectData>().ProcChance.StartValue);
                                     shockEffectData.MainDamage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
                                     shockEffectData.SecondaryDamage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
+                                    combatEffectInstance.EffectToApply.Add(effectInstance);
+                                }
+                                break;
+
+                            case ReflectTriggerEffect:
+                                {
+                                    ReflectTriggerEffect effectInstance = GameObject.Instantiate(effets) as ReflectTriggerEffect;
+                                    ReflectEffectData reflectEffectData = effectInstance.GetData<ReflectEffectData>();
+                                    reflectEffectData.FlatDamage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
                                     combatEffectInstance.EffectToApply.Add(effectInstance);
                                 }
                                 break;

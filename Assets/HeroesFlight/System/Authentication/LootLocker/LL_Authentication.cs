@@ -6,6 +6,21 @@ using System;
 
 public class LL_Authentication : MonoBehaviour
 {
+    public Action OnLoginComplected;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            //GuestLogin(() =>
+            //{
+            //    OnLoginComplected?.Invoke();
+            //});
+
+            OnLoginComplected?.Invoke();
+        }
+    }
+
     public void GuestLogin(Action OnGestLoginComplected)
     {
         LootLockerSDKManager.StartGuestSession((response) =>
