@@ -237,6 +237,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
             int actualValue = itemDatabaseSO.GetRarityInfo(item.GetItemData<ItemEquipmentData>().rarity).GetValue(baseValue, item.GetItemData<ItemEquipmentData>().value);
             StatType statType = item.GetItemSO<EquipmentSO>().statType;
             equippedItemsStatDic.Add(new StatTypeWithValue(statType, actualValue, StatModel.StatCalculationType.Flat));
+            Debug.Log($"Adding stat {statType} with value {actualValue}");
 
             // Add Special Hero Effect if any
             if (item.GetItemSO<EquipmentSO>().specialHeroEffect.value != 0)

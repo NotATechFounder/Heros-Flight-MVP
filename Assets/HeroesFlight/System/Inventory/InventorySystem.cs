@@ -32,6 +32,8 @@ namespace HeroesFlight.System.Inventory
             InventoryHandler.OnItemAdded += SpawnUiItem;
             InventoryHandler.OnItemModified += UpdateUiItem;
             converter = new InventoryItemConverter(InventoryHandler);
+            
+            InventoryHandler.OnEqiuppedItemsStatChanged += data.StatManager.ProcessEquippedItemsModifiers;
         }
 
         public void Reset()
@@ -41,7 +43,7 @@ namespace HeroesFlight.System.Inventory
 
         private void HandleItemUnequipRequest(EquipmentEntryUi obj)
         {
-            Item targetItem = InventoryHandler.GetEqupItemById(obj.InstanceId);
+            Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
             InventoryHandler.UnEquipItem(targetItem);
             //  uiSystem.UiEventHandler.InventoryMenu.UnEquipItem();
             UpdateInventoryUi();
@@ -50,7 +52,7 @@ namespace HeroesFlight.System.Inventory
         private void HandleItemDismantleRequest(EquipmentEntryUi obj)
         {
             Debug.Log($"dismantling {obj.ID}");
-            Item targetItem = InventoryHandler.GetEqupItemById(obj.InstanceId);
+            Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
             InventoryHandler.DismantleItem(targetItem);
             uiSystem.UiEventHandler.InventoryMenu.DismantleItem();
             UpdateInventoryUi();
@@ -58,18 +60,18 @@ namespace HeroesFlight.System.Inventory
 
         private void HandleItemUpgradeRequest(EquipmentEntryUi obj)
         {
-            Item targetItem = InventoryHandler.GetEqupItemById(obj.InstanceId);
+            Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
             if (InventoryHandler.TryUpgradeItem(targetItem))
             {
-                uiSystem.UiEventHandler.InventoryMenu.UpgradeItem();
                 UpdateInventoryUi();
+                uiSystem.UiEventHandler.InventoryMenu.UpgradeItem();
             }
         }
 
         private void HandleItemEquipRequest(EquipmentEntryUi obj)
         {
             Debug.Log(obj);
-            Item targetItem = InventoryHandler.GetEqupItemById(obj.InstanceId);
+            Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
             InventoryHandler.EquipItem(targetItem);
             UpdateInventoryUi();
         }
@@ -88,12 +90,12 @@ namespace HeroesFlight.System.Inventory
             foreach (var equipmentItem in InventoryHandler.GetInventoryEquippmentItems())
             {
                 var equipmentData = equipmentItem.GetItemData<ItemEquipmentData>();
-                equipment.Add(new EquipmentEntryUi(equipmentItem.GetItemData<ItemEquipmentData>().instanceID, equipmentItem.itemSO.icon,
+                equipment.Add(new EquipmentEntryUi(equipmentData.instanceID, equipmentItem.itemSO.icon,
                     equipmentData.value,
                     equipmentItem.itemSO.itemType, InventoryHandler.GetPalette(equipmentData.rarity),
                     equipmentItem.itemSO.Name, equipmentItem.itemSO.description,
                     (equipmentItem.itemSO as EquipmentSO).equipmentType,
-                    equipmentData.eqquiped, equipmentData.rarity, equipmentData.instanceID));
+                    equipmentData.eqquiped, equipmentData.rarity));
             }
 
             foreach (var equipmentItem in InventoryHandler.GetInventoryMaterialItems())
@@ -145,12 +147,12 @@ namespace HeroesFlight.System.Inventory
             else
             {
                 var equipmentData = obj.GetItemData<ItemEquipmentData>();
-                uiSystem.UiEventHandler.InventoryMenu.SpawnItemUI(new EquipmentEntryUi(obj.itemSO.ID, obj.itemSO.icon,
+                uiSystem.UiEventHandler.InventoryMenu.SpawnItemUI(new EquipmentEntryUi(equipmentData.instanceID, obj.itemSO.icon,
                     equipmentData.value,
                     obj.itemSO.itemType, InventoryHandler.GetPalette(equipmentData.rarity),
                     obj.itemSO.Name, obj.itemSO.description,
                     (obj.itemSO as EquipmentSO).equipmentType,
-                    equipmentData.eqquiped, equipmentData.rarity, equipmentData.instanceID));
+                    equipmentData.eqquiped, equipmentData.rarity));
             }
 
             UpdateInventoryUi();

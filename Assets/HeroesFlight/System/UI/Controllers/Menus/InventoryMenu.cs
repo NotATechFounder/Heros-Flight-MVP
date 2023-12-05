@@ -156,6 +156,11 @@ namespace UISystem
                 {
                     SpawnItemUI(item);
                 }
+
+                if(selectedItem != null && selectedItem.ID == item.ID)
+                {
+                    selectedItem = item;
+                }
             }
 
             foreach (var item in materials)
@@ -180,9 +185,8 @@ namespace UISystem
         {
             if (selectedItem != null)
             {
-                itemInfoDisplayUI.UpgradeItem();
-            }
-           
+                itemInfoDisplayUI.UpgradeItem(selectedItem);
+            }       
         }
 
         /// <summary>
@@ -216,8 +220,7 @@ namespace UISystem
         /// </summary>
         /// <returns></returns>
         public void EquipItem()
-        {
-           
+        {       
             EquippedSlot equippedSlot = GetEquipmentSlot((selectedItemUI.GetItem as EquipmentEntryUi).EquipmentType);
             if (equippedSlot != null)
             {

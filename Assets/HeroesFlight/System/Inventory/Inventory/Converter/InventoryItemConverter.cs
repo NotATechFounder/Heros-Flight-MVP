@@ -14,12 +14,12 @@ namespace HeroesFlight.System.Inventory.Inventory.Converter
 
         public int GetMaxItemLvl(EquipmentEntryUi targetEntry)
         {
-            return handler.GetItemMaxLevel(handler.GetEqupItemById(targetEntry.InstanceId));
+            return handler.GetItemMaxLevel(handler.GetEqupItemById(targetEntry.ID));
         }
 
         public int GetGoldAmount(EquipmentEntryUi targetEntry)
         {
-            return handler.GetGoldUpgradeRequiredAmount(handler.GetEqupItemById(targetEntry.InstanceId));
+            return handler.GetGoldUpgradeRequiredAmount(handler.GetEqupItemById(targetEntry.ID));
         }
 
         public InventoryItemUiEntry GetMaterial(string id)
@@ -39,28 +39,28 @@ namespace HeroesFlight.System.Inventory.Inventory.Converter
         {
             var item= handler.GetEqupItemById(id);
             var equipmentData = item.GetItemData<ItemEquipmentData>();
-            return new EquipmentEntryUi(item.itemSO.ID, item.itemSO.icon,
+            return new EquipmentEntryUi(equipmentData.instanceID, item.itemSO.icon,
                 equipmentData.value,
                 item.itemSO.itemType, handler.GetPalette(equipmentData.rarity),
                 item.itemSO.Name, item.itemSO.description,
                 (item.itemSO as EquipmentSO).equipmentType,
-                equipmentData.eqquiped, equipmentData.rarity,equipmentData.instanceID);
+                equipmentData.eqquiped, equipmentData.rarity);
         }
 
         public int GetMaterialAmount(EquipmentEntryUi targetEntry)
         {
-            return handler.GetMaterialUpgradeRequiredAmount(handler.GetEqupItemById(targetEntry.InstanceId));
+            return handler.GetMaterialUpgradeRequiredAmount(handler.GetEqupItemById(targetEntry.ID));
         }
 
         public int GetMaterialSpentAmount(EquipmentEntryUi equipmentEntryUi)
         {
-            var item= handler.GetEqupItemById(equipmentEntryUi.InstanceId);
+            var item= handler.GetEqupItemById(equipmentEntryUi.ID);
             return handler.GetTotalUpgradeMaterialSpent(item.GetItemData<ItemEquipmentData>());
         }
 
         public int GetGoldSpentAmount(EquipmentEntryUi equipmentEntryUi)
         {
-            var item= handler.GetEqupItemById(equipmentEntryUi.InstanceId);
+            var item= handler.GetEqupItemById(equipmentEntryUi.ID);
             return handler.GetTotalUpgradeGoldSpent(item.GetItemData<ItemEquipmentData>());
         }
     }
