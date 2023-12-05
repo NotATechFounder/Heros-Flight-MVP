@@ -26,13 +26,11 @@ public class EquipmentSO : ItemSO
     {
         for (int i = 0; i < uniqueStatModificationEffects.Length; i++)
         {
-            uniqueStatModificationEffects[i].curve.curveType = CurveType.Linear;
             uniqueStatModificationEffects[i].curve.UpdateCurve();
         }
 
         for (int i = 0; i < uniqueCombatEffects.Length; i++)
         {
-            uniqueStatModificationEffects[i].curve.curveType = CurveType.Linear;
             uniqueCombatEffects[i].curve.UpdateCurve();
         }
     }

@@ -8,6 +8,8 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Effects.Effects.Data;
+using HeroesFlight.System.Combat.Effects.Effects;
 
 [CreateAssetMenu(fileName = "New Helper", menuName = "Inventory System/Helper")]
 public class InvenHelper : ScriptableObject
@@ -137,6 +139,8 @@ public class InvenHelper : ScriptableObject
         {
             for (int j = 0; j < equipmentSOs[i].uniqueStatModificationEffects.Length; j++)
             {
+                equipmentSOs[i].uniqueStatModificationEffects[j].curve.curveType = CurveType.Linear;
+
                 switch (equipmentSOs[i].uniqueStatModificationEffects[j].rarity)
                 {
                     case Rarity.Common:
@@ -154,12 +158,69 @@ public class InvenHelper : ScriptableObject
                     default:  break;
                 }
 
+                switch (equipmentSOs[i].uniqueStatModificationEffects[j].statType)
+                {
+                    case StatType.PhysicalDamage:
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.minValue = 5;
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.maxValue = 5;
+                        break;
+                    case StatType.MagicDamage:
+                        break;
+                    case StatType.MaxHealth:
+                        break;
+                    case StatType.MoveSpeed:
+                        break;
+                    case StatType.AttackSpeed:
+                        break;
+                    case StatType.DodgeChance:
+                        break;
+                    case StatType.Defense:
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.minValue = 10;
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.maxValue = 25;
+                        break;
+                    case StatType.CriticalHitChance:
+                        break;
+                    case StatType.PhysicalMagicDamage:
+                        break;
+                    case StatType.AllStats:
+                        break;
+                    case StatType.HealingBooster:
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.minValue = 20;
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.maxValue = 20;
+                        break;
+                    case StatType.AbilityDamage:
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.minValue = 10;
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.maxValue = 10;
+                        break;
+                    case StatType.ExperienceBoost:
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.minValue = 20;
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.maxValue = 40;
+                        break;
+                    case StatType.GoldBoost:
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.minValue = 20;
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.maxValue = 40;
+                        break;
+                    case StatType.LifeSteal:
+                        break;
+                    case StatType.CurrentHealth:
+                        break;
+                    case StatType.AttackRange:
+                        break;
+                    case StatType.CriticalHitDamage:
+                        break;
+                    case StatType.MulticastChance:
+                        break;
+                    default:
+                        break;
+                }
 
             }
 
             for (int j = 0; j < equipmentSOs[i].uniqueCombatEffects.Length; j++)
             {
                 equipmentSOs[i].uniqueCombatEffects[j].combatEffect.SetID(equipmentSOs[i].ID);
+
+                equipmentSOs[i].uniqueCombatEffects[j].curve.curveType = CurveType.Linear;
 
                 switch (equipmentSOs[i].uniqueCombatEffects[j].rarity)
                 {
@@ -176,6 +237,98 @@ public class InvenHelper : ScriptableObject
                         equipmentSOs[i].uniqueCombatEffects[j].curve.maxLevel = itemDatabaseSO.GetItemMaxLevel(Rarity.Epic);
                         break;
                     default: break;
+                }
+
+                foreach (Effect effets in equipmentSOs[i].uniqueCombatEffects[j].combatEffect.EffectToApply)
+                {
+                    switch (effets)
+                    {
+                        case BurnStatusEffect:
+                            {
+                                equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 10;
+                                equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 25;
+                            }
+                            break;
+
+                        case FreezeStatusEffect:
+                            {
+                                equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 10;
+                                equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 25;
+                            }
+                            break;
+
+                        case PoisonStatusEffect:
+                            {
+                                equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 10;
+                                equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 25;
+                            }
+                            break;
+
+                        case RootStatusEffect:
+                            {
+                                equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 10;
+                                equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 25;
+                            }
+                            break;
+
+                        case ShockStatusEffect:
+                            {
+                                equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 10;
+                                equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 25;
+                            }
+                            break;
+
+                        case StatModificationEffect:
+                            {
+                                switch (effets.GetData<StatModificationData>().TargetStat)
+                                {
+                                    case StatType.DodgeChance:
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 10;
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 25;
+                                        break;
+                                    case StatType.Defense:
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 10;
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 25;
+                                        break;
+                                    case StatType.CriticalHitChance:
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 10;
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 40;
+                                        break;
+                                    case StatType.AllStats:
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 5;
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 5;
+                                        break;
+                                    case StatType.HealingBooster:
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 20;
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 40;
+                                        break;
+
+                                    case StatType.AbilityDamage:
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 10;
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 40;
+                                        break;
+                                    case StatType.ExperienceBoost:
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 10;
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 40;
+                                        break;
+                                    case StatType.GoldBoost:
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 10;
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 40;
+                                        break;
+                                    case StatType.LifeSteal:
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 0.05f;
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 0.25f;
+                                        break;
+                                    case StatType.CriticalHitDamage:
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.minValue = 10;
+                                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxValue = 25;
+                                        break;
+                                    default:  break;
+                                }
+                            }
+                            break;
+                        default: break;
+                    }
                 }
             }
 
