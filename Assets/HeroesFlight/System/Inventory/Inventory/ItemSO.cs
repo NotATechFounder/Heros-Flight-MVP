@@ -34,7 +34,7 @@ public class Item
 {
     public ItemSO itemSO;
     [SerializeField] ItemData itemData;
-    [SerializeField] ItemEffect[] itemEffects;
+   // [SerializeField] SpecialHeroEffect[] itemEffects;
 
     public Item(ItemSO itemObject, ItemData itemData)
     {
@@ -47,7 +47,7 @@ public class Item
     public T GetItemSO<T>() where T : ItemSO => itemSO as T;
     public T GetItemData<T>() where T : ItemData => itemData as T;
 
-    public ItemEffect[] ItemBuffs() => itemEffects;
+    //public SpecialHeroEffect[] ItemBuffs() => itemEffects;
 
     public void LevelUp()
     {
@@ -82,7 +82,8 @@ public class Item
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(itemSO, itemData, itemEffects);
+        // return HashCode.Combine(itemSO, itemData, itemEffects);
+        return HashCode.Combine(itemSO, itemData);
     }
 }
 

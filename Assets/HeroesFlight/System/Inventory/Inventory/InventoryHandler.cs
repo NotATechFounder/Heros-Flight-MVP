@@ -203,13 +203,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
         GetMaterialItemByID("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString(), out Item materialItem);
 
-        if (materialItem == null)
-        {
-            Debug.Log("Not enough material");
-            return false;
-        }
-
-        if (materialItem.GetItemData<ItemMaterialData>().value < GetMaterialUpgradeRequiredAmount(item))
+        if (materialItem == null || materialItem.GetItemData<ItemMaterialData>().value < GetMaterialUpgradeRequiredAmount(item))
         {
             Debug.Log("Not enough material");
             return false;
@@ -233,15 +227,27 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
     public void ProcessEquippedItemStats()
     {
+        Debug.Log("ProcessEquippedItemStats");
+
         equippedItemsStatDic = new List<StatTypeWithValue>();
         foreach (Item item in equippedItemDic.Values)
         {
-            int baseValue = item.GetItemSO<EquipmentSO>()
-                .GetBaseStatValue(item.GetItemData<ItemEquipmentData>().rarity);
-            int actualValue = itemDatabaseSO.GetRarityInfo(item.GetItemData<ItemEquipmentData>().rarity)
-                .GetValue(baseValue, item.GetItemData<ItemEquipmentData>().value);
+            // Apply base stat value
+            int baseValue = item.GetItemSO<EquipmentSO>().GetBaseStatValue(item.GetItemData<ItemEquipmentData>().rarity);
+            int actualValue = itemDatabaseSO.GetRarityInfo(item.GetItemData<ItemEquipmentData>().rarity).GetValue(baseValue, item.GetItemData<ItemEquipmentData>().value);
             StatType statType = item.GetItemSO<EquipmentSO>().statType;
             equippedItemsStatDic.Add(new StatTypeWithValue(statType, actualValue, StatModel.StatCalculationType.Flat));
+
+            // Add Special Hero Effect if any
+            if (item.GetItemSO<EquipmentSO>().specialHeroEffect.value != 0)
+            equippedItemsStatDic.Add(item.GetItemSO<EquipmentSO>().specialHeroEffect);
+
+            // Add Unique Stat Modification Effects if any
+            foreach (UniqueStatModificationEffect uniqueStatModificationEffect in item.GetItemSO<EquipmentSO>().uniqueStatModificationEffects)
+            {
+                int uniqueStatValue = uniqueStatModificationEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value);
+                equippedItemsStatDic.Add(new StatTypeWithValue(uniqueStatModificationEffect.statType, uniqueStatValue, StatModel.StatCalculationType.Percentage));
+            }
         }
 
         OnEqiuppedItemsStatChanged?.Invoke(equippedItemsStatDic);
@@ -283,4 +289,6 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
         return null;
     }
+
+    public List<Item> GetInventoryEquippedItems() => new List<Item>(equippedItemDic.Values);
 }

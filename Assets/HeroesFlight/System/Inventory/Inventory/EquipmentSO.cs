@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using HeroesFlight.Common;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Effects.Effects.Data;
+using HeroesFlight.System.Combat.Effects.Effects;
 using HeroesFlight.System.FileManager.Stats;
 using UnityEngine;
 
@@ -14,10 +16,26 @@ public class EquipmentSO : ItemSO
     public StatType statType;
     public HeroType heroType;
     public ItemStatByRarity[] itemBaseStats;
-    public ItemEffect specialHeroEffect;
-    public ItemRarityStat[] itemRarityStats;
+    public StatTypeWithValue specialHeroEffect;
+    public UniqueStatModificationEffect[] uniqueStatModificationEffects;
+    public UniqueCombatEffect[] uniqueCombatEffects;
 
     private void Awake() => itemType = ItemType.Equipment;
+
+    private void OnValidate()
+    {
+        for (int i = 0; i < uniqueStatModificationEffects.Length; i++)
+        {
+            uniqueStatModificationEffects[i].curve.curveType = CurveType.Linear;
+            uniqueStatModificationEffects[i].curve.UpdateCurve();
+        }
+
+        for (int i = 0; i < uniqueCombatEffects.Length; i++)
+        {
+            uniqueStatModificationEffects[i].curve.curveType = CurveType.Linear;
+            uniqueCombatEffects[i].curve.UpdateCurve();
+        }
+    }
 
     public int GetBaseStatValue(Rarity rarity)
     {
@@ -37,27 +55,29 @@ public class ItemStatByRarity
     public int value;
 }
 
-
-
 [Serializable]
-public class UniqueEffect
+public class UniqueStatModificationEffect
 {
-    public EquipmentType equipmentType;
-    public ItemRarityStat[] itemRarityStats;
+    [SerializeField] public Rarity rarity;
+    [SerializeField] public StatType statType;
+    [SerializeField] public CustomAnimationCurve curve;
+
+    public Rarity GetRarity() => rarity;
+    public StatTypeWithValue GetStatTypeWithValue(int currentLevel)
+    {
+        StatTypeWithValue statTypeWithValue = new StatTypeWithValue();
+        statTypeWithValue.statType = statType;
+        statTypeWithValue.value = curve.GetCurrentValueInt(currentLevel);
+        return statTypeWithValue;
+    }
 }
 
 [Serializable]
-public class ItemRarityStat
+public class UniqueCombatEffect
 {
     public Rarity rarity;
-    public StatTypeWithValue statTypeWithValue;
-}
-
-[Serializable]
-public class ItemEffect
-{
-    public ItemEffectType itemEffectType;
-    public int value;
+    public CombatEffect combatEffect;
+    public CustomAnimationCurve curve;
 }
 
 [Serializable]

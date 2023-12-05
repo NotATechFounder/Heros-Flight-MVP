@@ -12,9 +12,7 @@ using HeroesFlight.Common.Enum;
 [CreateAssetMenu(fileName = "New Helper", menuName = "Inventory System/Helper")]
 public class InvenHelper : ScriptableObject
 {
-    [SerializeField] int min;
-    [SerializeField] int difference;
-    [SerializeField]  Rarity rarity;  
+    [SerializeField] private ItemDatabaseSO itemDatabaseSO;
     [SerializeField] private EquipmentSO[] equipmentSOs;
 
     [Header("Sprite")]
@@ -129,6 +127,60 @@ public class InvenHelper : ScriptableObject
         List<EquipmentSO> scriptableObjectBases = ScriptableObjectUtils.GetAllScriptableObjectBaseInFile<EquipmentSO>(path);
         equipmentSOs = scriptableObjectBases.ToArray();
         EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssets();
+    }
+
+    [ContextMenu("Correct Effect ID and Level")]
+    public void CorrectEffectIDAndLevel()
+    {
+        for (int i = 0; i < equipmentSOs.Length; i++)
+        {
+            for (int j = 0; j < equipmentSOs[i].uniqueStatModificationEffects.Length; j++)
+            {
+                switch (equipmentSOs[i].uniqueStatModificationEffects[j].rarity)
+                {
+                    case Rarity.Common:
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.maxLevel = itemDatabaseSO.GetItemMaxLevel(Rarity.Common);
+                        break;
+                    case Rarity.UnCommon:
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.maxLevel = itemDatabaseSO.GetItemMaxLevel(Rarity.UnCommon);
+                        break;
+                    case Rarity.Rare:
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.maxLevel = itemDatabaseSO.GetItemMaxLevel(Rarity.Rare);
+                        break;
+                    case Rarity.Epic:
+                        equipmentSOs[i].uniqueStatModificationEffects[j].curve.maxLevel = itemDatabaseSO.GetItemMaxLevel(Rarity.Epic);
+                        break;
+                    default:  break;
+                }
+
+
+            }
+
+            for (int j = 0; j < equipmentSOs[i].uniqueCombatEffects.Length; j++)
+            {
+                equipmentSOs[i].uniqueCombatEffects[j].combatEffect.SetID(equipmentSOs[i].ID);
+
+                switch (equipmentSOs[i].uniqueCombatEffects[j].rarity)
+                {
+                    case Rarity.Common:
+                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxLevel = itemDatabaseSO.GetItemMaxLevel(Rarity.Common);
+                        break;
+                    case Rarity.UnCommon:
+                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxLevel = itemDatabaseSO.GetItemMaxLevel(Rarity.UnCommon);
+                        break;
+                    case Rarity.Rare:
+                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxLevel = itemDatabaseSO.GetItemMaxLevel(Rarity.Rare);
+                        break;
+                    case Rarity.Epic:
+                        equipmentSOs[i].uniqueCombatEffects[j].curve.maxLevel = itemDatabaseSO.GetItemMaxLevel(Rarity.Epic);
+                        break;
+                    default: break;
+                }
+            }
+
+            EditorUtility.SetDirty(equipmentSOs[i]);
+        }
         AssetDatabase.SaveAssets();
     }
 #endif
