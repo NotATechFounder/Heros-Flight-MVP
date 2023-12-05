@@ -27,28 +27,33 @@ public class DataSystem : DataSystemInterface
     public StatPoints StatPoints { get; private set; }
 
     public AccountLevelManager AccountLevelManager { get; private set; }
+ 
+
+    public WorldManager WorldManger { get; private set; }
 
 
     public void Init(Scene scene = default, Action onComplete = null)
     {
         CurrencyManager = scene.GetComponent<CurrencyManager>();
+        StatManager = scene.GetComponent<StatManager>();
+        StatPoints = scene.GetComponent<StatPoints>();
+        CharacterManager = scene.GetComponent<CharacterManager>();
+        AccountLevelManager = scene.GetComponent<AccountLevelManager>();
+        WorldManger = scene.GetComponent<WorldManager>();
 
         CurrencyManager.LoadCurrencies();
 
-        StatManager = scene.GetComponent<StatManager>();
         StatManager.Init();
 
-        StatPoints = scene.GetComponent<StatPoints>();
         StatPoints.OnValueChanged += StatManager.ProcessStatPointsModifiers;
         StatPoints.Init();
 
-        CharacterManager = scene.GetComponent<CharacterManager>();
         CharacterManager.OnCharacterChanged += (characterSO) => StatManager.ProcessAllModifiers(characterSO.GetPlayerStatData);
         CharacterManager.Init(CurrencyManager);
 
-        AccountLevelManager = scene.GetComponent<AccountLevelManager>();
-        AccountLevelManager.OnLevelUp += StatPoints.AddPoints;
 
+        AccountLevelManager.OnLevelUp += StatPoints.AddPoints;
+     
         onComplete?.Invoke();
     }
 

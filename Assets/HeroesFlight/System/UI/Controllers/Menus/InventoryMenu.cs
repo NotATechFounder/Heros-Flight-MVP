@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using Pelumi.Juicer;
 using HeroesFlight.Common.Progression;
+using HeroesFlight.System.UI.Inventory_Menu;
 
 namespace UISystem
 {
@@ -15,28 +16,22 @@ namespace UISystem
         public event Func<CharacterSO> GetSelectedCharacterSO;
         public event Action OnChangeHeroButtonClicked;
         public event Action OnStatPointButtonClicked;
+        public event Action<EquipmentEntryUi> OnUpgradeRequest;
+        public event Action<EquipmentEntryUi> OnDismantleRequest;
+        public event Action<EquipmentEntryUi> OnEquipItemRequest;
+        public event Action<EquipmentEntryUi> OnUnEquipItemRequest;
 
-        public event Func <List<Item>> GetInventoryItems;
-        public event Action<Item> OnItemEquipped;
-        public event Action<Item> OnItemUnEquipped;
-        public event Action<Item> OnItemDismantled;
-        public event Func<Item, bool> OnItemUpgraded;
-
-        [Header("Buttons")]
-        [SerializeField] private AdvanceButton changeHeroButton;
+        [Header("Buttons")] [SerializeField] private AdvanceButton changeHeroButton;
         [SerializeField] private AdvanceButton statPointButton;
         [SerializeField] private AdvanceButton quitButton;
 
-        [Header("Texts")]
-        [SerializeField] private TextMeshProUGUI currentAtk;
+        [Header("Texts")] [SerializeField] private TextMeshProUGUI currentAtk;
         [SerializeField] private TextMeshProUGUI currentHp;
         [SerializeField] private TextMeshProUGUI currentDef;
 
-        [Header("Data")]
-        [SerializeField] private UiSpineViewController uiSpineViewController;
+        [Header("Data")] [SerializeField] private UiSpineViewController uiSpineViewController;
 
-        [Header("Inventory")]
-        [SerializeField] private ItemUI itemUIPrefab;
+        [Header("Inventory")] [SerializeField] private ItemUI itemUIPrefab;
         [SerializeField] private Transform itemHolder;
         [SerializeField] private ItemInfoDisplayUI itemInfoDisplayUI;
         [SerializeField] private EquippedSlot[] equippedSlots;
@@ -44,10 +39,11 @@ namespace UISystem
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
 
-        [Header("Debug")]
-        private Dictionary<string, ItemUI> itemUIDic = new Dictionary<string, ItemUI>();
+        [Header("Debug")] private Dictionary<string, ItemUI> itemUIDic = new Dictionary<string, ItemUI>();
         [SerializeField] private ItemUI selectedItemUI;
         [SerializeField] private EquippedSlot selectedEquippedSlot;
+        [SerializeField] EquipmentEntryUi selectedItem;
+
 
         public override void OnCreated()
         {
@@ -59,8 +55,6 @@ namespace UISystem
             changeHeroButton.onClick.AddListener(() => OnChangeHeroButtonClicked?.Invoke());
             statPointButton.onClick.AddListener(() => OnStatPointButtonClicked?.Invoke());
             quitButton.onClick.AddListener(Close);
-
-            InitInventoryUI();
         }
 
         public override void OnOpened()
@@ -73,7 +67,7 @@ namespace UISystem
         public void UpdateCharacter(CharacterSO characterSO)
         {
             uiSpineViewController.SetupView(characterSO);
-            OnStatValueChanged (GetStatModel.Invoke());
+            OnStatValueChanged(GetStatModel.Invoke());
         }
 
         public override void OnClosed()
@@ -83,7 +77,6 @@ namespace UISystem
 
         public override void ResetMenu()
         {
-
         }
 
         public void OnStatValueChanged(StatModel statModel)
@@ -105,44 +98,58 @@ namespace UISystem
             }
         }
 
-        public void InitInventoryUI()
+        public void InitInventory(InventoryDataConverterInterface converter)
         {
             itemInfoDisplayUI.OnEquipAction += EquipItem;
-            itemInfoDisplayUI.OnDismantleAction += DismantleItem;
-            itemInfoDisplayUI.OnUpgradeAction += TryUpgradeItem;
+            itemInfoDisplayUI.OnDismantleAction += () =>
+            {
+                OnDismantleRequest?.Invoke(selectedItem as EquipmentEntryUi);
+                //todo :Move to inventory system
+                // DismantleItem;
+            };
+            itemInfoDisplayUI.OnUpgradeRequest += () => { OnUpgradeRequest?.Invoke(selectedItem as EquipmentEntryUi); };
+           // itemInfoDisplayUI.OnUpgradeAction += TryUpgradeItem;
+           
             itemInfoDisplayUI.OnUnequipAction += UnEquipItem;
+
+            itemInfoDisplayUI.Init(converter);
 
             foreach (EquippedSlot slot in equippedSlots)
             {
                 slot.OnSelectItem += (item) =>
                 {
                     selectedEquippedSlot = slot;
-                    itemInfoDisplayUI.Display(item);
+                    ItemSelected(item);
                 };
             }
         }
 
         public void ClearInventoryItems()
         {
+            foreach (var slot in equippedSlots)
+            {
+                slot.UnOccupy();
+            }
             foreach (ItemUI itemUI in itemUIDic.Values)
             {
                 Destroy(itemUI.gameObject);
             }
+
             itemUIDic.Clear();
         }
 
-        public void LoadInventoryItems()
+        public void UpdateInventoryView(List<EquipmentEntryUi> equipementItems, List<InventoryItemUiEntry> materials)
         {
             ClearInventoryItems();
 
-            foreach (Item item in GetInventoryItems?.Invoke() ?? new List<Item>())
+            foreach (var item in equipementItems)
             {
-                if (item.ItemData().eqquiped)
+                if (item.IsEquipped)
                 {
-                    EquippedSlot equippedSlot = GetEquipmentSlot((item.itemSO as EquipmentSO).equipmentType);
+                    EquippedSlot equippedSlot = GetEquipmentSlot(item.EquipmentType);
                     if (equippedSlot != null)
                     {
-                        equippedSlot.Occupy(item);
+                        equippedSlot.Occupy(item, item.RarityPallete);
                     }
                 }
                 else
@@ -150,31 +157,53 @@ namespace UISystem
                     SpawnItemUI(item);
                 }
             }
-        }
 
-        private bool TryUpgradeItem()
-        {
-            if(OnItemUpgraded?.Invoke(selectedItemUI.GetItem) == true)
+            foreach (var item in materials)
             {
-                return true;
+                SpawnItemUI(item);
             }
-            return false;
         }
 
-        private void DismantleItem()
+        /// <summary>
+        /// Inventory systemn should do it
+        /// </summary>
+        /// <returns></returns>
+        public void TryUpgradeItem()
         {
+            if (selectedItem != null)
+            {
+                OnUpgradeRequest?.Invoke(selectedItem as EquipmentEntryUi);
+            }
+        }
+
+        public void UpgradeItem()
+        {
+            if (selectedItem != null)
+            {
+                itemInfoDisplayUI.UpgradeItem();
+            }
+           
+        }
+
+        /// <summary>
+        /// Inventory systemn should do it
+        /// </summary>
+        /// <returns></returns>
+        public void DismantleItem()
+        {
+            if (selectedItem != null)
+            {
+                itemUIDic.Remove(selectedItem.ID);
+            }
+
             if (selectedItemUI != null)
             {
-                OnItemDismantled?.Invoke(selectedItemUI.GetItem);
-                itemUIDic.Remove(selectedItemUI.GetItem.ItemData().instanceID);
                 Destroy(selectedItemUI.gameObject);
                 selectedItemUI = null;
             }
 
             if (selectedEquippedSlot != null)
             {
-                OnItemDismantled?.Invoke(selectedEquippedSlot.GetItem);
-                itemUIDic.Remove(selectedEquippedSlot.GetItem.ItemData().instanceID);
                 selectedEquippedSlot.UnOccupy();
                 selectedItemUI = null;
             }
@@ -182,85 +211,128 @@ namespace UISystem
             itemInfoDisplayUI.Close();
         }
 
-        private void EquipItem()
+        /// <summary>
+        /// Inventory systemn should do it
+        /// </summary>
+        /// <returns></returns>
+        public void EquipItem()
         {
-            EquippedSlot equippedSlot = GetEquipmentSlot((selectedItemUI.GetItem.itemSO as EquipmentSO).equipmentType);
+           
+            EquippedSlot equippedSlot = GetEquipmentSlot((selectedItemUI.GetItem as EquipmentEntryUi).EquipmentType);
             if (equippedSlot != null)
             {
                 if (equippedSlot.IsOccupied)
                 {
-                    SpawnItemUI(equippedSlot.GetItem);
-                    equippedSlot.UnOccupy();
+                    Debug.Log("Slot is occupied");
+                    OnUnEquipItemRequest?.Invoke(equippedSlot.GetItem as EquipmentEntryUi);
+                  //  SpawnItemUI(equippedSlot.GetItem);
+                    //equippedSlot.UnOccupy();
                 }
 
-                OnItemEquipped?.Invoke(selectedItemUI.GetItem);
-                equippedSlot.Occupy(selectedItemUI.GetItem);
-                itemUIDic.Remove(selectedItemUI.GetItem.ItemData().instanceID);
-                Destroy(selectedItemUI.gameObject);
+
+                OnEquipItemRequest?.Invoke(selectedItemUI.GetItem as EquipmentEntryUi);
+              //  equippedSlot.Occupy(selectedItemUI.GetItem, selectedItemUI.GetItem.RarityPallete);
+              //  itemUIDic.Remove(selectedItemUI.GetItem.ID);
+             //   Destroy(selectedItemUI.gameObject);
                 selectedItemUI = null;
             }
+
             itemInfoDisplayUI.Close();
         }
 
+        /// <summary>
+        /// Inventory systemn should do it
+        /// </summary>
+        /// <returns></returns>
         public void UnEquipItem()
         {
             if (selectedEquippedSlot != null)
-            {  
-                OnItemUnEquipped?.Invoke(selectedEquippedSlot.GetItem);
-                SpawnItemUI(selectedEquippedSlot.GetItem);
+            {
+                OnUnEquipItemRequest?.Invoke(selectedEquippedSlot.GetItem as EquipmentEntryUi);
+             //   SpawnItemUI(selectedEquippedSlot.GetItem);
                 selectedEquippedSlot.UnOccupy();
                 selectedEquippedSlot = null;
             }
+
             itemInfoDisplayUI.Close();
         }
 
-        public void SpawnItemUI(List<Item> items)
+        public void SpawnItemUI(List<InventoryItemUiEntry> items)
         {
-            foreach (Item item in items)
+            foreach (InventoryItemUiEntry item in items)
             {
-                SpawnItemUI (item);
+                SpawnItemUI(item);
             }
         }
 
-        public void SpawnItemUI(Item item)
+        public void SpawnItemUI(InventoryItemUiEntry item)
         {
             ItemUI itemUI = Instantiate(itemUIPrefab, itemHolder);
-            itemUI.SetItem(item);
+            string id = "";
+            switch (item.ItemType)
+            {
+                case ItemType.Equipment:
+                    itemUI.SetItem(item, item.RarityPallete);
+                    id = item.ID;
+                    break;
+                case ItemType.Material:
+                    itemUI.SetItem(item, item.RarityPallete);
+                    id = item.ID;
+                    break;
+                default:
+                    break;
+            }
 
             itemUI.OnSelectItem += (itemUI) =>
             {
                 selectedItemUI = itemUI;
-                ItemSelected(itemUI.GetItem);
+                ItemSelected(itemUI.GetItem as EquipmentEntryUi);
             };
 
-            itemUIDic.Add(item.ItemData().instanceID, itemUI);
+            itemUIDic.Add(id, itemUI);
         }
 
-        private void ItemSelected(Item item)
+        private void ItemSelected(InventoryItemUiEntry item)
         {
-            switch (item.itemSO.itemType)
+            if(item==null)
+                return;
+            
+            switch (item.ItemType)
             {
-                case ItemType.Equipment:    
-                    itemInfoDisplayUI.Display(item);
+                case ItemType.Equipment:
+                  
+                    itemInfoDisplayUI.Display(item as EquipmentEntryUi);
+                    selectedItem = item as EquipmentEntryUi;
                     break;
                 case ItemType.Material:
                     break;
             }
         }
 
-        public void UpdateItemUI(Item item)
+        public void UpdateItemUI(InventoryItemUiEntry item)
         {
-            if (itemUIDic.ContainsKey(item.ItemData().instanceID))
+            string id = "";
+            switch (item.ItemType)
             {
-                itemUIDic[item.ItemData().instanceID].SetItemInfo();
+                case ItemType.Equipment:
+                    id = item.ID;
+                    break;
+                case ItemType.Material:
+                    id = item.ID;
+                    break;
+            }
+
+            if (itemUIDic.ContainsKey(id))
+            {
+                itemUIDic[id].SetItemInfo();
             }
             else
             {
-                GetEquippedSlot (item)?.SetItemInfo();
+                GetEquippedSlot(item)?.SetItemInfo();
             }
         }
 
-        private EquippedSlot GetEquippedSlot(Item item)
+        private EquippedSlot GetEquippedSlot(InventoryItemUiEntry item)
         {
             foreach (EquippedSlot slot in equippedSlots)
             {
@@ -269,6 +341,7 @@ namespace UISystem
                     return slot;
                 }
             }
+
             return null;
         }
 
@@ -294,9 +367,9 @@ namespace UISystem
                     {
                         return slot;
                     }
-       
                 }
             }
+
             return null;
         }
     }

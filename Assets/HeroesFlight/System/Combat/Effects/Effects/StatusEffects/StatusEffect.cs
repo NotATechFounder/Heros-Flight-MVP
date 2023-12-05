@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HeroesFlight.System.Combat.Effects.Effects
 {
-    public abstract class StatusEffect : Effect
+    public abstract class StatusEffect : DynamicEffect
     {
         [SerializeField] protected EffectDurationType durationType;
         [SerializeField] protected float duration;

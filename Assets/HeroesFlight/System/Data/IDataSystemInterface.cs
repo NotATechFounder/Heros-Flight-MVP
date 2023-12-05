@@ -18,6 +18,9 @@ public interface DataSystemInterface : SystemInterface
 
     public AccountLevelManager AccountLevelManager { get; }
 
+  
+    public WorldManager WorldManger { get; }
+
     RewardsHandlerInterface RewardHandler { get; }
 
     event Action OnApplicationQuit;

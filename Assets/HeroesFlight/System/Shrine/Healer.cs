@@ -6,7 +6,6 @@ public class Healer : MonoBehaviour
 {
     [SerializeField] private float healPercentage = 10f;
     private CharacterStatController characterStatController;
-    private bool hasHealed = false;
 
     public void Initialize(CharacterStatController characterStatController)
     {
@@ -15,7 +14,7 @@ public class Healer : MonoBehaviour
 
     public void Heal()
     {
-        float healthToHeal = StatCalc.GetPercentage (characterStatController.CurrentMaxHealth, healPercentage);
+        float healthToHeal = StatCalc.GetPercentage (characterStatController.GetStatModel.GetCurrentStatValue(StatType.MaxHealth), healPercentage);
         characterStatController.ModifyHealth(healthToHeal, true);
         Debug.Log("Healed");
     }

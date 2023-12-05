@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.Common;
+using HeroesFlight.Common.Enum;
+using HeroesFlight.System.UI.Inventory_Menu;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,37 +12,42 @@ public class ItemUI : MonoBehaviour
 {
     public Action<ItemUI> OnSelectItem;
 
-    [SerializeField] GameObject selectionCheck;
+    [Header("Item Info")]
     [SerializeField] Image itemRarityColour;
     [SerializeField] Image itemFrame;
-    [SerializeField] GameObject itemNotify;
     [SerializeField] Image itemIcon;
     [SerializeField] TextMeshProUGUI itemInfo;
-    [SerializeField] Button selectButton;
+    [SerializeField] AdvanceButton selectButton;
+
+    [Header("Others")]
+    [SerializeField] GameObject itemNotify;
+    [SerializeField] GameObject selectionCheck;
     [SerializeField] GameObject lockImage;
 
     [Header("Debug")]
     [SerializeField] bool selected;
-    [SerializeField] Item item;
+    [SerializeField] InventoryItemUiEntry item;
 
-    public Item GetItem => item;    
+    public InventoryItemUiEntry GetItem => item;    
 
     private void Start()
     {
         selectButton.onClick.AddListener(SelectItem);
     }
 
-    public void SetItem(Item item)
+    public void SetItem(InventoryItemUiEntry item, RarityPalette rarityPalette)
     {
         this.item = item;
-        itemIcon.sprite = item.itemSO.icon;
+        itemIcon.sprite = item.Icon;
+        itemRarityColour.color = rarityPalette.backgroundColour;
+        itemFrame.color = rarityPalette.frameColour;
         SetItemInfo();
     }
 
     public void SetItemInfo()
     {
-        string valueType = item.itemSO.itemType == ItemType.Equipment ? "LV." : "QTY.";
-        itemInfo.text = valueType + item.ItemData().value.ToString();
+        string valueType = item.ItemType == ItemType.Equipment ? "LV." : "QTY.";
+        itemInfo.text = valueType + item.Value.ToString();
     }
 
     private void SelectItem()

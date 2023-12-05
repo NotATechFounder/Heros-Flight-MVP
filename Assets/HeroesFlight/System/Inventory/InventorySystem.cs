@@ -1,110 +1,172 @@
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Inventory.Inventory.Converter;
+using HeroesFlight.System.UI;
+using HeroesFlight.System.UI.Inventory_Menu;
+using StansAssets.Foundation.Extensions;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class InventorySystem : MonoBehaviour
+namespace HeroesFlight.System.Inventory
 {
-    public event Action<Item> OnItemAdded;
-    public event Action<Item> OnItemModified;
+    public class InventorySystem : InventorySystemInterface
 
-    [SerializeField] private ItemInventorySO mainItemInventorySO;
-    [SerializeField] private ItemDatabaseSO itemDatabaseSO;
-    [SerializeField] private Dictionary<string, Item> itemDictionary = new Dictionary<string, Item>();
-
-    [Header("Test Item")]
-    [SerializeField] private ItemSO[] testItem;
-    [SerializeField] private ItemSO[] testMaterialItem;
-
-    private void Start()
     {
-        LoadInventoryItems();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
+        public InventorySystem(DataSystemInterface dataSystemInterface, IUISystem uiSystem)
         {
-            foreach (ItemSO item in testItem)
+            data = dataSystemInterface;
+            this.uiSystem = uiSystem;
+        }
+
+        private DataSystemInterface data;
+        private IUISystem uiSystem;
+        private InventoryItemConverter converter;
+
+        public void Init(Scene scene = default, Action onComplete = null)
+        {
+            InventoryHandler = scene.GetComponent<InventoryHandler>();
+            InventoryHandler.Init(data.CurrencyManager);
+            InventoryHandler.OnItemAdded += SpawnUiItem;
+            InventoryHandler.OnItemModified += UpdateUiItem;
+            converter = new InventoryItemConverter(InventoryHandler);
+        }
+
+        public void Reset()
+        {
+            //TODO: reset callback if needed 
+        }
+
+        private void HandleItemUnequipRequest(EquipmentEntryUi obj)
+        {
+            Item targetItem = InventoryHandler.GetEqupItemById(obj.InstanceId);
+            InventoryHandler.UnEquipItem(targetItem);
+            //  uiSystem.UiEventHandler.InventoryMenu.UnEquipItem();
+            UpdateInventoryUi();
+        }
+
+        private void HandleItemDismantleRequest(EquipmentEntryUi obj)
+        {
+            Debug.Log($"dismantling {obj.ID}");
+            Item targetItem = InventoryHandler.GetEqupItemById(obj.InstanceId);
+            InventoryHandler.DismantleItem(targetItem);
+            uiSystem.UiEventHandler.InventoryMenu.DismantleItem();
+            UpdateInventoryUi();
+        }
+
+        private void HandleItemUpgradeRequest(EquipmentEntryUi obj)
+        {
+            Item targetItem = InventoryHandler.GetEqupItemById(obj.InstanceId);
+            if (InventoryHandler.TryUpgradeItem(targetItem))
             {
-                AddToInventory(item);
+                uiSystem.UiEventHandler.InventoryMenu.UpgradeItem();
+                UpdateInventoryUi();
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.D))
+        private void HandleItemEquipRequest(EquipmentEntryUi obj)
         {
-            foreach (ItemSO item in testMaterialItem)
+            Debug.Log(obj);
+            Item targetItem = InventoryHandler.GetEqupItemById(obj.InstanceId);
+            InventoryHandler.EquipItem(targetItem);
+            UpdateInventoryUi();
+        }
+
+        private void OpenInventory()
+        {
+            UpdateInventoryUi();
+            uiSystem.UiEventHandler.InventoryMenu.Open();
+        }
+
+        private void UpdateInventoryUi()
+        {
+            List<InventoryItemUiEntry> materials = new();
+            List<EquipmentEntryUi> equipment = new();
+            Debug.Log(InventoryHandler.GetInventoryEquippmentItems().Count);
+            foreach (var equipmentItem in InventoryHandler.GetInventoryEquippmentItems())
             {
-                AddToInventory(item);
+                var equipmentData = equipmentItem.GetItemData<ItemEquipmentData>();
+                equipment.Add(new EquipmentEntryUi(equipmentItem.itemSO.ID, equipmentItem.itemSO.icon,
+                    equipmentData.value,
+                    equipmentItem.itemSO.itemType, InventoryHandler.GetPalette(equipmentData.rarity),
+                    equipmentItem.itemSO.Name, equipmentItem.itemSO.description,
+                    (equipmentItem.itemSO as EquipmentSO).equipmentType,
+                    equipmentData.eqquiped, equipmentData.rarity, equipmentData.instanceID));
             }
-        }
-    }
 
-    public Item AddToInventory(ItemSO itemSO, int level = 1)
-    {
-        ItemData itemData = mainItemInventorySO.AddToItemInventory(itemSO, level);
-        if (itemDictionary.ContainsKey(itemData.instanceID))
+            foreach (var equipmentItem in InventoryHandler.GetInventoryMaterialItems())
+            {
+                var itemData = equipmentItem.GetItemData<ItemMaterialData>();
+                materials.Add(new InventoryItemUiEntry(equipmentItem.itemSO.ID, equipmentItem.itemSO.icon,
+                    itemData.value,
+                    equipmentItem.itemSO.itemType, InventoryHandler.GetPalette(Rarity.Common),
+                    equipmentItem.itemSO.Name, equipmentItem.itemSO.description));
+            }
+
+            uiSystem.UiEventHandler.InventoryMenu.UpdateInventoryView(equipment, materials);
+        }
+
+        private void UpdateUiItem(Item obj)
         {
-            itemDictionary[itemData.instanceID].ItemData().value = itemData.value;
-            OnItemModified?.Invoke(itemDictionary[itemData.instanceID]);
+            UpdateInventoryUi();
+            // if (obj.itemSO.itemType == ItemType.Material)
+            // {
+            //     var itemData = obj.GetItemData<ItemMaterialData>();
+            //
+            //     uiSystem.UiEventHandler.InventoryMenu.UpdateItemUI(new InventoryItemUiEntry(obj.itemSO.ID,
+            //         obj.itemSO.icon, itemData.value,
+            //         obj.itemSO.itemType, InventoryHandler.GetPalette(Rarity.Common),
+            //         obj.itemSO.Name, obj.itemSO.description));
+            // }
+            // else
+            // {
+            //     var equipmentData = obj.GetItemData<ItemEquipmentData>();
+            //     uiSystem.UiEventHandler.InventoryMenu.UpdateItemUI(new EquipmentEntryUi(obj.itemSO.ID, obj.itemSO.icon,
+            //         equipmentData.value,
+            //         obj.itemSO.itemType, InventoryHandler.GetPalette(equipmentData.rarity),
+            //         obj.itemSO.Name, obj.itemSO.description,
+            //         (obj.itemSO as EquipmentSO).equipmentType,
+            //         equipmentData.eqquiped, equipmentData.rarity,equipmentData.instanceID));
+            // }
         }
-        else
+
+        private void SpawnUiItem(Item obj)
         {
-            itemDictionary.Add(itemData.instanceID, new Item(itemSO, itemData));
-            OnItemAdded?.Invoke(itemDictionary[itemData.instanceID]);    
+            if (obj.itemSO.itemType == ItemType.Material)
+            {
+                var itemData = obj.GetItemData<ItemMaterialData>();
+                uiSystem.UiEventHandler.InventoryMenu.SpawnItemUI((new InventoryItemUiEntry(obj.itemSO.ID,
+                    obj.itemSO.icon, itemData.value,
+                    obj.itemSO.itemType, InventoryHandler.GetPalette(Rarity.Common),
+                    obj.itemSO.Name, obj.itemSO.description)));
+            }
+            else
+            {
+                var equipmentData = obj.GetItemData<ItemEquipmentData>();
+                uiSystem.UiEventHandler.InventoryMenu.SpawnItemUI(new EquipmentEntryUi(obj.itemSO.ID, obj.itemSO.icon,
+                    equipmentData.value,
+                    obj.itemSO.itemType, InventoryHandler.GetPalette(equipmentData.rarity),
+                    obj.itemSO.Name, obj.itemSO.description,
+                    (obj.itemSO as EquipmentSO).equipmentType,
+                    equipmentData.eqquiped, equipmentData.rarity, equipmentData.instanceID));
+            }
+
+            UpdateInventoryUi();
         }
-        return itemDictionary[itemData.instanceID];
-    }
 
-    public void RemoveFromInventory(Item item)
-    {
-        itemDictionary.Remove(item.ItemData().instanceID);
-        mainItemInventorySO.RemoveItemFromInventory(item.itemSO, item.ItemData());
-    }
+        public InventoryHandler InventoryHandler { get; private set; }
 
-    public void LoadInventoryItems()
-    {
-        mainItemInventorySO.Load();
-
-        foreach (ItemData itemData in mainItemInventorySO.inventoryData.savedData)
+        public void InjectUiConnection()
         {
-            itemDictionary.Add(itemData.instanceID, new Item(itemDatabaseSO.GetItemSOByID(itemData.ID), itemData));
+            uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += OpenInventory;
+            uiSystem.UiEventHandler.InventoryMenu.OnEquipItemRequest += HandleItemEquipRequest;
+            uiSystem.UiEventHandler.InventoryMenu.OnUpgradeRequest += HandleItemUpgradeRequest;
+            uiSystem.UiEventHandler.InventoryMenu.OnDismantleRequest += HandleItemDismantleRequest;
+            uiSystem.UiEventHandler.InventoryMenu.OnUnEquipItemRequest += HandleItemUnequipRequest;
+
+            uiSystem.UiEventHandler.InventoryMenu.InitInventory(converter);
+            
+            Debug.Log("SUBSCRIBED");
         }
-    }
-
-    public void EquipItem(Item item)
-    {
-        item.ItemData().eqquiped = true;
-        mainItemInventorySO.Save();
-    }
-
-    public void UnEquipItem(Item item)
-    {
-        item.ItemData().eqquiped = false;
-        mainItemInventorySO.Save();
-    }
-
-    public void DismantleItem(Item item)
-    {
-        RemoveFromInventory(item);
-    }
-
-    public bool TryUpgradeItem(Item item)
-    {
-        // check if the level is not maxed and if they have enough materials
-        item.LevelUp();
-        OnItemModified?.Invoke(item);
-        mainItemInventorySO.Save();
-        return true;
-    }
-
-    public void SaveInventoryItems()
-    {
-        mainItemInventorySO.Save();
-    }
-
-    public List<Item> GetInventoryItems()
-    {
-        return new List<Item>(itemDictionary.Values);
     }
 }

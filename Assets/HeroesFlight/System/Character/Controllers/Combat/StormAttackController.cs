@@ -23,11 +23,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             var baseDamage = Damage;
             
-            float criticalChance = characterController.CharacterStatController.CurrentCriticalHitChance;
+            float criticalChance = characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.CriticalHitChance);
             bool isCritical = Random.Range(0, 100) <= criticalChance;
 
             float damageToDeal = isCritical
-                ? baseDamage * characterController.CharacterStatController.CurrentCriticalHitDamage
+                ? baseDamage * characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.CriticalHitDamage)
                 : baseDamage;
 
             var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;

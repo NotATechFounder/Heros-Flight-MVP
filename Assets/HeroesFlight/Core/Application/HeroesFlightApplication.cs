@@ -11,7 +11,7 @@ namespace HeroesFlight.Core.Application
             var stateStack = new AppStateStack();
             stateStack.Init(monoBootstrapper.ResolveServices(), () =>
             {
-                AppStateStack.State.Set(ApplicationState.Initialization);
+                AppStateStack.State.Set(ApplicationState.Authentication);
             });
         }
     }

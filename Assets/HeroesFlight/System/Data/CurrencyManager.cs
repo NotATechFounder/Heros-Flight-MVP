@@ -19,7 +19,7 @@ public class CurrencyManager : MonoBehaviour
         currency.ReduceCurrency(amount);
     }
 
-    public void AddCurency(string key, float amount)
+    public void AddCurrency(string key, float amount)
     {
         CurrencySO currency = GetCurrecy(key);
         currency.IncreaseCurrency(amount);

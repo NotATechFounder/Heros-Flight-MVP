@@ -1,14 +1,22 @@
-﻿using System;
-
-namespace HeroesFlight.System.Stats.Stats.Enum
+﻿public enum StatType
 {
-    [Serializable]
-    public enum StatType
-    {
-        Power,
-        Vitality,
-        Agility,
-        Defence
-        
-    }
+    PhysicalDamage,
+    MagicDamage,
+    MaxHealth,
+    MoveSpeed,
+    AttackSpeed,
+    DodgeChance,
+    Defense,
+    CriticalHitChance,
+    PhysicalMagicDamage,
+    AllStats,
+    HealingBooster,
+    AbilityDamage,
+    ExperienceBoost,
+    GoldBoost,
+    LifeSteal,
+    CurrentHealth,
+    AttackRange,
+    CriticalHitDamage,
+    MulticastChance
 }

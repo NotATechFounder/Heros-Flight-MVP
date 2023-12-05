@@ -24,7 +24,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             animator = GetComponent<CharacterAnimationControllerInterface>();
             animator.PlayIdleAnimation();
             animator = GetComponent<CharacterAnimationController>();
-            maxHealth = characterStatController.CurrentMaxHealth;
+            maxHealth = characterStatController.GetStatModel.GetCurrentStatValue(StatType.MaxHealth);
             characterStatController.OnHealthModified += Heal;
             characterStatController.GetCurrentHealth = () => currentHealth;
             characterStatController.OnMaxHealthChanged = SetMaxHealth;
@@ -58,8 +58,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public override void TryDealDamage(HealthModificationIntentModel healthModificationIntent)
         {
-            dodgeChance = characterStatController.CurrentDodgeChance;
-            defence = characterStatController.CurrentDefense;
+            dodgeChance = characterStatController.GetStatModel.GetCurrentStatValue(StatType.DodgeChance);
+            defence = characterStatController.GetStatModel.GetCurrentStatValue(StatType.Defense);
             base.TryDealDamage(healthModificationIntent);
         }
     }

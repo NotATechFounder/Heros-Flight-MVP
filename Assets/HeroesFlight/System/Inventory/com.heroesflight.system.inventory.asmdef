@@ -1,0 +1,24 @@
+{
+    "name": "com.heroesflight.system.inventory",
+    "rootNamespace": "",
+    "references": [
+        "GUID:08a53d9257730bf49bf6ac0661e17cb3",
+        "GUID:db0eb1f6c1244402aa4d287a997cdb47",
+        "GUID:fa6e815ac5f71f74dba3e8c8d640b2fb",
+        "GUID:41156cdbab6bbf9498004681b8319c94",
+        "GUID:31326f97b346afe47ab0d62a681eaff7",
+        "GUID:92b5abdaab82d5d4cae5458e76d0e305",
+        "GUID:d4c16c7a7693d244fb893641e394b0b1",
+        "GUID:27377cbff5b029c42b4301d227252dcf",
+        "GUID:4aae0b6a871697848b151ea1f4cd345a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
