@@ -123,7 +123,7 @@ namespace HeroesFlight.System.Inventory
 
             uiSystem.UiEventHandler.InventoryMenu.InitInventory(converter);
             
-            Debug.Log("SUBSCRIBED");
+            //Debug.Log("SUBSCRIBED");
         }
 
         public List<CombatEffect> GetEquippedItemsCombatEffects()

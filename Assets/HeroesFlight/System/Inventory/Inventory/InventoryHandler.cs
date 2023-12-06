@@ -70,7 +70,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            RemoveMultipleToInventory(GetInventoryEquippedItems().ToArray());
+           // RemoveMultipleToInventory(GetInventoryEquippedItems().ToArray());
         }
     }
 
