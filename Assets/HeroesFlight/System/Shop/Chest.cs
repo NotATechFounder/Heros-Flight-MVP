@@ -55,6 +55,7 @@ public class Chest : MonoBehaviour
 
             timedReward.RewardPlayer = (LastRewardClaimDate) =>
             {
+                // enable button
                 Debug.Log("Reward Player");
             };
 

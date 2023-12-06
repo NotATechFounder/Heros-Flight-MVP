@@ -21,6 +21,11 @@ public class RewardPack : ScriptableObject
         RewardPlayer();
     }
 
+    public void GiveSingleReward(int index)
+    {
+        fixedRewards[index].GiveReward();
+    }
+
     private void GiveAllFixedRewards()
     {
         foreach (Reward reward in chancedRewards)
