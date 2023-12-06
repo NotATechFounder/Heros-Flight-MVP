@@ -211,7 +211,7 @@ public class StatModel
             { StatType.LifeSteal, 0 },
             { StatType.CurrentHealth, 0 },
             { StatType.AttackRange, 0 },
-            { StatType.CriticalHitDamage, 0 },
+            { StatType.CriticalHitDamage, playerStatData.CriticalHitDamage.min },
         };
         currentStatDic  = new Dictionary<StatType, float>(baseStatDic);
     }

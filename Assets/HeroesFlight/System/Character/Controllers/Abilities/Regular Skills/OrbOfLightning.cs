@@ -11,7 +11,6 @@ public class OrbOfLightning : RegularActiveAbility
     [SerializeField] private SkillOrb skillOrb;
     private float baseDamage;
     AutoShooter autoShooter;
-
     public void Initialize(int level, CharacterStatController characterStatController)
     {
         this.currentLevel = level;

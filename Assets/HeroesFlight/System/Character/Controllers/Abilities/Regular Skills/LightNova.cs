@@ -18,7 +18,6 @@ public class LightNova : RegularActiveAbility
     [Header("LightNova")] 
     [SerializeField] private float damageMultiplier = 1;
     [SerializeField] private OverlapChecker overlapChecker;
-
     [Header("Animation and Viusal Settings")]
     [SerializeField] SkeletonAnimation skeletonAnimation;
     [SerializeField] public const string attackAnimation1Name = "animation";

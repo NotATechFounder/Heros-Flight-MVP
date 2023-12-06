@@ -29,7 +29,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             float damageToDeal = isCritical
                 ? baseDamage * characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.CriticalHitDamage)
                 : baseDamage;
-
+            
+            Debug.Log(characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.CriticalHitDamage));
             var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
             var damageModel = new HealthModificationIntentModel(damageToDeal, type,
                 AttackType.Regular,CalculationType.Flat,healthController);
