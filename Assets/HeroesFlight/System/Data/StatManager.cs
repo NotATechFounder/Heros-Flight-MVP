@@ -67,8 +67,6 @@ public class StatManager : MonoBehaviour
     {
         foreach (StatTypeWithValue attribute in stats)
         {
-            Debug.Log(attribute.statType + " " + attribute.value);
-
             switch (attribute.statType)
             {
                 case StatType.PhysicalDamage:

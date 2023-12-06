@@ -76,7 +76,7 @@ public class ItemInfoDisplayUI : MonoBehaviour
         itemBackground.color = rarityPalette.backgroundColour;
         itemFrame.color = rarityPalette.frameColour;
 
-        UpgradeItem();
+        UpgradeItem(item);
     }
 
     private void HandleUpgrade()
@@ -84,8 +84,9 @@ public class ItemInfoDisplayUI : MonoBehaviour
         OnUpgradeRequest?.Invoke();
     }
 
-    public void UpgradeItem()
+    public void UpgradeItem(EquipmentEntryUi item)
     {
+        this.item = item;
         SetItemLevel();
         SeUpgradeInfo();
     }
@@ -115,8 +116,7 @@ public class ItemInfoDisplayUI : MonoBehaviour
        
         if (materialItem == null)
         {
-            Debug.Log(item.InstanceId);
-            var inventoryItem = converter.GetEquipment(item.InstanceId);
+            var inventoryItem = converter.GetEquipment(item.ID);
            
             upgradeMaterialIcon.sprite = inventoryItem.Icon;
             requiredMaterialName.text = inventoryItem.Name;

@@ -4,6 +4,7 @@ using HeroesFlight.System.Combat.Effects.Effects.Data;
 using HeroesFlight.System.Combat.StatusEffects.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace HeroesFlight.System.Character.Controllers.Effects

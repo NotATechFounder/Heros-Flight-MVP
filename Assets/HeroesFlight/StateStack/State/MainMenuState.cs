@@ -32,7 +32,7 @@ namespace HeroesFlight.StateStack.State
             switch (evt.Action)
             {
                 case StackAction.Added:
-                    Debug.Log(ApplicationState);
+                   // Debug.Log(ApplicationState);
                     progressReporter.SetDone();
                     var uiSystem = GetService<IUISystem>();
                     var dataSystem = GetService<DataSystemInterface>();

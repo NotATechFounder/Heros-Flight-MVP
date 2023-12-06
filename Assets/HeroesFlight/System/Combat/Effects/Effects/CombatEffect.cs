@@ -20,5 +20,18 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         public GameObject Visual => visual;
         public string ID => id;
         public List<Effect> EffectToApply => effectToApply;
+
+        public void SetID(string id) => this.id = id;
+
+
+        public CombatEffect Clone()
+        {
+            return new CombatEffect
+            {
+                id = id,
+                applyType = applyType,
+                visual = visual,
+            };
+        }
     }
 }

@@ -47,9 +47,14 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
 
     public int GetItemMaxLevel(Item currentItem)
     {
-        return GetRarityInfo(currentItem.GetItemData<ItemEquipmentData>().rarity).maxLevel;
+        return GetItemMaxLevel (currentItem.GetItemData<ItemEquipmentData>().rarity);
     }
-    
+
+    public int GetItemMaxLevel(Rarity rarity)
+    {
+        return GetRarityInfo(rarity).maxLevel;
+    }
+
     public int GetNextRarityFuseRequirement(Item currentItem)
     {
         return GetRarityInfo(currentItem.GetItemData<ItemEquipmentData>().rarity).nextRarityFuseRequirement;
@@ -75,22 +80,22 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
     {
         ItemSO itemBase = currentItem.itemSO;
 
-        for (int i = 0; i < currentItem.ItemBuffs().Length; i++)
-        {
-            for (int j = 0; j < itemEffects.Length; j++)
-            {
-                if (currentItem.ItemBuffs()[i].itemEffectType != itemEffects[j].itemEffectType) continue;
+        //for (int i = 0; i < currentItem.ItemBuffs().Length; i++)
+        //{
+        //    for (int j = 0; j < itemEffects.Length; j++)
+        //    {
+        //        if (currentItem.ItemBuffs()[i].itemEffectType != itemEffects[j].itemEffectType) continue;
 
-                for (int k = 0; k < itemEffects[j].effectRarityStats.Length; k++)
-                {
-                    if (itemEffects[j].effectRarityStats[k].rarity == currentItem.GetItemData<ItemEquipmentData>().rarity)
-                    {
-                        currentItem.ItemBuffs()[i].value = itemEffects[j].effectRarityStats[k].statCurve.GetCurrentValueInt(currentItem.GetItemData<ItemEquipmentData>().GetValue());
-                        break;
-                    }
-                }
-            }
-        }
+        //        for (int k = 0; k < itemEffects[j].effectRarityStats.Length; k++)
+        //        {
+        //            if (itemEffects[j].effectRarityStats[k].rarity == currentItem.GetItemData<ItemEquipmentData>().rarity)
+        //            {
+        //                currentItem.ItemBuffs()[i].value = itemEffects[j].effectRarityStats[k].statCurve.GetCurrentValueInt(currentItem.GetItemData<ItemEquipmentData>().GetValue());
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
     }
 
     public int GetBuffValue(ItemEffectType buff, Rarity currentRarity, int level)

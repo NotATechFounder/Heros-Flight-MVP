@@ -5,7 +5,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects.Data
     [Serializable]
     public class ReflectEffectData : EffectData
     {
-        public EffectValuePair FlatDamage;
-        public EffectValuePair PercentageDamage;
+        public EffectValuePair FlatDamage = new EffectValuePair();
+        public EffectValuePair PercentageDamage = new EffectValuePair();
     }
 }

@@ -61,7 +61,7 @@ public class GodsBenevolence : MonoBehaviour
                 break;
             case GodBenevolenceType.Hermes:
                 benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolence.EffectPrefab, benevolenceSocket.BottomSocket);
-
+                benevolenceEffect.GetComponent<HermesEffect>().SetUp(characterStatController.GetComponent<CharacterControllerInterface>());
                 characterStatController.GetStatModel.ModifyCurrentStat(StatType.MoveSpeed, godsBenevolence.GetValue("FlySpeedInc"), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
                 characterStatController.GetStatModel.ModifyCurrentStat(StatType.AttackRange, godsBenevolence.GetValue("AttackRangeInc"), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
                 break;

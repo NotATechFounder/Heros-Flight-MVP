@@ -18,6 +18,7 @@ using HeroesFlight.System.Gameplay.Container;
 using HeroesFlight.System.Gameplay.Controllers.Sound;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
+using HeroesFlight.System.Inventory;
 using HeroesFlight.System.NPC;
 using HeroesFlight.System.NPC.Controllers.Ability;
 using HeroesFlight.System.NPC.Controllers.Control;
@@ -45,7 +46,7 @@ namespace HeroesFlight.System.Gameplay
         public GamePlaySystem(DataSystemInterface dataSystem, CharacterSystemInterface characterSystem,
             NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem,
             CombatSystemInterface combatSystem,
-            IUISystem uiSystem, ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystemInterface)
+            IUISystem uiSystem, ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystemInterface, InventorySystemInterface inventorySystemInterface)
         {
             this.dataSystem = dataSystem;
             this.npcSystem = npcSystem;
@@ -55,6 +56,8 @@ namespace HeroesFlight.System.Gameplay
             this.uiSystem = uiSystem;
             this.progressionSystem = progressionSystem;
             traitSystem = traitSystemInterface;
+            InventorySystem = inventorySystemInterface;
+
             this.npcSystem.OnEnemySpawned += HandleEnemySpawned;
             this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
             this.combatSystem.OnEntityDied += HandleEntityDied;
@@ -77,6 +80,7 @@ namespace HeroesFlight.System.Gameplay
         ProgressionSystemInterface progressionSystem;
         CharacterSystemInterface characterSystem;
         TraitSystemInterface traitSystem;
+        InventorySystemInterface InventorySystem;
 
         GameplayContainer container;
 
@@ -450,13 +454,15 @@ namespace HeroesFlight.System.Gameplay
 
             characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
             characterStatController.Initialize(dataSystem.StatManager.GetStatModel());
-          
-            var effectsController = characterController.CharacterTransform.GetComponent<CombatEffectsController>();
+
+            CombatEffectsController effectsController = characterController.CharacterTransform.GetComponent<CombatEffectsController>();
             combatSystem.RegisterEntity(new CombatEntityModel(characterHealthController, characterAttackController,
                 effectsController,
                 CombatEntityType.Player));
             combatSystem.InitCharacterUltimate(characterController.CharacterSO.CharacterAnimations.UltAnimationsData,
                 characterController.CharacterSO.UltimateData.Charges);
+
+            effectsController.AddCombatEffect(InventorySystem.GetEquippedItemsCombatEffects());
 
             characterAttackController.OnHitTarget += OnEnemyHitSuccess;
 
