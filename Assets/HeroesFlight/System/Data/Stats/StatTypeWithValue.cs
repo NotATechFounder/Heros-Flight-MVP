@@ -9,6 +9,8 @@ namespace HeroesFlight.System.FileManager.Stats
         public int value;
         public StatModel.StatCalculationType statCalculationType;
 
+        public StatTypeWithValue() {}
+
         public StatTypeWithValue(StatType statType, int value, StatModel.StatCalculationType statCalculationType)
         {
             this.statType = statType;

@@ -37,6 +37,7 @@ public class ItemUI : MonoBehaviour
 
     public void SetItem(InventoryItemUiEntry item, RarityPalette rarityPalette)
     {
+        OnSelectItem = null;
         this.item = item;
         itemIcon.sprite = item.Icon;
         itemRarityColour.color = rarityPalette.backgroundColour;

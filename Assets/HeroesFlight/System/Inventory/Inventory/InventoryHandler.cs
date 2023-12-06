@@ -6,10 +6,23 @@ using HeroesFlight.Common.Enum;
 using HeroesFlight.System.FileManager.Stats;
 using UnityEngine;
 
+public class InventoryAddModificator
+{
+    public ItemSO itemSO;
+    public int value;   
+    public Rarity rarity;  
+    
+    public InventoryAddModificator(ItemSO itemSO, int value, Rarity rarity)
+    {
+        this.itemSO = itemSO;
+        this.value = value;
+        this.rarity = rarity;
+    }
+}
+
 public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 {
-    public event Action<Item> OnItemAdded;
-    public event Action<Item> OnItemModified;
+    public event Action OnInventoryUpdated;
     public event Action<List<StatTypeWithValue>> OnEqiuppedItemsStatChanged;
 
     [SerializeField] private ItemInventorySO mainItemInventorySO;
@@ -35,19 +48,29 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
+            List<InventoryAddModificator> itemsToAdd = new List<InventoryAddModificator>();
             foreach (ItemSO item in testItem)
             {
                 Rarity randomRarity = (Rarity)UnityEngine.Random.Range(0, 4);
-                AddToInventory(item, 1, randomRarity);
+
+                itemsToAdd.Add(new InventoryAddModificator(item, 1, randomRarity));
             }
+            AddMultipleToInventory(itemsToAdd.ToArray());
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
+            List<InventoryAddModificator> itemsToAdd = new List<InventoryAddModificator>();
             foreach (ItemSO item in testMaterialItem)
             {
-                AddToInventory(item);
+                itemsToAdd.Add(new InventoryAddModificator(item, 1, Rarity.Common));
             }
+            AddMultipleToInventory(itemsToAdd.ToArray());
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+           // RemoveMultipleToInventory(GetInventoryEquippedItems().ToArray());
         }
     }
 
@@ -67,12 +90,10 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
                 if (materialItemDic.ContainsKey(itemData.ID))
                 {
                     materialItemDic[itemData.ID].GetItemData<ItemMaterialData>().value = itemData.value;
-                    OnItemModified?.Invoke(materialItemDic[itemData.ID]);
                 }
                 else
                 {
                     materialItemDic.Add(itemData.ID, new Item(itemSO, itemData));
-                    OnItemAdded?.Invoke(materialItemDic[itemData.ID]);
                 }
 
                 return materialItemDic[itemData.ID];
@@ -83,12 +104,21 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
                 ItemEquipmentData itemEquipmentData = itemData as ItemEquipmentData;
                 equipmentItemDic.Add(itemEquipmentData.instanceID, new Item(itemSO, itemData));
-                OnItemAdded?.Invoke(equipmentItemDic[itemEquipmentData.instanceID]);
                 return equipmentItemDic[itemEquipmentData.instanceID];
         }
 
         SaveInventoryItems();
         return null;
+    }
+
+    public void AddMultipleToInventory(params InventoryAddModificator[] inventoryModificators)
+    {
+        foreach (var inventoryModificator in inventoryModificators)
+        {
+            AddToInventory (inventoryModificator.itemSO, inventoryModificator.value, inventoryModificator.rarity);
+        }
+        SaveInventoryItems();
+        OnInventoryUpdated?.Invoke();   
     }
 
     public void RemoveFromInventory(Item item)
@@ -102,7 +132,6 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
                     equippedItemDic.Remove(item.GetItemData<ItemEquipmentData>().instanceID);
                     ProcessEquippedItemStats();
                 }
-                Debug.Log($"Removing item fro minventory {item.itemSO.ID}");
                 equipmentItemDic.Remove(item.GetItemData<ItemEquipmentData>().instanceID);
                 break;
             case ItemType.Material:
@@ -113,6 +142,18 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
         mainItemInventorySO.RemoveItemFromInventory(item.itemSO, item.GetItemData<ItemData>());
     }
+
+
+    public void RemoveMultipleToInventory(params Item[] itemsToRemove)
+    {
+        foreach (Item item in itemsToRemove)
+        {
+            RemoveFromInventory (item);
+        }
+        SaveInventoryItems();
+        OnInventoryUpdated?.Invoke();
+    }
+
 
     public void LoadInventoryItems()
     {
@@ -203,13 +244,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
         GetMaterialItemByID("M_" + item.GetItemSO<EquipmentSO>().equipmentType.ToString(), out Item materialItem);
 
-        if (materialItem == null)
-        {
-            Debug.Log("Not enough material");
-            return false;
-        }
-
-        if (materialItem.GetItemData<ItemMaterialData>().value < GetMaterialUpgradeRequiredAmount(item))
+        if (materialItem == null || materialItem.GetItemData<ItemMaterialData>().value < GetMaterialUpgradeRequiredAmount(item))
         {
             Debug.Log("Not enough material");
             return false;
@@ -219,7 +254,6 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
         materialItem.GetItemData<ItemMaterialData>().value -= GetMaterialUpgradeRequiredAmount(item);
         item.LevelUp();
         //itemDatabaseSO.SetItemBuffStat(item);
-        OnItemModified?.Invoke(item);
         mainItemInventorySO.Save();
 
 
@@ -233,15 +267,28 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
     public void ProcessEquippedItemStats()
     {
+        //Debug.Log("ProcessEquippedItemStats");
+
         equippedItemsStatDic = new List<StatTypeWithValue>();
         foreach (Item item in equippedItemDic.Values)
         {
-            int baseValue = item.GetItemSO<EquipmentSO>()
-                .GetBaseStatValue(item.GetItemData<ItemEquipmentData>().rarity);
-            int actualValue = itemDatabaseSO.GetRarityInfo(item.GetItemData<ItemEquipmentData>().rarity)
-                .GetValue(baseValue, item.GetItemData<ItemEquipmentData>().value);
+            // Apply base stat value
+            int baseValue = item.GetItemSO<EquipmentSO>().GetBaseStatValue(item.GetItemData<ItemEquipmentData>().rarity);
+            int actualValue = itemDatabaseSO.GetRarityInfo(item.GetItemData<ItemEquipmentData>().rarity).GetValue(baseValue, item.GetItemData<ItemEquipmentData>().value);
             StatType statType = item.GetItemSO<EquipmentSO>().statType;
             equippedItemsStatDic.Add(new StatTypeWithValue(statType, actualValue, StatModel.StatCalculationType.Flat));
+            //Debug.Log($"Adding stat {statType} with value {actualValue}");
+
+            // Add Special Hero Effect if any
+            if (item.GetItemSO<EquipmentSO>().specialHeroEffect.value != 0)
+            equippedItemsStatDic.Add(item.GetItemSO<EquipmentSO>().specialHeroEffect);
+
+            // Add Unique Stat Modification Effects if any
+            foreach (UniqueStatModificationEffect uniqueStatModificationEffect in item.GetItemSO<EquipmentSO>().uniqueStatModificationEffects)
+            {
+                int uniqueStatValue = uniqueStatModificationEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value);
+                equippedItemsStatDic.Add(new StatTypeWithValue(uniqueStatModificationEffect.statType, uniqueStatValue, StatModel.StatCalculationType.Percentage));
+            }
         }
 
         OnEqiuppedItemsStatChanged?.Invoke(equippedItemsStatDic);
@@ -283,4 +330,6 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
         return null;
     }
+
+    public List<Item> GetInventoryEquippedItems() => new List<Item>(equippedItemDic.Values);
 }

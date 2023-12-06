@@ -16,5 +16,16 @@ namespace HeroesFlight.System.Combat.Effects.Effects
 
         public bool IsStackable => isStackable;
         public bool CanReApply => canBeReApplied;
+
+        public void SetData (StatusEffect statusEffect)
+        {
+            durationType = statusEffect.durationType;
+            duration = statusEffect.duration;
+            isStackable = statusEffect.isStackable;
+            canBeReApplied = statusEffect.canBeReApplied;
+            calculationType = statusEffect.calculationType;
+            effectType = statusEffect.effectType;
+            visual = statusEffect.visual;   
+        }
     }
 }

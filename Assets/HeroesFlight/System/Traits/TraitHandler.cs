@@ -28,7 +28,7 @@ namespace HeroesFlight.System.Stats.Handlers
         {
             if (traitMap.TryGetValue(id, out var targetFeat) && !unlockedTraits.ContainsKey(targetFeat.Id))
             {
-                Debug.Log($"Unlocking trait{targetFeat.Id}");
+               // Debug.Log($"Unlocking trait{targetFeat.Id}");
                 unlockedTraits.Add(targetFeat.Id, new TraitStateModel(targetFeat, new IntValue(0)));
                 return true;
             }
@@ -44,7 +44,7 @@ namespace HeroesFlight.System.Stats.Handlers
                 return true;
             }
 
-            Debug.LogError($"{traitId} is not unlocked");
+            //Debug.LogError($"{traitId} is not unlocked");
             return false;
         }
 
@@ -72,7 +72,7 @@ namespace HeroesFlight.System.Stats.Handlers
                 return model.Effect;
             }
 
-            Debug.LogError($"Trait with id {id} not found");
+            //Debug.LogError($"Trait with id {id} not found");
             return null;
         }
 
@@ -83,7 +83,7 @@ namespace HeroesFlight.System.Stats.Handlers
                 return stateValue.Value;
             }
 
-            Debug.LogError($"{traitId} is not unlocked");
+           // Debug.LogError($"{traitId} is not unlocked");
             return new IntValue(0);
         }
 
@@ -112,12 +112,12 @@ namespace HeroesFlight.System.Stats.Handlers
 
         void LoadCache()
         {
-            Debug.Log("Loading cache");
+            //Debug.Log("Loading cache");
             var availableCache = Resources.LoadAll<Trait>(LOAD_FOLDER);
-            Debug.Log(availableCache.Length);
+            //Debug.Log(availableCache.Length);
             foreach (var feat in availableCache)
             {
-                Debug.Log($"adding feat with id {feat.Id}");
+                //Debug.Log($"adding feat with id {feat.Id}");
                 traitMap.Add(feat.Id, feat);
             }
         }
