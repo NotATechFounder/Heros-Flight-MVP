@@ -70,9 +70,9 @@ public class Chest : MonoBehaviour
         }
     }
 
-    public void OpenChest()
+    public List<Reward> OpenChest()
     {
-        rewards.GiveReward();
+       return rewards.GetReward();
     }
 
     public void OpenNormalChestWithAds()

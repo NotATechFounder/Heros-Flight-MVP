@@ -575,8 +575,8 @@ namespace HeroesFlight.System.Gameplay
                     characterAttackController.ToggleControllerState(false);
 
                     //Temp rewarding player with unlock here
-                    dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
-                        CharacterType.Lancer));
+                    //dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
+                    //    CharacterType.Lancer));
 
                     CoroutineUtility.WaitForSeconds(6f, () => { ChangeState(GameState.Won); });
 
@@ -1019,8 +1019,8 @@ namespace HeroesFlight.System.Gameplay
                     break;
                 case GameState.Won:
 
-                    dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
-                        CharacterType.Storm));
+                    //dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
+                    //    CharacterType.Storm));
                     dataSystem.CharacterManager.UnlockCharacter(CharacterType.Storm);
                     Debug.Log("Granting STORM");
 
@@ -1191,28 +1191,28 @@ namespace HeroesFlight.System.Gameplay
         {
             if (dataSystem.RewardHandler.RewardPending)
             {
-                var pendingRewards = dataSystem.RewardHandler.GetPendingRewards();
-                var rewardsToConsume = new List<RewardModel>();
+                //var pendingRewards = dataSystem.RewardHandler.GetPendingRewards();
+                //var rewardsToConsume = new List<RewardModel>();
 
-                if (pendingRewards.TryGetValue(RewardType.Hero, out var rewards))
-                {
-                    foreach (var reward in rewards)
-                    {
-                        if (reward.RewardType == RewardType.Hero)
-                        {
-                            var heroReward = reward as HeroRewardModel;
-                            rewardsToConsume.Add(reward);
-                            uiSystem.UiEventHandler.SummaryMenu.AddRewardEntry(
-                                $"Unlocked new Hero - {heroReward.HeroType}");
-                        }
-                    }
-                }
+                //if (pendingRewards.TryGetValue(RewardType.Hero, out var rewards))
+                //{
+                //    foreach (var reward in rewards)
+                //    {
+                //        if (reward.RewardType == RewardType.Hero)
+                //        {
+                //            var heroReward = reward as HeroRewardModel;
+                //            rewardsToConsume.Add(reward);
+                //            uiSystem.UiEventHandler.SummaryMenu.AddRewardEntry(
+                //                $"Unlocked new Hero - {heroReward.HeroType}");
+                //        }
+                //    }
+                //}
 
 
-                foreach (var reward in rewardsToConsume)
-                {
-                    dataSystem.RewardHandler.ConsumeReward(reward);
-                }
+                //foreach (var reward in rewardsToConsume)
+                //{
+                //    dataSystem.RewardHandler.ConsumeReward(reward);
+                //}
             }
 
             uiSystem.UiEventHandler.SummaryMenu.Open();

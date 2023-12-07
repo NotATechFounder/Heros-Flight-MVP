@@ -34,35 +34,22 @@ public class Item
 {
     public ItemSO itemSO;
     [SerializeField] ItemData itemData;
-   // [SerializeField] SpecialHeroEffect[] itemEffects;
 
     public Item(ItemSO itemObject, ItemData itemData)
     {
         this.itemSO = itemObject;
         this.itemData = itemData;
-
-        if (itemObject is EquipmentSO) AddEffects(itemObject as EquipmentSO);
     }
 
     public T GetItemSO<T>() where T : ItemSO => itemSO as T;
     public T GetItemData<T>() where T : ItemData => itemData as T;
 
-    //public SpecialHeroEffect[] ItemBuffs() => itemEffects;
 
     public void LevelUp()
     {
         if (itemSO is EquipmentSO) itemData.LevelUp();
     }
 
-    public void AddEffects(EquipmentSO item)
-    {
-        //itemEffects = new ItemEffect[item.effects.Length];
-        //for (int i = 0; i < itemEffects.Length; i++)
-        //{
-        //    itemEffects[i] = new ItemEffect();
-        //    itemEffects[i].itemEffectType = item.effects[i];
-        //}
-    }
 
     public override bool Equals(object obj)
     {
@@ -82,7 +69,6 @@ public class Item
 
     public override int GetHashCode()
     {
-        // return HashCode.Combine(itemSO, itemData, itemEffects);
         return HashCode.Combine(itemSO, itemData);
     }
 }

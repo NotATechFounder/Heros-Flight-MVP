@@ -11,6 +11,7 @@ public class DailyReward : MonoBehaviour
     public const string DailyReward_Save = "DailyRewardData";
 
     [SerializeField] private RewardPack rewardPacks;
+    [SerializeField] private Reward reward;
 
     [Header("Timed Reward")]
     [SerializeField] TimeType timeType;

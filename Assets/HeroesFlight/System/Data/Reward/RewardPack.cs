@@ -13,17 +13,17 @@ public class RewardPack : ScriptableObject
     public Reward[] GetFixedRewards() => fixedRewards;
     public List<Reward> GetRewardsToGive() => rewardToGive;
 
-    public void GiveReward()
+    public List<Reward> GetReward()
     {
         rewardToGive.Clear();
         GiveAllFixedRewards();
         GenerateRewardByChance();
-        RewardPlayer();
+        return RewardPlayer();
     }
 
-    public void GiveSingleReward(int index)
+    public Reward GiveSingleReward(int index)
     {
-        fixedRewards[index].GiveReward();
+        return fixedRewards[index];
     }
 
     private void GiveAllFixedRewards()
@@ -46,12 +46,9 @@ public class RewardPack : ScriptableObject
         }
     }
 
-    public void RewardPlayer()
+    public List<Reward> RewardPlayer()
     {
-        foreach (Reward reward in rewardToGive)
-        {
-            reward.GiveReward();
-        }
+        return rewardToGive;
     }
 
     public void GenerateRandomRewardByChance(Reward[] rewardArray, int currrentNumberOfReward)

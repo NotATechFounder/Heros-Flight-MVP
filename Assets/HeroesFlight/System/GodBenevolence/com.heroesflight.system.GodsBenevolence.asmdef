@@ -1,5 +1,5 @@
 {
-    "name": "Com.",
+    "name": "com.heroesflight.system.GodsBenevolence",
     "rootNamespace": "",
     "references": [
         "GUID:27377cbff5b029c42b4301d227252dcf",
@@ -7,7 +7,6 @@
         "GUID:ccf6b2475aa39634897191f14568172a",
         "GUID:7c5aa3ad00d203545b3329cdde8d9307",
         "GUID:3996ff01e18e51a41852361ac4296c1e",
-        "",
         "GUID:63ffe7df5f6b17e47bc02918465bca40",
         "GUID:f90407e589e19d54595a886adf7aabf5",
         "GUID:92b5abdaab82d5d4cae5458e76d0e305",
