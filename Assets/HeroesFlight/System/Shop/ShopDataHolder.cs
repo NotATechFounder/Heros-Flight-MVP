@@ -6,9 +6,15 @@ using UnityEngine;
 public class ShopDataHolder : MonoBehaviour
 {
     [SerializeField] private Chest[] chests;
+    [SerializeField] private CurrencyPack goldPack;
 
     public Chest GetChest(Chest.ChestType chestType)
     {
         return Array.Find(chests, chest => chest.GetChestType == chestType);
+    }
+
+    public CurrencyPack GetGoldPack()
+    {
+        return goldPack;
     }
 }

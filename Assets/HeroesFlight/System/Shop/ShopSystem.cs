@@ -65,4 +65,16 @@ public class ShopSystem : IShopSystemInterface
             rewardSystem.ProcessRewards(chest.OpenChest());
         }
     }
+
+    public void BuyGoldPack(GoldPack goldPack)
+    {
+        int index = (int)goldPack;
+        CurrencyPack pack = ShopDataHolder.GetGoldPack();
+        if (pack == null) return;
+        if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= pack.GetCost(index))
+        {
+            dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, pack.GetCost(index));
+            dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, pack.GetAmount(index));
+        }
+    }
 }

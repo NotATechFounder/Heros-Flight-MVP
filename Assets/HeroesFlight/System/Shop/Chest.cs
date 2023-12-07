@@ -6,7 +6,7 @@ public class Chest : MonoBehaviour
 {
     public enum ChestType
     {
-        Normal,
+        Regular,
         Rare,
         Epic
     }
@@ -35,7 +35,7 @@ public class Chest : MonoBehaviour
 
     void SetUpNormalChest()
     {
-        if (chestType == ChestType.Normal)
+        if (chestType == ChestType.Regular)
         {
             timedReward = new TimedReward();
             timedReward.OnInternetConnected = () =>
@@ -77,7 +77,7 @@ public class Chest : MonoBehaviour
 
     public void OpenNormalChestWithAds()
     {
-        if (chestType == ChestType.Normal && timedReward.IsRewardReady())
+        if (chestType == ChestType.Regular && timedReward.IsRewardReady())
         {
             timedReward.ClaimTimedReward();
         }
