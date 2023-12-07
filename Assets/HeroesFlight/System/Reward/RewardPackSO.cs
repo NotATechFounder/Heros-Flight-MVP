@@ -2,8 +2,8 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[CreateAssetMenu(fileName = "New RewardPack", menuName = "Shop/RewardPack")]
-public class RewardPack : ScriptableObject
+[CreateAssetMenu(fileName = "New RewardPack", menuName = "Rewards/RewardPack")]
+public class RewardPackSO : ScriptableObject
 {
     [SerializeField] private Reward[] fixedRewards;
     [SerializeField] private Reward[] chancedRewards;

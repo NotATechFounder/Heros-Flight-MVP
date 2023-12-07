@@ -15,6 +15,7 @@ namespace UISystem
         public event Action OnSettingsButtonPressed;
         public event Action OnTraitButtonPressed;
         public event Action OnInventoryButtonPressed;
+        public event Action OnDailyRewardButtonPressed;
 
         public event Func<WorldType, bool> IsWorldUnlocked;
         public event Action<WorldType> OnWorldChanged;
@@ -41,6 +42,9 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI worldLevelText;
         [SerializeField] private AdvanceButton worldLeftButton;
         [SerializeField] private AdvanceButton worldRightButton;
+
+        [Header("Daily Reward")]
+        [SerializeField] private AdvanceButton dailyRewardButton;
 
         [SerializeField] private CharacterUI characterUIPrefab;
 
@@ -91,6 +95,11 @@ namespace UISystem
             worldRightButton.onClick.AddListener(() =>
             {
                 NavigateWorld(1);
+            });
+
+            dailyRewardButton.onClick.AddListener(() =>
+            {
+                OnDailyRewardButtonPressed?.Invoke();
             });
         }
 

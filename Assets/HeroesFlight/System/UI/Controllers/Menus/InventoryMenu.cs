@@ -161,7 +161,6 @@ namespace UISystem
 
                 if(selectedItem != null && selectedItem.ID == item.ID)
                 {
-                    Debug.Log("selected item found" + item.ID);
                     selectedItem = item;
                 }
             }
@@ -226,7 +225,7 @@ namespace UISystem
         /// <returns></returns>
         public void EquipItem()
         {
-            Debug.Log("Equipping item Start+ " + selectedItemUI.GetItem.ID);
+            //Debug.Log("Equipping item Start+ " + selectedItemUI.GetItem.ID);
 
             EquipmentEntryUi equipmentEntryUi = selectedItemUI.GetItem as EquipmentEntryUi;
             EquippedSlot equippedSlot = GetEquipmentSlot(equipmentEntryUi.EquipmentType);
@@ -235,17 +234,10 @@ namespace UISystem
             {
                 if (equippedSlot.IsOccupied)
                 {
-                    Debug.Log("Slot is occupied");
                     OnUnEquipItemRequest?.Invoke(equippedSlot.GetItem as EquipmentEntryUi);
-                  //  SpawnItemUI(equippedSlot.GetItem);
-                    //equippedSlot.UnOccupy();
                 }
 
-                Debug.Log("Equipping item Done + " + selectedItemUI.GetItem.ID);
                 OnEquipItemRequest?.Invoke(equipmentEntryUi);
-              //  equippedSlot.Occupy(selectedItemUI.GetItem, selectedItemUI.GetItem.RarityPallete);
-              //  itemUIDic.Remove(selectedItemUI.GetItem.ID);
-             //   Destroy(selectedItemUI.gameObject);
                 selectedItemUI = null;
             }
 
@@ -262,7 +254,6 @@ namespace UISystem
             if (selectedEquippedSlot != null)
             {
                 OnUnEquipItemRequest?.Invoke(selectedEquippedSlot.GetItem as EquipmentEntryUi);
-             //   SpawnItemUI(selectedEquippedSlot.GetItem);
                 selectedEquippedSlot.UnOccupy();
                 selectedEquippedSlot = null;
             }

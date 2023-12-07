@@ -1,11 +1,6 @@
 using HeroesFlight.System;
 using System;
 
-using System.Collections.Generic;
-using HeroesFlight.Common.Enum;
-using HeroesFlight.System.FileManager.Rewards;
-
-
 public interface DataSystemInterface : SystemInterface
 {
     public CharacterManager CharacterManager { get;}
@@ -20,8 +15,6 @@ public interface DataSystemInterface : SystemInterface
 
   
     public WorldManager WorldManger { get; }
-
-    RewardsHandlerInterface RewardHandler { get; }
 
     event Action OnApplicationQuit;
     void RequestDataSave();

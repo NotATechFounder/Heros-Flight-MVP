@@ -1,3 +1,4 @@
+using HeroesFlight.System.UI.Reward;
 using Pelumi.Juicer;
 using System;
 using System.Collections;
@@ -10,10 +11,11 @@ namespace UISystem
 {
     public class DailyRewardMenu : BaseMenu<DailyRewardMenu>
     {
+        public event Func<int, List<RewardVisual>> GetRewardVisuals;
         public event Func<int> GetLastUnlockedIndex;
         public event Func<bool> IsRewardReady;
         public event Action OnContinueButtonClicked;
-        public event Action OnClaimRewardButtonClicked; 
+        public event Action<int> OnClaimRewardButtonClicked; 
 
         [SerializeField] private DailyRewardUI[] dailyRewardUIs;
 
@@ -75,6 +77,7 @@ namespace UISystem
 
             for (int i = 0; i < dailyRewardUIs.Length; i++)
             {
+                dailyRewardUIs[i].SetVisual(GetRewardVisuals.Invoke(i));
                 if (isRewardReady && i == lastUnlockedIndex)
                 {
                     dailyRewardUIs[i].SetState(DailyRewardUI.State.Ready);
@@ -88,7 +91,7 @@ namespace UISystem
 
         private void RewardButtonAction(int index)
         {
-            OnClaimRewardButtonClicked?.Invoke();
+            OnClaimRewardButtonClicked?.Invoke(index);
             dailyRewardUIs[index].SetState(DailyRewardUI.State.Claimed);
         }
 
@@ -105,6 +108,8 @@ namespace UISystem
                     dailyRewardUIs[i].SetState(i < index ? DailyRewardUI.State.Claimed : DailyRewardUI.State.NotReady);
                 }
             }
+
+            Open();
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 
 
-[CustomEditor(typeof(Reward))]
+//[CustomEditor(typeof(Reward))]
 [CanEditMultipleObjects]
 public class RewardEditor : Editor
 {

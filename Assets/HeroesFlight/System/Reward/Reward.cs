@@ -18,11 +18,11 @@ public class Reward
     public float GetChance() => chance;
     public Rarity GetRarity() => rarity;
 
-    public T GetRewardObject<T>()
+    public T GetRewardObject<T>() where T : ScriptableObject
     {
         if (rewardObject is T)
         {
-            return (T)Convert.ChangeType(rewardObject, typeof(T));
+            return (T)rewardObject;
         }
         else
         {
@@ -30,14 +30,4 @@ public class Reward
             return default;
         }
     }
-}
-
-
-public class RewardVisual
-{
-    public Sprite icon;
-    public Color color;
-    public string name;
-    public int amount;
-    public Rarity rarity;
 }

@@ -1,17 +1,13 @@
 using StansAssets.Foundation.Extensions;
 using System;
-
-using HeroesFlight.System.FileManager.Rewards;
 using UnityEngine.SceneManagement;
 
 public class DataSystem : DataSystemInterface
 {
     public DataSystem()
     {
-        RewardHandler = new RewardsHandler();
-    }
 
-    public RewardsHandlerInterface RewardHandler { get; private set; }
+    }
     public event Action OnApplicationQuit;
     public void RequestDataSave()
     {

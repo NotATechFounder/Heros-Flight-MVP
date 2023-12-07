@@ -12,7 +12,7 @@ public class Chest : MonoBehaviour
     }
 
     [SerializeField] private ChestType chestType;
-    [SerializeField] private RewardPack rewards;
+    [SerializeField] private RewardPackSO rewards;
     [SerializeField] float gemchestPrice;
     [SerializeField] float goldchestPrice;
 
@@ -23,7 +23,7 @@ public class Chest : MonoBehaviour
 
     private TimedReward timedReward;
     public ChestType GetChestType => chestType;
-    public RewardPack GetRewards => rewards;
+    public RewardPackSO GetRewards => rewards;
 
     public float GetGemChestPrice => gemchestPrice;
     public float GetGoldChestPrice => goldchestPrice;

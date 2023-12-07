@@ -7,5 +7,8 @@ using UnityEngine.SceneManagement;
 
 public interface IShopSystemInterface : SystemInterface
 {
-    public ShopManager ShopManager { get; }
+    public ShopDataHolder ShopDataHolder { get; }
+
+    public void InjectUiConnection();
+    public void ProccessRewards(List<Reward> rewards);
 }

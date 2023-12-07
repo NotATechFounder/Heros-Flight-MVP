@@ -1,3 +1,5 @@
+using HeroesFlight.System.Inventory;
+using HeroesFlight.System.UI;
 using StansAssets.Foundation.Extensions;
 using System;
 using System.Collections;
@@ -7,15 +9,60 @@ using UnityEngine.SceneManagement;
 
 public class ShopSystem : IShopSystemInterface
 {
-    public ShopManager ShopManager { get; private set; }
+    public ShopDataHolder ShopDataHolder { get; private set; }
+    private IUISystem uISystem;
+    private RewardSystemInterface rewardSystem;
+    private InventorySystemInterface inventorySystem;
+    private DataSystemInterface dataSystem; 
+
+    public ShopSystem(IUISystem uISystemInterface, RewardSystemInterface rewardSystemInterface, InventorySystemInterface inventorySystemInterface, DataSystemInterface dataSystemInterface)
+    {
+        uISystem = uISystemInterface;
+        rewardSystem = rewardSystemInterface;
+        inventorySystem = inventorySystemInterface;
+        dataSystem = dataSystemInterface;
+    }
 
     public void Init(Scene scene = default, Action onComplete = null)
     {
-        ShopManager = scene.GetComponent<ShopManager>();
+        ShopDataHolder = scene.GetComponent<ShopDataHolder>();
+    }
+
+
+    public void InjectUiConnection()
+    {
+        // Suscribe to UI events
     }
 
     public void Reset()
     {
+        // Reset UI events
+    }
 
+    public void ProccessRewards(List<Reward> rewards)
+    {
+        rewardSystem.ProcessRewards(rewards);
+    }
+
+    public void BuyChestWithGold(Chest.ChestType chestType)
+    {
+        Chest chest = ShopDataHolder.GetChest(chestType);
+        if (chest == null) return;
+        if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gold) >= chest.GetGemChestPrice)
+        {
+            dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gold, chest.GetGemChestPrice);
+            rewardSystem.ProcessRewards(chest.OpenChest());
+        }
+    }
+
+    public void BuyChestWithGems(Chest.ChestType chestType)
+    {
+        Chest chest = ShopDataHolder.GetChest(chestType);
+        if (chest == null) return;
+        if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= chest.GetGemChestPrice)
+        {
+            dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, chest.GetGemChestPrice);
+            rewardSystem.ProcessRewards(chest.OpenChest());
+        }
     }
 }
