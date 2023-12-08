@@ -40,7 +40,7 @@ public class AdvanceButton : Button
 
     protected override void Start()
     {
-        mainMenuNavBarManager = FindAnyObjectByType<MainMenuNavBarManager>();
+        //mainMenuNavBarManager = FindAnyObjectByType<MainMenuNavBarManager>();
 
         if (Application.isPlaying)
         {
@@ -52,8 +52,8 @@ public class AdvanceButton : Button
             onClickSizeDownEffect = transform.JuicyScale(ButtonDownScale, ButtonDownDuration);
             onClickSizeUpEffect = transform.JuicyScale(ButtonInitialScale, ButtonUpDuration);
 
-            onClickDownColor = transform.GetComponent<Image>().JuicyColour(mainMenuNavBarManager.buttonDownColor, ButtonDownDuration);
-            onClickUpColor = transform.GetComponent<Image>().JuicyColour(mainMenuNavBarManager.buttonUpColor, ButtonUpDuration);
+           // onClickDownColor = transform.GetComponent<Image>().JuicyColour(mainMenuNavBarManager.buttonDownColor, ButtonDownDuration);
+           // onClickUpColor = transform.GetComponent<Image>().JuicyColour(mainMenuNavBarManager.buttonUpColor, ButtonUpDuration);
         }
     }
 
@@ -84,10 +84,10 @@ public class AdvanceButton : Button
         base.OnPointerClick(eventData);
         if (interactable)
         {
-            if (isNavigationBarButton)
-            {
-                mainMenuNavBarManager.OnNavButtonClick(navBarButtonIndex);
-            }
+            //if (isNavigationBarButton)
+            //{
+            //    mainMenuNavBarManager.OnNavButtonClick(navBarButtonIndex);
+            //}
 
             OnAnyButtonClicked?.Invoke();
             OnToggled();
@@ -99,22 +99,22 @@ public class AdvanceButton : Button
         base.OnPointerDown(eventData);
         if (interactable)
         {
-            if (!isNavigationBarButton)
-            {
-                onClickDownColor.Start();
-            }
+            //if (!isNavigationBarButton)
+            //{
+            //    onClickDownColor.Start();
+            //}
             onClickSizeDownEffect.Start();
 
             if (ChangeChildColor)
             {
-                foreach (Image childImage in childImages)
-                {
-                    if (childImage != onClickDownColor.Target)
-                    {
-                        JuicerRuntimeCore<Color> childColorAnimation = childImage.JuicyColour(mainMenuNavBarManager.buttonDownColor, ButtonDownDuration);
-                        childColorAnimation.Start();
-                    }
-                }
+                //foreach (Image childImage in childImages)
+                //{
+                //    if (childImage != onClickDownColor.Target)
+                //    {
+                //        JuicerRuntimeCore<Color> childColorAnimation = childImage.JuicyColour(mainMenuNavBarManager.buttonDownColor, ButtonDownDuration);
+                //        childColorAnimation.Start();
+                //    }
+                //}
             }
         }
     }
@@ -125,24 +125,24 @@ public class AdvanceButton : Button
         {
             transform.localScale = ButtonUpScale;
 
-            if (!isNavigationBarButton)
-            {
-                onClickUpColor.Start();
-            }
+            //if (!isNavigationBarButton)
+            //{
+            //    onClickUpColor.Start();
+            //}
             
             onClickSizeUpEffect.Start();
 
-            if (ChangeChildColor)
-            {
-                foreach (Image childImage in childImages)
-                {
-                    if (childImage != onClickDownColor.Target)
-                    {
-                        JuicerRuntimeCore<Color> childColorAnimation = childImage.JuicyColour(mainMenuNavBarManager.buttonUpColor, ButtonUpDuration);
-                        childColorAnimation.Start();
-                    }
-                }
-            }
+            //if (ChangeChildColor)
+            //{
+            //    foreach (Image childImage in childImages)
+            //    {
+            //        if (childImage != onClickDownColor.Target)
+            //        {
+            //            JuicerRuntimeCore<Color> childColorAnimation = childImage.JuicyColour(mainMenuNavBarManager.buttonUpColor, ButtonUpDuration);
+            //            childColorAnimation.Start();
+            //        }
+            //    }
+            //}
         }
     }
 }
