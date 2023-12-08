@@ -38,8 +38,8 @@ public class UIMinorAnimationManager : MonoBehaviour
         {
             totalAOP[i].initialPos = totalAOP[i].objectRectT.anchoredPosition;
 
-            //totalAOP[i].minMaxX = new Vector2(totalAOP[i].initialPos.x - totalAOP[i].moveXOffset.x, totalAOP[i].initialPos.x + totalAOP[i].moveXOffset.y);
-            //totalAOP[i].minMaxY = new Vector2(totalAOP[i].initialPos.y - totalAOP[i].moveYOffset.x, totalAOP[i].initialPos.y + totalAOP[i].moveYOffset.y);
+            totalAOP[i].minMaxX = new Vector2(totalAOP[i].initialPos.x - totalAOP[i].moveXOffset.x, totalAOP[i].initialPos.x + totalAOP[i].moveXOffset.y);
+            totalAOP[i].minMaxY = new Vector2(totalAOP[i].initialPos.y - totalAOP[i].moveYOffset.x, totalAOP[i].initialPos.y + totalAOP[i].moveYOffset.y);
         }
     }
 
@@ -50,11 +50,11 @@ public class UIMinorAnimationManager : MonoBehaviour
 
     private void MoveAllObjects()
     {
-        for (int i = 0; i < totalAOP.Length; i++)
-        {
-            totalAOP[i].minMaxX = new Vector2(totalAOP[i].initialPos.x - totalAOP[i].moveXOffset.x, totalAOP[i].initialPos.x + totalAOP[i].moveXOffset.y);
-            totalAOP[i].minMaxY = new Vector2(totalAOP[i].initialPos.y - totalAOP[i].moveYOffset.x, totalAOP[i].initialPos.y + totalAOP[i].moveYOffset.y);
-        }
+        //for (int i = 0; i < totalAOP.Length; i++)
+        //{
+        //    totalAOP[i].minMaxX = new Vector2(totalAOP[i].initialPos.x - totalAOP[i].moveXOffset.x, totalAOP[i].initialPos.x + totalAOP[i].moveXOffset.y);
+        //    totalAOP[i].minMaxY = new Vector2(totalAOP[i].initialPos.y - totalAOP[i].moveYOffset.x, totalAOP[i].initialPos.y + totalAOP[i].moveYOffset.y);
+        //}
 
         for (int i = 0; i < totalAOP.Length; i++)
         {

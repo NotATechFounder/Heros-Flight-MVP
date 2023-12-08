@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -20,19 +18,20 @@ public class AdvanceButton : Button
     private JuicerRuntimeCore<Color> onClickDownColor;
     private JuicerRuntimeCore<Color> onClickUpColor;
 
-    //Can be tweat on Debug Mode
+    //Can be tweak on Debug Mode
     [Space]
     [SerializeField] private bool ChangeChildColor = false;
     private Image[] childImages;
 
     [Space]
+    [SerializeField] private int navBarButtonIndex = -1;
+    [SerializeField] private bool isNavigationBarButton = false;
+    private MainMenuNavBarManager mainMenuNavBarManager;
+
+    [Space]
     [SerializeField] private Vector3 ButtonInitialScale = new Vector3(1f, 1f, 1f);
     [SerializeField] private Vector3 ButtonDownScale = new Vector3(.9f, .9f, .9f);
     [SerializeField] private Vector3 ButtonUpScale = new Vector3(1.1f, 1.1f, 1.1f);
-
-    [Space]
-    [SerializeField] private Color buttonDownColor = Color.gray;
-    [SerializeField] private Color buttonUpColor = Color.white;
 
     [Space]
     [SerializeField] private float ButtonDownDuration = 0.1f;
@@ -41,6 +40,8 @@ public class AdvanceButton : Button
 
     protected override void Start()
     {
+        mainMenuNavBarManager = FindAnyObjectByType<MainMenuNavBarManager>();
+
         if (Application.isPlaying)
         {
             if (ChangeChildColor)
@@ -51,8 +52,8 @@ public class AdvanceButton : Button
             onClickSizeDownEffect = transform.JuicyScale(ButtonDownScale, ButtonDownDuration);
             onClickSizeUpEffect = transform.JuicyScale(ButtonInitialScale, ButtonUpDuration);
 
-            onClickDownColor = transform.GetComponent<Image>().JuicyColour(buttonDownColor, ButtonDownDuration);
-            onClickUpColor = transform.GetComponent<Image>().JuicyColour(buttonUpColor, ButtonUpDuration);
+            onClickDownColor = transform.GetComponent<Image>().JuicyColour(mainMenuNavBarManager.buttonDownColor, ButtonDownDuration);
+            onClickUpColor = transform.GetComponent<Image>().JuicyColour(mainMenuNavBarManager.buttonUpColor, ButtonUpDuration);
         }
     }
 
@@ -83,8 +84,10 @@ public class AdvanceButton : Button
         base.OnPointerClick(eventData);
         if (interactable)
         {
-            //transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
-            //onClickSizeEffect.Start();
+            if (isNavigationBarButton)
+            {
+                mainMenuNavBarManager.OnNavButtonClick(navBarButtonIndex);
+            }
 
             OnAnyButtonClicked?.Invoke();
             OnToggled();
@@ -96,7 +99,10 @@ public class AdvanceButton : Button
         base.OnPointerDown(eventData);
         if (interactable)
         {
-            onClickDownColor.Start();
+            if (!isNavigationBarButton)
+            {
+                onClickDownColor.Start();
+            }
             onClickSizeDownEffect.Start();
 
             if (ChangeChildColor)
@@ -105,7 +111,7 @@ public class AdvanceButton : Button
                 {
                     if (childImage != onClickDownColor.Target)
                     {
-                        JuicerRuntimeCore<Color> childColorAnimation = childImage.JuicyColour(buttonDownColor, ButtonDownDuration);
+                        JuicerRuntimeCore<Color> childColorAnimation = childImage.JuicyColour(mainMenuNavBarManager.buttonDownColor, ButtonDownDuration);
                         childColorAnimation.Start();
                     }
                 }
@@ -119,7 +125,11 @@ public class AdvanceButton : Button
         {
             transform.localScale = ButtonUpScale;
 
-            onClickUpColor.Start();
+            if (!isNavigationBarButton)
+            {
+                onClickUpColor.Start();
+            }
+            
             onClickSizeUpEffect.Start();
 
             if (ChangeChildColor)
@@ -128,7 +138,7 @@ public class AdvanceButton : Button
                 {
                     if (childImage != onClickDownColor.Target)
                     {
-                        JuicerRuntimeCore<Color> childColorAnimation = childImage.JuicyColour(buttonUpColor, ButtonUpDuration);
+                        JuicerRuntimeCore<Color> childColorAnimation = childImage.JuicyColour(mainMenuNavBarManager.buttonUpColor, ButtonUpDuration);
                         childColorAnimation.Start();
                     }
                 }
