@@ -6,6 +6,7 @@ using HeroesFlight.System.Dice;
 using HeroesFlight.System.Environment;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Input;
+using HeroesFlight.System.Inventory;
 using HeroesFlight.System.NPC;
 using HeroesFlight.System.Stats;
 using HeroesFlight.System.Stats.Handlers;
@@ -32,6 +33,7 @@ namespace HeroesFlight.Core.Bootstrapper
         {
             m_ServiceLocator = new ServiceLocator();
 
+            IAuthenticationInterface authenticationSystem = new AuthenticationSystem();
             DataSystemInterface dataSystem = new DataSystem();
             IUISystem uiSystem = new UiSystem(dataSystem);
             InputSystemInterface inputSystem = new InputSystem();
@@ -42,10 +44,13 @@ namespace HeroesFlight.Core.Bootstrapper
             ProgressionSystemInterface progressionSystem = new ProgressionSystem(dataSystem);
             DiceSystemInterface diceSystem = new DiceSystem(uiSystem);
             TraitSystemInterface traitSystem = new TraitsSystem(dataSystem, uiSystem,diceSystem);
-            
+            InventorySystemInterface inventorySystem = new InventorySystem(dataSystem,uiSystem);
+            RewardSystemInterface rewardSystem = new RewardSystem(dataSystem, inventorySystem, uiSystem); 
+            IShopSystemInterface shopSystem = new ShopSystem (uiSystem, rewardSystem, inventorySystem, dataSystem);
             GamePlaySystemInterface gamePlaySystem =
-                new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem,traitSystem);
+                new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem,traitSystem, inventorySystem);
 
+            m_ServiceLocator.Register(authenticationSystem);
             m_ServiceLocator.Register(dataSystem);
             m_ServiceLocator.Register(uiSystem);
             m_ServiceLocator.Register(gamePlaySystem);
@@ -57,6 +62,9 @@ namespace HeroesFlight.Core.Bootstrapper
             m_ServiceLocator.Register(progressionSystem);
             m_ServiceLocator.Register(traitSystem);
             m_ServiceLocator.Register(diceSystem);
+            m_ServiceLocator.Register(inventorySystem);
+            m_ServiceLocator.Register(rewardSystem);
+            m_ServiceLocator.Register(shopSystem);
             return m_ServiceLocator;
         }
 

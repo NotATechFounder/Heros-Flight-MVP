@@ -43,26 +43,27 @@ public class GodsBenevolence : MonoBehaviour
                 CurrentLifeSteal += godsBenevolence.GetValue("LifeSteal");
 
                 float damageInc = godsBenevolence.GetValue("DamageInc");
-                damageInc = StatCalc.GetPercentage(characterStatController.CurrentPhysicalDamage, damageInc);
+                damageInc = StatCalc.GetPercentage(characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage), damageInc);
                 benevolenceEffect.GetComponent<AresEffect>().SetUp(damageInc, characterStatController.GetComponent<CharacterControllerInterface>(), OnEnemyKilled);
                 break;
             case GodBenevolenceType.Apollo:
                 float damagePercentage = godsBenevolence.GetValue("DamagePercentage");
-                float damage = StatCalc.GetPercentage(characterStatController.CurrentPhysicalDamage, damagePercentage);
+                float damage = StatCalc.GetPercentage(characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage), damagePercentage);
                 benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolence.EffectPrefab, benevolenceSocket.TopSocket);
                 benevolenceEffect.GetComponent<ApolloEffect>().SetUp(damage, characterStatController.GetComponent<CharacterControllerInterface>());
                 break;
             case GodBenevolenceType.Hercules:
                 float damagePerc = godsBenevolence.GetValue("DamagePercentage");
-                float dam = StatCalc.GetPercentage(characterStatController.CurrentPhysicalDamage, damagePerc);
+                float dam = StatCalc.GetPercentage(characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage), damagePerc);
                 benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolence.EffectPrefab, benevolenceSocket.TopSocket);
                 benevolenceEffect.GetComponent<HerculesEffect>().SetUp(dam, characterStatController.GetComponent<CharacterControllerInterface>());
 
                 break;
             case GodBenevolenceType.Hermes:
                 benevolenceEffect = ObjectPoolManager.SpawnObject(godsBenevolence.EffectPrefab, benevolenceSocket.BottomSocket);
-                characterStatController.ModifyMoveSpeed(godsBenevolence.GetValue("FlySpeedInc"), true);
-                characterStatController.ModifyAttackRange(godsBenevolence.GetValue("AttackRangeInc"), true);
+                benevolenceEffect.GetComponent<HermesEffect>().SetUp(characterStatController.GetComponent<CharacterControllerInterface>());
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.MoveSpeed, godsBenevolence.GetValue("FlySpeedInc"), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.AttackRange, godsBenevolence.GetValue("AttackRangeInc"), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
                 break;
             case GodBenevolenceType.Sekhmet:
 
@@ -97,8 +98,8 @@ public class GodsBenevolence : MonoBehaviour
 
                 break;
             case GodBenevolenceType.Hermes:
-                characterStatController.ModifyMoveSpeed(currentBenevolenceSO.GetValue("FlySpeedInc"), false);
-                characterStatController.ModifyAttackRange(currentBenevolenceSO.GetValue("AttackRangeInc"), false);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.MoveSpeed, currentBenevolenceSO.GetValue("FlySpeedInc"), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+                characterStatController.GetStatModel.ModifyCurrentStat(StatType.AttackRange, currentBenevolenceSO.GetValue("AttackRangeInc"), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
                 break;
             case GodBenevolenceType.Sekhmet:
 
@@ -146,15 +147,14 @@ public class GodsBenevolence : MonoBehaviour
         switch (currentBenevolenceSO.BenevolenceType)
         {
             case GodBenevolenceType.Ares:
-                characterStatController.ModifyLifeSteal(godsBenevolenceAfterEffectInfo.GetValue("LifeSteal"), true);
+                characterStatController.GetStatModel.ModifyCurrentStat( StatType.LifeSteal, godsBenevolenceAfterEffectInfo.GetValue("LifeSteal"), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
                 break;
             case GodBenevolenceType.Apollo:
 
                 break;
             case GodBenevolenceType.Hermes:
-
-                characterStatController.ModifyMoveSpeed(godsBenevolenceAfterEffectInfo.GetValue("FlySpeedInc"), true);
-                characterStatController.ModifyAttackRange(godsBenevolenceAfterEffectInfo.GetValue("AttackRangeInc"), true);
+                characterStatController.GetStatModel.ModifyCurrentStat( StatType.MoveSpeed, godsBenevolenceAfterEffectInfo.GetValue("FlySpeedInc"), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
+                characterStatController.GetStatModel.ModifyCurrentStat( StatType.AttackRange, godsBenevolenceAfterEffectInfo.GetValue("AttackRangeInc"), StatModel.StatModificationType.Addition, StatModel.StatCalculationType.Percentage);
                 break;
             case GodBenevolenceType.Sekhmet:
 
@@ -173,15 +173,14 @@ public class GodsBenevolence : MonoBehaviour
             switch (benevolenceAfterEffectInfo.GodBenevolenceType)
             {
                 case GodBenevolenceType.Ares:
-                    characterStatController.ModifyLifeSteal(benevolenceAfterEffectInfo.GetTotalValue("LifeSteal"), false);
+                    characterStatController.GetStatModel.ModifyCurrentStat( StatType.LifeSteal, benevolenceAfterEffectInfo.GetTotalValue("LifeSteal"), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
                     break;
                 case GodBenevolenceType.Apollo:
 
                     break;
                 case GodBenevolenceType.Hermes:
-
-                    characterStatController.ModifyMoveSpeed(benevolenceAfterEffectInfo.GetTotalValue("FlySpeedInc"), false);
-                    characterStatController.ModifyAttackRange(benevolenceAfterEffectInfo.GetTotalValue("AttackRangeInc"), false);
+                    characterStatController.GetStatModel.ModifyCurrentStat( StatType.MoveSpeed, benevolenceAfterEffectInfo.GetTotalValue("FlySpeedInc"), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
+                    characterStatController.GetStatModel.ModifyCurrentStat( StatType.AttackRange, benevolenceAfterEffectInfo.GetTotalValue("AttackRangeInc"), StatModel.StatModificationType.Subtraction, StatModel.StatCalculationType.Percentage);
 
                     break;
                 case GodBenevolenceType.Sekhmet:

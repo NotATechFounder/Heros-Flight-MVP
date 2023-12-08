@@ -7,5 +7,7 @@
         BonusScene,
         UIScene,
         EnvironmentScene,
+        DataScene,
+        AuthenticationScene,
     }
 }

@@ -6,7 +6,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects.Data
     [Serializable]
     public class ShockEffectData : EffectData
     {
-        public EffectValuePair MainDamage;
-        public EffectValuePair SecondaryDamage;
+        public EffectValuePair MainDamage = new EffectValuePair();
+        public EffectValuePair SecondaryDamage = new EffectValuePair();
     }
 }

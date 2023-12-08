@@ -32,7 +32,7 @@ namespace HeroesFlight.StateStack.State
             switch (evt.Action)
             {
                 case StackAction.Added:
-                    Debug.Log(ApplicationState);
+                   // Debug.Log(ApplicationState);
                     progressReporter.SetDone();
                     var uiSystem = GetService<IUISystem>();
                     var dataSystem = GetService<DataSystemInterface>();
@@ -43,7 +43,7 @@ namespace HeroesFlight.StateStack.State
                     traitSystemInterface.Init();
                     uiSystem.UiEventHandler.MainMenu.Open();
 
-                    uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += uiSystem.UiEventHandler.InventoryMenu.Open;
+                  //  uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += uiSystem.UiEventHandler.InventoryMenu.Open;
                     uiSystem.UiEventHandler.MainMenu.AddGem += () => dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, 10000);
                     uiSystem.UiEventHandler.MainMenu.AddGold += () => dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, 10000);
 
@@ -98,7 +98,12 @@ namespace HeroesFlight.StateStack.State
                     dataSystem.CurrencyManager.TriggerAllCurrencyChange();
                     dataSystem.StatManager.ProcessTraitsStatsModifiers(traitSystem.GetUnlockedEffects());
 
-                    uiSystem.UiEventHandler.InventoryMenu.InitInventory(dataSystem.InventorySystem);
+                   // uiSystem.UiEventHandler.InventoryMenu.InitInventory(dataSystem.InventorySystem);
+
+                    uiSystem.UiEventHandler.MainMenu.IsWorldUnlocked += dataSystem.WorldManger.IsWorldUnlocked;
+                    uiSystem.UiEventHandler.MainMenu.OnWorldChanged += dataSystem.WorldManger.SetSelectedWorld;
+                    uiSystem.UiEventHandler.MainMenu.GetMaxLevelReached += dataSystem.WorldManger.GetMaxLevelReached;
+                    uiSystem.UiEventHandler.MainMenu.LoadWorlds(dataSystem.WorldManger.Worlds);
 
                     break;
                 case StackAction.Paused:

@@ -8,23 +8,23 @@ namespace UISystem
 {
     public class AbilitySelectMenu : BaseMenu<AbilitySelectMenu>
     {
-        public event Func<int, List<RegularActiveAbilityType>, List<RegularActiveAbilityType>> GetRandomActiveAbility;
+        public event Func<int, List<ActiveAbilityType>, List<ActiveAbilityType>> GetRandomActiveAbility;
         public event Func<int, List<PassiveAbilityType>, List<PassiveAbilityType>> GetRandomPassiveAbility;
         public event Func<PassiveAbilityType, int> GetPassiveAbilityLevel;
 
-        public event Func<RegularActiveAbilityType, RegularAbilityVisualData> GetRandomActiveAbilityVisualData;
+        public event Func<ActiveAbilityType, ActiveAbilityVisualData> GetRandomActiveAbilityVisualData;
         public event Func<PassiveAbilityType, PassiveAbilityVisualData> GetRandomPassiveAbilityVisualData;
-        public event Func<RegularActiveAbilityType, int> GetActiveAbilityLevel;
+        public event Func<ActiveAbilityType, int> GetActiveAbilityLevel;
 
-        public event Action<RegularActiveAbilityType> OnRegularAbilitySelected;
+        public event Action<ActiveAbilityType> OnRegularAbilitySelected;
         public event Action<PassiveAbilityType> OnPassiveAbilitySelected;
-        public event Action<RegularActiveAbilityType, RegularActiveAbilityType> OnActiveAbilitySwapped;
+        public event Action<ActiveAbilityType, ActiveAbilityType> OnActiveAbilitySwapped;
 
         [SerializeField] private AbilityButtonUI[] abilityButtonUIs;
         [SerializeField] private AdvanceButton reRollButton;
 
         List<PassiveAbilityType> currentPassiveDisplayed = new List<PassiveAbilityType>();
-        RegularActiveAbilityType currentActiveDisplayed = RegularActiveAbilityType.None;
+        ActiveAbilityType currentActiveDisplayed = ActiveAbilityType.None;
 
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
@@ -73,9 +73,9 @@ namespace UISystem
             {
                 if (activeAbilityChance && i == 2)
                 {
-                    RegularActiveAbilityType passiveActiveAbilityType = GetRandomActiveAbility.Invoke(1, new List<RegularActiveAbilityType>() { currentActiveDisplayed })[0];
+                    ActiveAbilityType passiveActiveAbilityType = GetRandomActiveAbility.Invoke(1, new List<ActiveAbilityType>() { currentActiveDisplayed })[0];
                     currentActiveDisplayed = passiveActiveAbilityType;
-                    RegularAbilityVisualData regularAbilityVisualData = GetRandomActiveAbilityVisualData.Invoke(passiveActiveAbilityType);
+                    ActiveAbilityVisualData regularAbilityVisualData = GetRandomActiveAbilityVisualData.Invoke(passiveActiveAbilityType);
                     abilityButtonUIs[i].SetInfo(regularAbilityVisualData.Icon,"Active", regularAbilityVisualData.DisplayName, regularAbilityVisualData.Description, GetActiveAbilityLevel(passiveActiveAbilityType));
                     abilityButtonUIs[i].GetAdvanceButton.onClick.AddListener(() =>
                     {

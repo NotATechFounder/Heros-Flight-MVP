@@ -10,6 +10,7 @@ using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using Pelumi.ObjectPool;
 using UnityEngine;
+using NotImplementedException = System.NotImplementedException;
 using Random = UnityEngine.Random;
 
 namespace HeroesFlight.System.Combat.Effects.Effects
@@ -17,6 +18,10 @@ namespace HeroesFlight.System.Combat.Effects.Effects
     public class CombatEffectsController : MonoBehaviour, CombatEntityEffectsHandlerInterface
     {
         [SerializeField] private Transform visualsParent;
+
+        [Header("Debug")]
+        [SerializeField] private List<CombatEffectRuntimeModel> combatEffectRuntimeModels = new List<CombatEffectRuntimeModel>();
+
 
         protected Dictionary<CombatEffectApplicationType, Dictionary<string, CombatEffectRuntimeModel>> effectsMap =
             new();
@@ -152,6 +157,11 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                 }
                 else
                 {
+                    if (effect.ApplyType == CombatEffectApplicationType.OnInit)
+                    {
+                        RemoveCombatEffectsValues(effects[effect.ID]);
+                    }
+
                     effects.Remove(effect.ID);
                     effects.Add(effect.ID, new CombatEffectRuntimeModel(effect, visual, lvl));
                 }
@@ -161,11 +171,26 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                 effectsMap.Add(effect.ApplyType, new Dictionary<string, CombatEffectRuntimeModel>());
                 effectsMap[effect.ApplyType].Add(effect.ID, new CombatEffectRuntimeModel(effect, visual, lvl));
             }
+
+            if (effect.ApplyType == CombatEffectApplicationType.OnInit)
+            {
+                ApplyEffectOnInit(effect,lvl);
+            }
+
+            combatEffectRuntimeModels.Add(new CombatEffectRuntimeModel(effect, visual, lvl));   
         }
 
         public void AddCombatEffect(CombatEffect effect)
         {
             AddCombatEffect(effect,1);
+        }
+
+        public void AddCombatEffect(List<CombatEffect> effect)
+        {
+            foreach (var combatEffect in effect)
+            {
+                AddCombatEffect(combatEffect);
+            }
         }
 
         public void RemoveEffect(CombatEffect effect)
@@ -179,9 +204,18 @@ namespace HeroesFlight.System.Combat.Effects.Effects
                     {
                         Destroy(model.Visual);
                     }
+
+                    if (model.Effect.ApplyType == CombatEffectApplicationType.OnInit)
+                    {
+                        RemoveCombatEffectsValues(model);
+                    }
                 }
             }
         }
+
+        protected virtual void ApplyEffectOnInit(CombatEffect combatEffect, int lvl) { }
+
+        protected virtual void RemoveCombatEffectsValues(CombatEffectRuntimeModel runtimeEffect) {}
 
         public void TriggerCombatEffect(CombatEffectApplicationType useType,
             HealthModificationRequestModel requestModel)
@@ -212,7 +246,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects
 
                 foreach (var model in effects.Values)
                 {
-                    foreach (var status in model.Effect.StatusEffects)
+                    foreach (var status in model.Effect.EffectToApply)
                     {
                         TryTriggerEffect(status,model.Lvl, effectsHandler, requestModel);
                     }

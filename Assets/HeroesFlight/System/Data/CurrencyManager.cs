@@ -25,6 +25,11 @@ public class CurrencyManager : MonoBehaviour
         currency.IncreaseCurrency(amount);
     }
 
+    public void AddCurrency(CurrencySO currencySO, float amount)
+    {
+        currencySO.IncreaseCurrency(amount);
+    }
+
     public void SetCurencyAmount(string key, float amount)
     {
         CurrencySO currency = GetCurrecy(key);

@@ -6,6 +6,6 @@ namespace HeroesFlight.System.Combat.Effects.Effects.Data
     [Serializable]
     public class FreezeEffectData : EffectData
     {
-        public EffectValuePair SlowAmount;
+        public EffectValuePair SlowAmount = new EffectValuePair();
     }
 }

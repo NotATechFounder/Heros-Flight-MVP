@@ -12,5 +12,10 @@ namespace HeroesFlight.System.Combat.Effects.Effects.Data
         {
             return StartValue + IncreasePerLvl * (lvl);
         }
+
+        public void SetStartValue(float value)
+        {
+            StartValue = value;
+        }
     }
 }

@@ -3,16 +3,20 @@ using UnityEngine;
 
 namespace HeroesFlight.System.Combat.Effects.Effects
 {
+    [Serializable]
     public class CombatEffectRuntimeModel 
     {
         public CombatEffectRuntimeModel(CombatEffect effect, GameObject visual,int lvl)
         {
-            Effect = effect;
-            Visual = visual;
+            this.combatEffect = effect;
+            this.visual = visual;
             Lvl = lvl;
         }
-        public CombatEffect Effect { get; }
-        public GameObject Visual { get; }
+        [SerializeField] private CombatEffect  combatEffect;
+        [SerializeField] private GameObject visual;
+
+        public CombatEffect Effect => combatEffect;
+        public GameObject Visual => visual;
         public int Lvl;
 
     }

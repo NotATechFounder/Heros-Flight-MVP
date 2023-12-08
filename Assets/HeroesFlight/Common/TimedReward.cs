@@ -69,7 +69,7 @@ public class TimedReward
         ShowNextRewardTime();
 
         DateTime currentDateTime = InternetManager.Instance.GetCurrentDateTime();
-        DateTime rewardClaimDateTime = DateTime.Parse((rewardClaimDate != null) ? rewardClaimDate : currentDateTime.ToString());
+        DateTime rewardClaimDateTime = DateTime.Parse(rewardClaimDate ?? currentDateTime.ToString());
 
         switch (timeType)
         {
@@ -89,10 +89,10 @@ public class TimedReward
                 break;
         }
 
-        if (elapsedTime >= nextRewardDelay) TimedReweardUnlocked();
+        if (elapsedTime >= nextRewardDelay) TimedRewardUnlocked();
     }
 
-    private void TimedReweardUnlocked()
+    private void TimedRewardUnlocked()
     {
         isRewardReady = true;
         OnRewardReadyToBeCollected?.Invoke();

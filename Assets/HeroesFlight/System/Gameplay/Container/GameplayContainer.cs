@@ -8,13 +8,14 @@ namespace HeroesFlight.System.Gameplay.Container
 {
     public class GameplayContainer : MonoBehaviour
     {
-        [SerializeField] GameAreaModel currentModel;
+        [SerializeField] GameAreaModel[] gameAreaModels;
         [SerializeField] BoosterDropSO mobDrop;
         [SerializeField] ScreenShakeProfile bossProfile;
 
         public event Action OnPlayerEnteredPortal;
         LevelPortal portal;
         private Level currentLevel;
+        private GameAreaModel currentModel;
 
         public int CurrentLvlIndex { get; private set; }
 
@@ -29,8 +30,9 @@ namespace HeroesFlight.System.Gameplay.Container
 
         public GameAreaModel CurrentModel => currentModel;
 
-        public void Init()
+        public void Init(WorldType worldType)
         {
+            currentModel = Array.Find(gameAreaModels, x => x.WorldType == worldType);
             portal = Instantiate(currentModel.PortalPrefab, transform.position, Quaternion.identity);
             portal.gameObject.SetActive(false);
             portal.OnPlayerEntered += HandlePlayerTriggerPortal;

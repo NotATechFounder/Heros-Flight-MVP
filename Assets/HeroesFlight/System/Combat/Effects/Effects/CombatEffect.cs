@@ -1,25 +1,37 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HeroesFlight.System.Combat.Effects.Enum;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace HeroesFlight.System.Combat.Effects.Effects
 {
-    [CreateAssetMenu(fileName = "CombatEffect", menuName = "Combat/Effects/CombatEffect", order = 100)]
-    public class CombatEffect : ScriptableObject
+    [Serializable]
+    public class CombatEffect
     {
         [SerializeField] protected string id;
         [SerializeField] protected CombatEffectApplicationType applyType;
-        [SerializeField] protected EffectDurationType durationType;
-        [SerializeField] protected float duration;
         [SerializeField] protected GameObject visual;
-        [SerializeField] private List<Effect> statusEffects = new ();
+        [SerializeField] private List<Effect> effectToApply = new();
 
 
         public CombatEffectApplicationType ApplyType => applyType;
-        public EffectDurationType DurationType => durationType;
-        public float Duration => duration;
+       
         public GameObject Visual => visual;
         public string ID => id;
-        public List<Effect> StatusEffects => statusEffects;
+        public List<Effect> EffectToApply => effectToApply;
+
+        public void SetID(string id) => this.id = id;
+
+
+        public CombatEffect Clone()
+        {
+            return new CombatEffect
+            {
+                id = id,
+                applyType = applyType,
+                visual = visual,
+            };
+        }
     }
 }

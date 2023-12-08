@@ -1,0 +1,25 @@
+{
+    "name": "com.heroesflight.system.Authentication",
+    "rootNamespace": "",
+    "references": [
+        "GUID:db0eb1f6c1244402aa4d287a997cdb47",
+        "GUID:68765d262e2128e4ab49c983f3411946",
+        "GUID:72d1fea872bd7a449bf3818f2b0a6708",
+        "GUID:27377cbff5b029c42b4301d227252dcf",
+        "GUID:41156cdbab6bbf9498004681b8319c94",
+        "GUID:3f9b1a44bea14ae40b9dac513eaa0e6b",
+        "GUID:4aae0b6a871697848b151ea1f4cd345a",
+        "GUID:dffdc6d84e1ec4e4f867437aa21264d5",
+        "GUID:113e4971e5ca4794eb3835132169bb92",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
