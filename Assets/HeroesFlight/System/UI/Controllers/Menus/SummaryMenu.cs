@@ -36,8 +36,6 @@ namespace UISystem
             closeEffectBG.SetOnCompleted(CloseMenu);
 
             continueButton.onClick.AddListener(CloseButtonAction);
-            continueButton.onClick.AddListener(CloseButtonAction);
-            continueButton.onClick.AddListener(CloseButtonAction);
         }
 
         public override void OnOpened()

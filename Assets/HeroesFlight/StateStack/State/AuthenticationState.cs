@@ -5,7 +5,6 @@ using JetBrains.Annotations;
 using StansAssets.Foundation.Patterns;
 using StansAssets.SceneManagement;
 using UnityEngine;
-using static Codice.Client.Common.WebApi.WebApiEndpoints;
 
 
 namespace HeroesFlight.StateStack.State
@@ -66,6 +65,10 @@ namespace HeroesFlight.StateStack.State
                 dataSystem.Init(loadedScene);
                 InventorySystemInterface inventorySystem = GetService<InventorySystemInterface>();
                 inventorySystem.Init(loadedScene);
+                RewardSystemInterface rewardSystem = GetService<RewardSystemInterface>();
+                rewardSystem.Init(loadedScene);
+                IShopSystemInterface shopSystem = GetService<IShopSystemInterface>();
+                shopSystem.Init(loadedScene);
                 AppStateStack.State.Set(ApplicationState.Initialization);
 
             });

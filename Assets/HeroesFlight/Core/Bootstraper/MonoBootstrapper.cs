@@ -45,6 +45,8 @@ namespace HeroesFlight.Core.Bootstrapper
             DiceSystemInterface diceSystem = new DiceSystem(uiSystem);
             TraitSystemInterface traitSystem = new TraitsSystem(dataSystem, uiSystem,diceSystem);
             InventorySystemInterface inventorySystem = new InventorySystem(dataSystem,uiSystem);
+            RewardSystemInterface rewardSystem = new RewardSystem(dataSystem, inventorySystem, uiSystem); 
+            IShopSystemInterface shopSystem = new ShopSystem (uiSystem, rewardSystem, inventorySystem, dataSystem);
             GamePlaySystemInterface gamePlaySystem =
                 new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem,traitSystem, inventorySystem);
 
@@ -61,6 +63,8 @@ namespace HeroesFlight.Core.Bootstrapper
             m_ServiceLocator.Register(traitSystem);
             m_ServiceLocator.Register(diceSystem);
             m_ServiceLocator.Register(inventorySystem);
+            m_ServiceLocator.Register(rewardSystem);
+            m_ServiceLocator.Register(shopSystem);
             return m_ServiceLocator;
         }
 
