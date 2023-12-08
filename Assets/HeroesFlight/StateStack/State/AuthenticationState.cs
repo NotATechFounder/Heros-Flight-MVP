@@ -5,7 +5,6 @@ using JetBrains.Annotations;
 using StansAssets.Foundation.Patterns;
 using StansAssets.SceneManagement;
 using UnityEngine;
-using static Codice.Client.Common.WebApi.WebApiEndpoints;
 
 
 namespace HeroesFlight.StateStack.State

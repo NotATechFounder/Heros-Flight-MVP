@@ -16,6 +16,7 @@ namespace UISystem
         public event Action OnTraitButtonPressed;
         public event Action OnInventoryButtonPressed;
         public event Action OnDailyRewardButtonPressed;
+        public event Action OnShopButtonPressed;
 
         public event Func<WorldType, bool> IsWorldUnlocked;
         public event Action<WorldType> OnWorldChanged;
@@ -35,6 +36,8 @@ namespace UISystem
         [SerializeField] private AdvanceButton settingsButton;
         [SerializeField] private AdvanceButton traitsButton;
         [SerializeField] private AdvanceButton inventoryButton;
+        [SerializeField] private AdvanceButton dailyRewardButton;
+        [SerializeField] private AdvanceButton shopButton;
 
         [Header("World")]
         [SerializeField] private Image worldImage;
@@ -42,11 +45,6 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI worldLevelText;
         [SerializeField] private AdvanceButton worldLeftButton;
         [SerializeField] private AdvanceButton worldRightButton;
-
-        [Header("Daily Reward")]
-        [SerializeField] private AdvanceButton dailyRewardButton;
-
-        [SerializeField] private CharacterUI characterUIPrefab;
 
         private Dictionary<WorldType, WorldVisualSO> worldVisualDic = new Dictionary<WorldType, WorldVisualSO>();
 
@@ -100,6 +98,11 @@ namespace UISystem
             dailyRewardButton.onClick.AddListener(() =>
             {
                 OnDailyRewardButtonPressed?.Invoke();
+            });
+
+            shopButton.onClick.AddListener(() =>
+            {
+                OnShopButtonPressed?.Invoke();
             });
         }
 

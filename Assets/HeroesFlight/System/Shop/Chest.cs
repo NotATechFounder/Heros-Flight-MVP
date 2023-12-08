@@ -4,29 +4,13 @@ using System;
 
 public class Chest : MonoBehaviour
 {
-    public enum ChestType
-    {
-        Regular,
-        Rare,
-        Epic
-    }
-
-    [SerializeField] private ChestType chestType;
-    [SerializeField] private RewardPackSO rewards;
-    [SerializeField] float gemchestPrice;
-    [SerializeField] float goldchestPrice;
-
-    [Header("Timed Reward")]
-    [SerializeField] TimeType timeType;
-    [SerializeField] float nextRewardTimeAdded = 20f;
-    [SerializeField] float checkingInterval = 2f;
+    [SerializeField] private ChestSO chestSO;
 
     private TimedReward timedReward;
-    public ChestType GetChestType => chestType;
-    public RewardPackSO GetRewards => rewards;
-
-    public float GetGemChestPrice => gemchestPrice;
-    public float GetGoldChestPrice => goldchestPrice;
+    public ChestType GetChestType => chestSO.GetChestType;
+    public RewardPackSO GetRewards => chestSO.GetRewardPack;
+    public float GetGemChestPrice => chestSO.GetPrice;
+    public float GetGoldChestPrice => chestSO.GetPrice;
 
     void Start()
     {
@@ -35,7 +19,7 @@ public class Chest : MonoBehaviour
 
     void SetUpNormalChest()
     {
-        if (chestType == ChestType.Regular)
+        if (chestSO.GetChestType == ChestType.Regular)
         {
             timedReward = new TimedReward();
             timedReward.OnInternetConnected = () =>
@@ -66,18 +50,18 @@ public class Chest : MonoBehaviour
 
             string todaysDate = DateTime.Now.ToString();
 
-            timedReward.Init(this, todaysDate, TimeType.Seconds, nextRewardTimeAdded, checkingInterval);
+            timedReward.Init(this, todaysDate, TimeType.Seconds, chestSO.GetNextRewardTimeAdded, chestSO.GetCheckingInterval);
         }
     }
 
     public List<Reward> OpenChest()
     {
-       return rewards.GetReward();
+       return chestSO.GetRewardPack.GetReward();
     }
 
     public void OpenNormalChestWithAds()
     {
-        if (chestType == ChestType.Regular && timedReward.IsRewardReady())
+        if (chestSO.GetChestType == ChestType.Regular && timedReward.IsRewardReady())
         {
             timedReward.ClaimTimedReward();
         }

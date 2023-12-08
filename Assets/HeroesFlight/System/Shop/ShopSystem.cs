@@ -32,6 +32,8 @@ public class ShopSystem : IShopSystemInterface
     public void InjectUiConnection()
     {
         // Suscribe to UI events
+        uISystem.UiEventHandler.ShopMenu.TryPurchaseChest += BuyChestWithGems;
+        uISystem.UiEventHandler.ShopMenu.TryPurchaseGoldPack += BuyGoldPack;
     }
 
     public void Reset()
@@ -44,7 +46,7 @@ public class ShopSystem : IShopSystemInterface
         rewardSystem.ProcessRewards(rewards);
     }
 
-    public void BuyChestWithGold(Chest.ChestType chestType)
+    public void BuyChestWithGold(ChestType chestType)
     {
         Chest chest = ShopDataHolder.GetChest(chestType);
         if (chest == null) return;
@@ -55,7 +57,7 @@ public class ShopSystem : IShopSystemInterface
         }
     }
 
-    public void BuyChestWithGems(Chest.ChestType chestType)
+    public void BuyChestWithGems(ChestType chestType)
     {
         Chest chest = ShopDataHolder.GetChest(chestType);
         if (chest == null) return;

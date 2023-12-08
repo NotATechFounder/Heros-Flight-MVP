@@ -8,7 +8,7 @@ public class ShopDataHolder : MonoBehaviour
     [SerializeField] private Chest[] chests;
     [SerializeField] private CurrencyPack goldPack;
 
-    public Chest GetChest(Chest.ChestType chestType)
+    public Chest GetChest(ChestType chestType)
     {
         return Array.Find(chests, chest => chest.GetChestType == chestType);
     }

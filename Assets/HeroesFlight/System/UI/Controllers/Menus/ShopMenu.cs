@@ -16,6 +16,19 @@ namespace UISystem
     public class ShopMenu : BaseMenu<ShopMenu>
     {
         public event Action<IAPHelper.ProductType> OnPurchaseSuccess;
+        public event Action<ChestType> TryPurchaseChest;
+        public event Action<GoldPack> TryPurchaseGoldPack;
+
+        [Header("Chest Pack Buttons")]
+        [SerializeField] private AdvanceButton regularChestButton;
+        [SerializeField] private AdvanceButton rareChestButton;
+        [SerializeField] private AdvanceButton epicChestButton;
+        [SerializeField] private AdvanceButton epic10ChestButton;
+
+        [Header("Gold Pack Buttons")]
+        [SerializeField] private AdvanceButton smallGoldPackButton;
+        [SerializeField] private AdvanceButton mediumGoldPackButton;
+        [SerializeField] private AdvanceButton largeGoldPackButton;
 
         [Header("IAP Text")]
         [SerializeField] private TextMeshProUGUI gem80Text;
@@ -24,10 +37,6 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI gem6500Text;
 
         [Header("IAP Buttons")]
-        [SerializeField] private AdvanceButton gem80Button;
-        [SerializeField] private AdvanceButton gem500Button;
-        [SerializeField] private AdvanceButton gem1200Button;
-        [SerializeField] private AdvanceButton gem6500Button;
         [SerializeField] private AdvanceButton restorePurchaseButton;
 
         [Header("Buttons")]
@@ -46,6 +55,15 @@ namespace UISystem
             quitButton.onClick.AddListener(Close);
 
             restorePurchaseButton?.gameObject.SetActive(Application.platform == RuntimePlatform.IPhonePlayer);
+
+            regularChestButton.onClick.AddListener(() => { TryPurchaseChest?.Invoke(ChestType.Regular); });
+            rareChestButton.onClick.AddListener(() => { TryPurchaseChest?.Invoke(ChestType.Rare); });
+            epicChestButton.onClick.AddListener(() => { TryPurchaseChest?.Invoke(ChestType.Epic); });
+            epic10ChestButton.onClick.AddListener(() => { TryPurchaseChest?.Invoke(ChestType.Epic_10); });
+
+            smallGoldPackButton.onClick.AddListener(() => { TryPurchaseGoldPack?.Invoke(GoldPack.Small); });
+            mediumGoldPackButton.onClick.AddListener(() => { TryPurchaseGoldPack?.Invoke(GoldPack.Medium); });
+            largeGoldPackButton.onClick.AddListener(() => { TryPurchaseGoldPack?.Invoke(GoldPack.Large); });
         }
 
         public override void OnOpened()

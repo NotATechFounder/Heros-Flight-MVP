@@ -25,11 +25,3 @@ public class CurrencyPack
         return contents[index].amount;
     }
 }
-
-
-public enum GoldPack
-{
-    Small,
-    Medium,
-    Large
-}

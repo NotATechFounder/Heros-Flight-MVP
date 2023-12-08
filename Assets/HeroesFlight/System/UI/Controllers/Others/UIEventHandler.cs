@@ -39,6 +39,7 @@ public class UIEventHandler : MonoBehaviour
     public InventoryMenu InventoryMenu { get; private set; }
 
     public DailyRewardMenu DailyRewardMenu { get; private set; }
+    public ShopMenu ShopMenu { get; private set; }
 
     public void Init(Action OnComplecte = null)
     {
@@ -65,6 +66,7 @@ public class UIEventHandler : MonoBehaviour
         CharacterSelectMenu = uIManager.InitMenu<CharacterSelectMenu>();
         InventoryMenu = uIManager.InitMenu<InventoryMenu>();
         DailyRewardMenu = uIManager.InitMenu<DailyRewardMenu>();
+        ShopMenu = uIManager.InitMenu<ShopMenu>();
         OnComplecte?.Invoke();
     }
 }
