@@ -32,8 +32,9 @@ public class ShopSystem : IShopSystemInterface
     public void InjectUiConnection()
     {
         // Suscribe to UI events
-        uISystem.UiEventHandler.ShopMenu.TryPurchaseChest += BuyChestWithGems;
+        uISystem.UiEventHandler.ShopMenu.TryPurchaseChest += BuyChestWithGem;
         uISystem.UiEventHandler.ShopMenu.TryPurchaseGoldPack += BuyGoldPack;
+        Debug.Log("ShopSystem Injected");
     }
 
     public void Reset()
@@ -49,22 +50,42 @@ public class ShopSystem : IShopSystemInterface
     public void BuyChestWithGold(ChestType chestType)
     {
         Chest chest = ShopDataHolder.GetChest(chestType);
-        if (chest == null) return;
+        if (chest == null)
+        {
+            Debug.Log("Chest not found");
+            return;
+        }
+
         if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gold) >= chest.GetGemChestPrice)
         {
+            Debug.Log("Chest bought");
             dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gold, chest.GetGemChestPrice);
             rewardSystem.ProcessRewards(chest.OpenChest());
         }
+        else
+        {
+            Debug.Log("Not enough gold");
+        }
     }
 
-    public void BuyChestWithGems(ChestType chestType)
+    public void BuyChestWithGem(ChestType chestType)
     {
         Chest chest = ShopDataHolder.GetChest(chestType);
-        if (chest == null) return;
+        if (chest == null)
+        {
+            Debug.Log("Chest not found");
+            return;
+        }
+
         if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= chest.GetGemChestPrice)
         {
             dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, chest.GetGemChestPrice);
-            rewardSystem.ProcessRewards(chest.OpenChest());
+            List<Reward> rewards = chest.OpenChest();
+            rewardSystem.ProcessRewards(rewards);
+        }
+        else
+        {
+            Debug.Log("Not enough gems");
         }
     }
 
@@ -77,6 +98,10 @@ public class ShopSystem : IShopSystemInterface
         {
             dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, pack.GetCost(index));
             dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, pack.GetAmount(index));
+        }
+        else
+        {
+            Debug.Log("Not enough gems");
         }
     }
 }

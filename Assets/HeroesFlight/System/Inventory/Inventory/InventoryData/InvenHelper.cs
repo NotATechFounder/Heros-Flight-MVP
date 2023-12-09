@@ -111,7 +111,7 @@ public class InvenHelper : ScriptableObject
         {
             for (int j = 0; j < equipmentSOs.Length; j++)
             {
-                if (equipmentSOs[j].name == sprites[i].name)
+                if (equipmentSOs[j].ID == sprites[i].name)
                 {
                     equipmentSOs[j].icon = sprites[i];
                 }
@@ -121,8 +121,8 @@ public class InvenHelper : ScriptableObject
         AssetDatabase.SaveAssets();
     }
 
-    [ContextMenu("PopulateItemEffects")]
-    public void PopulateItemEffects()
+    [ContextMenu("PopulateItems")]
+    public void PopulateItem()
     {
         string path = AssetDatabase.GetAssetPath(this);
         path = path.Replace(this.name + ".asset", "");
