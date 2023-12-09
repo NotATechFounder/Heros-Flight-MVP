@@ -124,6 +124,16 @@ public class RewardSystem : RewardSystemInterface
         return rewardVisual;
     }
 
+    public List<RewardVisual> GetRewardVisuals(List<Reward> rewards)
+    {
+        List<RewardVisual> rewardVisuals = new List<RewardVisual>();
+        foreach (Reward reward in rewards)
+        {
+            rewardVisuals.Add(GetRewardVisual(reward));
+        }
+        return rewardVisuals;
+    }
+
     public void OtherOption(Reward reward)
     {
         //switch (reward.GetRewardObject<ScriptableObject>())

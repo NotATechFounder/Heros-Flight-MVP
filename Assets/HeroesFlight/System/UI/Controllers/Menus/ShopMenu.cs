@@ -1,5 +1,6 @@
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.UI.Inventory_Menu;
+using HeroesFlight.System.UI.Reward;
 using Pelumi.Juicer;
 using Pelumi.ObjectPool;
 using System;
@@ -36,11 +37,17 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI gem1200Text;
         [SerializeField] private TextMeshProUGUI gem6500Text;
 
-        [Header("IAP Buttons")]
-        [SerializeField] private AdvanceButton restorePurchaseButton;
+        [Header("Reward")]
+        [SerializeField] private GameObject rewardDisplay;
+        [SerializeField] private GameObject rewardViewParent;
+        [SerializeField] private RewardView rewardViewPrefab;
 
-        [Header("Buttons")]
+        [Header("Other Buttons")]
+        [SerializeField] private AdvanceButton restorePurchaseButton;
+        [SerializeField] private AdvanceButton closeRewardViewButton;
         [SerializeField] private AdvanceButton quitButton;
+
+        private List<RewardView> rewardViews = new List<RewardView>();
 
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
@@ -64,6 +71,8 @@ namespace UISystem
             smallGoldPackButton.onClick.AddListener(() => { TryPurchaseGoldPack?.Invoke(GoldPack.Small); });
             mediumGoldPackButton.onClick.AddListener(() => { TryPurchaseGoldPack?.Invoke(GoldPack.Medium); });
             largeGoldPackButton.onClick.AddListener(() => { TryPurchaseGoldPack?.Invoke(GoldPack.Large); });
+
+            closeRewardViewButton.onClick.AddListener(() => { rewardDisplay.SetActive(false); });
         }
 
         public override void OnOpened()
@@ -125,6 +134,25 @@ namespace UISystem
         public void OnPurchaseFailed(Product product, PurchaseFailureDescription purchaseFailureDescription)
         {
             Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", product.definition.storeSpecificId, purchaseFailureDescription.reason));
+        }
+
+        public void DisplayRewardsVisual(params RewardVisual[] rewardVisual)
+        {
+            foreach (RewardView rewardView in rewardViews)
+            {
+                ObjectPoolManager.ReleaseObject(rewardView.gameObject);
+            }
+            rewardViews.Clear();
+
+
+            for (int i = 0; i < rewardVisual.Length; i++)
+            {
+                RewardView rewardView = ObjectPoolManager.SpawnObject(rewardViewPrefab, rewardViewParent.transform, PoolType.UI);
+                rewardView.SetVisual(rewardVisual[i]);
+                rewardViews.Add(rewardView);
+            }
+
+            rewardDisplay.SetActive(true);
         }
     }
 }

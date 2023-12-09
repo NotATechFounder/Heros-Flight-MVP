@@ -34,7 +34,6 @@ public class ShopSystem : IShopSystemInterface
         // Suscribe to UI events
         uISystem.UiEventHandler.ShopMenu.TryPurchaseChest += BuyChestWithGem;
         uISystem.UiEventHandler.ShopMenu.TryPurchaseGoldPack += BuyGoldPack;
-        Debug.Log("ShopSystem Injected");
     }
 
     public void Reset()
@@ -51,10 +50,7 @@ public class ShopSystem : IShopSystemInterface
     {
         Chest chest = ShopDataHolder.GetChest(chestType);
         if (chest == null)
-        {
-            Debug.Log("Chest not found");
             return;
-        }
 
         if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gold) >= chest.GetGemChestPrice)
         {
@@ -72,16 +68,14 @@ public class ShopSystem : IShopSystemInterface
     {
         Chest chest = ShopDataHolder.GetChest(chestType);
         if (chest == null)
-        {
-            Debug.Log("Chest not found");
             return;
-        }
 
         if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= chest.GetGemChestPrice)
         {
             dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, chest.GetGemChestPrice);
             List<Reward> rewards = chest.OpenChest();
             rewardSystem.ProcessRewards(rewards);
+            uISystem.UiEventHandler.ShopMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisuals(rewards).ToArray());
         }
         else
         {
@@ -93,11 +87,15 @@ public class ShopSystem : IShopSystemInterface
     {
         int index = (int)goldPack;
         CurrencyPack pack = ShopDataHolder.GetGoldPack();
-        if (pack == null) return;
-        if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= pack.GetCost(index))
+        if (pack == null) 
+            return;
+
+        CurrencyPack.Content content = pack.GetContent(index);
+        if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= content.cost)
         {
-            dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, pack.GetCost(index));
-            dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, pack.GetAmount(index));
+            dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, content.cost);
+            dataSystem.CurrencyManager.AddCurrency(content.reward.GetRewardObject<CurrencySO>(), content.reward.GetAmount());
+            uISystem.UiEventHandler.ShopMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(content.reward));
         }
         else
         {

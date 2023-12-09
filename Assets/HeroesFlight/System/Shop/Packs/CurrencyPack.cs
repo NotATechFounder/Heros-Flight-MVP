@@ -10,7 +10,7 @@ public class CurrencyPack
     {
         public string name;
         public int cost;
-        public int amount;
+        public Reward reward;
     }
 
     [SerializeField] private Content[] contents;
@@ -20,8 +20,8 @@ public class CurrencyPack
         return contents[index].cost;
     }
 
-    public int GetAmount(int index)
+    public Content GetContent(int index)
     {
-        return contents[index].amount;
+        return contents[index];
     }
 }
