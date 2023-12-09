@@ -87,7 +87,8 @@ namespace UISystem
         [Header("Boosters")]
         [SerializeField] private BoosterUI[] boosterButtons;
 
-        [Header("Transition")][SerializeField] private AnimationCurve transitionCurve;
+        [Header("Transition")]
+        [SerializeField] private AnimationCurve transitionCurve;
         [SerializeField] private GameObject transitionPanel;
         [SerializeField] private CanvasGroup transitionCanvasGroup;
 

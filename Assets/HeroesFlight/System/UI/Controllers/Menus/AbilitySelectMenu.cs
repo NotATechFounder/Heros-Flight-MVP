@@ -61,9 +61,9 @@ namespace UISystem
         {
             RefreshAbilities();
 
-            bool activeAbilityChance = UnityEngine.Random.Range(0, 100) < 50;
+            //bool activeAbilityChance = UnityEngine.Random.Range(0, 100) < 50;
 
-            //bool activeAbilityChance = true;
+            bool activeAbilityChance = true;
 
             List<PassiveAbilityType> passiveAbilityTypes = GetRandomPassiveAbility.Invoke(3, currentPassiveDisplayed);
 
