@@ -152,11 +152,6 @@ namespace HeroesFlight.System.Inventory
                                     burnEffectData.ProcChance.SetStartValue(effets.GetData<BurnEffectData>().ProcChance.StartValue);
                                     burnEffectData.Damage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
                                     combatEffectInstance.EffectToApply.Add(effectInstance);
-
-                                    //BurnStatusEffect effectInstance = GameObject.Instantiate(effets) as BurnStatusEffect;                
-                                    //BurnEffectData burnEffectData = effectInstance.GetData<BurnEffectData>();
-                                    //burnEffectData.Damage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));
-                                    //combatEffectInstance.EffectToApply.Add(effectInstance); 
                                 }
                                 break;
 
@@ -173,8 +168,7 @@ namespace HeroesFlight.System.Inventory
 
                             case PoisonStatusEffect:
                                 {
-                                    PoisonStatusEffect effectInstance = ScriptableObject.CreateInstance(effets.GetType()) as PoisonStatusEffect;
-                                    effectInstance.SetData(effets as PoisonStatusEffect);
+                                    PoisonStatusEffect effectInstance = GameObject.Instantiate(effets) as PoisonStatusEffect;
                                     PoisonEffectData poisonEffectData = effectInstance.GetData<PoisonEffectData>();
                                     poisonEffectData.ProcChance.SetStartValue(effets.GetData<PoisonEffectData>().ProcChance.StartValue);
                                     poisonEffectData.Damage.SetStartValue(uniqueCombatEffect.curve.GetCurrentValueInt(item.GetItemData<ItemEquipmentData>().value));

@@ -32,7 +32,7 @@ public class ShopSystem : IShopSystemInterface
     public void InjectUiConnection()
     {
         // Suscribe to UI events
-        uISystem.UiEventHandler.ShopMenu.TryPurchaseChest += BuyChestWithGems;
+        uISystem.UiEventHandler.ShopMenu.TryPurchaseChest += BuyChestWithGem;
         uISystem.UiEventHandler.ShopMenu.TryPurchaseGoldPack += BuyGoldPack;
     }
 
@@ -49,22 +49,37 @@ public class ShopSystem : IShopSystemInterface
     public void BuyChestWithGold(ChestType chestType)
     {
         Chest chest = ShopDataHolder.GetChest(chestType);
-        if (chest == null) return;
+        if (chest == null)
+            return;
+
         if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gold) >= chest.GetGemChestPrice)
         {
+            Debug.Log("Chest bought");
             dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gold, chest.GetGemChestPrice);
             rewardSystem.ProcessRewards(chest.OpenChest());
         }
+        else
+        {
+            Debug.Log("Not enough gold");
+        }
     }
 
-    public void BuyChestWithGems(ChestType chestType)
+    public void BuyChestWithGem(ChestType chestType)
     {
         Chest chest = ShopDataHolder.GetChest(chestType);
-        if (chest == null) return;
+        if (chest == null)
+            return;
+
         if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= chest.GetGemChestPrice)
         {
             dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, chest.GetGemChestPrice);
-            rewardSystem.ProcessRewards(chest.OpenChest());
+            List<Reward> rewards = chest.OpenChest();
+            rewardSystem.ProcessRewards(rewards);
+            uISystem.UiEventHandler.ShopMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisuals(rewards).ToArray());
+        }
+        else
+        {
+            Debug.Log("Not enough gems");
         }
     }
 
@@ -72,11 +87,19 @@ public class ShopSystem : IShopSystemInterface
     {
         int index = (int)goldPack;
         CurrencyPack pack = ShopDataHolder.GetGoldPack();
-        if (pack == null) return;
-        if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= pack.GetCost(index))
+        if (pack == null) 
+            return;
+
+        CurrencyPack.Content content = pack.GetContent(index);
+        if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= content.cost)
         {
-            dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, pack.GetCost(index));
-            dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, pack.GetAmount(index));
+            dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, content.cost);
+            dataSystem.CurrencyManager.AddCurrency(content.reward.GetRewardObject<CurrencySO>(), content.reward.GetAmount());
+            uISystem.UiEventHandler.ShopMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(content.reward));
+        }
+        else
+        {
+            Debug.Log("Not enough gems");
         }
     }
 }

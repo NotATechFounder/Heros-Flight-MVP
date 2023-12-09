@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using Pelumi.Juicer;
 using HeroesFlight.System.UI.Reward;
@@ -16,26 +15,11 @@ public class DailyRewardUI : MonoBehaviour
         Claimed    
     }
 
-    [System.Serializable]
-    public class SingleRewardView
-    {
-        public Image rewardBG;
-        public Image rewardIcon;
-        public TextMeshProUGUI rewardText;
-
-        public void SetVisual(RewardVisual rewardVisual)
-        {
-            rewardIcon.sprite = rewardVisual.icon;
-            rewardText.text = rewardVisual.amount.ToString();
-            rewardBG.color = rewardVisual.color;
-        }
-    }
-
     public Action<int> OnRewardButtonClicked;
 
     [SerializeField] private State state;
     [SerializeField] private TextMeshProUGUI dayText;
-    [SerializeField] private SingleRewardView[] singleRewardViews;
+    [SerializeField] private RewardView[] singleRewardViews;
 
     [Header ("NotReady")]
     [SerializeField] private GameObject notReadyContent;

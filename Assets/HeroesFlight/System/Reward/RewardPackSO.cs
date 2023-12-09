@@ -2,11 +2,19 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+[System.Serializable]
+public class ChancedReward
+{
+    [Range(0, 100)] public float chance = 50;
+    public Reward reward;
+}
+
 [CreateAssetMenu(fileName = "New RewardPack", menuName = "Rewards/RewardPack")]
 public class RewardPackSO : ScriptableObject
 {
     [SerializeField] private Reward[] fixedRewards;
-    [SerializeField] private Reward[] chancedRewards;
+    [SerializeField] int numberChancedRewards;
+    [SerializeField] private ChancedReward[] chancedRewards;
 
     private List<Reward> rewardToGive = new List<Reward>();
 
@@ -18,7 +26,7 @@ public class RewardPackSO : ScriptableObject
         rewardToGive.Clear();
         GiveAllFixedRewards();
         GenerateRewardByChance();
-        return RewardPlayer();
+        return rewardToGive;
     }
 
     public Reward GiveSingleReward(int index)
@@ -28,7 +36,7 @@ public class RewardPackSO : ScriptableObject
 
     private void GiveAllFixedRewards()
     {
-        foreach (Reward reward in chancedRewards)
+        foreach (Reward reward in fixedRewards)
         {
             rewardToGive.Add(reward);
         }
@@ -36,39 +44,30 @@ public class RewardPackSO : ScriptableObject
 
     private void GenerateRewardByChance()
     {
-        foreach (Reward reward in chancedRewards)
-        {
-            float randomRoll = Random.Range(1, 101);
-            if (randomRoll <= reward.GetChance())
-            {
-                rewardToGive.Add(reward);
-            }
-        }
+        GenerateRandomRewardByChance(chancedRewards, numberChancedRewards);
     }
 
-    public List<Reward> RewardPlayer()
-    {
-        return rewardToGive;
-    }
-
-    public void GenerateRandomRewardByChance(Reward[] rewardArray, int currrentNumberOfReward)
+    public void GenerateRandomRewardByChance(ChancedReward[] rewardArray, int currentNumberOfRewards)
     {
         float totalChance = 0;
-        foreach (Reward reward in rewardArray) totalChance += reward.GetChance();
-
-        for (int i = 0; i < currrentNumberOfReward; i++)
+        foreach (ChancedReward chancedReward in rewardArray)
         {
-            float randomRoll = Random.Range(1, totalChance + 1);
-            float pos = 0;
+            totalChance += chancedReward.chance;
+        }
 
-            foreach (Reward reward in rewardArray)
+        for (int i = 0; i < currentNumberOfRewards; i++)
+        {
+            float randomRoll = Random.Range(0f, totalChance);
+
+            float pos = 0;
+            foreach (ChancedReward chancedReward in rewardArray)
             {
-                if (randomRoll <= reward.GetChance() + pos)
+                if (randomRoll < chancedReward.chance + pos)
                 {
-                    rewardToGive.Add(reward);
+                    rewardToGive.Add(chancedReward.reward);
                     break;
                 }
-                pos += reward.GetChance();
+                pos += chancedReward.chance;
             }
         }
     }

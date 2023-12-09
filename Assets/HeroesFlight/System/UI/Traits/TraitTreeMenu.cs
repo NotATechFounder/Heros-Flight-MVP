@@ -247,8 +247,7 @@ namespace HeroesFlight.System.UI.Traits
             var newTreeNodeLine = Instantiate(TreeNodeLinePrefab, nodeTransform);
             var lineREF = newTreeNodeLine.GetComponent<UILineRenderer>();
 
-            Debug.Log(
-                $"Tier difference {tierDifference} , slotdifference {slotDifference} and other node is left {otherNodeIsLeft} from {traitModel.Id}");
+            //Debug.Log(   $"Tier difference {tierDifference} , slotdifference {slotDifference} and other node is left {otherNodeIsLeft} from {traitModel.Id}");
             HandleLine(tierDifference, slotDifference, lineREF, thisAbTier, otherAbTier, otherNodeIsLeft);
 
             lineREF.color = tIsFeatUnlocked ? MaxRankColor : NotUnlockableColor;
