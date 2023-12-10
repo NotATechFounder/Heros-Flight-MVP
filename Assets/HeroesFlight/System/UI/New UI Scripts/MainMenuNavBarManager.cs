@@ -5,6 +5,15 @@ using UnityEngine.UI;
 
 public class MainMenuNavBarManager : MonoBehaviour
 {
+    public enum MenuNavigationButtonType
+    {
+        World,
+        Shop,
+        Inventory,
+        Traits,
+        Other,
+    }
+
     [System.Serializable]
     public class NavigationButton
     {

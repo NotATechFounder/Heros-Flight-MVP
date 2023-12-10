@@ -22,9 +22,14 @@ namespace UISystem
         public event Action<EquipmentEntryUi> OnEquipItemRequest;
         public event Action<EquipmentEntryUi> OnUnEquipItemRequest;
 
-        [Header("Buttons")] [SerializeField] private AdvanceButton changeHeroButton;
+        [Header("Buttons")] 
+        [SerializeField] private AdvanceButton changeHeroButton;
         [SerializeField] private AdvanceButton statPointButton;
         [SerializeField] private AdvanceButton quitButton;
+        [SerializeField] private AdvanceButton viewEquipment;
+        [SerializeField] private GameObject equipmentSelectVisual;
+        [SerializeField] private AdvanceButton viewMaterials;
+        [SerializeField] private GameObject materialSelectVisual;
 
         [Header("Texts")] [SerializeField] private TextMeshProUGUI currentAtk;
         [SerializeField] private TextMeshProUGUI currentHp;
@@ -32,8 +37,12 @@ namespace UISystem
 
         [Header("Data")] [SerializeField] private UiSpineViewController uiSpineViewController;
 
-        [Header("Inventory")] [SerializeField] private ItemUI itemUIPrefab;
-        [SerializeField] private Transform itemHolder;
+        [Header("Inventory")] 
+        [SerializeField] private ItemUI itemUIPrefab;
+        [SerializeField] private Transform equipmentHolder;
+        [SerializeField] private Transform equipmentHolderContent;
+        [SerializeField] private Transform materialHolder;
+        [SerializeField] private Transform materialHolderContent;
         [SerializeField] private ItemInfoDisplayUI itemInfoDisplayUI;
         [SerializeField] private EquippedSlot[] equippedSlots;
 
@@ -45,7 +54,6 @@ namespace UISystem
         [SerializeField] private EquippedSlot selectedEquippedSlot;
         [SerializeField] EquipmentEntryUi selectedItem;
 
-
         public override void OnCreated()
         {
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
@@ -56,6 +64,24 @@ namespace UISystem
             changeHeroButton.onClick.AddListener(() => OnChangeHeroButtonClicked?.Invoke());
             statPointButton.onClick.AddListener(() => OnStatPointButtonClicked?.Invoke());
             quitButton.onClick.AddListener(Close);
+
+            viewEquipment.onClick.AddListener(() =>
+            {
+                equipmentHolder.gameObject.SetActive(true);
+                equipmentSelectVisual.SetActive(true);
+
+                materialHolder.gameObject.SetActive(false);
+                materialSelectVisual.SetActive(false);
+            });
+
+            viewMaterials.onClick.AddListener(() =>
+            {
+                materialHolder.gameObject.SetActive(true);
+                materialSelectVisual.SetActive(true);
+
+                equipmentHolder.gameObject.SetActive(false);
+                equipmentSelectVisual.SetActive(false);
+            });
         }
 
         public override void OnOpened()
@@ -105,12 +131,9 @@ namespace UISystem
             itemInfoDisplayUI.OnDismantleAction += () =>
             {
                 OnDismantleRequest?.Invoke(selectedItem as EquipmentEntryUi);
-                //todo :Move to inventory system
-                // DismantleItem;
             };
             itemInfoDisplayUI.OnUpgradeRequest += () => { OnUpgradeRequest?.Invoke(selectedItem as EquipmentEntryUi); };
-           // itemInfoDisplayUI.OnUpgradeAction += TryUpgradeItem;
-           
+
             itemInfoDisplayUI.OnUnequipAction += UnEquipItem;
 
             itemInfoDisplayUI.Init(converter);
@@ -134,7 +157,6 @@ namespace UISystem
             foreach (ItemUI itemUI in itemUIDic.Values)
             {
                 ObjectPoolManager.ReleaseObject(itemUI);
-                //Destroy(itemUI.gameObject);
             }
 
             itemUIDic.Clear();
@@ -272,7 +294,8 @@ namespace UISystem
 
         public void SpawnItemUI(InventoryItemUiEntry item)
         {
-            ItemUI itemUI = ObjectPoolManager.SpawnObject(itemUIPrefab, itemHolder, PoolType.UI);
+            Transform holder = item.ItemType == ItemType.Equipment ? equipmentHolderContent  : materialHolderContent;
+            ItemUI itemUI = ObjectPoolManager.SpawnObject(itemUIPrefab, holder, PoolType.UI);
             itemUI.SetItem(item, item.RarityPallete);
             itemUI.OnSelectItem = OnItemSelected;
             itemUIDic.Add(item.ID, itemUI);

@@ -48,8 +48,14 @@ namespace HeroesFlight.System.UI
                 UiEventHandler.MainMenu.OnSettingsButtonPressed += () => { UiEventHandler.SettingsMenu.Open(); };
                 UiEventHandler.MainMenu.OnDailyRewardButtonPressed += () => { UiEventHandler.DailyRewardMenu.Open(); };
                 UiEventHandler.MainMenu.OnShopButtonPressed += () => { UiEventHandler.ShopMenu.Open(); };
+                UiEventHandler.MainMenu.OnCloseNavigationMenus += () =>
+                {
+                    UiEventHandler.ShopMenu.Close();
+                    UiEventHandler.InventoryMenu.Close();
+                    UiEventHandler.InventoryMenu.Close();
+                };
 
-                UiEventHandler.SettingsMenu.OnBackButtonPressed += () => { UiEventHandler.SettingsMenu.Close(); };
+               UiEventHandler.SettingsMenu.OnBackButtonPressed += () => { UiEventHandler.SettingsMenu.Close(); };
 
                 UiEventHandler.GameMenu.OnMenuOpened += () =>
                 {

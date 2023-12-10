@@ -2,36 +2,26 @@ using HeroesFlight.System.FileManager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using static PlasticPipe.Server.MonitorStats;
 
-public class QuestRewardSystem : MonoBehaviour
+public class QuestRewardHandler : MonoBehaviour
 {
     public const string Save_ID = "QuestData";
     [SerializeField] private List<QuestSO> quests = new List<QuestSO>();
+    [Header("Debug")]
     [SerializeField] private QuestSO currentQuest;
     [SerializeField] private Data currentData = new Data();
 
-    public void Initialize()
-    {
-        Load();
-        if (currentData.index >= quests.Count) return;  
-        currentQuest = quests[currentData.index];
-    }
+    public QuestSO CurrentQuest => currentQuest;
+    public Data CurrentData => currentData;
 
-
-    public void AddQuestProgress(QuestType questType, int amount)
+    public void RewardClaimed()
     {
-        if (currentQuest == null || currentQuest.GetQuestType() != questType) return;
-        currentData.qP += amount;
-    }
-
-    public void ClaimQuestReward()
-    {
-        if (currentQuest == null || !currentQuest.IsQuestCompleted(currentData.qP)) return;
-        currentData.index++;
+        currentData.index = (currentData.index + 1) % quests.Count;
         currentData.qP = 0;
         currentQuest = quests[currentData.index];
-
-        // add reward
+        Save();
     }
 
     public void Save()
@@ -43,10 +33,10 @@ public class QuestRewardSystem : MonoBehaviour
     {
         Data savedData = FileManager.Load<Data>(Save_ID);
         currentData = savedData ?? new Data();
-
+        currentQuest = quests[currentData.index >= quests.Count ? 0 : currentData.index];
     }
 
-    [System.Serializable]
+    [Serializable]
     public class Data
     {
         public int index; // quest index
