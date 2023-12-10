@@ -15,8 +15,11 @@ namespace UISystem
         public event Action OnSettingsButtonPressed;
         public event Action OnTraitButtonPressed;
         public event Action OnInventoryButtonPressed;
-        public event Action OnDailyRewardButtonPressed;
         public event Action OnShopButtonPressed;
+        public event Action OnWorldButtonPressed;
+        public event Action OnCloseNavigationMenus;
+
+        public event Action OnDailyRewardButtonPressed;
 
         public event Func<WorldType, bool> IsWorldUnlocked;
         public event Action<WorldType> OnWorldChanged;
@@ -34,10 +37,13 @@ namespace UISystem
         [SerializeField] private AdvanceButton addGemButton;
         [SerializeField] private AdvanceButton playButton;
         [SerializeField] private AdvanceButton settingsButton;
+        [SerializeField] private AdvanceButton dailyRewardButton;
+
+        [Header("Nav Buttons")]
         [SerializeField] private AdvanceButton traitsButton;
         [SerializeField] private AdvanceButton inventoryButton;
-        [SerializeField] private AdvanceButton dailyRewardButton;
         [SerializeField] private AdvanceButton shopButton;
+        [SerializeField] private AdvanceButton worldButton;
 
         [Header("World")]
         [SerializeField] private Image worldImage;
@@ -75,16 +81,6 @@ namespace UISystem
                 OnSettingsButtonPressed?.Invoke();
             });
             
-            traitsButton.onClick.AddListener(() =>
-            {
-                OnTraitButtonPressed?.Invoke();
-            });
-
-            inventoryButton.onClick.AddListener(() =>
-            {
-                OnInventoryButtonPressed?.Invoke();
-            });
-
             worldLeftButton.onClick.AddListener(() =>
             {
                 NavigateWorld(-1);
@@ -102,7 +98,26 @@ namespace UISystem
 
             shopButton.onClick.AddListener(() =>
             {
+                //OnCloseNavigationMenus?.Invoke();
                 OnShopButtonPressed?.Invoke();
+            });
+
+            worldButton.onClick.AddListener(() =>
+            {
+                //OnCloseNavigationMenus?.Invoke();
+                OnWorldButtonPressed?.Invoke();
+            });
+
+            inventoryButton.onClick.AddListener(() =>
+            {
+                //OnCloseNavigationMenus?.Invoke();
+                OnInventoryButtonPressed?.Invoke();
+            });
+
+            traitsButton.onClick.AddListener(() =>
+            {
+               // OnCloseNavigationMenus?.Invoke();
+                OnTraitButtonPressed?.Invoke();
             });
         }
 

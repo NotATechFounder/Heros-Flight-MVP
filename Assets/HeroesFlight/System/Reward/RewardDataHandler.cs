@@ -51,9 +51,7 @@ public class RewardDataHandler : MonoBehaviour
 
         timedReward.RewardPlayer = (LastRewardClaimDate) =>
         {
-            // The reward is claimed
-            dailyRewardData.lastRewardIndex++;
-            dailyRewardData.lastRewardIndex = dailyRewardData.lastRewardIndex >= 7 ? 0 : dailyRewardData.lastRewardIndex;
+            dailyRewardData.lastRewardIndex = (dailyRewardData.lastRewardIndex + 1) % 7;
             dailyRewardData.lastClaimedTime = LastRewardClaimDate;
             Save();
         };
