@@ -62,7 +62,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
             animator.OnAnimationEvent += HandleAnimationEvents;
             if (targetAnimation != null)
             {
-                animator.PlayDynamicAnimation(targetAnimation, () =>
+                animator.StartAttackAnimation(targetAnimation, () =>
                 {
                     animator.OnAnimationEvent -= HandleAnimationEvents;
                     onComplete?.Invoke();

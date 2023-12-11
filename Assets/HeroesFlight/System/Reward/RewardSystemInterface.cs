@@ -2,7 +2,7 @@
 using HeroesFlight.System.UI.Reward;
 using System.Collections.Generic;
 
-public interface RewardSystemInterface : SystemInterface
+public interface RewardSystemInterface : StateDependantSystemInterface
 {
     public void InjectUiConnection();
     void ProcessReward(Reward reward);
