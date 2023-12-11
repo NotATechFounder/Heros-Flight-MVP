@@ -47,13 +47,16 @@ namespace HeroesFlight.System.UI
                 UiEventHandler.MainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
                 UiEventHandler.MainMenu.OnSettingsButtonPressed += () => { UiEventHandler.SettingsMenu.Open(); };
                 UiEventHandler.MainMenu.OnDailyRewardButtonPressed += () => { UiEventHandler.DailyRewardMenu.Open(); };
-                UiEventHandler.MainMenu.OnShopButtonPressed += () => { UiEventHandler.ShopMenu.Open(); };
-                UiEventHandler.MainMenu.OnCloseNavigationMenus += () =>
-                {
-                    UiEventHandler.ShopMenu.Close();
-                    UiEventHandler.InventoryMenu.Close();
-                    UiEventHandler.InventoryMenu.Close();
-                };
+
+                UiEventHandler.MainMenu.OnNavigationButtonClicked += MainMenu_OnNavigationButtonClicked;
+
+                //UiEventHandler.MainMenu.OnShopButtonPressed += () => { UiEventHandler.ShopMenu.Open(); };
+                //UiEventHandler.MainMenu.OnCloseNavigationMenus += () =>
+                //{
+                //    UiEventHandler.ShopMenu.Close();
+                //    UiEventHandler.InventoryMenu.Close();
+                //    UiEventHandler.InventoryMenu.Close();
+                //};
 
                UiEventHandler.SettingsMenu.OnBackButtonPressed += () => { UiEventHandler.SettingsMenu.Close(); };
 
@@ -119,6 +122,34 @@ namespace HeroesFlight.System.UI
 
                 onComplete?.Invoke();
             });
+        }
+
+        private void MainMenu_OnNavigationButtonClicked(UISystem.MenuNavigationButtonType obj)
+        {
+            if(UiEventHandler.ShopMenu.isActiveAndEnabled)
+            {
+                UiEventHandler.ShopMenu.Close();
+            }
+
+            if (UiEventHandler.InventoryMenu.isActiveAndEnabled)
+            {
+                UiEventHandler.InventoryMenu.Close();
+            }
+
+            if (UiEventHandler.TraitTreeMenu.isActiveAndEnabled)
+            {
+                UiEventHandler.TraitTreeMenu.Close();
+            }
+
+            switch (obj)
+            {
+                case UISystem.MenuNavigationButtonType.Shop:
+                    UiEventHandler.ShopMenu.Open();
+                    break;
+                case UISystem.MenuNavigationButtonType.Inventory:
+                    UiEventHandler.InventoryMenu.Open();
+                    break;
+            }
         }
 
         public void Reset() { }

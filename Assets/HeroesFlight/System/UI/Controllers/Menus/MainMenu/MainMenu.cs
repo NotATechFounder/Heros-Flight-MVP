@@ -5,20 +5,31 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
-using static UnityEngine.Animations.AimConstraint;
-
 
 namespace UISystem
 {
+    public enum MenuNavigationButtonType
+    {
+        World,
+        Shop,
+        Inventory,
+        Traits,
+        Other,
+    }
+
+    [System.Serializable]
+    public class NavigationButton
+    {
+        public MenuNavigationButtonType navigationButtonType;
+        public AdvanceButton advanceButton;
+    }
+
     public class MainMenu : BaseMenu<MainMenu>
     {
         public event Action OnPlayButtonPressed;
         public event Action OnSettingsButtonPressed;
-        public event Action OnTraitButtonPressed;
-        public event Action OnInventoryButtonPressed;
-        public event Action OnShopButtonPressed;
-        public event Action OnWorldButtonPressed;
-        public event Action OnCloseNavigationMenus;
+
+        public event Action<MenuNavigationButtonType> OnNavigationButtonClicked;
 
         public event Action OnDailyRewardButtonPressed;
 
@@ -33,6 +44,11 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI goldText;
         [SerializeField] private TextMeshProUGUI gemText;
 
+        [Header("Quest")]
+        [SerializeField] private TextMeshProUGUI questText;
+        [SerializeField] private Image questProgressBar;
+        [SerializeField] private AdvanceButton questClaimButton;
+
         [Header("Main Buttons")]
         [SerializeField] private AdvanceButton addGoldButton;
         [SerializeField] private AdvanceButton addGemButton;
@@ -41,14 +57,11 @@ namespace UISystem
         [SerializeField] private AdvanceButton dailyRewardButton;
 
         [Header("Nav Buttons")]
-        [SerializeField] private AdvanceButton traitsButton;
-        [SerializeField] private AdvanceButton inventoryButton;
-        [SerializeField] private AdvanceButton shopButton;
-        [SerializeField] private AdvanceButton worldButton;
+        [SerializeField] private NavigationButton[] navigationButtons;
 
         [Header("World")]
         [SerializeField] private Image worldImage;
-        [SerializeField] private Transform portalRoot;
+        [SerializeField] private Image worldLock;
         [SerializeField] private TextMeshProUGUI worldNameText;
         [SerializeField] private TextMeshProUGUI worldLevelText;
         [SerializeField] private AdvanceButton worldLeftButton;
@@ -57,6 +70,10 @@ namespace UISystem
         private Dictionary<WorldType, WorldVisualSO> worldVisualDic = new Dictionary<WorldType, WorldVisualSO>();
 
         private WorldVisualSO[] worldVisualSOList;
+
+        public NavigationButton[] NavigationButtons => navigationButtons;
+
+        private NavigationButton currentNavigationButton;
 
         [Header("Debug")]
         [SerializeField] private WorldType worldInView;
@@ -98,29 +115,18 @@ namespace UISystem
                 OnDailyRewardButtonPressed?.Invoke();
             });
 
-            shopButton.onClick.AddListener(() =>
+            foreach (NavigationButton navigationButton in navigationButtons)
             {
-                //OnCloseNavigationMenus?.Invoke();
-                OnShopButtonPressed?.Invoke();
-            });
-
-            worldButton.onClick.AddListener(() =>
-            {
-                //OnCloseNavigationMenus?.Invoke();
-                OnWorldButtonPressed?.Invoke();
-            });
-
-            inventoryButton.onClick.AddListener(() =>
-            {
-                //OnCloseNavigationMenus?.Invoke();
-                OnInventoryButtonPressed?.Invoke();
-            });
-
-            traitsButton.onClick.AddListener(() =>
-            {
-               // OnCloseNavigationMenus?.Invoke();
-                OnTraitButtonPressed?.Invoke();
-            });
+                navigationButton.advanceButton.onClick.AddListener(() =>
+                {
+                    if (currentNavigationButton != null && currentNavigationButton == navigationButton)
+                    {
+                        return;
+                    }
+                    currentNavigationButton = navigationButton;
+                    OnNavigationButtonClicked?.Invoke(navigationButton.navigationButtonType);
+                });
+            }
         }
 
         public override void OnOpened()
@@ -167,7 +173,6 @@ namespace UISystem
             worldVisualDic.Clear();
             foreach (WorldVisualSO worldVisualSO in worldVisualSOList)
             {
-                worldVisualSO.SpawnPortal(portalRoot);
                 worldVisualDic.Add(worldVisualSO.worldType, worldVisualSO);
             }
             worldInView = WorldType.World1;
@@ -176,15 +181,13 @@ namespace UISystem
 
         private void NavigateWorld(int direction)
         {
-            worldVisualDic[worldInView].GetPortalEffect().gameObject.SetActive(false);
-
             worldInView = (WorldType)(((int)worldInView + direction) % worldVisualSOList.Length);
             if (worldInView < 0)
             {
                 worldInView = (WorldType)worldVisualSOList.Length - 1;
             }
             bool isUnlocked = IsWorldUnlocked?.Invoke(worldInView) ?? false;
-            DisplayWorldInfo(worldInView, isUnlocked);
+
             if (isUnlocked)
             {
                 OnWorldChanged?.Invoke(worldInView);
@@ -193,7 +196,10 @@ namespace UISystem
 
         private void DisplayWorldInfo(WorldType worldType, bool isUnlocked)
         {
-            worldVisualDic[worldInView].GetPortalEffect().gameObject.SetActive(true);
+            playButton.interactable = isUnlocked;
+            worldLock.gameObject.SetActive(!isUnlocked);
+            DisplayWorldInfo(worldInView, isUnlocked);
+
             worldImage.sprite = worldVisualDic[worldType].icon;
             worldNameText.text = worldVisualDic[worldType].worldName;
             worldLevelText.text = isUnlocked ? GetMaxLevelReached?.Invoke(worldType).ToString() + " / 30" : "Locked";
