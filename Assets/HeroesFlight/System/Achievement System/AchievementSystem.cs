@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class AchievementSystem : IAchievementSystemInterface
 {
     public QuestRewardHandler questRewardHandler { get; private set; }
@@ -51,7 +52,7 @@ public class AchievementSystem : IAchievementSystemInterface
         }
         questRewardHandler.RewardClaimed();
 
-        rewardSystemInterface.ProcessReward(questRewardHandler.CurrentQuest.GetQuestReward());
+        rewardSystemInterface.ProcessRewards(questRewardHandler.CurrentQuest.GetQuestRewardPack().GetReward());
         // visualise reward
     }
 }

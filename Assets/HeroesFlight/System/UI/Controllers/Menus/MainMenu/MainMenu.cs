@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using static UnityEngine.Animations.AimConstraint;
 
 
 namespace UISystem
@@ -47,6 +48,7 @@ namespace UISystem
 
         [Header("World")]
         [SerializeField] private Image worldImage;
+        [SerializeField] private Transform portalRoot;
         [SerializeField] private TextMeshProUGUI worldNameText;
         [SerializeField] private TextMeshProUGUI worldLevelText;
         [SerializeField] private AdvanceButton worldLeftButton;
@@ -165,6 +167,7 @@ namespace UISystem
             worldVisualDic.Clear();
             foreach (WorldVisualSO worldVisualSO in worldVisualSOList)
             {
+                worldVisualSO.SpawnPortal(portalRoot);
                 worldVisualDic.Add(worldVisualSO.worldType, worldVisualSO);
             }
             worldInView = WorldType.World1;
@@ -173,6 +176,8 @@ namespace UISystem
 
         private void NavigateWorld(int direction)
         {
+            worldVisualDic[worldInView].GetPortalEffect().gameObject.SetActive(false);
+
             worldInView = (WorldType)(((int)worldInView + direction) % worldVisualSOList.Length);
             if (worldInView < 0)
             {
@@ -187,7 +192,8 @@ namespace UISystem
         }
 
         private void DisplayWorldInfo(WorldType worldType, bool isUnlocked)
-        {     
+        {
+            worldVisualDic[worldInView].GetPortalEffect().gameObject.SetActive(true);
             worldImage.sprite = worldVisualDic[worldType].icon;
             worldNameText.text = worldVisualDic[worldType].worldName;
             worldLevelText.text = isUnlocked ? GetMaxLevelReached?.Invoke(worldType).ToString() + " / 30" : "Locked";
