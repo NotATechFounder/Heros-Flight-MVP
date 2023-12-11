@@ -13,12 +13,7 @@ namespace HeroesFlight.System.Environment.Controllers
 
         private Coroutine rotationRoutine; 
         
-        private void Start()
-        {
-            rotationRoutine = StartCoroutine(RotateTarget());
-            
-        }
-
+        
         private void OnDestroy()
         {
             if(rotationRoutine!=null)
@@ -36,5 +31,15 @@ namespace HeroesFlight.System.Environment.Controllers
             }
         }
 
+        private void OnEnable()
+        {
+            rotationRoutine = StartCoroutine(RotateTarget());
+        }
+
+        private void OnDisable()
+        {
+            if(rotationRoutine!=null)
+                StopCoroutine(rotationRoutine);
+        }
     }
 }

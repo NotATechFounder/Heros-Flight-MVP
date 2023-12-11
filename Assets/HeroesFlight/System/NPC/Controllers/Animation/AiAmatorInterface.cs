@@ -10,7 +10,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
         event Action<AttackAnimationEvent> OnAnimationEvent;
 
         void SetMovementAnimation(bool isMoving);
-        void StartAttackAnimation(Action onCompleteAction);
+        void StartAttackAnimation(AnimationReferenceAsset animationReference,Action onComplete=null);
+        void StartAttackAnimation(Action onComplete=null);
         void StopAttackAnimation();
         void PlayDeathAnimation(Action onCompleteAction);
         void PlayHitAnimation(bool interruptAttack,Action onCompleteAction=null);
