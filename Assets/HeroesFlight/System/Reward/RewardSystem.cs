@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using HeroesFlight.Common.Enum;
 
 public class RewardSystem : RewardSystemInterface
 {
@@ -41,7 +42,14 @@ public class RewardSystem : RewardSystemInterface
         uiSystem.UiEventHandler.DailyRewardMenu.OnClaimRewardButtonClicked += ClaimReward;
         uiSystem.UiEventHandler.DailyRewardMenu.GetLastUnlockedIndex += rewardDataHandler.GetLastUnlockedIndex;
         uiSystem.UiEventHandler.DailyRewardMenu.IsRewardReady += rewardDataHandler.IsRewardReady;
-        rewardDataHandler.OnRewardReadyToBeCollected += uiSystem.UiEventHandler.DailyRewardMenu.OnRewardReadyToBeCollected;
+        rewardDataHandler.OnRewardReadyToBeCollected += OnDailyRewardReady;
+    }
+
+    private void OnDailyRewardReady(int rewardIndex)
+    {
+         uiSystem.UiEventHandler.DailyRewardMenu.OnRewardReadyToBeCollected(rewardIndex);
+         if(CurrentState==GameStateType.MainMenu)
+             uiSystem.UiEventHandler.DailyRewardMenu.Open();
     }
 
     public void ClaimReward(int day)
@@ -146,4 +154,11 @@ public class RewardSystem : RewardSystemInterface
         //        break;
         //    default: break;
         //}
-    }}
+    }
+
+    public GameStateType CurrentState { get; private set; }
+    public void SetCurrentState(GameStateType newState)
+    {
+        CurrentState = newState;
+    }
+}

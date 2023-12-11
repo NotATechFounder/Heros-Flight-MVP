@@ -1,3 +1,4 @@
+using System;
 using Pelumi.Juicer;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,8 +6,7 @@ using UnityEngine;
 
 public class AllIn1EffectTrigger : MonoBehaviour
 {
-    [Header("Settings")]
-    [SerializeField] string propertyName;
+    [Header("Settings")] [SerializeField] string propertyName;
     [SerializeField] bool startOnEnable;
 
     [SerializeField] float duration;
@@ -15,9 +15,10 @@ public class AllIn1EffectTrigger : MonoBehaviour
 
     [SerializeField] bool loop;
     [SerializeField] float stepDelay;
-
+    [SerializeField] private int loopsCount;
     private JuicerRuntime effect;
     private Material material;
+   
 
     private void Awake()
     {
@@ -40,5 +41,24 @@ public class AllIn1EffectTrigger : MonoBehaviour
         {
             effect.Start();
         }
+    }
+
+    public void StartEffect()
+    {
+        if (loop)
+        {
+            if (loopsCount > 0)
+            {
+                effect.SetLoop(loopsCount);
+            }
+            else
+            {
+                effect.SetLoop(-1);
+            }
+
+            effect.SetStepDelay(stepDelay);
+        }
+
+        effect.Start();
     }
 }

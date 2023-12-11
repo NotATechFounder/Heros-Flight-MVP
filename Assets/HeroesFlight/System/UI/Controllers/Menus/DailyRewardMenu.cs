@@ -109,7 +109,6 @@ namespace UISystem
                 }
             }
 
-            Open();
         }
     }
 }

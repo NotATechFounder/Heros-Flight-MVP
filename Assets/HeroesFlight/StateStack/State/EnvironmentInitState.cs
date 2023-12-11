@@ -4,6 +4,7 @@ using StansAssets.Foundation.Patterns;
 using JetBrains.Annotations;
 using StansAssets.SceneManagement;
 using System;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Environment;
 
 
@@ -32,6 +33,7 @@ namespace HeroesFlight.StateStack.State
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(environmentScene);
                         EnvironmentSystemInterface environmentSystem = GetService<EnvironmentSystemInterface>();
                         environmentSystem.Init(loadedScene);
+                        GetService<RewardSystemInterface>().SetCurrentState(GameStateType.MainMenu);
                         AppStateStack.State.Set(ApplicationState.MainMenu);
                     });
 

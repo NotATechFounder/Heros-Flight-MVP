@@ -56,15 +56,26 @@ namespace HeroesFlightProject.System.NPC.Controllers
             skeletonAnimation.AnimationState.SetAnimation(movementTrackIndex, targetTrack, true);
         }
 
-        public void StartAttackAnimation(Action onCompleteAction)
+        public void StartAttackAnimation(AnimationReferenceAsset animationReference,Action onComplete=null)
+        {
+            var turnTrack = skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, animationReference, false);
+            skeletonAnimation.AnimationState.AddEmptyAnimation(hitTrackIndex, 0, 0);
+            // turnTrack.AttachmentThreshold = 0f;
+            // turnTrack.MixDuration = 0f;
+            CoroutineUtility.WaitForSeconds(animationReference.Animation.Duration, () =>
+            {
+                onComplete?.Invoke();
+            });
+        }
+        public void StartAttackAnimation(Action onComplete=null)
         {
             var turnTrack = skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, attackAnimation, false);
-            skeletonAnimation.AnimationState.AddEmptyAnimation(hitTrackIndex, .5f, 0);
-            turnTrack.AttachmentThreshold = 1f;
-            turnTrack.MixDuration = .5f;
-            CoroutineUtility.WaitForSeconds(deathAnimation.Animation.Duration, () =>
+            skeletonAnimation.AnimationState.AddEmptyAnimation(hitTrackIndex, 0, 0);
+            // turnTrack.AttachmentThreshold = 1f;
+            // turnTrack.MixDuration = .5f;
+            CoroutineUtility.WaitForSeconds(attackAnimation.Animation.Duration, () =>
             {
-                onCompleteAction?.Invoke();
+                onComplete?.Invoke();
             });
         }
 
@@ -139,12 +150,15 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
+            Debug.Log(e.Data.Name);
             switch (e.Data.Name)
             {
+                    
                 case AnimationEventNames.AiDamage:
                     OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Attack, 0,AttackType.Regular));
                     break;
                 case AnimationEventNames.AiDamageV2:
+                    Debug.Log("DAMAGE EVENT");
                     OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Attack, 0,AttackType.Regular));
                     break;
                 
