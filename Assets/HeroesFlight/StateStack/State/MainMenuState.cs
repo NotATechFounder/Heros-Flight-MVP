@@ -41,6 +41,7 @@ namespace HeroesFlight.StateStack.State
                     traitSystem.OnTraitsStateChange += HandleTraitStateChange;
                     TraitSystemInterface traitSystemInterface = GetService<TraitSystemInterface>();
                     traitSystemInterface.Init();
+
                     uiSystem.UiEventHandler.MainMenu.Open();
 
                   //  uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += uiSystem.UiEventHandler.InventoryMenu.Open;
@@ -104,6 +105,8 @@ namespace HeroesFlight.StateStack.State
                     uiSystem.UiEventHandler.MainMenu.OnWorldChanged += dataSystem.WorldManger.SetSelectedWorld;
                     uiSystem.UiEventHandler.MainMenu.GetMaxLevelReached += dataSystem.WorldManger.GetMaxLevelReached;
                     uiSystem.UiEventHandler.MainMenu.LoadWorlds(dataSystem.WorldManger.Worlds);
+
+                    dataSystem.EnergyManager.OnEnergyTimerUpdated += uiSystem.UiEventHandler.MainMenu.UpdateEnergyTime;
 
                     break;
                 case StackAction.Paused:

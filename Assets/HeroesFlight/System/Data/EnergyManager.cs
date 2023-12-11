@@ -7,7 +7,9 @@ public class EnergyManager : MonoBehaviour
 {
     public enum TimeType { Hours, Minutes, Seconds }
 
-    [SerializeField] string saveName;
+    public const string SAVE_ID = "EnergyData";
+
+    public event Action<string> OnEnergyTimerUpdated;
 
     [Header("Properties")]
     [SerializeField] TimeType timeType;
@@ -21,11 +23,12 @@ public class EnergyManager : MonoBehaviour
 
     public int MaxEnergy() => maxEnergy;
 
-    private void Start()
+    private void Update()
     {
-        LoadDate();
-        LoadAccumulatedEnergyOffline();
-        StartCoroutine(RestoreEnergy());
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            UseEnergy(5);
+        }
     }
 
     public void Initialize(CurrencyManager currencyManager)
@@ -38,7 +41,7 @@ public class EnergyManager : MonoBehaviour
 
     private void LoadDate()
     {
-        EnergyData newEnergyData = FileManager.Load<EnergyData>(saveName);
+        EnergyData newEnergyData = FileManager.Load<EnergyData>(SAVE_ID);
         energyData = newEnergyData ?? new EnergyData();
         nextEnergyTime = StringToDate(energyData.nextEnergyTime);
     }
@@ -47,7 +50,7 @@ public class EnergyManager : MonoBehaviour
     {
         energyData.maxEnergy = maxEnergy;
         energyData.nextEnergyTime = nextEnergyTime.ToString();
-       // FileManager.Save(saveName, energyData);
+        FileManager.Save(SAVE_ID, energyData);
     }
 
     private void LoadAccumulatedEnergyOffline()
@@ -136,7 +139,7 @@ public class EnergyManager : MonoBehaviour
     private void UpdateEnergyTimerText(TimeSpan time)
     {
         string timeValue = String.Format("{0:D2} : {1:D1}", time.Minutes, time.Seconds);
-        Debug.Log(timeValue);
+        OnEnergyTimerUpdated?.Invoke(timeValue);
     }
 
     private DateTime AddDuration(DateTime dateTime, int duration)

@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using Pelumi.Juicer;
 
 namespace UISystem
 {
@@ -24,6 +25,22 @@ namespace UISystem
         public AdvanceButton advanceButton;
     }
 
+    public struct QuestStatusRequest
+    {
+        public string questName;
+        public int questProgress;
+        public int questGoal;
+        public float normalizedProgress => (float)questProgress / questGoal;
+        public bool isCompleted => questProgress >= questGoal;
+
+        public QuestStatusRequest(string questName, int questProgress, int questGoal)
+        {
+            this.questName = questName;
+            this.questProgress = questProgress;
+            this.questGoal = questGoal;
+        }
+    }
+
     public class MainMenu : BaseMenu<MainMenu>
     {
         public event Action OnPlayButtonPressed;
@@ -40,12 +57,18 @@ namespace UISystem
         public event Action AddGold;
         public event Action AddGem;
 
+        public event Action OnQuestClaimButtonPressed;
+        public event Func <QuestStatusRequest> questStatusRequest;
+
         [Header("UI")]
         [SerializeField] private TextMeshProUGUI goldText;
         [SerializeField] private TextMeshProUGUI gemText;
+        [SerializeField] private TextMeshProUGUI energyText;
+        [SerializeField] private TextMeshProUGUI energyTimeText;
 
         [Header("Quest")]
         [SerializeField] private TextMeshProUGUI questText;
+        [SerializeField] private TextMeshProUGUI questProgressText;
         [SerializeField] private Image questProgressBar;
         [SerializeField] private AdvanceButton questClaimButton;
 
@@ -75,11 +98,16 @@ namespace UISystem
 
         private NavigationButton currentNavigationButton;
 
+        JuicerRuntime questComplectedEffect;
+
         [Header("Debug")]
         [SerializeField] private WorldType worldInView;
 
         public override void OnCreated()
         {
+            questComplectedEffect = questProgressBar.JuicyColour(Color.red, 0.5f);
+            questComplectedEffect.SetLoop(-1).SetOnCompleted(() => questProgressBar.color = Color.yellow);
+
             addGoldButton.onClick.AddListener(() =>
             {
                 AddGold?.Invoke();
@@ -127,6 +155,12 @@ namespace UISystem
                     OnNavigationButtonClicked?.Invoke(navigationButton.navigationButtonType);
                 });
             }
+
+            questClaimButton.onClick.AddListener(() =>
+            {
+                OnQuestClaimButtonPressed?.Invoke();
+                questComplectedEffect.Stop();
+            });
         }
 
         public override void OnOpened()
@@ -154,6 +188,16 @@ namespace UISystem
             gemText.text = gem.ToString();
         }
 
+        public void UpdateEnergyText(float energy)
+        {
+            energyText.text = energy.ToString();
+        }
+
+        public void UpdateEnergyTime (string time)
+        {
+            energyTimeText.text = time;
+        }
+
         public void CurrencyChanged(CurrencySO sO, bool increase)
         {
             switch (sO.GetKey)
@@ -163,6 +207,9 @@ namespace UISystem
                     break;
                 case CurrencyKeys.Gem:
                     UpdateGemText(sO.GetCurrencyAmount);
+                    break;
+                case CurrencyKeys.Energy:
+                    UpdateEnergyText(sO.GetCurrencyAmount);
                     break;
             }
         }
@@ -192,17 +239,41 @@ namespace UISystem
             {
                 OnWorldChanged?.Invoke(worldInView);
             }
+
+            DisplayWorldInfo (worldInView, isUnlocked);
         }
 
         private void DisplayWorldInfo(WorldType worldType, bool isUnlocked)
         {
             playButton.interactable = isUnlocked;
             worldLock.gameObject.SetActive(!isUnlocked);
-            DisplayWorldInfo(worldInView, isUnlocked);
 
             worldImage.sprite = worldVisualDic[worldType].icon;
             worldNameText.text = worldVisualDic[worldType].worldName;
             worldLevelText.text = isUnlocked ? GetMaxLevelReached?.Invoke(worldType).ToString() + " / 30" : "Locked";
+        }
+
+        public void UpdateQuestInfo(QuestStatusRequest questStatusRequest)
+        {
+            questText.text = questStatusRequest.questName;
+            questProgressText.text = questStatusRequest.isCompleted ? "Claim Reward" :
+                questStatusRequest.questProgress.ToString() + " / " + questStatusRequest.questGoal.ToString();
+            questProgressBar.fillAmount = questStatusRequest.normalizedProgress;
+            questClaimButton.interactable = questStatusRequest.isCompleted;
+
+            if (questStatusRequest.isCompleted)
+            {
+                questComplectedEffect.Start();
+            }
+        }
+
+        public void ClickNavigationButton(MenuNavigationButtonType menuNavigationButtonType)
+        {
+            NavigationButton navigationButton = navigationButtons.FirstOrDefault(x => x.navigationButtonType == menuNavigationButtonType);
+            if (navigationButton != null)
+            {
+                navigationButton.advanceButton.onClick.Invoke();
+            }
         }
     }
 }

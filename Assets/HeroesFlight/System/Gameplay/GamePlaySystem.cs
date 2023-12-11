@@ -43,6 +43,10 @@ namespace HeroesFlight.System.Gameplay
 {
     public class GamePlaySystem : GamePlaySystemInterface
     {
+        public event Action OnLevelComplected;
+        public event Action OnLevelFailed;
+        public event Action OnWorldCompleted;
+
         public GamePlaySystem(DataSystemInterface dataSystem, CharacterSystemInterface characterSystem,
             NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem,
             CombatSystemInterface combatSystem,
@@ -563,6 +567,7 @@ namespace HeroesFlight.System.Gameplay
             {
                 GameTimer.Stop();
                 HandlePlayerWon();
+                OnLevelComplected?.Invoke();
             }
         }
 
@@ -570,13 +575,11 @@ namespace HeroesFlight.System.Gameplay
         {
             GameEffectController.ForceStop(() =>
             {
+                dataSystem.WorldManger.SetMaxLevelReached(dataSystem.WorldManger.SelectedWorld, container.CurrentLvlIndex);
+
                 if (container.FinishedLoop)
                 {
                     characterAttackController.ToggleControllerState(false);
-
-                    //Temp rewarding player with unlock here
-                    //dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
-                    //    CharacterType.Lancer));
 
                     CoroutineUtility.WaitForSeconds(6f, () => { ChangeState(GameState.Won); });
 
@@ -623,6 +626,10 @@ namespace HeroesFlight.System.Gameplay
 
                 return;
             }
+
+            OnLevelFailed?.Invoke();
+
+            dataSystem.WorldManger.SetMaxLevelReached(dataSystem.WorldManger.SelectedWorld, container.CurrentLvlIndex);
 
             //freezes engine?  
             // GameTimer.Pause();

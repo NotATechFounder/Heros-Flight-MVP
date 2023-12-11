@@ -174,7 +174,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 if (colliders[i].TryGetComponent<IHealthController>(out var health))
                 {
-                    float criticalChance = characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.AttackSpeed);
+                    float criticalChance = characterController.CharacterStatController.GetStatModel.GetCurrentStatValue(StatType.CriticalHitChance);
                     bool isCritical = Random.Range(0, 100) <= criticalChance;
 
                     float damageToDeal = isCritical

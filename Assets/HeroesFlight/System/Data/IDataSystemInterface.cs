@@ -13,8 +13,8 @@ public interface DataSystemInterface : SystemInterface
 
     public AccountLevelManager AccountLevelManager { get; }
 
-  
     public WorldManager WorldManger { get; }
+    public EnergyManager EnergyManager { get; }
 
     event Action OnApplicationQuit;
     void RequestDataSave();
