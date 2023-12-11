@@ -22,7 +22,6 @@ public class WorldManager : MonoBehaviour
     public void Init()
     {
         Load();
-        UnlockNext();
     }
 
     public void SetSelectedWorld(WorldType worldType)

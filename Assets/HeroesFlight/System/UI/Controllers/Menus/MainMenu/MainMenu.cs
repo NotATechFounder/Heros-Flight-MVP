@@ -5,19 +5,48 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
-
+using Pelumi.Juicer;
 
 namespace UISystem
 {
+    public enum MenuNavigationButtonType
+    {
+        World,
+        Shop,
+        Inventory,
+        Traits,
+        Other,
+    }
+
+    [System.Serializable]
+    public class NavigationButton
+    {
+        public MenuNavigationButtonType navigationButtonType;
+        public AdvanceButton advanceButton;
+    }
+
+    public struct QuestStatusRequest
+    {
+        public string questName;
+        public int questProgress;
+        public int questGoal;
+        public float normalizedProgress => (float)questProgress / questGoal;
+        public bool isCompleted => questProgress >= questGoal;
+
+        public QuestStatusRequest(string questName, int questProgress, int questGoal)
+        {
+            this.questName = questName;
+            this.questProgress = questProgress;
+            this.questGoal = questGoal;
+        }
+    }
+
     public class MainMenu : BaseMenu<MainMenu>
     {
         public event Action OnPlayButtonPressed;
         public event Action OnSettingsButtonPressed;
-        public event Action OnTraitButtonPressed;
-        public event Action OnInventoryButtonPressed;
-        public event Action OnShopButtonPressed;
-        public event Action OnWorldButtonPressed;
-        public event Action OnCloseNavigationMenus;
+
+        public event Action<MenuNavigationButtonType> OnNavigationButtonClicked;
 
         public event Action OnDailyRewardButtonPressed;
 
@@ -28,9 +57,20 @@ namespace UISystem
         public event Action AddGold;
         public event Action AddGem;
 
+        public event Action OnQuestClaimButtonPressed;
+        public event Func <QuestStatusRequest> questStatusRequest;
+
         [Header("UI")]
         [SerializeField] private TextMeshProUGUI goldText;
         [SerializeField] private TextMeshProUGUI gemText;
+        [SerializeField] private TextMeshProUGUI energyText;
+        [SerializeField] private TextMeshProUGUI energyTimeText;
+
+        [Header("Quest")]
+        [SerializeField] private TextMeshProUGUI questText;
+        [SerializeField] private TextMeshProUGUI questProgressText;
+        [SerializeField] private Image questProgressBar;
+        [SerializeField] private AdvanceButton questClaimButton;
 
         [Header("Main Buttons")]
         [SerializeField] private AdvanceButton addGoldButton;
@@ -40,13 +80,11 @@ namespace UISystem
         [SerializeField] private AdvanceButton dailyRewardButton;
 
         [Header("Nav Buttons")]
-        [SerializeField] private AdvanceButton traitsButton;
-        [SerializeField] private AdvanceButton inventoryButton;
-        [SerializeField] private AdvanceButton shopButton;
-        [SerializeField] private AdvanceButton worldButton;
+        [SerializeField] private NavigationButton[] navigationButtons;
 
         [Header("World")]
         [SerializeField] private Image worldImage;
+        [SerializeField] private Image worldLock;
         [SerializeField] private TextMeshProUGUI worldNameText;
         [SerializeField] private TextMeshProUGUI worldLevelText;
         [SerializeField] private AdvanceButton worldLeftButton;
@@ -56,11 +94,20 @@ namespace UISystem
 
         private WorldVisualSO[] worldVisualSOList;
 
+        public NavigationButton[] NavigationButtons => navigationButtons;
+
+        private NavigationButton currentNavigationButton;
+
+        JuicerRuntime questComplectedEffect;
+
         [Header("Debug")]
         [SerializeField] private WorldType worldInView;
 
         public override void OnCreated()
         {
+            questComplectedEffect = questProgressBar.JuicyColour(Color.red, 0.5f);
+            questComplectedEffect.SetLoop(-1).SetOnCompleted(() => questProgressBar.color = Color.yellow);
+
             addGoldButton.onClick.AddListener(() =>
             {
                 AddGold?.Invoke();
@@ -96,28 +143,23 @@ namespace UISystem
                 OnDailyRewardButtonPressed?.Invoke();
             });
 
-            shopButton.onClick.AddListener(() =>
+            foreach (NavigationButton navigationButton in navigationButtons)
             {
-                //OnCloseNavigationMenus?.Invoke();
-                OnShopButtonPressed?.Invoke();
-            });
+                navigationButton.advanceButton.onClick.AddListener(() =>
+                {
+                    if (currentNavigationButton != null && currentNavigationButton == navigationButton)
+                    {
+                        return;
+                    }
+                    currentNavigationButton = navigationButton;
+                    OnNavigationButtonClicked?.Invoke(navigationButton.navigationButtonType);
+                });
+            }
 
-            worldButton.onClick.AddListener(() =>
+            questClaimButton.onClick.AddListener(() =>
             {
-                //OnCloseNavigationMenus?.Invoke();
-                OnWorldButtonPressed?.Invoke();
-            });
-
-            inventoryButton.onClick.AddListener(() =>
-            {
-                //OnCloseNavigationMenus?.Invoke();
-                OnInventoryButtonPressed?.Invoke();
-            });
-
-            traitsButton.onClick.AddListener(() =>
-            {
-               // OnCloseNavigationMenus?.Invoke();
-                OnTraitButtonPressed?.Invoke();
+                OnQuestClaimButtonPressed?.Invoke();
+                questComplectedEffect.Stop();
             });
         }
 
@@ -146,6 +188,16 @@ namespace UISystem
             gemText.text = gem.ToString();
         }
 
+        public void UpdateEnergyText(float energy)
+        {
+            energyText.text = energy.ToString();
+        }
+
+        public void UpdateEnergyTime (string time)
+        {
+            energyTimeText.text = time;
+        }
+
         public void CurrencyChanged(CurrencySO sO, bool increase)
         {
             switch (sO.GetKey)
@@ -155,6 +207,9 @@ namespace UISystem
                     break;
                 case CurrencyKeys.Gem:
                     UpdateGemText(sO.GetCurrencyAmount);
+                    break;
+                case CurrencyKeys.Energy:
+                    UpdateEnergyText(sO.GetCurrencyAmount);
                     break;
             }
         }
@@ -179,18 +234,46 @@ namespace UISystem
                 worldInView = (WorldType)worldVisualSOList.Length - 1;
             }
             bool isUnlocked = IsWorldUnlocked?.Invoke(worldInView) ?? false;
-            DisplayWorldInfo(worldInView, isUnlocked);
+
             if (isUnlocked)
             {
                 OnWorldChanged?.Invoke(worldInView);
             }
+
+            DisplayWorldInfo (worldInView, isUnlocked);
         }
 
         private void DisplayWorldInfo(WorldType worldType, bool isUnlocked)
-        {     
+        {
+            playButton.interactable = isUnlocked;
+            worldLock.gameObject.SetActive(!isUnlocked);
+
             worldImage.sprite = worldVisualDic[worldType].icon;
             worldNameText.text = worldVisualDic[worldType].worldName;
             worldLevelText.text = isUnlocked ? GetMaxLevelReached?.Invoke(worldType).ToString() + " / 30" : "Locked";
+        }
+
+        public void UpdateQuestInfo(QuestStatusRequest questStatusRequest)
+        {
+            questText.text = questStatusRequest.questName;
+            questProgressText.text = questStatusRequest.isCompleted ? "Claim Reward" :
+                questStatusRequest.questProgress.ToString() + " / " + questStatusRequest.questGoal.ToString();
+            questProgressBar.fillAmount = questStatusRequest.normalizedProgress;
+            questClaimButton.interactable = questStatusRequest.isCompleted;
+
+            if (questStatusRequest.isCompleted)
+            {
+                questComplectedEffect.Start();
+            }
+        }
+
+        public void ClickNavigationButton(MenuNavigationButtonType menuNavigationButtonType)
+        {
+            NavigationButton navigationButton = navigationButtons.FirstOrDefault(x => x.navigationButtonType == menuNavigationButtonType);
+            if (navigationButton != null)
+            {
+                navigationButton.advanceButton.onClick.Invoke();
+            }
         }
     }
 }

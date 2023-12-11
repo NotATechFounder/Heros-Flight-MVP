@@ -37,7 +37,7 @@ namespace HeroesFlight.System.Stats.Handlers
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
-            uiSystem.UiEventHandler.MainMenu.OnTraitButtonPressed += HandleTraitButtonPressed;
+            uiSystem.UiEventHandler.MainMenu.OnNavigationButtonClicked += MainMenu_OnNavigationButtonClicked;
             uiSystem.UiEventHandler.TraitTreeMenu.OnTraitModificationRequest += HandleRequest;
             uiSystem.UiEventHandler.TraitTreeMenu.DiceInfoRequest += () =>
             {
@@ -45,6 +45,14 @@ namespace HeroesFlight.System.Stats.Handlers
                     "Roll the 12-sided dice to further enhance any of your traits between 1-12 bonus points. " +
                     "Each roll will reset the previous bonus");
             };
+        }
+
+        private void MainMenu_OnNavigationButtonClicked(UISystem.MenuNavigationButtonType obj)
+        {
+            if (obj == UISystem.MenuNavigationButtonType.Traits)
+            {
+                HandleTraitButtonPressed();
+            }
         }
 
         public void Reset()

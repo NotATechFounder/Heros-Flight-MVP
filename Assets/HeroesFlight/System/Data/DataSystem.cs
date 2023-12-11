@@ -24,7 +24,7 @@ public class DataSystem : DataSystemInterface
 
     public AccountLevelManager AccountLevelManager { get; private set; }
  
-
+    public EnergyManager EnergyManager { get; private set; }
     public WorldManager WorldManger { get; private set; }
 
 
@@ -36,6 +36,7 @@ public class DataSystem : DataSystemInterface
         CharacterManager = scene.GetComponent<CharacterManager>();
         AccountLevelManager = scene.GetComponent<AccountLevelManager>();
         WorldManger = scene.GetComponent<WorldManager>();
+        EnergyManager = scene.GetComponent<EnergyManager>();
 
         CurrencyManager.LoadCurrencies();
 
@@ -49,7 +50,9 @@ public class DataSystem : DataSystemInterface
 
 
         AccountLevelManager.OnLevelUp += StatPoints.AddPoints;
-     
+
+        EnergyManager.Initialize(CurrencyManager);
+
         onComplete?.Invoke();
     }
 
