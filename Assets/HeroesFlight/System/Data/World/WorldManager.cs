@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class WorldManager : MonoBehaviour
 {
-    public const string WORLD_SAVE_KEY =  "WorldSave";
+    public const string WORLD_SAVE_KEY = "WorldSave";
 
     [SerializeField] private WorldVisualSO[] worlds;
     [SerializeField] private WorldType selectedWorld;
 
-    private Data data;
+   [SerializeField] private Data data;
     public WorldVisualSO[] Worlds => worlds;
     public WorldType SelectedWorld => selectedWorld;
 
@@ -31,21 +31,43 @@ public class WorldManager : MonoBehaviour
 
     public bool IsWorldUnlocked(WorldType worldType)
     {
-        int maxUnlockedWorldIndex = Array.IndexOf(Enum.GetValues(typeof(WorldType)), data.LastUnlockedWorld);
-        int worldIndex = Array.IndexOf(Enum.GetValues(typeof(WorldType)), worldType);
-        return worldIndex <= maxUnlockedWorldIndex;
+        WorldInfoData targetEntry = null;
+        foreach (var infoEntry in data.worldInfoData)
+        {
+            if (infoEntry.worldType == worldType)
+            {
+                targetEntry = infoEntry;
+                break;
+            }
+        }
+
+        if (targetEntry != null)
+        {
+            return targetEntry.isUnlocked;
+        }
+
+        return false;
+        // int maxUnlockedWorldIndex = Array.IndexOf(Enum.GetValues(typeof(WorldType)), data.LastUnlockedWorld);
+        // int worldIndex = Array.IndexOf(Enum.GetValues(typeof(WorldType)), worldType);
+        // return worldIndex <= maxUnlockedWorldIndex;
     }
 
-    public void UnlockNext()
+    public void UnlockWorld(WorldType typeToUnlock)
     {
-        int maxUnlockedWorldIndex = Array.IndexOf(Enum.GetValues(typeof(WorldType)), data.LastUnlockedWorld);
-        int nextWorldIndex = maxUnlockedWorldIndex + 1;
-        if (nextWorldIndex < worlds.Length)
-        {
-            data.LastUnlockedWorld = (WorldType)Enum.GetValues(typeof(WorldType)).GetValue(nextWorldIndex);
-        }
+        data.worldInfoData.Find(x => x.worldType == typeToUnlock).isUnlocked = true;
         Save();
     }
+    // public void UnlockNext()
+    // {
+    //     int maxUnlockedWorldIndex = Array.IndexOf(Enum.GetValues(typeof(WorldType)), data.LastUnlockedWorld);
+    //     int nextWorldIndex = maxUnlockedWorldIndex + 1;
+    //     if (nextWorldIndex < worlds.Length)
+    //     {
+    //         data.LastUnlockedWorld = (WorldType)Enum.GetValues(typeof(WorldType)).GetValue(nextWorldIndex);
+    //     }
+    //
+    //     Save();
+    // }
 
     public int GetMaxLevelReached(WorldType worldType)
     {
@@ -77,6 +99,7 @@ public class WorldManager : MonoBehaviour
             worldInfoData.maxLevelReached = levelReached;
             data.worldInfoData.Add(worldInfoData);
         }
+
         Save();
     }
 
@@ -96,15 +119,29 @@ public class WorldManager : MonoBehaviour
         else
         {
             data = new Data();
-            data.LastUnlockedWorld = WorldType.World1;
-            data.worldInfoData = new List<WorldInfoData>();
+           
         }
     }
 
     [Serializable]
     public class Data
     {
-        public WorldType LastUnlockedWorld;
+        public Data()
+        {
+            worldInfoData = new List<WorldInfoData>();
+            foreach (WorldType world in Enum.GetValues(typeof(WorldType)))
+            {
+                var infoEntry = new WorldInfoData 
+                {
+                    worldType = world,
+                    maxLevelReached = 0,
+                    isUnlocked = world != WorldType.World3
+                };
+
+                worldInfoData.Add(infoEntry);
+            }
+        }
+
         public List<WorldInfoData> worldInfoData;
     }
 
@@ -113,5 +150,6 @@ public class WorldManager : MonoBehaviour
     {
         public WorldType worldType;
         public int maxLevelReached;
+        public bool isUnlocked;
     }
 }

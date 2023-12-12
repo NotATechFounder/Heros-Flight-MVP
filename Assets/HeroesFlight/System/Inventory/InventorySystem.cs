@@ -80,7 +80,8 @@ namespace HeroesFlight.System.Inventory
         private void OpenInventory()
         {
             UpdateInventoryUi();
-            uiSystem.UiEventHandler.InventoryMenu.Open();
+            if(!uiSystem.UiEventHandler.InventoryMenu.isActiveAndEnabled)
+             uiSystem.UiEventHandler.InventoryMenu.Open();
         }
 
         private void UpdateInventoryUi()
