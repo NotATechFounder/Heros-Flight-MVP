@@ -503,7 +503,7 @@ namespace HeroesFlight.System.Gameplay
         {
             var healthController = obj.GetComponent<IHealthController>();
 
-            if (obj.EnemyType == EnemyType.MiniBoss)
+            if (obj.EnemyType == EnemyType.TreantMiniboss)
             {
                 var attackController = obj.GetComponent<IAttackControllerInterface>();
                 var effectsController = obj.GetComponent<CombatEffectsController>();

@@ -112,7 +112,7 @@ namespace HeroesFlight.System.NPC.Container
             AiControllerBase resultEnemy = Instantiate(spawnModelEntry.Prefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition(), Quaternion.identity);
             resultEnemy.transform.parent = transform;
 
-            if(resultEnemy.EnemyType == EnemyType.MiniBoss)
+            if(resultEnemy.EnemyType == EnemyType.TreantMiniboss)
             {
                 resultEnemy.Init(player.transform,mobDifficulty.GetHealth(levelIndex, resultEnemy.EnemyType), mobDifficulty.GetDamage(levelIndex, resultEnemy.EnemyType), 
                     monsterStatController.GetMonsterStatModifier, null);

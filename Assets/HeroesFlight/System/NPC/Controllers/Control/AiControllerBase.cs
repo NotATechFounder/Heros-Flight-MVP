@@ -49,7 +49,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public virtual void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier,
             Sprite currentCardIcon)
         {
-            statModifier = EnemyType == EnemyType.MiniBoss ? new MonsterStatModifier() : monsterStatModifier;
+            statModifier = EnemyType == EnemyType.TreantMiniboss ? new MonsterStatModifier() : monsterStatModifier;
             rigidBody = GetComponent<Rigidbody2D>();
             attackCollider = GetComponent<Collider2D>();
             animator = GetComponent<AiAnimatorInterface>();
