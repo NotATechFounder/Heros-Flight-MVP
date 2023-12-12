@@ -13,6 +13,7 @@ namespace HeroesFlightProject.System.NPC.Enum
         TreantElite,
         HornedMushroom,
         WoodFairy,
-        TreantBrown
+        TreantBrown,
+        MountainDwarf
     }
 }
