@@ -2,6 +2,7 @@ using HeroesFlight.System.FileManager;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class EnergyManager : MonoBehaviour
 {
@@ -60,7 +61,7 @@ public class EnergyManager : MonoBehaviour
             DateTime lastTime = nextEnergyTime;
             TimeSpan time = InternetManager.Instance.GetCurrentDateTime() - lastTime;
 
-            Debug.Log( "Hour : " + time.Hours + " : " + "Minute : " + time.Minutes + " : " + "Second : " + time.Seconds);
+            //Debug.Log( "Hour : " + time.Hours + " : " + "Minute : " + time.Minutes + " : " + "Second : " + time.Seconds);
 
             int ammountToAdd = timeType switch
             {
@@ -73,7 +74,11 @@ public class EnergyManager : MonoBehaviour
             if (ammountToAdd > 0 && currencyManager.GetCurrencyAmount(CurrencyKeys.Energy) < maxEnergy)
             {
                 currencyManager.AddCurrency(CurrencyKeys.Energy, ammountToAdd);
-                if (currencyManager.GetCurrencyAmount(CurrencyKeys.Energy) > maxEnergy) currencyManager.SetCurencyAmount(CurrencyKeys.Energy, maxEnergy);
+                if (currencyManager.GetCurrencyAmount(CurrencyKeys.Energy) > maxEnergy)
+                {
+                    currencyManager.SetCurencyAmount(CurrencyKeys.Energy, maxEnergy);
+                    OnEnergyTimerUpdated?.Invoke("Full");
+                } 
                 UpdateNextEnergyTime();
             }
         }
