@@ -147,10 +147,10 @@ namespace UISystem
             {
                 navigationButton.advanceButton.onClick.AddListener(() =>
                 {
-                    if (currentNavigationButton != null && currentNavigationButton == navigationButton)
-                    {
-                        return;
-                    }
+                    // if (currentNavigationButton != null && currentNavigationButton == navigationButton)
+                    // {
+                    //     return;
+                    // }
                     currentNavigationButton = navigationButton;
                     OnNavigationButtonClicked?.Invoke(navigationButton.navigationButtonType);
                 });
