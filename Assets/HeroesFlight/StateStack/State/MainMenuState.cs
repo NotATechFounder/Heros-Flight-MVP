@@ -84,6 +84,10 @@ namespace HeroesFlight.StateStack.State
 
                     void HandleGameStartRequest()
                     {
+                        if (dataSystem.EnergyManager.UseEnergy(5))
+                        {
+                        }
+
                         uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;
                         traitSystem.OnTraitsStateChange -= HandleTraitStateChange;
                         GetService<RewardSystemInterface>().SetCurrentState(GameStateType.Gameplay);
