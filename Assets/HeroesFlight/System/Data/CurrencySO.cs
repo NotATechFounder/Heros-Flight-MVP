@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Currency", menuName = "Shop/Currency")]
-public class CurrencySO : ScriptableObject, IHasID
+public class CurrencySO : RewardBaseSO, IHasID
 {
     public enum CurrencyType
     {

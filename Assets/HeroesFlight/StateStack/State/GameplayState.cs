@@ -69,12 +69,12 @@ namespace HeroesFlight.StateStack.State
                         });
                     }
 
-
                     uiSystem.UiEventHandler.MainMenu.Close();
                     uiSystem.UiEventHandler.LoadingMenu.Open();
                     m_SceneActionsQueue.AddAction(SceneActionType.Load, gameScene);
                     m_SceneActionsQueue.Start(uiSystem.UiEventHandler.LoadingMenu.UpdateLoadingBar, () =>
                     {
+                        uiSystem.UiEventHandler.GameMenu.Open();
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(gameScene);
                         SceneManager.SetActiveScene(loadedScene);
                         characterSystem.Init(loadedScene);

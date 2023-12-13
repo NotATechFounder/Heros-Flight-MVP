@@ -19,5 +19,7 @@ public interface DataSystemInterface : SystemInterface
     event Action OnApplicationQuit;
     void RequestDataSave();
 
+    bool TutorialMode { get;}
+
     //TraitSystemInterface TraitSystem { get; }
 }

@@ -12,6 +12,8 @@ public class Chest : MonoBehaviour
     public float GetGemChestPrice => chestSO.GetPrice;
     public float GetGoldChestPrice => chestSO.GetPrice;
 
+    public string GetChestInfo => chestSO.GetChestInfo;
+
     void Start()
     {
         SetUpNormalChest();

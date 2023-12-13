@@ -45,7 +45,6 @@ namespace HeroesFlight.System.UI
             {
                 UiEventHandler.MainMenu.OnMenuOpened += () => { AudioManager.PlayMusic(MainMenuMusicID); };
 
-                UiEventHandler.MainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
                 UiEventHandler.MainMenu.OnSettingsButtonPressed += () => { UiEventHandler.SettingsMenu.Open(); };
                 UiEventHandler.MainMenu.OnDailyRewardButtonPressed += () => { UiEventHandler.DailyRewardMenu.Open(); };
 
@@ -223,12 +222,6 @@ namespace HeroesFlight.System.UI
         public void UpdateGameTimeUI(float timeLeft)
         {
             UiEventHandler.GameMenu.UpdateTimerText(timeLeft);
-        }
-
-        void OnPlayButtonPressed()
-        {
-            UiEventHandler.MainMenu.Close();
-            UiEventHandler.GameMenu.Open();
         }
 
          void ReturnToMainMenu()

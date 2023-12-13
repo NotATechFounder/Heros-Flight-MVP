@@ -61,12 +61,6 @@ namespace HeroesFlight.System.Gameplay
             this.progressionSystem = progressionSystem;
             traitSystem = traitSystemInterface;
             InventorySystem = inventorySystemInterface;
-
-            this.npcSystem.OnEnemySpawned += HandleEnemySpawned;
-            this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
-            this.combatSystem.OnEntityDied += HandleEntityDied;
-            this.uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
-            this.uiSystem.OnReviveCharacterRequest += () => { ReviveCharacter(100f); };
         }
 
         CountDownTimer GameTimer;
@@ -124,6 +118,13 @@ namespace HeroesFlight.System.Gameplay
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
+
+            this.npcSystem.OnEnemySpawned += HandleEnemySpawned;
+            this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
+            this.combatSystem.OnEntityDied += HandleEntityDied;
+            this.uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
+            this.uiSystem.OnReviveCharacterRequest += () => { ReviveCharacter(100f); };
+
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
 
             shrine = scene.GetComponentInChildren<Shrine>();
@@ -1272,8 +1273,6 @@ namespace HeroesFlight.System.Gameplay
             {
                 ContinueGameLoop();
             }
-        }
-
-       
+        }    
     }
 }

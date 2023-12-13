@@ -33,8 +33,20 @@ namespace HeroesFlight.StateStack.State
                         var loadedScene = m_SceneActionsQueue.GetLoadedScene(environmentScene);
                         EnvironmentSystemInterface environmentSystem = GetService<EnvironmentSystemInterface>();
                         environmentSystem.Init(loadedScene);
-                        GetService<RewardSystemInterface>().SetCurrentState(GameStateType.MainMenu);
-                        AppStateStack.State.Set(ApplicationState.MainMenu);
+
+                        DataSystemInterface dataSystem = GetService<DataSystemInterface>();
+
+                        if (dataSystem.TutorialMode)
+                        {
+                            AppStateStack.State.Set(ApplicationState.Tutorial);
+                            GetService<RewardSystemInterface>().SetCurrentState(GameStateType.Tutorial);
+                        }
+                        else
+                        {
+                            AppStateStack.State.Set(ApplicationState.MainMenu);
+                            GetService<RewardSystemInterface>().SetCurrentState(GameStateType.MainMenu);
+                        }
+
                     });
 
                     progressReporter.SetDone();

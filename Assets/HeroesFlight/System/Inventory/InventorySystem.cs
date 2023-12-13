@@ -29,8 +29,6 @@ namespace HeroesFlight.System.Inventory
         {
             InventoryHandler = scene.GetComponent<InventoryHandler>();
             InventoryHandler.Init(data.CurrencyManager);
-            //InventoryHandler.OnItemAdded += SpawnUiItem;
-           // InventoryHandler.OnItemModified += UpdateUiItem;
             InventoryHandler.OnInventoryUpdated += UpdateInventoryUi;
             converter = new InventoryItemConverter(InventoryHandler);
             
@@ -46,13 +44,11 @@ namespace HeroesFlight.System.Inventory
         {
             Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
             InventoryHandler.UnEquipItem(targetItem);
-            //  uiSystem.UiEventHandler.InventoryMenu.UnEquipItem();
             UpdateInventoryUi();
         }
 
         private void HandleItemDismantleRequest(EquipmentEntryUi obj)
         {
-            Debug.Log($"dismantling {obj.ID}");
             Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
             InventoryHandler.DismantleItem(targetItem);
             uiSystem.UiEventHandler.InventoryMenu.DismantleItem();

@@ -1,4 +1,4 @@
-﻿public enum GoldPack
+﻿public enum GoldPackType
 {
     Small,
     Medium,

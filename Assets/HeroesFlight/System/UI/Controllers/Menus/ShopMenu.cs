@@ -16,20 +16,17 @@ namespace UISystem
 {
     public class ShopMenu : BaseMenu<ShopMenu>
     {
+
+
         public event Action<IAPHelper.ProductType> OnPurchaseSuccess;
         public event Action<ChestType> TryPurchaseChest;
-        public event Action<GoldPack> TryPurchaseGoldPack;
+        public event Action<GoldPackType> TryPurchaseGoldPack;
 
         [Header("Chest Pack Buttons")]
-        [SerializeField] private AdvanceButton regularChestButton;
-        [SerializeField] private AdvanceButton rareChestButton;
-        [SerializeField] private AdvanceButton epicChestButton;
-        [SerializeField] private AdvanceButton epic10ChestButton;
+        [SerializeField] private ChestUI[] chestUIArray;
 
         [Header("Gold Pack Buttons")]
-        [SerializeField] private AdvanceButton smallGoldPackButton;
-        [SerializeField] private AdvanceButton mediumGoldPackButton;
-        [SerializeField] private AdvanceButton largeGoldPackButton;
+        [SerializeField] private GoldPackUI[] goldPackUIArray;
 
         [Header("IAP Text")]
         [SerializeField] private TextMeshProUGUI gem80Text;
@@ -63,14 +60,15 @@ namespace UISystem
 
             restorePurchaseButton?.gameObject.SetActive(Application.platform == RuntimePlatform.IPhonePlayer);
 
-            regularChestButton.onClick.AddListener(() => { TryPurchaseChest?.Invoke(ChestType.Regular); });
-            rareChestButton.onClick.AddListener(() => { TryPurchaseChest?.Invoke(ChestType.Rare); });
-            epicChestButton.onClick.AddListener(() => { TryPurchaseChest?.Invoke(ChestType.Epic); });
-            epic10ChestButton.onClick.AddListener(() => { TryPurchaseChest?.Invoke(ChestType.Epic_10); });
+            foreach (ChestUI chestUI in chestUIArray)
+            {
+                chestUI.ChestButton.onClick.AddListener(() => { TryPurchaseChest?.Invoke(chestUI.GetChestType); });
+            }
 
-            smallGoldPackButton.onClick.AddListener(() => { TryPurchaseGoldPack?.Invoke(GoldPack.Small); });
-            mediumGoldPackButton.onClick.AddListener(() => { TryPurchaseGoldPack?.Invoke(GoldPack.Medium); });
-            largeGoldPackButton.onClick.AddListener(() => { TryPurchaseGoldPack?.Invoke(GoldPack.Large); });
+            foreach (GoldPackUI goldPackUI in goldPackUIArray)
+            {
+                goldPackUI.BuyButton.onClick.AddListener(() => { TryPurchaseGoldPack?.Invoke(goldPackUI.GetGoldPackType); });
+            }
 
             closeRewardViewButton.onClick.AddListener(() => { rewardDisplay.SetActive(false); });
         }
@@ -153,6 +151,24 @@ namespace UISystem
             }
 
             rewardDisplay.SetActive(true);
+        }
+
+        public void SetGoldPackInfo (GoldPackType goldPackType, int goldAmount, int price)
+        {
+            GoldPackUI goldPackUI = Array.Find(goldPackUIArray, goldPack => goldPack.GetGoldPackType == goldPackType);
+            if (goldPackUI == null)
+                return;
+
+            goldPackUI.SetGoldPackUI(goldAmount, price);
+        }
+
+        public void SetChestInfo(ChestType chestType, string info, int gemPrice)
+        {
+            ChestUI chestUI = Array.Find(chestUIArray, chest => chest.GetChestType == chestType);
+            if (chestUI == null)
+                return;
+
+            chestUI.SetChestUI(info, gemPrice);
         }
     }
 }
