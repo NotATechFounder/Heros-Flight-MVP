@@ -22,8 +22,7 @@ public class Trigger2DObserver : MonoBehaviour
     {
         if (IsInLayerMask(collision.gameObject.layer))
         {
-            Debug.Log("triggering collision message with obj "+collision.name);
-            OnEnter?.Invoke(collision);
+          OnEnter?.Invoke(collision);
         }
     }
 

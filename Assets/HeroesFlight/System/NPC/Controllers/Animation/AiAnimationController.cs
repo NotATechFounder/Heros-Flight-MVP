@@ -167,6 +167,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 case AnimationEventNames.VFX:
                     Debug.Log(e.String);
                     break;
+                case AnimationEventNames.Shoot:
+                    OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Shoot, 0,AttackType.Regular));
+                    break;
             }
         }
     }

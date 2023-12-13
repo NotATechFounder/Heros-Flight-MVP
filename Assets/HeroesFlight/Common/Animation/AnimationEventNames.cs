@@ -7,5 +7,6 @@ namespace HeroesFlight.Common.Animation
         public const string AiDamageV2 = "Damage";
         public const string VFX = "VFX";
         public const string Sounds = "SOUND";
+        public const string Shoot = "shot";
     }
 }

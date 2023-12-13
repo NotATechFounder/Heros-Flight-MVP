@@ -92,7 +92,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 animator.SetMovementDirection(GetVelocity());
         }
 
-        void UpdateTimers()
+        protected void UpdateTimers()
         {
             timeSinceAggravated += Time.deltaTime;
         }
@@ -114,7 +114,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             rigidBody.bodyType = RigidbodyType2D.Dynamic;
             attackCollider.enabled = true;
             isDisabled = false;
-            Debug.Log("enabled "+name);
+            Debug.Log("enabled " + name);
             healthController.SetInvulnerableState(false);
         }
 
@@ -131,8 +131,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 OnDisabled?.Invoke(this);
                 if (gameObject != null)
                 {
-                  gameObject.SetActive(false);
-                 // Destroy(gameObject);
+                    gameObject.SetActive(false);
+                    // Destroy(gameObject);
                 }
             });
         }
