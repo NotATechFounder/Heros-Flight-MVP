@@ -17,6 +17,8 @@ namespace HeroesFlightProject.System.NPC.Enum
         MountainDwarf,
         WolfGrey,
         WolfPurple,
-        MountainDwarfSleeping
+        MountainDwarfSleeping,
+        EagleWarrior,
+        MagicEagleWarrior
     }
 }
