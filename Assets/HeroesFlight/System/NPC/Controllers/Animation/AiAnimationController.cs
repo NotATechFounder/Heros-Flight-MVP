@@ -151,7 +151,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
-            Debug.Log(e.Data.Name);
             switch (e.Data.Name)
             {
                     
@@ -159,7 +158,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
                     OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Attack, 0,AttackType.Regular));
                     break;
                 case AnimationEventNames.AiDamageV2:
-                    Debug.Log("DAMAGE EVENT");
                     OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Attack, 0,AttackType.Regular));
                     break;
                 

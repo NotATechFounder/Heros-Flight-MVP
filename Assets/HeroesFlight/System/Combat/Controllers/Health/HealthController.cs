@@ -106,8 +106,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             if (isCurrentlyImmortalByTime || isCurrentlyImmortalByState)
             {
-                Debug.Log(
-                    $"Trying to deal dmg but player is immortal {isCurrentlyImmortalByTime} and {isCurrentlyImmortalByState} ");
                 return;
             }
 

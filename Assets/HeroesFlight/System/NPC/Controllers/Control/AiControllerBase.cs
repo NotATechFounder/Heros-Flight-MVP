@@ -203,5 +203,16 @@ namespace HeroesFlightProject.System.NPC.Controllers
             }
         }
 #endif
+        public void FaceTarget()
+        {
+            if (currentTarget.position.x > transform.position.x)
+            {
+                transform.eulerAngles = new Vector2(0, 180);
+            }
+            else
+            {
+                transform.eulerAngles = new Vector2(0, 0);
+            }
+        }
     }
 }

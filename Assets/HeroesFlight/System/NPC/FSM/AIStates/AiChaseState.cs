@@ -37,6 +37,7 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
             if (!attackController.InAttackRange())
             {
                 mover.MoveToTarget(aiController.CurrentTarget);
+                animator.SetMovementDirection(mover.GetVelocity());
             }
             else
             {
