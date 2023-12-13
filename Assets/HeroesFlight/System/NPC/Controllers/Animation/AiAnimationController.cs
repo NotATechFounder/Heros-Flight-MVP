@@ -38,7 +38,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         void UpdateSkeletonScale(Vector2 velocity)
         {
-           skeletonAnimation.Skeleton.ScaleX = velocity.x >= 0 ? 1f : -1f;
+          // skeletonAnimation.Skeleton.ScaleX = velocity.x >= 0 ? 1f : -1f;
+         transform.eulerAngles = new Vector2(0,velocity.x >= 0 ? 0 : 180f);
         }
 
 

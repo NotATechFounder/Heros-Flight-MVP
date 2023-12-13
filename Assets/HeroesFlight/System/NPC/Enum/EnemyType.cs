@@ -14,6 +14,9 @@ namespace HeroesFlightProject.System.NPC.Enum
         HornedMushroom,
         WoodFairy,
         TreantBrown,
-        MountainDwarf
+        MountainDwarf,
+        WolfGrey,
+        WolfPurple,
+        MountainDwarfSleeping
     }
 }
