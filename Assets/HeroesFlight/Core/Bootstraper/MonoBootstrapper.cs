@@ -46,10 +46,11 @@ namespace HeroesFlight.Core.Bootstrapper
             TraitSystemInterface traitSystem = new TraitsSystem(dataSystem, uiSystem,diceSystem);
             InventorySystemInterface inventorySystem = new InventorySystem(dataSystem,uiSystem);
             RewardSystemInterface rewardSystem = new RewardSystem(dataSystem, inventorySystem, uiSystem);
-            IAchievementSystemInterface achievementSystem = new AchievementSystem(rewardSystem);
             IShopSystemInterface shopSystem = new ShopSystem (uiSystem, rewardSystem, inventorySystem, dataSystem);
             GamePlaySystemInterface gamePlaySystem =
                 new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem,traitSystem, inventorySystem);
+
+            IAchievementSystemInterface achievementSystem = new AchievementSystem(uiSystem,rewardSystem, inventorySystem, gamePlaySystem,combatSystem, environmentSystem, dataSystem);
 
             m_ServiceLocator.Register(authenticationSystem);
             m_ServiceLocator.Register(dataSystem);

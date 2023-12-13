@@ -80,7 +80,8 @@ namespace HeroesFlight.System.Inventory
         private void OpenInventory()
         {
             UpdateInventoryUi();
-            uiSystem.UiEventHandler.InventoryMenu.Open();
+            if(!uiSystem.UiEventHandler.InventoryMenu.isActiveAndEnabled)
+             uiSystem.UiEventHandler.InventoryMenu.Open();
         }
 
         private void UpdateInventoryUi()
@@ -115,7 +116,7 @@ namespace HeroesFlight.System.Inventory
 
         public void InjectUiConnection()
         {
-            uiSystem.UiEventHandler.MainMenu.OnInventoryButtonPressed += OpenInventory;
+            uiSystem.UiEventHandler.MainMenu.OnNavigationButtonClicked += MainMenu_OnNavigationButtonClicked;
             uiSystem.UiEventHandler.InventoryMenu.OnEquipItemRequest += HandleItemEquipRequest;
             uiSystem.UiEventHandler.InventoryMenu.OnUpgradeRequest += HandleItemUpgradeRequest;
             uiSystem.UiEventHandler.InventoryMenu.OnDismantleRequest += HandleItemDismantleRequest;
@@ -124,6 +125,14 @@ namespace HeroesFlight.System.Inventory
             uiSystem.UiEventHandler.InventoryMenu.InitInventory(converter);
             
             //Debug.Log("SUBSCRIBED");
+        }
+
+        private void MainMenu_OnNavigationButtonClicked(UISystem.MenuNavigationButtonType obj)
+        {
+            if (obj == UISystem.MenuNavigationButtonType.Inventory)
+            {
+                OpenInventory();
+            }
         }
 
         public List<CombatEffect> GetEquippedItemsCombatEffects()

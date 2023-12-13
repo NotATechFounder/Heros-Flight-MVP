@@ -1,21 +1,12 @@
 using Pelumi.Juicer;
 using TMPro;
+using UISystem;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MainMenuNavBarManager : MonoBehaviour
 {
-    public enum MenuNavigationButtonType
-    {
-        World,
-        Shop,
-        Inventory,
-        Traits,
-        Other,
-    }
-
-    [System.Serializable]
-    public class NavigationButton
+    public class NavigationButtonEntry
     {
         public AdvanceButton advanceButton;
         public Image buttonImage;
@@ -26,7 +17,7 @@ public class MainMenuNavBarManager : MonoBehaviour
         public JuicerRuntime onNavButtonSelectScaleEffect;
         public JuicerRuntime onNavButtonDeSelectScaleEffect;
 
-        public NavigationButton(AdvanceButton advanceButton)
+        public NavigationButtonEntry(AdvanceButton advanceButton)
         {
             this.advanceButton = advanceButton;
             logo = advanceButton.transform.GetChild(0).gameObject.GetComponentInChildren<Image>().transform.parent.gameObject;
@@ -35,12 +26,17 @@ public class MainMenuNavBarManager : MonoBehaviour
         }
     }
 
-    [Header("Settings")]
-    [SerializeField] private AdvanceButton[] navButtons;
     [SerializeField] public Color buttonDownColor = Color.gray;
     [SerializeField] public Color buttonUpColor = Color.white;
 
-    private NavigationButton[] navigationButtons;
+    private MainMenu mainMenu;
+
+    private NavigationButtonEntry[] navigationButtons;
+
+    private void Awake()
+    {
+        mainMenu = GetComponent<MainMenu>();
+    }
 
     private void Start()
     {
@@ -50,11 +46,11 @@ public class MainMenuNavBarManager : MonoBehaviour
 
     private void InitializeNavigationButtons(float selectMoveDuration, float deselectMoveDuration)
     {
-        navigationButtons = new NavigationButton[navButtons.Length];
+        navigationButtons = new NavigationButtonEntry[mainMenu.NavigationButtons.Length];
 
         for (int i = 0; i < navigationButtons.Length; i++)
         {
-            NavigationButton navigationButton = new NavigationButton(navButtons[i]);
+            NavigationButtonEntry navigationButton = new NavigationButtonEntry(mainMenu.NavigationButtons[i].advanceButton);
             navigationButtons[i] = navigationButton;
             navigationButtons[i].onNavButtonDeselectMoveEffect = navigationButtons[i].logo.transform.JuicyLocalMoveY(81f, deselectMoveDuration);
             navigationButtons[i].onNavButtonSelectMoveEffect = navigationButtons[i].logo.transform.JuicyLocalMoveY((transform.position.y + 160f), selectMoveDuration);
@@ -69,9 +65,9 @@ public class MainMenuNavBarManager : MonoBehaviour
         }
     }
 
-    public void OnNavigationButtonClick(NavigationButton navigationBut)
+    public void OnNavigationButtonClick(NavigationButtonEntry navigationBut)
     {
-        foreach (NavigationButton navigationButton in navigationButtons)
+        foreach (NavigationButtonEntry navigationButton in navigationButtons)
         {
             navigationButton.buttonImage.color = buttonUpColor;
             navigationButton.onNavButtonDeselectMoveEffect.Start();

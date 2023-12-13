@@ -20,10 +20,13 @@ public class InventoryAddModificator
     }
 }
 
-public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
+public class InventoryHandler : MonoBehaviour, IInventoryChangeSignal
 {
     public event Action OnInventoryUpdated;
     public event Action<List<StatTypeWithValue>> OnEqiuppedItemsStatChanged;
+
+    public event Action<Item> OnEquipmentAdded;
+    public event Action<Item> OnEquipmentUpdated;
 
     [SerializeField] private ItemInventorySO mainItemInventorySO;
     [SerializeField] private ItemDatabaseSO itemDatabaseSO;
@@ -104,6 +107,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
 
                 ItemEquipmentData itemEquipmentData = itemData as ItemEquipmentData;
                 equipmentItemDic.Add(itemEquipmentData.instanceID, new Item(itemSO, itemData));
+                OnEquipmentAdded?.Invoke(equipmentItemDic[itemEquipmentData.instanceID]);
                 return equipmentItemDic[itemEquipmentData.instanceID];
         }
 
@@ -253,7 +257,6 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
         currencyManager.ReduceCurency(CurrencyKeys.Gold, goldCost);
         materialItem.GetItemData<ItemMaterialData>().value -= GetMaterialUpgradeRequiredAmount(item);
         item.LevelUp();
-        //itemDatabaseSO.SetItemBuffStat(item);
         mainItemInventorySO.Save();
 
 
@@ -261,6 +264,8 @@ public class InventoryHandler : MonoBehaviour, IInventoryItemHandler
         {
             ProcessEquippedItemStats();
         }
+
+        OnEquipmentUpdated?.Invoke(item);
 
         return true;
     }

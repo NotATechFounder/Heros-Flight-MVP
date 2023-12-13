@@ -69,6 +69,8 @@ namespace HeroesFlight.StateStack.State
                 rewardSystem.Init(loadedScene);
                 IShopSystemInterface shopSystem = GetService<IShopSystemInterface>();
                 shopSystem.Init(loadedScene);
+                IAchievementSystemInterface achievementSystemInterface = GetService<IAchievementSystemInterface>();
+                achievementSystemInterface.Init(loadedScene);
                 AppStateStack.State.Set(ApplicationState.Initialization);
 
             });

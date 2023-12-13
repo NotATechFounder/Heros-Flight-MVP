@@ -6,4 +6,6 @@ using UnityEngine;
 public interface IAchievementSystemInterface : SystemInterface
 {
     public QuestRewardHandler questRewardHandler { get; }
+
+    public void InjectUiConnection();
 }

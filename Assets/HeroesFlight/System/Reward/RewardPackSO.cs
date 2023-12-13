@@ -19,7 +19,6 @@ public class RewardPackSO : ScriptableObject
     private List<Reward> rewardToGive = new List<Reward>();
 
     public Reward[] GetFixedRewards() => fixedRewards;
-    public List<Reward> GetRewardsToGive() => rewardToGive;
 
     public List<Reward> GetReward()
     {

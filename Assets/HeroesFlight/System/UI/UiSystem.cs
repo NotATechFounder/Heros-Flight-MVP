@@ -2,6 +2,7 @@ using System;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.UI.Container;
 using StansAssets.Foundation.Extensions;
+using UISystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -47,13 +48,16 @@ namespace HeroesFlight.System.UI
                 UiEventHandler.MainMenu.OnPlayButtonPressed += OnPlayButtonPressed;
                 UiEventHandler.MainMenu.OnSettingsButtonPressed += () => { UiEventHandler.SettingsMenu.Open(); };
                 UiEventHandler.MainMenu.OnDailyRewardButtonPressed += () => { UiEventHandler.DailyRewardMenu.Open(); };
-                UiEventHandler.MainMenu.OnShopButtonPressed += () => { UiEventHandler.ShopMenu.Open(); };
-                UiEventHandler.MainMenu.OnCloseNavigationMenus += () =>
-                {
-                    UiEventHandler.ShopMenu.Close();
-                    UiEventHandler.InventoryMenu.Close();
-                    UiEventHandler.InventoryMenu.Close();
-                };
+
+                UiEventHandler.MainMenu.OnNavigationButtonClicked += MainMenu_OnNavigationButtonClicked;
+
+                //UiEventHandler.MainMenu.OnShopButtonPressed += () => { UiEventHandler.ShopMenu.Open(); };
+                //UiEventHandler.MainMenu.OnCloseNavigationMenus += () =>
+                //{
+                //    UiEventHandler.ShopMenu.Close();
+                //    UiEventHandler.InventoryMenu.Close();
+                //    UiEventHandler.InventoryMenu.Close();
+                //};
 
                UiEventHandler.SettingsMenu.OnBackButtonPressed += () => { UiEventHandler.SettingsMenu.Close(); };
 
@@ -119,6 +123,67 @@ namespace HeroesFlight.System.UI
 
                 onComplete?.Invoke();
             });
+        }
+
+        private void MainMenu_OnNavigationButtonClicked(UISystem.MenuNavigationButtonType obj)
+        {
+            switch (obj)
+            {
+                case MenuNavigationButtonType.Shop:
+                    ProceedButtonShopClick();
+                    break;
+                case MenuNavigationButtonType.Inventory:
+                   ProceedInventoryButtonClicked();
+                    break;
+                case MenuNavigationButtonType.World:
+                    ProceedWorldButtonClicked();
+                    break;
+                case MenuNavigationButtonType.Traits:
+                    ProceedTraitsButtonClicked();
+                    break;
+            }
+        }
+
+        void TryDisableMenu<T>(BaseMenu<T> menu) where T: BaseMenu<T>
+        {
+            if (menu.isActiveAndEnabled)
+            {
+              
+                menu.Close();
+            }
+        }
+        private void ProceedTraitsButtonClicked()
+        {
+            TryDisableMenu(UiEventHandler.ShopMenu);
+            TryDisableMenu(UiEventHandler.InventoryMenu);
+            TryDisableMenu(UiEventHandler.CharacterSelectMenu);
+        }
+
+        private void ProceedWorldButtonClicked()
+        {
+            TryDisableMenu(UiEventHandler.ShopMenu);
+            TryDisableMenu(UiEventHandler.InventoryMenu);
+            TryDisableMenu(UiEventHandler.CharacterSelectMenu);
+            TryDisableMenu(UiEventHandler.TraitTreeMenu);
+        }
+
+        private void ProceedInventoryButtonClicked()
+        {
+            TryDisableMenu(UiEventHandler.ShopMenu);
+            TryDisableMenu(UiEventHandler.CharacterSelectMenu);
+            TryDisableMenu(UiEventHandler.TraitTreeMenu);
+        }
+
+        private void ProceedButtonShopClick()
+        {
+            TryDisableMenu(UiEventHandler.InventoryMenu);
+            TryDisableMenu(UiEventHandler.CharacterSelectMenu);
+            TryDisableMenu(UiEventHandler.TraitTreeMenu);
+            if (!UiEventHandler.ShopMenu.isActiveAndEnabled)
+            {
+                UiEventHandler.ShopMenu.Open();
+            }
+          
         }
 
         public void Reset() { }

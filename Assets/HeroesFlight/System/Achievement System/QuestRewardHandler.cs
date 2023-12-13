@@ -1,14 +1,13 @@
 using HeroesFlight.System.FileManager;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using static PlasticPipe.Server.MonitorStats;
 
 public class QuestRewardHandler : MonoBehaviour
 {
     public const string Save_ID = "QuestData";
-    [SerializeField] private List<QuestSO> quests = new List<QuestSO>();
+    [SerializeField] private QuestDataBase questDataBase;
+
     [Header("Debug")]
     [SerializeField] private QuestSO currentQuest;
     [SerializeField] private Data currentData = new Data();
@@ -18,14 +17,18 @@ public class QuestRewardHandler : MonoBehaviour
 
     public void RewardClaimed()
     {
-        currentData.index = (currentData.index + 1) % quests.Count;
+        currentData.index = (currentData.index + 1) % questDataBase.Items.Length;
         currentData.qP = 0;
-        currentQuest = quests[currentData.index];
+        currentQuest = questDataBase.GetItemSOByID(currentData.index.ToString());
         Save();
     }
 
     public void Save()
     {
+        if (currentData.index >= questDataBase.Items.Length)
+        {
+            currentData.index = 1;
+        }
         FileManager.Save(Save_ID, currentData);
     }
 
@@ -33,20 +36,14 @@ public class QuestRewardHandler : MonoBehaviour
     {
         Data savedData = FileManager.Load<Data>(Save_ID);
         currentData = savedData ?? new Data();
-        currentQuest = quests[currentData.index >= quests.Count ? 0 : currentData.index];
+        currentQuest = questDataBase.GetItemSOByID((currentData.index >= questDataBase.Items.Length ? 1 : currentData.index).ToString());
     }
 
     [Serializable]
     public class Data
     {
-        public int index; // quest index
+        public int index = 1; // quest index
         public QuestType qT; // quest type
         public int qP; // quest progress
     }
-}
-
-public enum QuestType
-{
-    KillMobs,
-    ReachLevel
 }
