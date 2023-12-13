@@ -160,9 +160,12 @@ public class ItemInfoDisplayUI : MonoBehaviour
 
         itemEffectUIs.Clear();
 
+        item.itemEffectEntryUis.Sort((x, y) => x.rarity.CompareTo(y.rarity));
+
         foreach (var effect in item.itemEffectEntryUis)
         {
-            var itemEffectUi = ObjectPoolManager.SpawnObject(itemEffectUiPrefab, statsHolder);
+            if (effect.value == 0) continue;
+            ItemEffectUI itemEffectUi = ObjectPoolManager.SpawnObject(itemEffectUiPrefab, statsHolder);
             Debug.Log(item.ItemRarity + " " + effect.rarity);
             bool unlocked = item.ItemRarity >= effect.rarity;
             itemEffectUi.Init(effect, unlocked);

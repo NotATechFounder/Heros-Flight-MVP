@@ -286,7 +286,10 @@ public class InventoryHandler : MonoBehaviour, IInventoryChangeSignal
 
             // Add Special Hero Effect if any
             if (item.GetItemSO<EquipmentSO>().specialHeroEffect.value != 0)
-            equippedItemsStatDic.Add(item.GetItemSO<EquipmentSO>().specialHeroEffect);
+            {
+                // Only add this effect if the hero type is the same as the equipped hero
+                equippedItemsStatDic.Add(item.GetItemSO<EquipmentSO>().specialHeroEffect);
+            }
 
             // Add Unique Stat Modification Effects if any
             foreach (UniqueStatModificationEffect uniqueStatModificationEffect in item.GetItemSO<EquipmentSO>().uniqueStatModificationEffects)
@@ -297,6 +300,13 @@ public class InventoryHandler : MonoBehaviour, IInventoryChangeSignal
         }
 
         OnEqiuppedItemsStatChanged?.Invoke(equippedItemsStatDic);
+    }
+
+    public int GetItemCurrentStat(Item item, int level)
+    {
+        int baseValue = item.GetItemSO<EquipmentSO>().GetBaseStatValue(item.GetItemData<ItemEquipmentData>().rarity);
+        int actualValue = itemDatabaseSO.GetRarityInfo(item.GetItemData<ItemEquipmentData>().rarity).GetValue(baseValue, level);
+        return actualValue;
     }
 
     public int GetItemMaxLevel(Item item) => itemDatabaseSO.GetItemMaxLevel(item);

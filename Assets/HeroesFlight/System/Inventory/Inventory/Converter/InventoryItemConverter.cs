@@ -43,6 +43,7 @@ namespace HeroesFlight.System.Inventory.Inventory.Converter
             List<ItemEffectEntryUi> itemEffectEntryUis = new List<ItemEffectEntryUi>();
             EquipmentSO equipmentSO = item.GetItemSO<EquipmentSO>();
 
+            itemEffectEntryUis.Add(new ItemEffectEntryUi(equipmentSO.statType.ToString(), handler.GetItemCurrentStat(item, equipmentData.value), handler.GetItemCurrentStat(item, equipmentData.value + 1), Rarity.Common, handler.GetPalette(Rarity.Common)));
             itemEffectEntryUis.Add(new ItemEffectEntryUi(equipmentSO.specialHeroEffect.statType.ToString(), equipmentSO.specialHeroEffect.value,0, equipmentData.rarity, handler.GetPalette(equipmentData.rarity)));
             foreach (var effect in equipmentSO.uniqueStatModificationEffects)
             {
