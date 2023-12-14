@@ -34,9 +34,18 @@ public class WarningLine : MonoBehaviour
     JuicerRuntime triggerEffect;
     private float distance;
     private Action onCompleted;
+    private bool isInited;
 
-    private void Start()
+    private void Awake()
     {
+        Init();
+    }
+
+    public void Init()
+    {
+        if (isInited)
+            return;
+        
         lineRenderer.enabled = false;
         visualSpriteRenderer.enabled = false;
 
@@ -82,6 +91,7 @@ public class WarningLine : MonoBehaviour
         }
 
         GetEmitterPoints();
+        isInited = true;
     }
 
     public void Trigger(Action OnFinishedEvent = null, float duration = 1f, float width = 0.5f)

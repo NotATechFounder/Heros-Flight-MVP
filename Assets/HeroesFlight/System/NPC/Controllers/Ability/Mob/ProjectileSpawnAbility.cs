@@ -4,23 +4,29 @@ using HeroesFlight.Common.Animation;
 using HeroesFlight.Common.Enum;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
+using Pelumi.ObjectPool;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 
 namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 {
     public class ProjectileSpawnAbility : AttackAbilityBaseNPC
     {
+        [Header("Main  data segment")]
         [SerializeField] ProjectileControllerBase projectilePrefab;
         [SerializeField] int projectileCount = 3;
         [SerializeField] float spreadAngle = 15f;
-
-        [Header("Optional visuals")] [SerializeField]
+        [SerializeField] private Transform spawnPoint;
+        [Header("Optional mode segment")] [SerializeField]
         bool useWarningLines;
-
         [SerializeField] WarningLine warningLinePrefab;
-        [SerializeField] List<WarningLine> lines = new();
-        private List<Vector3> offsets = new List<Vector3>();
+      
+        [Header("Double trigger segment")] [SerializeField]
+        private bool canDoubleTrigger;
+        [SerializeField] private float doubleTriggerChance;
 
+        private List<Vector3> offsets = new List<Vector3>();
         private IHealthController healthController;
         private IAttackControllerInterface attackController;
         private AiControllerBase aiController;
@@ -32,14 +38,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
             healthController = GetComponentInParent<AiHealthController>();
             aiController = GetComponentInParent<AiControllerBase>();
             currentCooldown = 0;
-            if (useWarningLines)
-            {
-                for (int i = 0; i < projectileCount; i++)
-                {
-                    lines.Add(Instantiate(warningLinePrefab, aiController.transform));
-                }
-            }
-            else
+            if (!useWarningLines)
             {
                 animator.OnAnimationEvent += HandleAnimationEvents;
             }
@@ -50,14 +49,33 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
         // Calculate offsets based on the projectile count
         private void CalculateOffsets()
         {
-            if (projectileCount == 1)
+            int count = 0;
+            bool singleProjectile = false;
+
+            if (canDoubleTrigger)
+            {
+                count = projectileCount * 2;
+            }
+            else
+            {
+                count = projectileCount;
+                singleProjectile = projectileCount == 1;
+            }
+
+            AddOffsets(count, singleProjectile);
+        }
+
+        private void AddOffsets(int count, bool singleProjectile)
+        {
+            if (singleProjectile)
             {
                 offsets.Add(Vector3.zero);
             }
             else
             {
-                float step = 2 * spreadAngle / (projectileCount - 1);
-                for (int i = 0; i < projectileCount; i++)
+                float step = 2 * spreadAngle / (count - 1);
+
+                for (int i = 0; i < count; i++)
                 {
                     float angle = -spreadAngle + step * i;
                     offsets.Add(new Vector3(0, 0, angle));
@@ -65,19 +83,27 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
             }
         }
 
-        private void HandleAnimationEvents(AttackAnimationEvent obj)
+        protected virtual void HandleAnimationEvents(AttackAnimationEvent obj)
         {
-            if (obj.Type != AniamtionEventType.Shoot)
-                return;
-
-            var direction = aiController.CurrentTarget.position - transform.position;
-            for (int i = 0; i < projectileCount; i++)
+            if (obj.Type == AniamtionEventType.Shoot)
             {
-                var final = Quaternion.Euler(offsets[i]) * direction;
-                var projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-                projectile.SetupProjectile(damage, final, healthController);
-                projectile.OnHit += ResetProjectile;
+                SpawnProjectiles(CalculateProjectilesCount());
             }
+        }
+
+        private int CalculateProjectilesCount()
+        {
+            var count = projectileCount;
+            if (canDoubleTrigger)
+            {
+                var rng = Random.Range(0, 101);
+                if (rng <= doubleTriggerChance)
+                {
+                    count = canDoubleTrigger ? projectileCount * 2 : projectileCount;
+                }
+            }
+
+            return count;
         }
 
         public override void UseAbility(Action onComplete = null)
@@ -88,22 +114,43 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
                 currentCooldown = CoolDown;
             }
 
-            var direction = aiController.CurrentTarget.position - transform.position;
+
             if (useWarningLines)
             {
-                for (int i = 0; i < lines.Count; i++)
+                SpawnProjectilesWithDangerLines(CalculateProjectilesCount());
+            }
+        }
+
+        private void SpawnProjectiles(int count)
+        {
+            var direction = aiController.CurrentTarget.position - spawnPoint.position;
+            for (int i = 0; i < count; i++)
+            {
+                var final = Quaternion.Euler(offsets[i]) * direction;
+                var projectile = Instantiate(projectilePrefab, spawnPoint.position, Quaternion.identity);
+                projectile.SetupProjectile(damage, final, healthController);
+                projectile.OnHit += ResetProjectile;
+            }
+        }
+
+        private void SpawnProjectilesWithDangerLines(int count)
+        {
+            var direction = aiController.CurrentTarget.position - spawnPoint.position;
+            for (int i = 0; i < count; i++)
+            {
+                var final = Quaternion.Euler(offsets[i]) * direction;
+
+                var line = ObjectPoolManager.SpawnObject(warningLinePrefab, spawnPoint.position,
+                    Quaternion.LookRotation(Vector3.forward, -final));
+                line.Init();
+
+                line.Trigger(() =>
                 {
-                    var final = Quaternion.Euler(offsets[i]) * direction;
-
-
-                    lines[i].transform.up = -final;
-                    lines[i].Trigger(() =>
-                    {
-                        var projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-                        projectile.OnHit += ResetProjectile;
-                        projectile.SetupProjectile(damage, final, healthController);
-                    }, aiController.AgentModel.AiData.AttackSpeed - 0.3f, .3f);
-                }
+                    var projectile = Instantiate(projectilePrefab, spawnPoint.position, Quaternion.identity);
+                    projectile.OnHit += ResetProjectile;
+                    projectile.SetupProjectile(damage, final, healthController);
+                    ObjectPoolManager.ReleaseObject(line);
+                }, targetAnimation.Animation.Duration - 0.3f, .3f);
             }
         }
 
