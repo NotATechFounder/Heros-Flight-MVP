@@ -73,6 +73,11 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
 
         void HandleAnimationEvents(AttackAnimationEvent obj)
         {
+            if (abilityParticle != null)
+            {
+                abilityParticle.Play();
+            }
+           
             foreach (var zone in abilityZones)
             {
                 zone.DetectOverlap();

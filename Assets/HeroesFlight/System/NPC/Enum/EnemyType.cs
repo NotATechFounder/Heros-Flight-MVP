@@ -20,6 +20,7 @@ namespace HeroesFlightProject.System.NPC.Enum
         MountainDwarfSleeping,
         EagleWarrior,
         MagicEagleWarrior,
-        MysticalFairy
+        MysticalFairy,
+        TreantGrey
     }
 }
