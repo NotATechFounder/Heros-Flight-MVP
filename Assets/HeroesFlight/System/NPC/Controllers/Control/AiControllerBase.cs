@@ -73,7 +73,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
             OnInit();
             DisplayModifiyer(currentCardIcon);
             healthController.SetInvulnerableState(true);
-            Debug.Log("Inited base");
             gameObject.SetActive(true);
             viewController.StartFadeIn(.5f, Enable);
         }
@@ -88,8 +87,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             stateMachine?.Process();
             UpdateTimers();
-            if (!healthController.IsDead())
-                animator.SetMovementDirection(GetVelocity());
+            
         }
 
         protected void UpdateTimers()
@@ -114,7 +112,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
             rigidBody.bodyType = RigidbodyType2D.Dynamic;
             attackCollider.enabled = true;
             isDisabled = false;
-            Debug.Log("enabled " + name);
             healthController.SetInvulnerableState(false);
         }
 
@@ -132,7 +129,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 if (gameObject != null)
                 {
                     gameObject.SetActive(false);
-                    // Destroy(gameObject);
                 }
             });
         }
@@ -205,9 +201,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
 #endif
         public void FaceTarget()
         {
-            if (currentTarget.position.x > transform.position.x)
+            if (currentTarget.position.x < transform.position.x)
             {
                 transform.eulerAngles = new Vector2(0, 180);
+               
             }
             else
             {
