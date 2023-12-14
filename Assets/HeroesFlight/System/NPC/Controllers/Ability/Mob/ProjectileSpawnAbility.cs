@@ -38,7 +38,6 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
                 {
                     lines.Add(Instantiate(warningLinePrefab, aiController.transform));
                 }
-
             }
             else
             {
@@ -68,10 +67,9 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 
         private void HandleAnimationEvents(AttackAnimationEvent obj)
         {
-          
             if (obj.Type != AniamtionEventType.Shoot)
                 return;
-            
+
             var direction = aiController.CurrentTarget.position - transform.position;
             for (int i = 0; i < projectileCount; i++)
             {
