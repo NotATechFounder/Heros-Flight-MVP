@@ -1,14 +1,26 @@
+using System;
+
 namespace HeroesFlightProject.System.NPC.Enum
 {
+    [Serializable]
     public enum EnemyType
     {
         Bat,
         Mushroom,
         Slime,
-        Tree,
+        Treant,
         MiniBoss,
-        EliteTree,
+        TreantElite,
         HornedMushroom,
-        WoodFairy
+        WoodFairy,
+        TreantBrown,
+        MountainDwarf,
+        WolfGrey,
+        WolfPurple,
+        MountainDwarfSleeping,
+        EagleWarrior,
+        MagicEagleWarrior,
+        MysticalFairy,
+        TreantGrey
     }
 }

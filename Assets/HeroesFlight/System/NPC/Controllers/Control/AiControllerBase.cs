@@ -15,8 +15,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
     {
         [SerializeField] protected SpriteRenderer buffDebuffIcon;
         [SerializeField] protected AiAgentModel m_Model;
-
-
+     
         public event Action OnInitialized;
         public event Action<AiControllerInterface> OnDisabled;
         public EnemyType EnemyType => m_Model.EnemyType;
@@ -73,7 +72,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
             OnInit();
             DisplayModifiyer(currentCardIcon);
             healthController.SetInvulnerableState(true);
-            Debug.Log("Inited base");
             gameObject.SetActive(true);
             viewController.StartFadeIn(.5f, Enable);
         }
@@ -88,11 +86,10 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             stateMachine?.Process();
             UpdateTimers();
-            if (!healthController.IsDead())
-                animator.SetMovementDirection(GetVelocity());
+            
         }
 
-        void UpdateTimers()
+        protected void UpdateTimers()
         {
             timeSinceAggravated += Time.deltaTime;
         }
@@ -114,7 +111,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
             rigidBody.bodyType = RigidbodyType2D.Dynamic;
             attackCollider.enabled = true;
             isDisabled = false;
-            Debug.Log("enabled "+name);
             healthController.SetInvulnerableState(false);
         }
 
@@ -131,8 +127,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 OnDisabled?.Invoke(this);
                 if (gameObject != null)
                 {
-                  gameObject.SetActive(false);
-                 // Destroy(gameObject);
+                    gameObject.SetActive(false);
                 }
             });
         }
@@ -188,6 +183,13 @@ namespace HeroesFlightProject.System.NPC.Controllers
             timeSinceAggravated = 0;
         }
 
+        public void FaceTarget()
+        {
+            viewController.UpdateAiRotation(currentTarget.position.x < transform.position.x
+                ? Vector2.left
+                : Vector2.right);
+        }
+
         public virtual void SetMovementState(bool canMove)
         {
             animator.SetMovementAnimation(canMove);
@@ -195,6 +197,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         }
 
 #if UNITY_EDITOR
+
         private void OnDrawGizmosSelected()
         {
             if (stateMachine != null && stateMachine.CurrentState != null)

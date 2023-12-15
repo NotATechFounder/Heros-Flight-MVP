@@ -14,6 +14,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [Range(0, 100)][SerializeField] float useChance;
         [SerializeField] protected bool stopOnUse = true;
         [SerializeField] protected ParticleSystem abilityParticle;
+        [SerializeField] protected bool abilityInteraptuble;
         protected AiAnimatorInterface animator;
         protected float currentCooldown;
        public float UseChance => useChance;
