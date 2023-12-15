@@ -134,7 +134,7 @@ namespace HeroesFlight.System.NPC.Container
                 targetPoints.ElementAt(rngPoint).GetSpawnPosition(), Quaternion.identity);
             resultEnemy.transform.parent = transform;
 
-            if (resultEnemy.EnemyType == EnemyType.TreantMiniboss)
+            if (resultEnemy.EnemyType == EnemyType.MiniBoss)
             {
                 resultEnemy.Init(player.transform, mobDifficulty.GetHealth(levelIndex, resultEnemy.EnemyType),
                     mobDifficulty.GetDamage(levelIndex, resultEnemy.EnemyType),

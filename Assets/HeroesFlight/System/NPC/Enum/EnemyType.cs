@@ -9,7 +9,7 @@ namespace HeroesFlightProject.System.NPC.Enum
         Mushroom,
         Slime,
         Treant,
-        TreantMiniboss,
+        MiniBoss,
         TreantElite,
         HornedMushroom,
         WoodFairy,
