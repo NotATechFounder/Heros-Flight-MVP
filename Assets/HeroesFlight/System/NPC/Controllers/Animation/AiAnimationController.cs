@@ -16,7 +16,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
         [SerializeField] AnimationReferenceAsset attackAnimation;
         [SerializeField] AnimationReferenceAsset deathAnimation;
         [SerializeField] AnimationReferenceAsset hitAnimation;
-        [SerializeField] bool changeSkeletonScale = true;
         [SerializeField] SkeletonAnimation skeletonAnimation;
         AiControllerInterface aiController;
         int movementTrackIndex = 0;
@@ -34,11 +33,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         }
 
 
-        void UpdateSkeletonScale(Vector2 velocity)
-        {
-            // skeletonAnimation.Skeleton.ScaleX = velocity.x >= 0 ? 1f : -1f;
-            transform.eulerAngles = new Vector2(0, velocity.x >= 0 ? 0 : 180f);
-        }
+      
 
 
         public void SetMovementAnimation(bool isMoving)
@@ -127,11 +122,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             skeletonAnimation.AnimationState.SetEmptyAnimation(dynamicTrackIndex, 0.1f);
         }
 
-        public void SetMovementDirection(Vector2 velocity)
-        {
-            if (changeSkeletonScale)
-                UpdateSkeletonScale(velocity);
-        }
+        
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {

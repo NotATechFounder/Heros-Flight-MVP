@@ -15,7 +15,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
     {
         [SerializeField] protected SpriteRenderer buffDebuffIcon;
         [SerializeField] protected AiAgentModel m_Model;
-
+        [SerializeField] private Transform healthbarUi;
 
         public event Action OnInitialized;
         public event Action<AiControllerInterface> OnDisabled;
@@ -184,6 +184,13 @@ namespace HeroesFlightProject.System.NPC.Controllers
             timeSinceAggravated = 0;
         }
 
+        public void FaceTarget()
+        {
+            viewController.UpdateAiRotation(currentTarget.position.x < transform.position.x
+                ? Vector2.left
+                : Vector2.right);
+        }
+
         public virtual void SetMovementState(bool canMove)
         {
             animator.SetMovementAnimation(canMove);
@@ -191,6 +198,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         }
 
 #if UNITY_EDITOR
+
         private void OnDrawGizmosSelected()
         {
             if (stateMachine != null && stateMachine.CurrentState != null)
@@ -199,17 +207,5 @@ namespace HeroesFlightProject.System.NPC.Controllers
             }
         }
 #endif
-        public void FaceTarget()
-        {
-            if (currentTarget.position.x < transform.position.x)
-            {
-                transform.eulerAngles = new Vector2(0, 180);
-               
-            }
-            else
-            {
-                transform.eulerAngles = new Vector2(0, 0);
-            }
-        }
     }
 }

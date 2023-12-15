@@ -1,6 +1,7 @@
 ﻿using System;
 using HeroesFlight.Common.Animation;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Effects.Effects;
 using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
@@ -14,6 +15,10 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
     public class ZoneAttackAbility : AttackAbilityBaseNPC
     {
         [SerializeField] OverlapChecker[] abilityZones;
+
+        [Header("Optional status effects")] [SerializeField]
+        private StatusEffect[] effects;
+
         private IHealthController healthController;
         private IAttackControllerInterface attackController;
 
@@ -33,26 +38,45 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
         {
             for (int i = 0; i < count; i++)
             {
-                if (targets[i].TryGetComponent<IHealthController>(out var health))
+                DealDamage(targets[i]);
+                ApplyStatusEffects(targets[i]);
+            }
+        }
+
+        private void ApplyStatusEffects(Collider2D target)
+        {
+            if (effects.Length == 0)
+                return;
+            if (target.TryGetComponent<CombatEffectsController>(out var effectController))
+            {
+                foreach (var effect in effects)
                 {
-                    if (canCrit)
-                    {
-                        bool isCritical = Random.Range(0, 100) <= critChance;
+                    effectController.ApplyStatusEffect(effect, 1);
+                }
+            }
+        }
 
-                        float damageToDeal = isCritical
-                            ? damage * critModifier
-                            : damage;
+        private void DealDamage(Collider2D target)
+        {
+            if (target.TryGetComponent<IHealthController>(out var health))
+            {
+                if (canCrit)
+                {
+                    bool isCritical = Random.Range(0, 100) <= critChance;
 
-                        var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
-                        var damageModel = new HealthModificationIntentModel(damageToDeal,
-                            type, AttackType.Regular, CalculationType.Flat, healthController);
-                        health.TryDealDamage(damageModel);
-                    }
-                    else
-                    {
-                        health.TryDealDamage(new HealthModificationIntentModel(damage,
-                            DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, healthController));
-                    }
+                    float damageToDeal = isCritical
+                        ? damage * critModifier
+                        : damage;
+
+                    var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
+                    var damageModel = new HealthModificationIntentModel(damageToDeal,
+                        type, AttackType.Regular, CalculationType.Flat, healthController);
+                    health.TryDealDamage(damageModel);
+                }
+                else
+                {
+                    health.TryDealDamage(new HealthModificationIntentModel(damage,
+                        DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, healthController));
                 }
             }
         }
@@ -77,7 +101,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
             {
                 abilityParticle.Play();
             }
-           
+
             foreach (var zone in abilityZones)
             {
                 zone.DetectOverlap();

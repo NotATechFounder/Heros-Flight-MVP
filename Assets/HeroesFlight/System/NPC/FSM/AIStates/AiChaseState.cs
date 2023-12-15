@@ -1,4 +1,5 @@
-﻿using HeroesFlightProject.System.Gameplay.Controllers;
+﻿using HeroesFlight.System.NPC.Controllers;
+using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
 
@@ -12,11 +13,13 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
             this.aiController = aiController;
             this.aiController.TryGetController(out mover);
             this.aiController.TryGetController(out attackController);
+            this.aiController.TryGetController(out viewController);
         }
 
         private AiMoverInterface mover;
         private EnemyAttackControllerBase attackController;
         private AiControllerBase aiController;
+        private AiViewController viewController;
 
         public override void Enter()
         {
@@ -37,7 +40,7 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
             if (!attackController.InAttackRange())
             {
                 mover.MoveToTarget(aiController.CurrentTarget);
-                animator.SetMovementDirection(mover.GetVelocity());
+                viewController.UpdateAiRotation(mover.GetVelocity());
             }
             else
             {
