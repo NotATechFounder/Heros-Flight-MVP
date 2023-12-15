@@ -9,5 +9,6 @@
         EnvironmentScene,
         DataScene,
         AuthenticationScene,
+        TutorialScene,
     }
 }

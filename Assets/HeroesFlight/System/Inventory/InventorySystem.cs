@@ -29,8 +29,6 @@ namespace HeroesFlight.System.Inventory
         {
             InventoryHandler = scene.GetComponent<InventoryHandler>();
             InventoryHandler.Init(data.CurrencyManager);
-            //InventoryHandler.OnItemAdded += SpawnUiItem;
-           // InventoryHandler.OnItemModified += UpdateUiItem;
             InventoryHandler.OnInventoryUpdated += UpdateInventoryUi;
             converter = new InventoryItemConverter(InventoryHandler);
             
@@ -46,13 +44,11 @@ namespace HeroesFlight.System.Inventory
         {
             Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
             InventoryHandler.UnEquipItem(targetItem);
-            //  uiSystem.UiEventHandler.InventoryMenu.UnEquipItem();
             UpdateInventoryUi();
         }
 
         private void HandleItemDismantleRequest(EquipmentEntryUi obj)
         {
-            Debug.Log($"dismantling {obj.ID}");
             Item targetItem = InventoryHandler.GetEqupItemById(obj.ID);
             InventoryHandler.DismantleItem(targetItem);
             uiSystem.UiEventHandler.InventoryMenu.DismantleItem();
@@ -88,16 +84,33 @@ namespace HeroesFlight.System.Inventory
         {
             List<InventoryItemUiEntry> materials = new();
             List<EquipmentEntryUi> equipment = new();
-            //Debug.Log(InventoryHandler.GetInventoryEquippmentItems().Count);
+
             foreach (var equipmentItem in InventoryHandler.GetInventoryEquippmentItems())
             {
-                var equipmentData = equipmentItem.GetItemData<ItemEquipmentData>();
+                ItemEquipmentData equipmentData = equipmentItem.GetItemData<ItemEquipmentData>();
+
+                List<ItemEffectEntryUi> itemEffectEntryUis = new List<ItemEffectEntryUi>();
+                EquipmentSO equipmentSO = equipmentItem.GetItemSO<EquipmentSO>();
+
+                itemEffectEntryUis.Add(new ItemEffectEntryUi(equipmentSO.statType.ToString(), InventoryHandler.GetItemCurrentStat(equipmentItem, equipmentData.value), InventoryHandler.GetItemCurrentStat(equipmentItem, equipmentData.value + 1), Rarity.Common, InventoryHandler.GetPalette(Rarity.Common)));
+                itemEffectEntryUis.Add(new ItemEffectEntryUi(equipmentSO.specialHeroEffect.statType.ToString(), equipmentSO.specialHeroEffect.value,0, Rarity.Common, InventoryHandler.GetPalette(Rarity.Common)));
+
+                foreach (var effect in equipmentSO.uniqueStatModificationEffects)
+                {
+                    itemEffectEntryUis.Add(new ItemEffectEntryUi(effect.statType.ToString(), effect.curve.GetCurrentValueInt(equipmentData.value), effect.curve.GetCurrentValueInt(equipmentData.value + 1), effect.rarity, InventoryHandler.GetPalette(effect.rarity)));
+                }
+
+                foreach (var effect in equipmentSO.uniqueCombatEffects)
+                {
+                    itemEffectEntryUis.Add(new ItemEffectEntryUi(effect.combatEffect.EffectToApply[0].name, effect.curve.GetCurrentValueInt(equipmentData.value), effect.curve.GetCurrentValueInt(equipmentData.value + 1), effect.rarity, InventoryHandler.GetPalette(effect.rarity)));
+                }
+
                 equipment.Add(new EquipmentEntryUi(equipmentData.instanceID, equipmentItem.itemSO.icon,
                     equipmentData.value,
                     equipmentItem.itemSO.itemType, InventoryHandler.GetPalette(equipmentData.rarity),
                     equipmentItem.itemSO.Name, equipmentItem.itemSO.description,
                     (equipmentItem.itemSO as EquipmentSO).equipmentType,
-                    equipmentData.eqquiped, equipmentData.rarity));
+                    equipmentData.eqquiped, equipmentData.rarity, itemEffectEntryUis));
             }
 
             foreach (var equipmentItem in InventoryHandler.GetInventoryMaterialItems())

@@ -3,6 +3,7 @@
     public enum GameStateType
     {
         MainMenu,
-        Gameplay
+        Gameplay,
+        Tutorial
     }
 }

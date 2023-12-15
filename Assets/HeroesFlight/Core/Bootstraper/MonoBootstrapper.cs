@@ -10,6 +10,7 @@ using HeroesFlight.System.Inventory;
 using HeroesFlight.System.NPC;
 using HeroesFlight.System.Stats;
 using HeroesFlight.System.Stats.Handlers;
+using HeroesFlight.System.Tutorial;
 using HeroesFlight.System.UI;
 using StansAssets.Foundation.Patterns;
 using UnityEngine;
@@ -49,6 +50,7 @@ namespace HeroesFlight.Core.Bootstrapper
             IShopSystemInterface shopSystem = new ShopSystem (uiSystem, rewardSystem, inventorySystem, dataSystem);
             GamePlaySystemInterface gamePlaySystem =
                 new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem,traitSystem, inventorySystem);
+            ITutorialInterface tutorialInterface = new TutorialSystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem, uiSystem, progressionSystem, traitSystem, inventorySystem);
 
             IAchievementSystemInterface achievementSystem = new AchievementSystem(uiSystem,rewardSystem, inventorySystem, gamePlaySystem,combatSystem, environmentSystem, dataSystem);
 
@@ -68,6 +70,7 @@ namespace HeroesFlight.Core.Bootstrapper
             m_ServiceLocator.Register(inventorySystem);
             m_ServiceLocator.Register(rewardSystem);
             m_ServiceLocator.Register(shopSystem);
+            m_ServiceLocator.Register(tutorialInterface);
             return m_ServiceLocator;
         }
 

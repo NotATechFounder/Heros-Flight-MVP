@@ -7,6 +7,7 @@
         MainMenu,
         Gameplay,
         EnvironmentInitialization,
-        Authentication
+        Authentication,
+        Tutorial
     }
 }
