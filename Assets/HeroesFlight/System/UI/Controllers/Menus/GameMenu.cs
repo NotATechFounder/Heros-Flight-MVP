@@ -204,6 +204,9 @@ namespace UISystem
             }
             
             ToggleSpecialAttackButton(false);
+
+            currentActiveDisplayed.Clear();
+            currentPassiveDisplayed.Clear();
         }
 
         public void DisplayInfoMessage(InfoMessageType infoMessageType, float duration = 1.5f)

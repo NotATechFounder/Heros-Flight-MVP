@@ -372,6 +372,8 @@ namespace HeroesFlight.System.Gameplay
 
             environmentSystem.BoosterSpawner.ClearAllBoosters();
 
+            activeAbilityManager.ResetAbility();
+
             // EffectManager.ResetAngelEffects();
             enemiesToKill = 0;
             GameTimer.Stop();

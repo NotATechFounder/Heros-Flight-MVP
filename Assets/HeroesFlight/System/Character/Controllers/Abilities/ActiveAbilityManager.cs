@@ -554,6 +554,12 @@ public class ActiveAbilityManager : MonoBehaviour
         levelSystem.AddExp(exp);
     }
 
+    public void ResetAbility()
+    {
+        eqquipedPassiveAbilities.Clear();
+        eqquipedActiveActivities.Clear();
+    }
+
     private void OnDrawGizmosSelected()
     {
         if (levelCurve != null)
