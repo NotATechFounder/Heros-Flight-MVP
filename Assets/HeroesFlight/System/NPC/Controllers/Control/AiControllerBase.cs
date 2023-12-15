@@ -15,8 +15,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
     {
         [SerializeField] protected SpriteRenderer buffDebuffIcon;
         [SerializeField] protected AiAgentModel m_Model;
-        [SerializeField] private Transform healthbarUi;
-
+     
         public event Action OnInitialized;
         public event Action<AiControllerInterface> OnDisabled;
         public EnemyType EnemyType => m_Model.EnemyType;

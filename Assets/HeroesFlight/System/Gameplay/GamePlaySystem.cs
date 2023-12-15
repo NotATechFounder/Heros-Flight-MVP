@@ -613,8 +613,8 @@ namespace HeroesFlight.System.Gameplay
         void HandleCharacterDeath()
         {
             Debug.LogError($"character died and game state is {currentState}");
-            if (currentState != GameState.Ongoing)
-                return;
+            // if (currentState != GameState.Ongoing)
+            //     return;
             characterAttackController.GetComponent<CharacterAnimationController>().StopUltSequence();
 
 

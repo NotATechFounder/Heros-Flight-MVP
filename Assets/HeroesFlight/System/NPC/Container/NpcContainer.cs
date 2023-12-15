@@ -2,10 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Enum;
+using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Controllers;
 using HeroesFlight.System.NPC.Controllers.Control;
 using HeroesFlight.System.NPC.Data;
 using HeroesFlight.System.NPC.Model;
+using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
@@ -32,18 +37,31 @@ namespace HeroesFlight.System.NPC.Container
         private MobDifficultyHolder mobDifficulty;
         private int levelIndex;
         Level currentLevel;
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                foreach (var enemy in spawnedEnemies)
+                {
+                    enemy.GetComponent<HealthController>().TryDealDamage(new HealthModificationIntentModel(10000,
+                        DamageCritType.Critical, AttackType.Regular, CalculationType.Flat, null));
+                }
+            }
+        }
+
         public void Init()
         {
             // To be removed
             monsterStatController = FindObjectOfType<MonsterStatController>();
         }
 
-        public void SetMobDifficultyHolder (MobDifficultyHolder mobDifficulty)
+        public void SetMobDifficultyHolder(MobDifficultyHolder mobDifficulty)
         {
             this.mobDifficulty = mobDifficulty;
         }
 
-        public void SetSpawnPoints(Dictionary<SpawnType, List<ISpawnPointInterface>>  valuePairs)
+        public void SetSpawnPoints(Dictionary<SpawnType, List<ISpawnPointInterface>> valuePairs)
         {
             spawnPointsCache = valuePairs;
         }
@@ -66,9 +84,11 @@ namespace HeroesFlight.System.NPC.Container
                 foreach (Wave wave in currentLevel.Waves)
                 {
                     timeBetweenEnemySpawn = new WaitForSeconds(wave.TimeBetweenMobs);
-                    yield return spawningWaveRoutine = StartCoroutine(NewSpawnWave(wave, wave.TotalMobsToSpawn, OnOnEnemySpawned));
+                    yield return spawningWaveRoutine =
+                        StartCoroutine(NewSpawnWave(wave, wave.TotalMobsToSpawn, OnOnEnemySpawned));
                     yield return timeBeweenWaves;
                 }
+
                 OnLevelEnded?.Invoke();
                 spawningEnded = true;
             }
@@ -80,7 +100,7 @@ namespace HeroesFlight.System.NPC.Container
             {
                 OnBossWaveStarted?.Invoke();
             }
-            
+
             if (wave.AvaliableMiniBosses.Count > 0)
             {
                 SpawnModelEntry targetEntry = PickRandomMob(wave.AvaliableMiniBosses);
@@ -98,9 +118,10 @@ namespace HeroesFlight.System.NPC.Container
             yield return true;
         }
 
-         void SpawnSingleEnemy(SpawnModelEntry spawnModelEntry, Action<AiControllerBase> OnOnEnemySpawned)
+        void SpawnSingleEnemy(SpawnModelEntry spawnModelEntry, Action<AiControllerBase> OnOnEnemySpawned)
         {
-            List<ISpawnPointInterface> targetPoints = spawnPointsCache[spawnModelEntry.Prefab.AgentModel.EnemySpawmType];
+            List<ISpawnPointInterface> targetPoints =
+                spawnPointsCache[spawnModelEntry.Prefab.AgentModel.EnemySpawmType];
 
             if (targetPoints == null || targetPoints.Count == 0)
             {
@@ -109,17 +130,20 @@ namespace HeroesFlight.System.NPC.Container
             }
 
             var rngPoint = Random.Range(0, targetPoints.Count);
-            AiControllerBase resultEnemy = Instantiate(spawnModelEntry.Prefab, targetPoints.ElementAt(rngPoint).GetSpawnPosition(), Quaternion.identity);
+            AiControllerBase resultEnemy = Instantiate(spawnModelEntry.Prefab,
+                targetPoints.ElementAt(rngPoint).GetSpawnPosition(), Quaternion.identity);
             resultEnemy.transform.parent = transform;
 
-            if(resultEnemy.EnemyType == EnemyType.TreantMiniboss)
+            if (resultEnemy.EnemyType == EnemyType.TreantMiniboss)
             {
-                resultEnemy.Init(player.transform,mobDifficulty.GetHealth(levelIndex, resultEnemy.EnemyType), mobDifficulty.GetDamage(levelIndex, resultEnemy.EnemyType), 
+                resultEnemy.Init(player.transform, mobDifficulty.GetHealth(levelIndex, resultEnemy.EnemyType),
+                    mobDifficulty.GetDamage(levelIndex, resultEnemy.EnemyType),
                     monsterStatController.GetMonsterStatModifier, null);
             }
             else
             {
-              resultEnemy.Init(player.transform, mobDifficulty.GetHealth(levelIndex, resultEnemy.EnemyType), mobDifficulty.GetDamage(levelIndex, resultEnemy.EnemyType),
+                resultEnemy.Init(player.transform, mobDifficulty.GetHealth(levelIndex, resultEnemy.EnemyType),
+                    mobDifficulty.GetDamage(levelIndex, resultEnemy.EnemyType),
                     monsterStatController.GetMonsterStatModifier, monsterStatController.CurrentCardIcon);
             }
 
@@ -152,7 +176,7 @@ namespace HeroesFlight.System.NPC.Container
 
         public BossControllerBase SpawnBoss(Level targetLevel)
         {
-            if(spawnPointsCache.TryGetValue(SpawnType.Boss,out var point))
+            if (spawnPointsCache.TryGetValue(SpawnType.Boss, out var point))
             {
                 BossControllerBase prefab = null;
                 foreach (var wave in targetLevel.Waves)
@@ -171,7 +195,7 @@ namespace HeroesFlight.System.NPC.Container
 
                 return null;
             }
-            
+
             return null;
         }
 
@@ -211,7 +235,8 @@ public class MobDifficultyHolder
 
     public int GetHealth(int level, EnemyType enemyType)
     {
-       return mobDifficulties.FirstOrDefault(x => x.EnemyType == enemyType).HealthStat.GetCurrentValueInt(level);
+        Debug.Log(enemyType);
+        return mobDifficulties.FirstOrDefault(x => x.EnemyType == enemyType).HealthStat.GetCurrentValueInt(level);
     }
 
     public int GetDamage(int level, EnemyType enemyType)
@@ -260,9 +285,10 @@ public class MobDropTable
 
     public EnemyType EnemyType => enemyType;
 
-    public bool GetDrops(Action<int> OnGoldDropped, Action<int> OnGemDropped, Action<int> OnRuneFragmentDropped, Action<int> OnBonusRoomKeyFragmentDropped)
+    public bool GetDrops(Action<int> OnGoldDropped, Action<int> OnGemDropped, Action<int> OnRuneFragmentDropped,
+        Action<int> OnBonusRoomKeyFragmentDropped)
     {
-        bool goldDroped =  TryGetDrop(goldDrop, OnGoldDropped);
+        bool goldDroped = TryGetDrop(goldDrop, OnGoldDropped);
         bool gemDropped = TryGetDrop(gemDrop, OnGemDropped);
         bool runeFragmentDropped = TryGetDrop(runeFragment, OnRuneFragmentDropped);
         bool bonusRoomKeyFragmentDropped = TryGetDrop(bonusRoomKeyFragment, OnBonusRoomKeyFragmentDropped);

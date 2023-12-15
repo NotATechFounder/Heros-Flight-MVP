@@ -35,7 +35,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
         public override void UseAbility(Action onComplete = null)
         {
             observer.OnEnter += HandleTargetEntered;
-            targetObject.SetActive(true);
+         
             if (targetAnimation != null)
             {
                 animator.PlayDynamicAnimation(targetAnimation, () =>
@@ -83,6 +83,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
             yield return new WaitForSeconds(preDashDelay);
             if (!healthController.IsDead())
             {
+                targetObject.SetActive(true);
                 rigidbody2D.AddForce(direction * dashForce, ForceMode2D.Impulse);    
             }
             
