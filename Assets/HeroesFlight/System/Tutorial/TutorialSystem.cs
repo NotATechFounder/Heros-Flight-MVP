@@ -211,27 +211,24 @@ public class TutorialSystem : ITutorialInterface
         OnComplete?.Invoke();
     }
 
-    private void AbilitySelectMenu_OnMenuClosed()
-    {
-        throw new NotImplementedException();
-    }
-
     /// <summary>
     /// Used to start game from first lvl
     /// </summary>
     public void StartGameSession()
     {
         uiSystem.UiEventHandler.GameMenu.Open();
-        CoroutineUtility.WaitForSeconds(1f, () => // Run the first time the game is loaded
+
+        uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level transition
         {
-            uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level transition
-            {
-                uiSystem.UiEventHandler.LoadingMenu.Close();
-                ResetLogic();
-                PreloadLvl();
-                SetupCharacter();
-            }
-                , ContinueGameLoop);
+            uiSystem.UiEventHandler.LoadingMenu.Close();
+            ResetLogic();
+            PreloadLvl();
+            SetupCharacter();
+        } ,
+        ()=>
+        {
+            FlyTutorialState();
+            //ContinueGameLoop
         });
     }
 
@@ -262,8 +259,7 @@ public class TutorialSystem : ITutorialInterface
                 HandleEnemyDeath(deathModel.Position);
                 SpawnLootFromMiniboss(deathModel.Position);
                 break;
-            case CombatEntityType.Boss:
-                break;
+            case CombatEntityType.Boss: break;
         }
     }
 
@@ -283,7 +279,6 @@ public class TutorialSystem : ITutorialInterface
                 break;
             case CombatEntityType.MiniBoss:
                 HandleEnemyDamaged(damageModel.DamageIntentModel);
-                //   HandleMinibossHealthChange(damageModel.HealthPercentagePercentageLeft);
                 break;
             case CombatEntityType.Boss:
                 HandleEnemyDamaged(damageModel.DamageIntentModel);
@@ -706,8 +701,7 @@ public class TutorialSystem : ITutorialInterface
                 ChangeState(GameState.Ongoing);
                 if (currentLevel.MiniHasBoss)
                 {
-                    cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,
-                        3f, 3f);
+                    cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble, 3f, 3f);
                     uiSystem.ShowSpecialEnemyWarning(EncounterType.Miniboss);
                     SpawnEnemies(currentLevel);
                 }
@@ -741,7 +735,6 @@ public class TutorialSystem : ITutorialInterface
             case LevelType.WorldBoss:  break;
         }
     }
-
 
     void TogglePlayerMovement(bool state)
     {
@@ -1184,5 +1177,20 @@ public class TutorialSystem : ITutorialInterface
         {
             ContinueGameLoop();
         }
+    }
+
+    public void FlyTutorialState()
+    {
+        TutorialSO tutorialSO = tutorialHandler.GetTutorialSO(TutorialMode.Fly);
+        uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.TutorialSteps, ()=>
+        {
+            tutorialHandler.StartTutorialState(() =>
+            {
+                characterSystem.SetCharacterControllerState(true);
+            }, () => false, () =>
+            {
+                // end tutorial
+            });
+        });
     }
 }

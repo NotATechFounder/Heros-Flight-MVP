@@ -8,5 +8,5 @@ public class TutorialSO : ScriptableObject
     [SerializeField] private TutorialMode tutorialState;
     [SerializeField] private List<TutorialStep> tutorialSteps = new List<TutorialStep>();
     public List<TutorialStep> TutorialSteps => tutorialSteps;
-    public TutorialMode TutorialState => tutorialState;
+    public TutorialMode tutorialMode => tutorialState;
 }

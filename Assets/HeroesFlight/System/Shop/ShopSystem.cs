@@ -39,6 +39,11 @@ public class ShopSystem : IShopSystemInterface
         {
             uISystem.UiEventHandler.ShopMenu.SetGoldPackInfo(goldPack.goldPackType, goldPack.reward.GetAmount(),  goldPack.cost);
         }
+
+        foreach (Chest chest in ShopDataHolder.GetChests)
+        {
+            uISystem.UiEventHandler.ShopMenu.SetChestInfo(chest.GetChestType, chest.GetChestInfo, chest.GetGemChestPrice);
+        }
     }
 
     public void Reset()

@@ -8,14 +8,18 @@ using UISystem;
 using UISystem.Entries;
 using UnityEngine;
 
-public class TutorialMenu : BaseMenu<InventoryMenu>
+public class TutorialMenu : BaseMenu<TutorialMenu>
 {
-    public event Action OnContinueButtonClicked;
+    private Action OnStartedClicked;
 
     [SerializeField] private Transform tutorialStepParent;
     [SerializeField] private TutorialStepUI tutorialStepUIPrefab;
+    [SerializeField] private Transform content;
 
-    [SerializeField] private AdvanceButton advanceButton;
+    [Header("Buttons")]
+    [SerializeField] private AdvanceButton hideButton;
+    [SerializeField] private AdvanceButton showButton;
+    [SerializeField] private AdvanceButton startButton;
 
     JuicerRuntime openEffectBG;
     JuicerRuntime closeEffectBG;
@@ -29,7 +33,9 @@ public class TutorialMenu : BaseMenu<InventoryMenu>
         closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
         closeEffectBG.SetOnCompleted(CloseMenu);
 
-        advanceButton.onClick.AddListener(CloseButtonAction);
+        hideButton.onClick.AddListener(()=> content.gameObject.SetActive(false));
+        showButton.onClick.AddListener(() => content.gameObject.SetActive(true));
+        startButton.onClick.AddListener(StartedClicked);
     }
 
     public override void OnOpened()
@@ -47,19 +53,25 @@ public class TutorialMenu : BaseMenu<InventoryMenu>
 
     }
 
-    public void Display (TutorialStep[] tutorialSteps)
+    public void Display (List<TutorialStep> tutorialSteps, Action OnStarted = null)
     {
-        for (int i = 0; i < tutorialSteps.Length; i++)
+        for (int i = 0; i < tutorialSteps.Count; i++)
         {
             TutorialStepUI tutorialStepUI = ObjectPoolManager.SpawnObject (tutorialStepUIPrefab, tutorialStepParent);
             tutorialStepUI.SetUp(i.ToString(), tutorialSteps[i]);
             tutorialStepUIs.Add(tutorialStepUI);
         }
+        OnStartedClicked = OnStarted;
+        startButton.gameObject.SetActive(true);
+        hideButton.gameObject.SetActive(false);
+        Open();
     }
 
-    private void CloseButtonAction()
+    public void StartedClicked()
     {
-        OnContinueButtonClicked?.Invoke();
-        Close();
+        startButton.gameObject.SetActive(false);
+        content.gameObject.SetActive(false);
+        hideButton.gameObject.SetActive(true);
+        OnStartedClicked?.Invoke();
     }
 }

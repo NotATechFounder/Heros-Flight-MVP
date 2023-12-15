@@ -8,11 +8,14 @@ using UnityEngine;
 
 public class TutorialHandler : MonoBehaviour
 {
+    public event Action OnPlayerEnteredPortal;
+
     [SerializeField] GameAreaModel tutorialModel;
     [SerializeField] BoosterDropSO mobDrop;
+    [SerializeField] TutorialSO[] gameplayTutorial;
 
-    public event Action OnPlayerEnteredPortal;
-    LevelPortal portal;
+    private int currentTutorialIndex;
+    private LevelPortal portal;
     private Level currentLevel;
 
     public int CurrentLvlIndex { get; private set; }
@@ -22,11 +25,20 @@ public class TutorialHandler : MonoBehaviour
     public BoosterDropSO MobDrop => mobDrop;
     public Level CurrentLevel => currentLevel;
 
+    public TutorialSO[] GameplayTutorial => gameplayTutorial;
+
+    private Dictionary<TutorialMode, TutorialSO> tutorialDictionary = new Dictionary<TutorialMode, TutorialSO>();
+
     public void Init()
     {
         portal = Instantiate(tutorialModel.PortalPrefab, transform.position, Quaternion.identity);
         portal.gameObject.SetActive(false);
         portal.OnPlayerEntered += HandlePlayerTriggerPortal;
+
+        for (int i = 0; i < gameplayTutorial.Length; i++)
+        {
+            tutorialDictionary.Add(gameplayTutorial[i].tutorialMode, gameplayTutorial[i]);
+        }
     }
 
     private void HandlePlayerTriggerPortal()
@@ -73,5 +85,39 @@ public class TutorialHandler : MonoBehaviour
     internal void SetStartingIndex(int v)
     {
         CurrentLvlIndex = v;
+    }
+
+    public TutorialSO LoadTutorial()
+    {
+        return gameplayTutorial[currentTutorialIndex];
+    }
+
+    public void StartTutorialState(Action OnBegin, Func<bool> condition,  Action OnEnd)
+    {
+        StartCoroutine(TutorialState(OnBegin, condition,  OnEnd));
+    }
+
+    public IEnumerator TutorialState(Action onBegin, Func<bool> condition, Action onEnd)
+    {
+        onBegin?.Invoke();
+        while (!condition())
+        {
+            yield return null;
+        }
+        onEnd?.Invoke();
+    }
+
+    public TutorialSO TutorialComplete(TutorialMode tutorialMode)
+    {
+        if (gameplayTutorial[currentTutorialIndex].tutorialMode == tutorialMode)
+        {
+            currentTutorialIndex++;
+        }
+        return LoadTutorial ();
+    }
+
+    internal TutorialSO GetTutorialSO(TutorialMode fly)
+    {
+        return tutorialDictionary[fly];
     }
 }
