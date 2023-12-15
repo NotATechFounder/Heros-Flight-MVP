@@ -55,6 +55,14 @@ public class TutorialMenu : BaseMenu<TutorialMenu>
 
     public void Display (List<TutorialStep> tutorialSteps, Action OnStarted = null)
     {
+        foreach (var item in tutorialStepUIs)
+        {
+            ObjectPoolManager.ReleaseObject(item);
+        }
+
+        tutorialStepUIs.Clear();
+
+
         for (int i = 0; i < tutorialSteps.Count; i++)
         {
             TutorialStepUI tutorialStepUI = ObjectPoolManager.SpawnObject (tutorialStepUIPrefab, tutorialStepParent);
@@ -62,6 +70,7 @@ public class TutorialMenu : BaseMenu<TutorialMenu>
             tutorialStepUIs.Add(tutorialStepUI);
         }
         OnStartedClicked = OnStarted;
+        content.gameObject.SetActive(true);
         startButton.gameObject.SetActive(true);
         hideButton.gameObject.SetActive(false);
         Open();

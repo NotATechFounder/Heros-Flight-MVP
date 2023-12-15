@@ -22,7 +22,7 @@ public class Trigger2DObserver : MonoBehaviour
     {
         if (IsInLayerMask(collision.gameObject.layer))
         {
-          OnEnter?.Invoke(collision);
+            OnEnter?.Invoke(collision);
         }
     }
 
