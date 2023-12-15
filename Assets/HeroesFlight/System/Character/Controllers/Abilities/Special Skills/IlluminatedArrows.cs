@@ -26,11 +26,6 @@ public class IlluminatedArrows : RegularActiveAbility
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            OnActivated();
-        }
-
         if (isOn)
         {
             if (currentTime <= 0)

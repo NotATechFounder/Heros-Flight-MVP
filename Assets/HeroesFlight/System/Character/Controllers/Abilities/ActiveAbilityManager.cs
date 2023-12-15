@@ -556,8 +556,8 @@ public class ActiveAbilityManager : MonoBehaviour
 
     public void ResetAbility()
     {
-        eqquipedPassiveAbilities.Clear();
-        eqquipedActiveActivities.Clear();
+       // eqquipedPassiveAbilities.Clear();
+       // eqquipedActiveActivities.Clear();
     }
 
     private void OnDrawGizmosSelected()
