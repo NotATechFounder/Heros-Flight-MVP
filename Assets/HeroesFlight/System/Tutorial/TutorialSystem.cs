@@ -88,6 +88,9 @@ public class TutorialSystem : ITutorialInterface
     private bool revivedByFeatThisRun = false;
     private int goldModifier;
 
+    private TutorialRuntime currentTutorialRuntime;
+    private Dictionary<TutorialMode, TutorialRuntime> tutorialDictionary = new Dictionary<TutorialMode, TutorialRuntime>();
+
     public TutorialSystem(DataSystemInterface dataSystem, CharacterSystemInterface characterSystem, NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem, 
         CombatSystemInterface combatSystem, IUISystem uiSystem, ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystem, InventorySystemInterface inventorySystem)
     {
@@ -137,7 +140,7 @@ public class TutorialSystem : ITutorialInterface
         tutorialHandler.Init();
         tutorialHandler.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
 
-        npcSystem.NpcContainer.SetMobDifficultyHolder(tutorialHandler.TutorialModel.MobDifficulty);
+        npcSystem.NpcContainer.SetMobDifficultyHolder(tutorialHandler.GetTutorialModel.MobDifficulty);
 
         GameTimer = new CountDownTimer(tutorialHandler);
 
@@ -208,6 +211,8 @@ public class TutorialSystem : ITutorialInterface
 
         StartGameSession();
 
+        InitialseTutorialRuntimeStates();
+
         OnComplete?.Invoke();
     }
 
@@ -227,7 +232,7 @@ public class TutorialSystem : ITutorialInterface
         } ,
         ()=>
         {
-            FlyTutorialState();
+            StartTutorialState(TutorialMode.Fly);
             //ContinueGameLoop
         });
     }
@@ -482,8 +487,8 @@ public class TutorialSystem : ITutorialInterface
 
     void OnEnemyHitSuccess()
     {
-        GameEffectController.StopTime(0.1f, tutorialHandler.TutorialModel.TimeStopRestoreSpeed,
-            tutorialHandler.TutorialModel.TimeStopDuration);
+        GameEffectController.StopTime(0.1f, tutorialHandler.GetTutorialModel.TimeStopRestoreSpeed,
+            tutorialHandler.GetTutorialModel.TimeStopDuration);
     }
 
     void HandleMinibossHealthChange(float healthProportion)
@@ -529,7 +534,7 @@ public class TutorialSystem : ITutorialInterface
 
     void SpawnLootFromMiniboss(Vector3 position)
     {
-        environmentSystem.BoosterSpawner.SpawnBoostLoot(tutorialHandler.TutorialModel.BossDrop,
+        environmentSystem.BoosterSpawner.SpawnBoostLoot(tutorialHandler.GetTutorialModel.BossDrop,
             position);
     }
 
@@ -766,7 +771,7 @@ public class TutorialSystem : ITutorialInterface
 
         foreach (var spawnPoint in currentLevelEnvironment.GetSpawnpoints(SpawnType.Crystal))
         {
-            var crystal = ObjectPoolManager.SpawnObject(tutorialHandler.TutorialModel.CrystalPrefab,
+            var crystal = ObjectPoolManager.SpawnObject(tutorialHandler.GetTutorialModel.CrystalPrefab,
                 spawnPoint.GetSpawnPosition(), Quaternion.identity);
             IHealthController healthController = crystal.GetComponent<IHealthController>();
             crystal.SpawnLoot = () =>
@@ -1179,18 +1184,54 @@ public class TutorialSystem : ITutorialInterface
         }
     }
 
-    public void FlyTutorialState()
+    public void InitialseTutorialRuntimeStates()
     {
-        TutorialSO tutorialSO = tutorialHandler.GetTutorialSO(TutorialMode.Fly);
+        TutorialRuntime flyTutorial = new TutorialRuntime(TutorialMode.Fly);
+        flyTutorial.AssignEvents(() =>
+        {
+            tutorialHandler.GetTutorialTrigger.Activate(new Vector2(-6.0999999f, -0.300000012f), () =>
+            {
+                flyTutorial.IsCompleted = true;
+            });
+        }, () =>
+        {
+            Debug.Log("fly Tutorial ended");
+            StartTutorialState (TutorialMode.AutoAttack);
+        });
+
+        tutorialDictionary.Add(TutorialMode.Fly, flyTutorial);
+
+        TutorialRuntime autoAttackTutorial = new TutorialRuntime(TutorialMode.AutoAttack);
+        autoAttackTutorial.AssignEvents(() =>
+        {
+            ContinueGameLoop();
+            autoAttackTutorial.IsCompleted = true;
+        }, () =>
+        {
+            Debug.Log("auto Attack Tutorial ended");
+            // StartTutorialState (TutorialMode.AutoAttack);
+        });
+
+        tutorialDictionary.Add(TutorialMode.AutoAttack, autoAttackTutorial);
+    }
+
+    public void StartTutorialState(TutorialMode tutorialMode)
+    {
+        DisplayTutorialStartUI(tutorialMode, () =>
+        {
+            currentTutorialRuntime = tutorialDictionary[tutorialMode];
+            tutorialHandler.StartTutorialState(currentTutorialRuntime);
+        });
+    }
+
+    public void DisplayTutorialStartUI(TutorialMode tutorialMode, Action OnStartUIClosed)
+    {
+        TutorialSO tutorialSO = tutorialHandler.GetTutorialSO(tutorialMode);
+        characterSystem.SetCharacterControllerState(false);
         uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.TutorialSteps, ()=>
         {
-            tutorialHandler.StartTutorialState(() =>
-            {
-                characterSystem.SetCharacterControllerState(true);
-            }, () => false, () =>
-            {
-                // end tutorial
-            });
+            characterSystem.SetCharacterControllerState(true);
+            OnStartUIClosed?.Invoke();
         });
     }
 }

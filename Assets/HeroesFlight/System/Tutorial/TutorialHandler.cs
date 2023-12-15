@@ -12,18 +12,19 @@ public class TutorialHandler : MonoBehaviour
 
     [SerializeField] GameAreaModel tutorialModel;
     [SerializeField] BoosterDropSO mobDrop;
+    [SerializeField] TutorialTrigger tutorialTrigger;
     [SerializeField] TutorialSO[] gameplayTutorial;
 
-    private int currentTutorialIndex;
     private LevelPortal portal;
     private Level currentLevel;
 
     public int CurrentLvlIndex { get; private set; }
     public bool FinishedLoop => CurrentLvlIndex >= tutorialModel.SpawnModel.Levels.Length;
     public int MaxLvlIndex => tutorialModel.SpawnModel.Levels.Length;
-    public GameAreaModel TutorialModel => tutorialModel;
-    public BoosterDropSO MobDrop => mobDrop;
-    public Level CurrentLevel => currentLevel;
+    public GameAreaModel GetTutorialModel => tutorialModel;
+    public BoosterDropSO GetMobDrop => mobDrop;
+    public TutorialTrigger GetTutorialTrigger => tutorialTrigger;
+    public Level GetCurrentLevel => currentLevel;
 
     public TutorialSO[] GameplayTutorial => gameplayTutorial;
 
@@ -87,37 +88,44 @@ public class TutorialHandler : MonoBehaviour
         CurrentLvlIndex = v;
     }
 
-    public TutorialSO LoadTutorial()
+    public void StartTutorialState(TutorialRuntime tutorialRuntime)
     {
-        return gameplayTutorial[currentTutorialIndex];
+        StartCoroutine(TutorialState(tutorialRuntime));
     }
 
-    public void StartTutorialState(Action OnBegin, Func<bool> condition,  Action OnEnd)
+    public IEnumerator TutorialState(TutorialRuntime tutorialRuntime)
     {
-        StartCoroutine(TutorialState(OnBegin, condition,  OnEnd));
-    }
-
-    public IEnumerator TutorialState(Action onBegin, Func<bool> condition, Action onEnd)
-    {
-        onBegin?.Invoke();
-        while (!condition())
+        tutorialRuntime.OnBegin?.Invoke();
+        while (!tutorialRuntime.IsCompleted)
         {
             yield return null;
         }
-        onEnd?.Invoke();
+        tutorialRuntime.OnEnd?.Invoke();
     }
 
-    public TutorialSO TutorialComplete(TutorialMode tutorialMode)
-    {
-        if (gameplayTutorial[currentTutorialIndex].tutorialMode == tutorialMode)
-        {
-            currentTutorialIndex++;
-        }
-        return LoadTutorial ();
-    }
 
-    internal TutorialSO GetTutorialSO(TutorialMode fly)
+    public TutorialSO GetTutorialSO(TutorialMode fly)
     {
         return tutorialDictionary[fly];
+    }
+}
+
+
+public class TutorialRuntime
+{
+    public TutorialMode TutorialMode;
+    public bool IsCompleted;
+    public Action OnBegin;
+    public Action OnEnd;
+
+    public TutorialRuntime(TutorialMode tutorialMode)
+    {
+        TutorialMode = tutorialMode;
+    }
+
+    public void AssignEvents(Action onBegin, Action onEnd)
+    {
+        OnBegin = onBegin;
+        OnEnd = onEnd;
     }
 }
