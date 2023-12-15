@@ -73,6 +73,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             
             animator.StartAttackAnimation(() =>
             {
+                onComplete?.Invoke();
                 // for (int i = 0; i < projectileCount; i++)
                 // {
                 //     Vector2 direction = aiController.CurrentTarget.position - transform.position;

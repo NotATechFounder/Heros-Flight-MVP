@@ -79,11 +79,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                     break;
                 case ProjectileType.FlyThrough:
                     break;
-                default: break;
             }
 
             if (hitEffect != null)
-                hitEffect?.Play();
+                hitEffect.Play();
 
             OnHit?.Invoke(this);
         }
@@ -121,8 +120,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                             new HealthModificationIntentModel(damage, DamageCritType.NoneCritical, AttackType.Regular,
                                 CalculationType.Flat,owner));
                         break;
-                    default:
-                        break;
+                 
                 }
 
 
