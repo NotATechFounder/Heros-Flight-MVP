@@ -41,6 +41,8 @@ public class UIEventHandler : MonoBehaviour
     public DailyRewardMenu DailyRewardMenu { get; private set; }
     public ShopMenu ShopMenu { get; private set; }
 
+    public TutorialMenu TutorialMenu { get; private set; }
+
     public void Init(Action OnComplecte = null)
     {
         uIManager = GetComponent<UIManager>();
@@ -67,6 +69,7 @@ public class UIEventHandler : MonoBehaviour
         InventoryMenu = uIManager.InitMenu<InventoryMenu>();
         DailyRewardMenu = uIManager.InitMenu<DailyRewardMenu>();
         ShopMenu = uIManager.InitMenu<ShopMenu>();
+        TutorialMenu = uIManager.InitMenu<TutorialMenu>();
         OnComplecte?.Invoke();
     }
 }

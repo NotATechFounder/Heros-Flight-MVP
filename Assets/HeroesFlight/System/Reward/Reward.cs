@@ -5,18 +5,16 @@ using HeroesFlight.Common.Enum;
 [Serializable]
 public class Reward
 {
-    [SerializeField] private RewardType rewardType;
-    [SerializeField] ScriptableObject rewardObject;
+    [SerializeField] RewardBaseSO rewardObject;
     [SerializeField] private int amount = 1;
 
     [Header("Has Rarity?")]
     [SerializeField] public Rarity rarity;
 
     public int GetAmount()=> amount;
-    public RewardType GetRewardType() => rewardType;
     public Rarity GetRarity() => rarity;
 
-    public T GetRewardObject<T>() where T : ScriptableObject
+    public T GetRewardObject<T>() where T : RewardBaseSO
     {
         if (rewardObject is T)
         {

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using HeroesFlight.System.UI.Inventory_Menu;
+using Pelumi.ObjectPool;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +25,9 @@ public class ItemInfoDisplayUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI itemDescription;
     [SerializeField] TextMeshProUGUI equipOrUnequipText;
 
-    [Header("Stats")] [SerializeField] Transform statsHolder;
+    [Header("Effects")] 
+    [SerializeField] Transform statsHolder;
+    [SerializeField] ItemEffectUI itemEffectUiPrefab;
 
     [Header("Dismantle")] [SerializeField] TextMeshProUGUI dismantleMaterialDisplay;
     [SerializeField] TextMeshProUGUI dismantleGoldDisplay;
@@ -39,7 +43,11 @@ public class ItemInfoDisplayUI : MonoBehaviour
     [SerializeField] AdvanceButton upgradeButton;
     [SerializeField] AdvanceButton equipOrUnequipButton;
 
-    [Header("Debug")] [SerializeField] EquipmentEntryUi item;
+
+    [Header("Debug")] 
+    [SerializeField] EquipmentEntryUi item;
+
+    private List<ItemEffectUI> itemEffectUIs = new List<ItemEffectUI>();
 
     private Action equipOrUnequipAction;
     private InventoryDataConverterInterface converter;
@@ -76,7 +84,7 @@ public class ItemInfoDisplayUI : MonoBehaviour
         itemBackground.color = rarityPalette.backgroundColour;
         itemFrame.color = rarityPalette.frameColour;
 
-        UpgradeItem(item);
+        UpdateItemInfo(item);
     }
 
     private void HandleUpgrade()
@@ -84,11 +92,13 @@ public class ItemInfoDisplayUI : MonoBehaviour
         OnUpgradeRequest?.Invoke();
     }
 
-    public void UpgradeItem(EquipmentEntryUi item)
+    public void UpdateItemInfo(EquipmentEntryUi item)
     {
         this.item = item;
         SetItemLevel();
         SeUpgradeInfo();
+
+        DisplayItemEffects();
     }
 
     public void SetItemLevel()
@@ -139,6 +149,28 @@ public class ItemInfoDisplayUI : MonoBehaviour
         dismantleMaterialDisplay.text = converter.GetMaterialSpentAmount(item).ToString();
         dismantleGoldDisplay.text =converter.GetGoldSpentAmount(item)
             .ToString();
+    }
+
+    public void DisplayItemEffects()
+    {
+        foreach (ItemEffectUI child in itemEffectUIs)
+        {
+            ObjectPoolManager.ReleaseObject(child);
+        }
+
+        itemEffectUIs.Clear();
+
+        item.itemEffectEntryUis.Sort((x, y) => x.rarity.CompareTo(y.rarity));
+
+        foreach (var effect in item.itemEffectEntryUis)
+        {
+            if (effect.value == 0) continue;
+            ItemEffectUI itemEffectUi = ObjectPoolManager.SpawnObject(itemEffectUiPrefab, statsHolder);
+            Debug.Log(item.ItemRarity + " " + effect.rarity);
+            bool unlocked = item.ItemRarity >= effect.rarity;
+            itemEffectUi.Init(effect, unlocked);
+            itemEffectUIs.Add(itemEffectUi);
+        }
     }
 
     public void Close()

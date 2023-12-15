@@ -18,6 +18,8 @@ public class PassiveAbilityDisplayUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI infoHolderText;
     [SerializeField] private TextMeshProUGUI levelText;
 
+    [SerializeField] private Image levelCountImage;
+
     private JuicerRuntime infoHolderOpenEffect;
     private JuicerRuntime infoHolderCloseEffect;
     private Coroutine viewInfoCoroutine;
@@ -29,9 +31,9 @@ public class PassiveAbilityDisplayUI : MonoBehaviour
 
     private void Awake()
     {
-        infoHolder.transform.localScale = new Vector3(0, 1, 1);
-        infoHolderOpenEffect = infoHolder.JuicyScaleX(1, .15f);
-        infoHolderCloseEffect = infoHolder.JuicyScaleX(0, .15f);
+        infoHolder.transform.localScale = new Vector3(1, 0, 1);
+        infoHolderOpenEffect = infoHolder.JuicyScaleY(1, .15f);
+        infoHolderCloseEffect = infoHolder.JuicyScaleY(0, .15f);
         infoHolderCloseEffect.SetOnCompleted(() => infoHolder.gameObject.SetActive(false));
         advanceButton.onClick.AddListener(() =>
         {
@@ -85,6 +87,7 @@ public class PassiveAbilityDisplayUI : MonoBehaviour
 
     public void SetLevel(int level)
     {
-        levelText.text = $"Lvl. {level}";
+        levelCountImage.fillAmount = ((float)level / 10f);
+        levelText.text = $"{level}/10";
     }
 }

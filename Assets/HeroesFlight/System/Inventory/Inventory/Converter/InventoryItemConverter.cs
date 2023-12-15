@@ -1,5 +1,6 @@
 ﻿using HeroesFlight.Common.Enum;
 using HeroesFlight.System.UI.Inventory_Menu;
+using System.Collections.Generic;
 
 namespace HeroesFlight.System.Inventory.Inventory.Converter
 {
@@ -39,12 +40,27 @@ namespace HeroesFlight.System.Inventory.Inventory.Converter
         {
             var item= handler.GetEqupItemById(id);
             var equipmentData = item.GetItemData<ItemEquipmentData>();
+            List<ItemEffectEntryUi> itemEffectEntryUis = new List<ItemEffectEntryUi>();
+            EquipmentSO equipmentSO = item.GetItemSO<EquipmentSO>();
+
+            itemEffectEntryUis.Add(new ItemEffectEntryUi(equipmentSO.statType.ToString(), handler.GetItemCurrentStat(item, equipmentData.value), handler.GetItemCurrentStat(item, equipmentData.value + 1), Rarity.Common, handler.GetPalette(Rarity.Common)));
+            itemEffectEntryUis.Add(new ItemEffectEntryUi(equipmentSO.specialHeroEffect.statType.ToString(), equipmentSO.specialHeroEffect.value,0, equipmentData.rarity, handler.GetPalette(equipmentData.rarity)));
+            foreach (var effect in equipmentSO.uniqueStatModificationEffects)
+            {
+                itemEffectEntryUis.Add(new ItemEffectEntryUi(effect.statType.ToString(), effect.curve.GetCurrentValueInt(equipmentData.value), effect.curve.GetCurrentValueInt(equipmentData.value + 1), effect.rarity, handler.GetPalette(effect.rarity)));
+            }
+
+            foreach (var effect in equipmentSO.uniqueCombatEffects)
+            {
+                itemEffectEntryUis.Add(new ItemEffectEntryUi(effect.combatEffect.EffectToApply[0].name, effect.curve.GetCurrentValueInt(equipmentData.value), effect.curve.GetCurrentValueInt(equipmentData.value + 1), effect.rarity, handler.GetPalette(effect.rarity)));
+            }
+        
             return new EquipmentEntryUi(equipmentData.instanceID, item.itemSO.icon,
                 equipmentData.value,
                 item.itemSO.itemType, handler.GetPalette(equipmentData.rarity),
                 item.itemSO.Name, item.itemSO.description,
                 (item.itemSO as EquipmentSO).equipmentType,
-                equipmentData.eqquiped, equipmentData.rarity);
+                equipmentData.eqquiped, equipmentData.rarity, itemEffectEntryUis);
         }
 
         public int GetMaterialAmount(EquipmentEntryUi targetEntry)
