@@ -43,7 +43,15 @@ public class EnergyManager : MonoBehaviour
     private void LoadDate()
     {
         EnergyData newEnergyData = FileManager.Load<EnergyData>(SAVE_ID);
-        energyData = newEnergyData ?? new EnergyData();
+        if (newEnergyData == null)
+        {
+            energyData = new EnergyData();
+            currencyManager.AddCurrency(CurrencyKeys.Energy,maxEnergy);
+        }
+        else
+        {
+            energyData = newEnergyData ;
+        }
         nextEnergyTime = StringToDate(energyData.nextEnergyTime);
     }
 
