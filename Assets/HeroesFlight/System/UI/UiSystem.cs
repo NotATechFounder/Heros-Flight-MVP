@@ -64,8 +64,6 @@ namespace HeroesFlight.System.UI
 
                 UiEventHandler.GameMenu.OnLevelUpComplete += (level) => { UiEventHandler.AbilitySelectMenu.Open(); };
 
-                AssignGameEvents();
-
                 onComplete?.Invoke();
             });
         }

@@ -12,6 +12,7 @@ public class AutoShooter : MonoBehaviour
     [SerializeField] private OverlapChecker overlapChecker;
 
     private float shootTimer;
+    private bool activated;
 
     private void Start()
     {
@@ -20,6 +21,11 @@ public class AutoShooter : MonoBehaviour
 
     private void Update()
     {
+        if(!activated)
+        {
+            return;
+        }
+
         if (shootTimer > 0)
             shootTimer -= Time.deltaTime;
         else
@@ -55,5 +61,15 @@ public class AutoShooter : MonoBehaviour
         obj.OnHit -= HandleArrowDisable;
         var arrow = obj as ProjectileControllerBase;
         ObjectPoolManager.ReleaseObject(arrow.gameObject);
+    }
+
+    public void Activate()
+    {
+        activated = true;
+    }
+
+    public void Deactivate()
+    {
+        activated = false;
     }
 }

@@ -60,13 +60,7 @@ namespace HeroesFlight.System.Gameplay
             this.uiSystem = uiSystem;
             this.progressionSystem = progressionSystem;
             traitSystem = traitSystemInterface;
-            InventorySystem = inventorySystemInterface;
-            
-            this.npcSystem.OnEnemySpawned += HandleEnemySpawned;
-            this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
-            this.combatSystem.OnEntityDied += HandleEntityDied;
-            this.uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
-            this.uiSystem.OnReviveCharacterRequest += () => { ReviveCharacter(100f); };
+            InventorySystem = inventorySystemInterface;        
         }
 
         CountDownTimer GameTimer;
@@ -124,6 +118,11 @@ namespace HeroesFlight.System.Gameplay
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
+            this.npcSystem.OnEnemySpawned += HandleEnemySpawned;
+            this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
+            this.combatSystem.OnEntityDied += HandleEntityDied;
+            this.uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
+            this.uiSystem.OnReviveCharacterRequest += () => { ReviveCharacter(100f); };
 
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
 
@@ -150,6 +149,8 @@ namespace HeroesFlight.System.Gameplay
             environmentSystem.CurrencySpawner.OnCollected = HandleCurrencyCollected;
 
             environmentSystem.BoosterSpawner.ActivateBooster = progressionSystem.BoosterManager.ActivateBooster;
+
+            uiSystem.AssignGameEvents();
 
             shrine.GetAngelEffectManager.OnPermanetCard +=
                 uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;

@@ -197,7 +197,10 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.AbilitySelectMenu.GetPassiveAbilityLevel += activeAbilityManager.GetPassiveAbilityLevel;
         uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += HeroProgressionCompleted;
 
-        goldModifier = 0;
+        uiSystem.UiEventHandler.TutorialMenu.OnShowClicked += () => { characterSystem.SetCharacterControllerState(false); };
+        uiSystem.UiEventHandler.TutorialMenu.OnHideClicked += () => { characterSystem.SetCharacterControllerState(true); };
+
+      goldModifier = 0;
         if (traitSystem.HasTraitOfType(TraitType.CurrencyBoost, out var traits))
         {
             foreach (var data in traits)
@@ -557,11 +560,11 @@ public class TutorialSystem : ITutorialInterface
 
         uiSystem.UpdateEnemiesCounter(enemiesToKill);
 
-        if (currentState != GameState.Ongoing)
-            return;
+        if (currentState != GameState.Ongoing) return;
 
         if (enemiesToKill <= 0)
         {
+            Debug.Log("Player Won");
             GameTimer.Stop();
             HandlePlayerWon();
         }
@@ -692,7 +695,6 @@ public class TutorialSystem : ITutorialInterface
 
     public void StartGameLoop()
     {
-        uiSystem.DisplayStartInfoMessage(2f);
         switch (currentLevel.LevelType)
         {
             case LevelType.NormalCombat:
@@ -703,33 +705,9 @@ public class TutorialSystem : ITutorialInterface
                 uiSystem.UpdateEnemiesCounter(enemiesToKill);
                 combatSystem.StartCharacterComboCheck();
 
-                ChangeState(GameState.Ongoing);
-                if (currentLevel.MiniHasBoss)
-                {
-                    cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble, 3f, 3f);
-                    uiSystem.ShowSpecialEnemyWarning(EncounterType.Miniboss);
-                    SpawnEnemies(currentLevel);
-                }
-                else
-                {
-                    countDownDelay = .5f;
-                    CoroutineUtility.WaitForSeconds(countDownDelay, () =>
-                    {
-                        GameTimer.Start(2, null,
-                            () =>
-                            {
-                                SpawnEnemies(currentLevel);
-                                GameTimer.Start(currentLevel.LevelDuration, uiSystem.UpdateGameTimeUI,
-                                    () =>
-                                    {
-                                        if (currentState != GameState.Ongoing)
-                                            return;
+                SpawnEnemies(currentLevel);
 
-                                        ChangeState(GameState.TimeEnded);
-                                    });
-                            }, null);
-                    });
-                }
+                ChangeState(GameState.Ongoing);
 
                 characterSystem.SetCharacterControllerState(true);
 
@@ -1090,9 +1068,7 @@ public class TutorialSystem : ITutorialInterface
 
     void ShowGodBenevolencePrompt()
     {
-        //if (characterStatController.GetHealthPercentage() <= 30)
-
-        if (true)
+        if (characterStatController.GetHealthPercentage() <= 30)
         {
             uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
                 uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,
@@ -1122,7 +1098,6 @@ public class TutorialSystem : ITutorialInterface
         SetupCharacter();
         StartGameLoop();
     }
-
 
     void MoveToNextLvl()
     {
@@ -1204,7 +1179,7 @@ public class TutorialSystem : ITutorialInterface
         TutorialRuntime autoAttackTutorial = new TutorialRuntime(TutorialMode.AutoAttack);
         autoAttackTutorial.AssignEvents(() =>
         {
-            ContinueGameLoop();
+            StartGameLoop();
             autoAttackTutorial.IsCompleted = true;
         }, () =>
         {
@@ -1228,7 +1203,7 @@ public class TutorialSystem : ITutorialInterface
     {
         TutorialSO tutorialSO = tutorialHandler.GetTutorialSO(tutorialMode);
         characterSystem.SetCharacterControllerState(false);
-        uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.TutorialSteps, ()=>
+        uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.GetTutorialVisualData, ()=>
         {
             characterSystem.SetCharacterControllerState(true);
             OnStartUIClosed?.Invoke();

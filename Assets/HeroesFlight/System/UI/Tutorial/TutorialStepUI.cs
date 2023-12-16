@@ -6,13 +6,11 @@ using TMPro;
 
 public class TutorialStepUI : MonoBehaviour
 {
-    public TextMeshProUGUI stepNameText;
     public Image stepImage;
     public TextMeshProUGUI stepDescriptionText;
 
-    public void SetUp(string header, TutorialStep tutorialStep)
+    public void SetUp(TutorialStep tutorialStep)
     {
-        stepNameText.text = tutorialStep.stepName;
         stepImage.sprite = tutorialStep.stepImage;
         stepDescriptionText.text = tutorialStep.stepDescription;
     }
