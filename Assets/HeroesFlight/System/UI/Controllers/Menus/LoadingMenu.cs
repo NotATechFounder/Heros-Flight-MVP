@@ -34,7 +34,6 @@ namespace UISystem
             progressImage.fillAmount = progress;
             int percent = (int)(progress * 100);
             progresstext.text = $"{percent}%";
-
         }
 
         public override void OnClosed()

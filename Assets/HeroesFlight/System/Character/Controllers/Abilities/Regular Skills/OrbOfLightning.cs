@@ -32,11 +32,13 @@ public class OrbOfLightning : RegularActiveAbility
 
         AudioManager.PlaySoundEffect("StormSkillActivation", SoundEffectCategory.Hero);
         skillOrb.Activate();
+        autoShooter.Activate();
     }
 
     public override void OnDeactivated()
     {
         skillOrb.Deactivate();
+        autoShooter.Deactivate();
         GetEffectParticleByLevel().gameObject.SetActive(false);
     }
 

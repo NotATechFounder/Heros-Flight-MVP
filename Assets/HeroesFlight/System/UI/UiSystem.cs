@@ -46,82 +46,63 @@ namespace HeroesFlight.System.UI
                 UiEventHandler.MainMenu.OnMenuOpened += () => { AudioManager.PlayMusic(MainMenuMusicID); };
 
                 UiEventHandler.MainMenu.OnSettingsButtonPressed += () => { UiEventHandler.SettingsMenu.Open(); };
+
                 UiEventHandler.MainMenu.OnDailyRewardButtonPressed += () => { UiEventHandler.DailyRewardMenu.Open(); };
 
                 UiEventHandler.MainMenu.OnNavigationButtonClicked += MainMenu_OnNavigationButtonClicked;
 
-                //UiEventHandler.MainMenu.OnShopButtonPressed += () => { UiEventHandler.ShopMenu.Open(); };
-                //UiEventHandler.MainMenu.OnCloseNavigationMenus += () =>
-                //{
-                //    UiEventHandler.ShopMenu.Close();
-                //    UiEventHandler.InventoryMenu.Close();
-                //    UiEventHandler.InventoryMenu.Close();
-                //};
-
-               UiEventHandler.SettingsMenu.OnBackButtonPressed += () => { UiEventHandler.SettingsMenu.Close(); };
+                UiEventHandler.SettingsMenu.OnBackButtonPressed += () => { UiEventHandler.SettingsMenu.Close(); };
 
                 UiEventHandler.GameMenu.OnMenuOpened += () =>
                 {
                     AudioManager.BlendTwoMusic(GameMusicID, GameMusicLoopID);
                 };
 
-                UiEventHandler.GameMenu.OnPauseButtonClicked += () => { UiEventHandler.PauseMenu.Open(); };
-
                 UiEventHandler.GameMenu.OnSpecialAttackButtonClicked += () => { OnSpecialButtonClicked?.Invoke(); };
 
                 UiEventHandler.GameMenu.OnPassiveAbilityButtonClicked += (index) => { OnPassiveAbilityButtonClicked?.Invoke(index); };
 
-                //UiEventHandler.GameMenu.OnLevelUpComplete += UiEventHandler.HeroProgressionMenu.OnLevelUp;
-
-                UiEventHandler.GameMenu.OnLevelUpComplete += (level) => { UiEventHandler.AbilitySelectMenu.Open(); };
-
-                //UiEventHandler.GameMenu.GetCoinText = () =>
-                //{
-                //    return dataSystem.GetCurrencyAmount(CurrencyKeys.Gold);
-                //};
-
-                UiEventHandler.PauseMenu.OnSettingsButtonClicked += () => { UiEventHandler.SettingsMenu.Open(); };
-
-                UiEventHandler.PauseMenu.OnResumeButtonClicked += () => { UiEventHandler.PauseMenu.Close(); };
-
-                UiEventHandler.PauseMenu.OnQuitButtonClicked += () =>
-                {
-                    UiEventHandler.ConfirmationMenu.Display(UiEventHandler.BackToMenuConfirmation, ReturnToMainMenu,
-                        null);
-                };
-
-                UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
-                {
-                    OnReviveCharacterRequest?.Invoke();
-                    return true;
-                };
-                // UiEventHandler.ReviveMenu.OnCloseButtonClicked += () =>
-                // {
-                //     UiEventHandler.SummaryMenu.Open();
-                // };
-                // UiEventHandler.ReviveMenu.OnCountDownCompleted += () =>
-                // {
-                //     UiEventHandler.SummaryMenu.Open();
-                // };
-
-                UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
-                {
-                    OnRestartLvlRequest?.Invoke();
-                    return true;
-                };
-
-                UiEventHandler.SummaryMenu.OnMenuOpened += () => { };
-
-                UiEventHandler.SummaryMenu.GetCurrentGold = () => { return UiEventHandler.GameMenu.CoinText.text; };
-
-                UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
-                {
-                    OnReturnToMainMenuRequest?.Invoke();
-                    UiEventHandler.SummaryMenu.Close();
-                };
-
                 onComplete?.Invoke();
             });
+        }
+
+        public void AssignGameEvents()
+        {
+            UiEventHandler.GameMenu.OnLevelUpComplete += (level) => { UiEventHandler.AbilitySelectMenu.Open(); };
+
+            UiEventHandler.GameMenu.OnPauseButtonClicked += () => { UiEventHandler.PauseMenu.Open(); };
+
+            UiEventHandler.PauseMenu.OnSettingsButtonClicked += () => { UiEventHandler.SettingsMenu.Open(); };
+
+            UiEventHandler.PauseMenu.OnResumeButtonClicked += () => { UiEventHandler.PauseMenu.Close(); };
+
+            UiEventHandler.PauseMenu.OnQuitButtonClicked += () =>
+            {
+                UiEventHandler.ConfirmationMenu.Display(UiEventHandler.BackToMenuConfirmation, ReturnToMainMenu,null);
+            };
+
+            UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
+            {
+                OnReviveCharacterRequest?.Invoke();
+                return true;
+            };
+
+            UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
+            {
+                OnRestartLvlRequest?.Invoke();
+                return true;
+            };
+
+
+            UiEventHandler.SummaryMenu.OnMenuOpened += () => { };
+
+            UiEventHandler.SummaryMenu.GetCurrentGold = () => { return UiEventHandler.GameMenu.CoinText.text; };
+
+            UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
+            {
+                OnReturnToMainMenuRequest?.Invoke();
+                UiEventHandler.SummaryMenu.Close();
+            };
         }
 
         private void MainMenu_OnNavigationButtonClicked(UISystem.MenuNavigationButtonType obj)
@@ -153,6 +134,16 @@ namespace HeroesFlight.System.UI
                 menu.Close();
             }
         }
+
+        void TryEnableMenu<T>(BaseMenu<T> menu) where T : BaseMenu<T>
+        {
+            if (!menu.isActiveAndEnabled)
+            {
+
+                menu.Open();
+            }
+        }
+
         private void ProceedTraitsButtonClicked()
         {
             TryDisableMenu(UiEventHandler.ShopMenu);
@@ -180,11 +171,8 @@ namespace HeroesFlight.System.UI
             TryDisableMenu(UiEventHandler.InventoryMenu);
             TryDisableMenu(UiEventHandler.CharacterSelectMenu);
             TryDisableMenu(UiEventHandler.TraitTreeMenu);
-            if (!UiEventHandler.ShopMenu.isActiveAndEnabled)
-            {
-                UiEventHandler.ShopMenu.Open();
-            }
-          
+
+            TryEnableMenu (UiEventHandler.ShopMenu);      
         }
 
         public void Reset() { }
@@ -218,21 +206,18 @@ namespace HeroesFlight.System.UI
             }
         }
 
-
         public void UpdateGameTimeUI(float timeLeft)
         {
             UiEventHandler.GameMenu.UpdateTimerText(timeLeft);
         }
 
-         void ReturnToMainMenu()
+        public void ReturnToMainMenu()
         {
             OnReturnToMainMenuRequest?.Invoke();
             UiEventHandler.GameMenu.Close();
             UiEventHandler.PauseMenu.Close();
             UiEventHandler.ConfirmationMenu.Close();
-        }
-
-     
+        }   
 
         public void ShowDamageText(float damage, Transform target, bool isCritical, bool targetIsPlayer,
             bool isHeal = false)
@@ -257,12 +242,10 @@ namespace HeroesFlight.System.UI
             }
         }
 
-
         public void UpdateEnemiesCounter(int enemiesLeft)
         {
             UiEventHandler.GameMenu.UpdateEnemyCountText(enemiesLeft);
         }
-
 
         public void ShowPopupAtPosition(string info, Vector2 pos, Color color)
         {

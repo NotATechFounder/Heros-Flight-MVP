@@ -46,7 +46,7 @@ public class EnergyManager : MonoBehaviour
         if (newEnergyData == null)
         {
             energyData = new EnergyData();
-            currencyManager.AddCurrency(CurrencyKeys.Energy,maxEnergy);
+            currencyManager.SetCurencyAmount(CurrencyKeys.Energy,maxEnergy);
         }
         else
         {

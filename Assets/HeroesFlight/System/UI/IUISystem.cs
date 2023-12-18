@@ -25,5 +25,6 @@ namespace HeroesFlight.System.UI
         void ShowSpecialEnemyWarning(EncounterType encounterType);
         void UpdateCoinsUi(int amount);
         void ShowPopupAtPosition(string info, Vector2 pos, Color color);
+        void AssignGameEvents();
     }
 }
