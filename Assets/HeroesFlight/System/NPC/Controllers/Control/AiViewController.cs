@@ -1,15 +1,15 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
+
 
 namespace HeroesFlight.System.NPC.Controllers
 {
-    public class AiViewController : MonoBehaviour
+    public class AiViewController : MonoBehaviour,AiSubControllerInterface
     {
         [SerializeField] string fillPhaseProperty = "_FillPhase";
         [SerializeField] string fillColorProperty = "_FillColor";
+        [SerializeField] private Transform healthbarTransform;
         [SerializeField] Color fadeColor;
         MeshRenderer mesh;
         MaterialPropertyBlock propertyBlock;
@@ -26,6 +26,16 @@ namespace HeroesFlight.System.NPC.Controllers
         public void StartFadeIn(float duration,Action onComplete)
         {
             StartCoroutine(FadeInRoutine(duration,onComplete));
+        }
+        
+        public void UpdateAiRotation(Vector2 velocity)
+        {
+        
+            transform.eulerAngles = new Vector2(0, velocity.x >= 0 ? 0 : 180f);
+            if (healthbarTransform != null)
+            {
+                healthbarTransform.localEulerAngles = new Vector2(0, velocity.x >= 0 ? 0 : 180f);
+            }
         }
 
         IEnumerator FadeInRoutine(float duration, Action onComplete)

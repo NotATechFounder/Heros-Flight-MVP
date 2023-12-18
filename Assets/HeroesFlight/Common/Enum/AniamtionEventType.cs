@@ -6,6 +6,7 @@ namespace HeroesFlight.Common.Enum
         Movement,
         State,
         Vfx,
-        Sfx
+        Sfx,
+        Shoot
     }
 }

@@ -6,8 +6,11 @@ using UnityEngine;
 public class ChestSO : ScriptableObject
 {
     [SerializeField] private ChestType chestType;
+
+    [TextArea(3, 10)]
+    [SerializeField] private string chestInfo;
     [SerializeField] private RewardPackSO rewards;
-    [SerializeField] float price;
+    [SerializeField] int price;
 
     [Header("Timed Reward")]
     [SerializeField] TimeType timeType;
@@ -16,7 +19,8 @@ public class ChestSO : ScriptableObject
 
     public ChestType GetChestType => chestType;
     public RewardPackSO GetRewardPack => rewards;
-    public float GetPrice => price;
+    public int GetPrice => price;
+    public string GetChestInfo => chestInfo;
 
     public TimeType GetTimeType => timeType;
     public float GetNextRewardTimeAdded => nextRewardTimeAdded;

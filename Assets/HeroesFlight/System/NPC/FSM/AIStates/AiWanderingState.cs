@@ -1,4 +1,5 @@
-﻿using HeroesFlightProject.System.Gameplay.Controllers;
+﻿using HeroesFlight.System.NPC.Controllers;
+using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 
 namespace HeroesFlightProject.System.NPC.State.AIStates
@@ -10,10 +11,14 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
         {
             aiController.TryGetController(out mover);
             aiController.TryGetController(out attackController);
+            aiController.TryGetController(out healthController);
+            this.aiController.TryGetController(out viewController);
         }
 
         private AiMoverInterface mover;
         private IAttackControllerInterface attackController;
+        private IHealthController healthController;
+        private AiViewController viewController;
 
         public override void Enter()
         {
@@ -31,8 +36,8 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
             else
             {
                 mover.MoveToRandomPosition();
+                viewController.UpdateAiRotation(mover.GetVelocity());
                 base.Update();
-            
             }
         }
 

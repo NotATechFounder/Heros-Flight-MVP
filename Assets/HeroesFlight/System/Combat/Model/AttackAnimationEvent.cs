@@ -13,7 +13,7 @@ namespace HeroesFlight.Common.Animation
         {
             AttackType = attackType;
             AttackIndex = index;
-            Type = AniamtionEventType.Attack;
+            Type = eventType;
         }
     }
 }

@@ -61,7 +61,7 @@ namespace HeroesFlight.System.Gameplay
             this.progressionSystem = progressionSystem;
             traitSystem = traitSystemInterface;
             InventorySystem = inventorySystemInterface;
-
+            
             this.npcSystem.OnEnemySpawned += HandleEnemySpawned;
             this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
             this.combatSystem.OnEntityDied += HandleEntityDied;
@@ -124,6 +124,7 @@ namespace HeroesFlight.System.Gameplay
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
+
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
 
             shrine = scene.GetComponentInChildren<Shrine>();
@@ -371,6 +372,8 @@ namespace HeroesFlight.System.Gameplay
 
             environmentSystem.BoosterSpawner.ClearAllBoosters();
 
+            activeAbilityManager.ResetAbility();
+
             // EffectManager.ResetAngelEffects();
             enemiesToKill = 0;
             GameTimer.Stop();
@@ -613,8 +616,8 @@ namespace HeroesFlight.System.Gameplay
         void HandleCharacterDeath()
         {
             Debug.LogError($"character died and game state is {currentState}");
-            if (currentState != GameState.Ongoing)
-                return;
+            // if (currentState != GameState.Ongoing)
+            //     return;
             characterAttackController.GetComponent<CharacterAnimationController>().StopUltSequence();
 
 
@@ -1272,8 +1275,6 @@ namespace HeroesFlight.System.Gameplay
             {
                 ContinueGameLoop();
             }
-        }
-
-       
+        }    
     }
 }

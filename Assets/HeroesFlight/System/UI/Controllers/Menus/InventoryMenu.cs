@@ -209,7 +209,7 @@ namespace UISystem
         {
             if (selectedItem != null)
             {
-                itemInfoDisplayUI.UpgradeItem(selectedItem);
+                itemInfoDisplayUI.UpdateItemInfo(selectedItem);
             }       
         }
 

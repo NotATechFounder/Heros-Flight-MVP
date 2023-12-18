@@ -20,6 +20,7 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
 
         public override void Enter()
         {
+            aiController.FaceTarget();
             attackController.AttackTargets(() => { Exit(); });
             mover.SetMovementState(false);
         }

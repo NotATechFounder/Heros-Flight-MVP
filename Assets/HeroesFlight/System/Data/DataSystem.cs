@@ -27,6 +27,8 @@ public class DataSystem : DataSystemInterface
     public EnergyManager EnergyManager { get; private set; }
     public WorldManager WorldManger { get; private set; }
 
+    // Todo: Remove this
+    public bool TutorialMode => false;
 
     public void Init(Scene scene = default, Action onComplete = null)
     {

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using HeroesFlight.Common;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.FileManager.Stats;
 using UnityEngine;
 
 namespace HeroesFlight.System.UI.Inventory_Menu
@@ -25,6 +27,5 @@ namespace HeroesFlight.System.UI.Inventory_Menu
         public int Value;
         public ItemType ItemType;
         public RarityPalette RarityPallete;
-
     }
 }
