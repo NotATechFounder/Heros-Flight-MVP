@@ -1,0 +1,164 @@
+Mountain_Wolf.png
+size:2048,512
+filter:Linear,Linear
+pma:true
+Body
+bounds:2,63,391,222
+Eyes
+bounds:243,478,10,24
+offsets:2,1,14,27
+Eyes2
+bounds:35,292,9,24
+offsets:1,2,11,27
+Head
+bounds:552,132,370,265
+rotate:270
+L_Ear
+bounds:1361,104,116,127
+rotate:180
+L_Eyelid
+bounds:1007,159,116,82
+L_eye
+bounds:145,242,74,36
+offsets:1,1,76,38
+Leg 1
+bounds:1210,91,140,86
+rotate:90
+Leg 10
+bounds:1166,4,103,116
+Leg 11
+bounds:240,9,72,52
+Leg 12
+bounds:1480,309,112,69
+rotate:90
+Leg 2
+bounds:1555,2,90,66
+offsets:0,0,91,66
+rotate:90
+Leg 3
+bounds:976,6,129,146
+Leg 4
+bounds:1062,242,133,105
+offsets:1,0,135,105
+rotate:90
+Leg 5
+bounds:1295,154,104,101
+offsets:0,0,122,101
+rotate:90
+Leg 6
+bounds:2,427,142,75
+Leg 7
+bounds:1153,318,106,82
+offsets:1,1,108,84
+Leg 8
+bounds:1468,7,83,81
+offsets:0,0,98,81
+rotate:90
+Leg 9
+bounds:125,5,113,60
+rotate:180
+Mouth
+bounds:753,275,227,189
+rotate:270
+Mouth 2
+bounds:1268,15,110,132
+offsets:0,0,111,132
+rotate:180
+Purple/Body
+bounds:2,280,391,222
+Purple/Eyes
+bounds:23,303,10,24
+offsets:2,1,14,27
+Purple/Eyes2
+bounds:134,445,9,24
+offsets:1,2,11,27
+Purple/Head
+bounds:387,102,372,265
+rotate:90
+Purple/L_Ear
+bounds:1319,259,116,127
+rotate:180
+Purple/L_Eyelid
+bounds:929,420,116,82
+Purple/L_eye
+bounds:146,466,74,36
+offsets:1,1,76,38
+Purple/Leg 1
+bounds:1228,362,140,85
+rotate:90
+Purple/Leg 10
+bounds:1125,187,107,120
+offsets:0,1,108,122
+Purple/Leg 11
+bounds:355,449,76,53
+offsets:0,1,77,55
+Purple/Leg 12
+bounds:2,13,117,71
+rotate:180
+Purple/Leg 2
+bounds:1535,89,90,66
+offsets:0,0,92,66
+rotate:90
+Purple/Leg 3
+bounds:932,243,129,146
+Purple/Leg 4
+bounds:1103,43,131,105
+offsets:1,0,133,105
+rotate:270
+Purple/Leg 5
+bounds:1310,402,99,100
+offsets:0,0,117,100
+Purple/Leg 6
+bounds:2,216,141,74
+Purple/Leg 7
+bounds:1047,393,109,86
+offsets:1,1,111,88
+rotate:90
+Purple/Leg 8
+bounds:1465,148,86,84
+offsets:0,0,98,84
+rotate:90
+Purple/Leg 9
+bounds:395,129,118,62
+rotate:270
+Purple/Mouth
+bounds:819,58,226,189
+rotate:270
+Purple/Mouth 2
+bounds:1244,227,110,132
+offsets:0,0,111,132
+Purple/R_Ear
+bounds:1533,234,70,110
+rotate:180
+Purple/R_Eye
+bounds:222,471,19,31
+offsets:1,1,21,33
+Purple/R_Eyelid
+bounds:2,60,31,49
+R_Eyelid
+bounds:2,60,31,49
+Purple/S
+bounds:1135,402,91,100
+offsets:2,2,95,104
+Purple/Tail
+bounds:612,6,301,124
+rotate:180
+Purple/tounge
+bounds:1404,209,114,136
+rotate:180
+R_Ear
+bounds:1480,432,70,110
+rotate:90
+R_Eye
+bounds:2,308,19,31
+offsets:1,1,21,33
+S
+bounds:1398,383,95,94
+offsets:0,58,95,152
+rotate:180
+Tail
+bounds:316,10,301,124
+rotate:180
+tounge
+bounds:1394,11,114,136
+rotate:180

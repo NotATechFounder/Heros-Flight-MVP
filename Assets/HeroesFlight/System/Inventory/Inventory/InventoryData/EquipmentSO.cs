@@ -9,7 +9,6 @@ using HeroesFlight.System.FileManager.Stats;
 using UnityEngine;
 
 
-
 public class EquipmentSO : ItemSO
 {
     public EquipmentType equipmentType;

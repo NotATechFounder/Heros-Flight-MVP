@@ -9,8 +9,10 @@ public class Chest : MonoBehaviour
     private TimedReward timedReward;
     public ChestType GetChestType => chestSO.GetChestType;
     public RewardPackSO GetRewards => chestSO.GetRewardPack;
-    public float GetGemChestPrice => chestSO.GetPrice;
-    public float GetGoldChestPrice => chestSO.GetPrice;
+    public int GetGemChestPrice => chestSO.GetPrice;
+    public int GetGoldChestPrice => chestSO.GetPrice;
+
+    public string GetChestInfo => chestSO.GetChestInfo;
 
     void Start()
     {

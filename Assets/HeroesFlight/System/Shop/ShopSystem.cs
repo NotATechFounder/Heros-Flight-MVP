@@ -34,6 +34,16 @@ public class ShopSystem : IShopSystemInterface
         // Suscribe to UI events
         uISystem.UiEventHandler.ShopMenu.TryPurchaseChest += BuyChestWithGem;
         uISystem.UiEventHandler.ShopMenu.TryPurchaseGoldPack += BuyGoldPack;
+
+        foreach (GoldPackGroup.GoldPack goldPack in ShopDataHolder.GoldPackGroup.GetGoldPacks)
+        {
+            uISystem.UiEventHandler.ShopMenu.SetGoldPackInfo(goldPack.goldPackType, goldPack.reward.GetAmount(),  goldPack.cost);
+        }
+
+        foreach (Chest chest in ShopDataHolder.GetChests)
+        {
+            uISystem.UiEventHandler.ShopMenu.SetChestInfo(chest.GetChestType, chest.GetChestInfo, chest.GetGemChestPrice);
+        }
     }
 
     public void Reset()
@@ -83,14 +93,14 @@ public class ShopSystem : IShopSystemInterface
         }
     }
 
-    public void BuyGoldPack(GoldPack goldPack)
+    public void BuyGoldPack(GoldPackType goldPack)
     {
         int index = (int)goldPack;
-        CurrencyPack pack = ShopDataHolder.GetGoldPack();
+        GoldPackGroup pack = ShopDataHolder.GetGoldPack();
         if (pack == null) 
             return;
 
-        CurrencyPack.Content content = pack.GetContent(index);
+        GoldPackGroup.GoldPack content = pack.GetContent(index);
         if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= content.cost)
         {
             dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, content.cost);

@@ -57,6 +57,11 @@ namespace HeroesFlight.System.Character.Controllers.Effects
                 case EffectType.Root:
                     controller.SetActionState(true);
                     break;
+                case EffectType.Freeze:
+                    var data = effectModel.Effect.GetData<FreezeEffectData>();
+                    var speedModifier =statController.GetStatModel.GetBaseStatValue(StatType.MoveSpeed) / 100 * data.SlowAmount.GetCurrentValue(effectModel.LVL);
+                    statController.GetStatModel.ModifyCurrentStat(StatType.MoveSpeed,speedModifier,StatModel.StatModificationType.Addition,StatModel.StatCalculationType.Flat);
+                    break;
             }
         }
 
@@ -65,6 +70,16 @@ namespace HeroesFlight.System.Character.Controllers.Effects
             base.ApplyRootEffect(effect, out visual, modelLvl);
             controller.SetActionState(false);
         }
+
+        protected override void ApplyFreezeEffect(StatusEffect effect, out GameObject visual, int modelLvl)
+        {
+            base.ApplyFreezeEffect(effect, out visual, modelLvl);
+           
+            var data = effect.GetData<FreezeEffectData>();
+            var speedModifier =statController.GetStatModel.GetBaseStatValue(StatType.MoveSpeed) / 100 * data.SlowAmount.GetCurrentValue(modelLvl);
+            statController.GetStatModel.ModifyCurrentStat(StatType.MoveSpeed,speedModifier,StatModel.StatModificationType.Subtraction,StatModel.StatCalculationType.Flat);
+        }
+        
 
         protected override void ApplyEffectOnInit(CombatEffect combatEffect, int lvl)
         {

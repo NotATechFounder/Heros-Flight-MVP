@@ -16,7 +16,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
         [SerializeField] AnimationReferenceAsset attackAnimation;
         [SerializeField] AnimationReferenceAsset deathAnimation;
         [SerializeField] AnimationReferenceAsset hitAnimation;
-        [SerializeField] bool changeSkeletonScale = true;
         [SerializeField] SkeletonAnimation skeletonAnimation;
         AiControllerInterface aiController;
         int movementTrackIndex = 0;
@@ -34,12 +33,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         }
 
 
-    
-
-        void UpdateSkeletonScale(Vector2 velocity)
-        {
-           skeletonAnimation.Skeleton.ScaleX = velocity.x >= 0 ? 1f : -1f;
-        }
+      
 
 
         public void SetMovementAnimation(bool isMoving)
@@ -56,27 +50,22 @@ namespace HeroesFlightProject.System.NPC.Controllers
             skeletonAnimation.AnimationState.SetAnimation(movementTrackIndex, targetTrack, true);
         }
 
-        public void StartAttackAnimation(AnimationReferenceAsset animationReference,Action onComplete=null)
+        public void StartAttackAnimation(AnimationReferenceAsset animationReference, Action onComplete = null)
         {
             var turnTrack = skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, animationReference, false);
             skeletonAnimation.AnimationState.AddEmptyAnimation(hitTrackIndex, 0, 0);
             // turnTrack.AttachmentThreshold = 0f;
             // turnTrack.MixDuration = 0f;
-            CoroutineUtility.WaitForSeconds(animationReference.Animation.Duration, () =>
-            {
-                onComplete?.Invoke();
-            });
+            CoroutineUtility.WaitForSeconds(animationReference.Animation.Duration, () => { onComplete?.Invoke(); });
         }
-        public void StartAttackAnimation(Action onComplete=null)
+
+        public void StartAttackAnimation(Action onComplete = null)
         {
             var turnTrack = skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, attackAnimation, false);
             skeletonAnimation.AnimationState.AddEmptyAnimation(hitTrackIndex, 0, 0);
             // turnTrack.AttachmentThreshold = 1f;
             // turnTrack.MixDuration = .5f;
-            CoroutineUtility.WaitForSeconds(attackAnimation.Animation.Duration, () =>
-            {
-                onComplete?.Invoke();
-            });
+            CoroutineUtility.WaitForSeconds(attackAnimation.Animation.Duration, () => { onComplete?.Invoke(); });
         }
 
         public void StopAttackAnimation()
@@ -92,10 +81,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             skeletonAnimation.AnimationState.SetEmptyAnimation(hitTrackIndex, 0);
             skeletonAnimation.AnimationState.SetEmptyAnimation(attackTrackIndex, 0);
             skeletonAnimation.AnimationState.SetEmptyAnimation(dynamicTrackIndex, 0);
-            CoroutineUtility.WaitForSeconds(deathAnimation.Animation.Duration, () =>
-            {
-                onCompleteAction?.Invoke();
-            });
+            CoroutineUtility.WaitForSeconds(deathAnimation.Animation.Duration, () => { onCompleteAction?.Invoke(); });
         }
 
         public void PlayHitAnimation(bool interruptAttack, Action onCompleteAction = null)
@@ -109,10 +95,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
                     var hitTrack = skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, hitAnimation, false);
                     hitTrack.TimeScale = 2f;
                     skeletonAnimation.AnimationState.AddEmptyAnimation(hitTrackIndex, 0, 0);
-                    CoroutineUtility.WaitForSeconds(hitAnimation.Animation.Duration / 2f, () =>
-                    {
-                        onCompleteAction?.Invoke();
-                    });
+                    CoroutineUtility.WaitForSeconds(hitAnimation.Animation.Duration / 2f,
+                        () => { onCompleteAction?.Invoke(); });
                 }
             }
             else
@@ -120,10 +104,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 var hitTrack = skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, hitAnimation, false);
                 hitTrack.TimeScale = 2f;
                 skeletonAnimation.AnimationState.AddEmptyAnimation(hitTrackIndex, 0, 0);
-                CoroutineUtility.WaitForSeconds(hitAnimation.Animation.Duration / 2f, () =>
-                {
-                    onCompleteAction?.Invoke();
-                });
+                CoroutineUtility.WaitForSeconds(hitAnimation.Animation.Duration / 2f,
+                    () => { onCompleteAction?.Invoke(); });
             }
         }
 
@@ -131,42 +113,42 @@ namespace HeroesFlightProject.System.NPC.Controllers
         {
             skeletonAnimation.AnimationState.SetAnimation(dynamicTrackIndex, animationReference, false);
             skeletonAnimation.AnimationState.AddEmptyAnimation(dynamicTrackIndex, 0, 0);
-            CoroutineUtility.WaitForSeconds(animationReference.Animation.Duration, () =>
-            {
-                onCompleteAction?.Invoke();
-            });
+            CoroutineUtility.WaitForSeconds(animationReference.Animation.Duration,
+                () => { onCompleteAction?.Invoke(); });
         }
 
         public void StopDynamicAnimation()
         {
-            skeletonAnimation.AnimationState.SetEmptyAnimation(dynamicTrackIndex,0.1f);
+            skeletonAnimation.AnimationState.SetEmptyAnimation(dynamicTrackIndex, 0.1f);
         }
 
-        public void SetMovementDirection(Vector2 velocity)
-        {
-            if (changeSkeletonScale)
-                UpdateSkeletonScale(velocity);
-        }
+        
 
         void HandleTrackEvent(TrackEntry trackentry, Event e)
         {
             Debug.Log(e.Data.Name);
             switch (e.Data.Name)
             {
-                    
                 case AnimationEventNames.AiDamage:
-                    OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Attack, 0,AttackType.Regular));
+                    OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Attack, 0,
+                        AttackType.Regular));
                     break;
                 case AnimationEventNames.AiDamageV2:
-                    Debug.Log("DAMAGE EVENT");
-                    OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Attack, 0,AttackType.Regular));
+                    OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Attack, 0,
+                        AttackType.Regular));
                     break;
-                
+
                 case AnimationEventNames.Sounds:
                     Debug.Log(e.String);
                     break;
                 case AnimationEventNames.VFX:
                     Debug.Log(e.String);
+                    break;
+                case AnimationEventNames.Shoot:
+                    OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Shoot, 0, AttackType.Regular));
+                    break;
+                case AnimationEventNames.AiDamageV3:
+                    OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Shoot, 0, AttackType.Regular));
                     break;
             }
         }

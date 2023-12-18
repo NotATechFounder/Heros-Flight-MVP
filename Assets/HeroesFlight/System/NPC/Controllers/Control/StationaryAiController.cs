@@ -8,7 +8,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
     public class StationaryAiController : AiControllerBase
 
     {
-        public override void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon)
+        public override void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier,
+            Sprite currentCardIcon)
         {
             stateMachine = new FSMachine();
             var animator = GetComponent<AiAnimationController>();
@@ -19,10 +20,16 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 new AiAttackState(this, animator, stateMachine),
                 new AiDeathState(this, animator, stateMachine)
             });
-            Debug.Log("Initied stationary");
             base.Init(player, health, damage, monsterStatModifier, currentCardIcon);
             stateMachine.SetState(typeof(AiWanderingState));
-            
+        }
+
+        protected override void Update()
+        {
+            stateMachine?.Process();
+            UpdateTimers();
+            // if (!healthController.IsDead())
+            //     animator.SetMovementDirection(GetVelocity());
         }
     }
 }

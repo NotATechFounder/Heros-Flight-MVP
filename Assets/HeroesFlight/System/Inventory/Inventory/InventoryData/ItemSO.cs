@@ -7,7 +7,7 @@ using UnityEditor;
 using ScriptableObjectDatabase;
 
 
-public class ItemSO : ScriptableObject, IHasID
+public class ItemSO : RewardBaseSO, IHasID
 {
     public string ID;
     public string Name;

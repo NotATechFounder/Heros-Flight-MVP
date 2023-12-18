@@ -73,12 +73,12 @@ public class RewardSystem : RewardSystemInterface
 
     public void ProcessReward(Reward reward)
     {
-        switch (reward.GetRewardType())
+        switch (reward.GetRewardObject<RewardBaseSO>())
         {
-            case RewardType.Currency:
+            case CurrencySO currencySO:
                 dataSystem.CurrencyManager.AddCurrency(reward.GetRewardObject<CurrencySO>(), reward.GetAmount());
                 break;
-            case RewardType.Item:
+            case ItemSO:
                 inventorySystem.InventoryHandler.AddToInventory(reward.GetRewardObject<ItemSO>(), reward.GetAmount(), reward.GetRarity());
                 break;
             default: break;
@@ -91,13 +91,13 @@ public class RewardSystem : RewardSystemInterface
 
         foreach (Reward reward in rewards)
         {
-            switch (reward.GetRewardType())
+            switch (reward.GetRewardObject<RewardBaseSO>())
             {
-                case RewardType.Currency:
-                    dataSystem.CurrencyManager.AddCurrency(reward.GetRewardObject<CurrencySO>(), reward.GetAmount());
+                case CurrencySO currencySO:
+                    dataSystem.CurrencyManager.AddCurrency(currencySO, reward.GetAmount());
                     break;
-                case RewardType.Item:
-                    inventoryAddModificators.Add(new InventoryAddModificator(reward.GetRewardObject<ItemSO>(), reward.GetAmount(), reward.GetRarity()));
+                case ItemSO itemSO:
+                    inventoryAddModificators.Add(new InventoryAddModificator(itemSO, reward.GetAmount(), reward.GetRarity()));
                     break;
                 default: break;
             }
@@ -109,17 +109,15 @@ public class RewardSystem : RewardSystemInterface
     public RewardVisual GetRewardVisual(Reward reward)
     {
         RewardVisual rewardVisual = new RewardVisual();
-        switch (reward.GetRewardType())
+        switch (reward.GetRewardObject<RewardBaseSO>())
         {
-            case RewardType.Currency:
-                CurrencySO currencySO = reward.GetRewardObject<CurrencySO>();
+            case CurrencySO currencySO:
                 rewardVisual.icon = currencySO.GetSprite;
                 rewardVisual.color = currencySO.GetColor;
                 rewardVisual.name = currencySO.GetCurrencyName;
 
                 break;
-            case RewardType.Item:
-                ItemSO itemSO = reward.GetRewardObject<ItemSO>();
+            case ItemSO itemSO:
                 rewardVisual.icon = itemSO.icon;
                 rewardVisual.name = itemSO.Name;
                 RarityPalette rarityPalette = inventorySystem.InventoryHandler.GetPalette(reward.GetRarity());
@@ -140,20 +138,6 @@ public class RewardSystem : RewardSystemInterface
             rewardVisuals.Add(GetRewardVisual(reward));
         }
         return rewardVisuals;
-    }
-
-    public void OtherOption(Reward reward)
-    {
-        //switch (reward.GetRewardObject<ScriptableObject>())
-        //{
-        //    case CurrencySO:
-        //        currencyManager.AddCurrency(reward.GetRewardObject<CurrencySO>(), reward.GetAmount());
-        //        break;
-        //    case ItemSO:
-        //        InventoryHandler.AddToInventory(reward.GetRewardObject<ItemSO>(), reward.GetAmount(), reward.GetRarity());
-        //        break;
-        //    default: break;
-        //}
     }
 
     public GameStateType CurrentState { get; private set; }
