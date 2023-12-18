@@ -23,6 +23,7 @@ namespace UISystem
         public event Func<StatAttributeType, bool> OnRemoveSpClicked;
         public event Func <StatAttributeType, int> GetDiceRollValue;
 
+        [SerializeField] private AdvanceButton closeStatsButton;
         [SerializeField] private AdvanceButton completeButton;
         [SerializeField] private AdvanceButton resetButton;
 
@@ -49,6 +50,7 @@ namespace UISystem
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(0.15f);
             closeEffectBG.SetOnCompleted(CloseMenu);
 
+            closeStatsButton.onClick.AddListener(ForceClose);
             completeButton.onClick.AddListener(ForceClose);
             resetButton.onClick.AddListener(ResetButtonPressed);
 
