@@ -62,14 +62,14 @@ namespace HeroesFlight.System.UI
 
                 UiEventHandler.GameMenu.OnPassiveAbilityButtonClicked += (index) => { OnPassiveAbilityButtonClicked?.Invoke(index); };
 
-                UiEventHandler.GameMenu.OnLevelUpComplete += (level) => { UiEventHandler.AbilitySelectMenu.Open(); };
-
                 onComplete?.Invoke();
             });
         }
 
         public void AssignGameEvents()
         {
+            UiEventHandler.GameMenu.OnLevelUpComplete += (level) => { UiEventHandler.AbilitySelectMenu.Open(); };
+
             UiEventHandler.GameMenu.OnPauseButtonClicked += () => { UiEventHandler.PauseMenu.Open(); };
 
             UiEventHandler.PauseMenu.OnSettingsButtonClicked += () => { UiEventHandler.SettingsMenu.Open(); };

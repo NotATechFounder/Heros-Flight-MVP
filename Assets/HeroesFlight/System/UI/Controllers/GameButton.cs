@@ -2,15 +2,15 @@
 
 namespace UISystem
 {
+    public enum GameButtonType
+    {
+        Mainmenu_Play, Mainmenu_Pause,
+        GameMenu_Pause
+    }
+
     [Serializable]
     public class GameButton
     {
-        public enum GameButtonType
-        {
-            Mainmenu_Play, Mainmenu_Pause,
-            GameMenu_Pause
-        }
-
         public enum GameButtonVisiblity
         {
             Visible,

@@ -14,6 +14,6 @@ namespace HeroesFlight.System.Combat
         void InitCharacterUltimate(List<AnimationData> animations, int charges);
         void UseCharacterUltimate(Action onBeforeUse=null,Action onComplete = null);
         void StartCharacterComboCheck();
-    
+        void SetSpecialBarValue(float value);
     }
 }

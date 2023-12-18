@@ -40,7 +40,6 @@ public class TutorialSystem : ITutorialInterface
 
     private TutorialHandler tutorialHandler;
 
-    CountDownTimer GameTimer;
     GameEffectController GameEffectController;
 
     GodsBenevolence godsBenevolence;
@@ -73,8 +72,6 @@ public class TutorialSystem : ITutorialInterface
     int enemiesToKill;
     int CurrentLvlIndex => tutorialHandler.CurrentLvlIndex;
 
-    int MaxLvlIndex => tutorialHandler.MaxLvlIndex;
-
     public Vector2 GetPlayerSpawnPosition => currentLevelEnvironment
         .GetSpawnpoint(SpawnType.Player).GetSpawnPosition();
 
@@ -84,7 +81,6 @@ public class TutorialSystem : ITutorialInterface
 
     Level currentLevel;
 
-    List<HeroesFlight.System.Environment.Objects.Crystal> crystals = new();
     private bool revivedByFeatThisRun = false;
     private int goldModifier;
 
@@ -132,8 +128,8 @@ public class TutorialSystem : ITutorialInterface
         tutorialHandler = scene.GetComponentInChildren<TutorialHandler>();
         hitEffectsPlayer = tutorialHandler.GetComponent<StackableSoundPlayer>();
 
-        progressionSystem.BoosterManager.OnBoosterActivated += HandleBoosterActivated;
-        progressionSystem.BoosterManager.OnBoosterContainerCreated += HandleBoosterWithDurationActivated;
+        //progressionSystem.BoosterManager.OnBoosterActivated += HandleBoosterActivated;
+        //progressionSystem.BoosterManager.OnBoosterContainerCreated += HandleBoosterWithDurationActivated;
 
         GameEffectController = scene.GetComponentInChildren<GameEffectController>();
     
@@ -141,8 +137,6 @@ public class TutorialSystem : ITutorialInterface
         tutorialHandler.OnPlayerEnteredPortal += HandlePlayerTriggerPortal;
 
         npcSystem.NpcContainer.SetMobDifficultyHolder(tutorialHandler.GetTutorialModel.MobDifficulty);
-
-        GameTimer = new CountDownTimer(tutorialHandler);
 
         environmentSystem.CurrencySpawner.OnCollected = HandleCurrencyCollected;
 
@@ -157,10 +151,10 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO = godsBenevolence.GetRandomGodsBenevolenceVisualSO;
         uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved += godsBenevolence.ActivateGodsBenevolence;
 
-        uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += StoreRunReward;
+        //uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += StoreRunReward;
         uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete += HandleSingleLevelUp;
         uiSystem.UiEventHandler.GameMenu.GetPassiveAbilityLevel += activeAbilityManager.GetPassiveAbilityLevel;
-        uiSystem.OnRestartLvlRequest += HandleLvlRestart;
+      //  uiSystem.OnRestartLvlRequest += HandleLvlRestart;
         uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed += ContinueGameLoop;
         uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
         uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
@@ -179,7 +173,7 @@ public class TutorialSystem : ITutorialInterface
             .ActiveAbilityTriggerButtons[2].UpdateSkillOneFill;
         activeAbilityManager.TimedAbilityControllers[2].OnCoolDownActive += uiSystem.UiEventHandler.GameMenu
             .ActiveAbilityTriggerButtons[2].UpdateSkillOneFillCoolDown;
-        uiSystem.OnPassiveAbilityButtonClicked += activeAbilityManager.UseCharacterAbility;
+        uiSystem.OnPassiveAbilityButtonClicked += UiSystem_OnPassiveAbilityButtonClicked;
 
         activeAbilityManager.OnActiveAbilityEquipped += uiSystem.UiEventHandler.GameMenu.ActiveAbilityEqquiped;
         activeAbilityManager.OnPassiveAbilityEquipped += uiSystem.UiEventHandler.GameMenu.VisualisePassiveAbility;
@@ -197,10 +191,12 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.AbilitySelectMenu.GetPassiveAbilityLevel += activeAbilityManager.GetPassiveAbilityLevel;
         uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += HeroProgressionCompleted;
 
-        uiSystem.UiEventHandler.TutorialMenu.OnShowClicked += () => { characterSystem.SetCharacterControllerState(false); };
-        uiSystem.UiEventHandler.TutorialMenu.OnHideClicked += () => { characterSystem.SetCharacterControllerState(true); };
+        uiSystem.UiEventHandler.GameMenu.OnLevelUpComplete += GameMenu_OnLevelUpComplete;
 
-      goldModifier = 0;
+        uiSystem.UiEventHandler.TutorialMenu.OnShowClicked += DisableMovement;
+        uiSystem.UiEventHandler.TutorialMenu.OnHideClicked += EnableMovement;
+
+        goldModifier = 0;
         if (traitSystem.HasTraitOfType(TraitType.CurrencyBoost, out var traits))
         {
             foreach (var data in traits)
@@ -212,16 +208,26 @@ public class TutorialSystem : ITutorialInterface
 
         RegisterShrineNPCUIEvents();
 
-        StartGameSession();
-
         InitialseTutorialRuntimeStates();
+
+        StartGameSession();
 
         OnComplete?.Invoke();
     }
 
-    /// <summary>
-    /// Used to start game from first lvl
-    /// </summary>
+    private void UiSystem_OnPassiveAbilityButtonClicked(int obj)
+    {
+        activeAbilityManager.UseCharacterAbility(obj);
+        tutorialDictionary[TutorialMode.ActiveAbility].IsCompleted = true;
+    }
+
+    private void GameMenu_OnLevelUpComplete(int obj)
+    {
+        StartTutorialState(TutorialMode.PasiveAbility);
+
+       // uiSystem.UiEventHandler.AbilitySelectMenu.Open();
+    }
+
     public void StartGameSession()
     {
         uiSystem.UiEventHandler.GameMenu.Open();
@@ -229,14 +235,12 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level transition
         {
             uiSystem.UiEventHandler.LoadingMenu.Close();
-            ResetLogic();
             PreloadLvl();
             SetupCharacter();
         } ,
         ()=>
         {
             StartTutorialState(TutorialMode.Fly);
-            //ContinueGameLoop
         });
     }
 
@@ -263,11 +267,7 @@ public class TutorialSystem : ITutorialInterface
             case CombatEntityType.Mob:
                 HandleEnemyDeath(deathModel.Position);
                 break;
-            case CombatEntityType.MiniBoss:
-                HandleEnemyDeath(deathModel.Position);
-                SpawnLootFromMiniboss(deathModel.Position);
-                break;
-            case CombatEntityType.Boss: break;
+            default: break;
         }
     }
 
@@ -285,15 +285,7 @@ public class TutorialSystem : ITutorialInterface
             case CombatEntityType.Mob:
                 HandleEnemyDamaged(damageModel.DamageIntentModel);
                 break;
-            case CombatEntityType.MiniBoss:
-                HandleEnemyDamaged(damageModel.DamageIntentModel);
-                break;
-            case CombatEntityType.Boss:
-                HandleEnemyDamaged(damageModel.DamageIntentModel);
-                break;
-            case CombatEntityType.TempMob:
-                HandleEnemyDamaged(damageModel.DamageIntentModel);
-                break;
+            default: break;
         }
     }
 
@@ -309,7 +301,7 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
 
         uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -= godsBenevolence.ActivateGodsBenevolence;
-        uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= StoreRunReward;
+        //uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= StoreRunReward;
         uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= HandleSingleLevelUp;
         uiSystem.UiEventHandler.GameMenu.GetPassiveAbilityLevel -= activeAbilityManager.GetPassiveAbilityLevel;
         uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed -= ContinueGameLoop;
@@ -360,20 +352,8 @@ public class TutorialSystem : ITutorialInterface
     void ResetLogic()
     {
         environmentSystem.CurrencySpawner.ResetItems();
-        foreach (var crystal in crystals)
-        {
-            IHealthController healthController = crystal.GetComponent<IHealthController>();
-            healthController.OnBeingHitDamaged -= HandleCrystalHit;
-            ObjectPoolManager.ReleaseObject(crystal);
-        }
 
-        crystals.Clear();
-
-        environmentSystem.BoosterSpawner.ClearAllBoosters();
-
-        // EffectManager.ResetAngelEffects();
         enemiesToKill = 0;
-        GameTimer.Stop();
         ChangeState(GameState.Ended);
         uiSystem.ToggleSpecialEnemyHealthBar(false);
     }
@@ -384,6 +364,14 @@ public class TutorialSystem : ITutorialInterface
     void EnableMovement()
     {
         characterSystem.SetCharacterControllerState(true);
+    }
+
+    /// <summary>
+    /// Used to disable character controller movement
+    /// </summary>
+    void DisableMovement()
+    {
+        characterSystem.SetCharacterControllerState(false);
     }
 
     /// <summary>
@@ -407,16 +395,17 @@ public class TutorialSystem : ITutorialInterface
             characterAttackController.ToggleControllerState(true);
             characterHealthController.SetInvulnerableState(false);
         });
+
+        tutorialDictionary[TutorialMode.UltimateAbility].IsCompleted = true;
     }
 
     void ReviveCharacter(float healthPercentage)
     {
-        environmentSystem.ParticleManager.Spawn("CharacterRevival",
-            characterSystem.CurrentCharacter.CharacterTransform.position);
+        environmentSystem.ParticleManager.Spawn("CharacterRevival", characterSystem.CurrentCharacter.CharacterTransform.position);
+
         combatSystem.RevivePlayer(healthPercentage);
-        GameTimer.Resume();
+
         ChangeState(GameState.Ongoing);
-        uiSystem.UiEventHandler.ReviveMenu.Close();
     }
 
     /// <summary>
@@ -494,51 +483,15 @@ public class TutorialSystem : ITutorialInterface
             tutorialHandler.GetTutorialModel.TimeStopDuration);
     }
 
-    void HandleMinibossHealthChange(float healthProportion)
-    {
-        uiSystem.UpdateSpecialEnemyHealthBar(healthProportion);
-    }
-
     void HandleEnemySpawned(AiControllerBase obj)
     {
         var healthController = obj.GetComponent<IHealthController>();
 
-        if (obj.EnemyType == EnemyType.MiniBoss)
-        {
-            var attackController = obj.GetComponent<IAttackControllerInterface>();
-            var effectsController = obj.GetComponent<CombatEffectsController>();
-            combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
-                CombatEntityType.MiniBoss));
-            uiSystem.ToggleSpecialEnemyHealthBar(true);
-            var spawnAbility = obj.transform.GetComponentInChildren<SpawnEnemyAbility>();
-            if (spawnAbility != null)
-            {
-                spawnAbility.OnEnemySpawned += (healthController) =>
-                {
-                    var attackController =
-                        healthController.HealthTransform.GetComponent<IAttackControllerInterface>();
-                    var effectsController =
-                        healthController.HealthTransform.GetComponent<CombatEffectsController>();
-                    combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController,
-                        effectsController,
-                        CombatEntityType.TempMob));
-                };
-            }
-        }
-        else
-        {
-            obj.OnDisabled += HandleEnemyDisabled;
-            var attackController = obj.GetComponent<IAttackControllerInterface>();
-            var effectsController = obj.GetComponent<CombatEffectsController>();
-            combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
-                CombatEntityType.Mob));
-        }
-    }
-
-    void SpawnLootFromMiniboss(Vector3 position)
-    {
-        environmentSystem.BoosterSpawner.SpawnBoostLoot(tutorialHandler.GetTutorialModel.BossDrop,
-            position);
+        obj.OnDisabled += HandleEnemyDisabled;
+        var attackController = obj.GetComponent<IAttackControllerInterface>();
+        var effectsController = obj.GetComponent<CombatEffectsController>();
+        combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
+            CombatEntityType.Mob));
     }
 
     void HandleEnemyDisabled(AiControllerInterface obj)
@@ -565,34 +518,21 @@ public class TutorialSystem : ITutorialInterface
         if (enemiesToKill <= 0)
         {
             Debug.Log("Player Won");
-            GameTimer.Stop();
-            HandlePlayerWon();
+            HandleAllEnemiesKilled();
         }
     }
 
-    void HandlePlayerWon()
+    void HandleAllEnemiesKilled()
     {
         GameEffectController.ForceStop(() =>
         {
-            dataSystem.WorldManger.SetMaxLevelReached(dataSystem.WorldManger.SelectedWorld, tutorialHandler.CurrentLvlIndex);
-
-            if (tutorialHandler.FinishedLoop)
-            {
-                characterAttackController.ToggleControllerState(false);
-
-                CoroutineUtility.WaitForSeconds(6f, () => { ChangeState(GameState.Won); });
-
-                return;
-            }
-
-            if (traitSystem.HasTraitOfType(TraitType.HealthRestore, out var traitId))
-            {
-                var traitValue = traitSystem.GetTraitEffect(traitId[0].TargetTrait.Id);
-                characterSystem.CurrentCharacter.CharacterTransform.GetComponent<IHealthController>().TryDealDamage(
-                    new HealthModificationIntentModel(traitValue.Value, DamageCritType.NoneCritical, AttackType.Healing,
-                        CalculationType.Percentage, null));
-            }
-
+           // dataSystem.WorldManger.SetMaxLevelReached(dataSystem.WorldManger.SelectedWorld, tutorialHandler.CurrentLvlIndex);
+            //if (tutorialHandler.FinishedLoop)
+            //{
+            //    characterAttackController.ToggleControllerState(false);
+            //    CoroutineUtility.WaitForSeconds(6f, () => { ChangeState(GameState.Won); });
+            //    return;
+            //}
             ChangeState(GameState.WaitingPortal);
         });
     }
@@ -603,7 +543,6 @@ public class TutorialSystem : ITutorialInterface
             return;
     }
 
-
     void HandleCharacterDodged()
     {
         characterVFXController.TriggerMissEffect();
@@ -611,29 +550,6 @@ public class TutorialSystem : ITutorialInterface
 
     void HandleCharacterDeath()
     {
-        //Debug.LogError($"character died and game state is {currentState}");
-        //if (currentState != GameState.Ongoing)
-        //    return;
-        //characterAttackController.GetComponent<CharacterAnimationController>().StopUltSequence();
-
-
-        //if (!revivedByFeatThisRun && traitSystem.HasTraitOfType(TraitType.Revival, out var traitId))
-        //{
-        //    revivedByFeatThisRun = true;
-        //    var traitValue = traitSystem.GetTraitEffect(traitId[0].TargetTrait.Id);
-        //    CoroutineUtility.WaitForSeconds(2f, () => { ReviveCharacter(traitValue.Value); });
-
-        //    return;
-        //}
-
-        //OnLevelFailed?.Invoke();
-
-        //dataSystem.WorldManger.SetMaxLevelReached(dataSystem.WorldManger.SelectedWorld, container.CurrentLvlIndex);
-
-        ////freezes engine?  
-        //// GameTimer.Pause();
-        //CoroutineUtility.WaitForSeconds(1f, () => { ChangeState(GameState.Died); });
-
         ReviveCharacter(100);
     }
 
@@ -677,7 +593,6 @@ public class TutorialSystem : ITutorialInterface
         hitEffectsPlayer.PlayHitEffect("Hit", true);
     }
 
-
     void ChangeState(GameState newState)
     {
         if (currentState == newState)
@@ -690,7 +605,7 @@ public class TutorialSystem : ITutorialInterface
     void HandlePlayerTriggerPortal()
     {
         AudioManager.PlaySoundEffect("EnterPortal", SoundEffectCategory.UI);
-        MoveToNextLvl();
+        MoveNextLvl();
     }
 
     public void StartGameLoop()
@@ -709,13 +624,13 @@ public class TutorialSystem : ITutorialInterface
 
                 ChangeState(GameState.Ongoing);
 
-                characterSystem.SetCharacterControllerState(true);
+                EnableMovement();
 
                 break;
             case LevelType.Shrine:
-                characterSystem.SetCharacterControllerState(true);
+                EnableMovement();
                 break;
-            case LevelType.WorldBoss:  break;
+            default: break;
         }
     }
 
@@ -747,25 +662,6 @@ public class TutorialSystem : ITutorialInterface
 
         currentLevelEnvironment = GameObject.Instantiate(currentLevel.LevelPrefab).GetComponent<LevelEnvironment>();
 
-        foreach (var spawnPoint in currentLevelEnvironment.GetSpawnpoints(SpawnType.Crystal))
-        {
-            var crystal = ObjectPoolManager.SpawnObject(tutorialHandler.GetTutorialModel.CrystalPrefab,
-                spawnPoint.GetSpawnPosition(), Quaternion.identity);
-            IHealthController healthController = crystal.GetComponent<IHealthController>();
-            crystal.SpawnLoot = () =>
-            {
-                environmentSystem.BoosterSpawner.SpawnBoostLoot(crystal.BoosterDropSO, crystal.transform.position);
-                for (int i = 0; i < crystal.GoldInBatch; i++)
-                {
-                    environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, crystal.GoldAmount,
-                        crystal.transform.position);
-                }
-            };
-            crystal.OnDestroyed = OnCrystalDestroyed;
-            healthController.OnBeingHitDamaged += HandleCrystalHit;
-            crystals.Add(crystal);
-        }
-
         cameraController.SetConfiner(currentLevelEnvironment.BoundsCollider);
         npcSystem.NpcContainer.SetSpawnPoints(currentLevelEnvironment.SpawnPointsCache);
         switch (currentLevel.LevelType)
@@ -778,8 +674,6 @@ public class TutorialSystem : ITutorialInterface
                 break;
 
             case LevelType.Shrine:
-
-                // When player gets in contact with the NPC
 
                 ShrineNPCHolder shrineNPCHolder = currentLevelEnvironment.GetComponent<ShrineNPCHolder>();
 
@@ -913,46 +807,6 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped -= activeAbilityManager.SwapPassiveAbility;
     }
 
-    void HandleCrystalHit(Transform transform)
-    {
-        var crystal = transform.GetComponent<HeroesFlight.System.Environment.Objects.Crystal>();
-        IHealthController healthController = crystal.GetComponent<IHealthController>();
-        crystal.OnHit(healthController.CurrentHit);
-    }
-
-    void OnCrystalDestroyed(HeroesFlight.System.Environment.Objects.Crystal crystal)
-    {
-        IHealthController healthController = crystal.GetComponent<IHealthController>();
-        healthController.OnBeingHitDamaged -= HandleCrystalHit;
-        crystals.Remove(crystal);
-        ObjectPoolManager.ReleaseObject(crystal);
-    }
-
-    void HandleBoosterActivated(BoosterSO sO, float arg2, Transform transform)
-    {
-        uiSystem.ShowPopupAtPosition($"+{sO.Abreviation}",
-            new Vector2(transform.position.x, transform.position.y + 2), sO.BoosterColor);
-        characterVFXController.TriggerBoosterEffect(sO.BoosterEffectType);
-    }
-
-
-    void AddCurrency(string key, int amount)
-    {
-        progressionSystem.AddCurrency(key, amount);
-    }
-
-
-    public void StoreRunReward()
-    {
-        progressionSystem.SaveRunResults();
-        //collectedHeroProgressionSp = 0;
-    }
-
-    void HandleBoosterWithDurationActivated(BoosterContainer container)
-    {
-        uiSystem.UiEventHandler.GameMenu.VisualiseBooster(container);
-    }
-
     void HandleHeroProgression()
     {
         godsBenevolence.DeactivateGodsBenevolence();
@@ -990,39 +844,26 @@ public class TutorialSystem : ITutorialInterface
         }
     }
 
+    void AddCurrency(string key, int amount)
+    {
+        progressionSystem.AddCurrency(key, amount);
+    }
+
     void HandleGameStateChanged(GameState newState)
     {
         switch (newState)
         {
-            case GameState.Ongoing:
-                break;
             case GameState.Won:
-
                 OnTutorialStateChanged?.Invoke(TutorialState.MainMenu);
-
                 HandleGameLoopFinish();
                 break;
             case GameState.Died:
                 uiSystem.UiEventHandler.ReviveMenu.Open();
                 break;
-            case GameState.Ended:
-                break;
             case GameState.WaitingPortal:
-
-                Debug.Log(CurrentLvlIndex);
-                if (CurrentLvlIndex == 3)
-                {
-                    dataSystem.CharacterManager.UnlockCharacter(CharacterType.Lancer);
-                    Debug.Log("Granting LANCER");
-                }
-
                 CoroutineUtility.Start(WaitingPortalRoutine());
                 break;
-
-            case GameState.TimeEnded:
-                uiSystem.UiEventHandler.GameMenu.DisplayInfoMessage(UISystem.GameMenu.InfoMessageType.TimeUp);
-                CoroutineUtility.WaitForSeconds(1f, HandleGameLoopFinish);
-                break;
+            default:   break;
         }
     }
 
@@ -1032,14 +873,14 @@ public class TutorialSystem : ITutorialInterface
 
         yield return new WaitForSeconds(2f);
 
-        void ContinueWaitForPortalRoutine()
-        {
-            uiSystem.UiEventHandler.GameMenu.OnUpdateXpBarCompleted -= ContinueWaitForPortalRoutine;
-            CoroutineUtility.Start(ContinueAfterXpBarUpdate());
-        }
-
         uiSystem.UiEventHandler.GameMenu.OnUpdateXpBarCompleted += ContinueWaitForPortalRoutine;
         HandleHeroProgression();
+    }
+
+    void ContinueWaitForPortalRoutine()
+    {
+        uiSystem.UiEventHandler.GameMenu.OnUpdateXpBarCompleted -= ContinueWaitForPortalRoutine;
+        CoroutineUtility.Start(ContinueAfterXpBarUpdate());
     }
 
     IEnumerator ContinueAfterXpBarUpdate()
@@ -1054,7 +895,7 @@ public class TutorialSystem : ITutorialInterface
                 UISystem.Menu.Status.Closed);
         }
 
-        ShowLevelPortal();
+        //ShowLevelPortal();
     }
 
     void ShowLevelPortal()
@@ -1066,47 +907,30 @@ public class TutorialSystem : ITutorialInterface
             });
     }
 
-    void ShowGodBenevolencePrompt()
-    {
-        if (characterStatController.GetHealthPercentage() <= 30)
-        {
-            uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
-                uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,
-                ContinueGameLoop);
-        }
-        else
-        {
-            ContinueGameLoop();
-        }
-    }
-
     void HandleGameLoopFinish()
     {
-        uiSystem.UiEventHandler.SummaryMenu.Open();
-
+        //uiSystem.UiEventHandler.SummaryMenu.Open();
         // TODO: Add exp to player
         dataSystem.AccountLevelManager.AddExp(100);
     }
 
-    void HandleLvlRestart()
+    void MoveNextLvl()
     {
-        characterSystem.Reset();
-        npcSystem.Reset();
-        Reset();
-        uiSystem.UiEventHandler.ReviveMenu.Close();
-        uiSystem.UiEventHandler.AngelPermanetCardMenu.ResetMenu();
-        SetupCharacter();
-        StartGameLoop();
-    }
+        characterSystem.SetCharacterControllerState(false);
 
-    void MoveToNextLvl()
-    {
         if (currentLevel.LevelType == LevelType.Shrine)
         {
-            shrine.OnShrineExit();
-        }
+            uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level to level transition
+            {
+                ResetLogic();
+                ChangeState(GameState.Won);
+            },
+            () =>
+            {
 
-        characterSystem.SetCharacterControllerState(false);
+            });
+            return;
+        }
 
         CoroutineUtility.WaitForSeconds(0.5f, () =>
         {
@@ -1119,18 +943,10 @@ public class TutorialSystem : ITutorialInterface
                 newLevel = PreloadLvl();
                 characterSystem.ResetCharacter(GetPlayerSpawnPosition);
             },
-                () =>
-                {
-                    if (newLevel.LevelType == LevelType.NormalCombat ||
-                        newLevel.LevelType == LevelType.WorldBoss)
-                    {
-                        CoroutineUtility.Start(ContinueGameLoopRoutine());
-                    }
-                    else
-                    {
-                        characterSystem.SetCharacterControllerState(true);
-                    }
-                });
+            () =>
+            {
+                ContinueGameLoop();
+            });
         });
     }
 
@@ -1143,20 +959,6 @@ public class TutorialSystem : ITutorialInterface
             characterSystem.SetCharacterControllerState(false);
             StartGameLoop();
         });
-    }
-
-    IEnumerator ContinueGameLoopRoutine()
-    {
-        yield return new WaitForSeconds(0.5f);
-
-        if (CurrentLvlIndex != MaxLvlIndex) // Open every second lvl
-        {
-            ShowGodBenevolencePrompt();
-        }
-        else
-        {
-            ContinueGameLoop();
-        }
     }
 
     public void InitialseTutorialRuntimeStates()
@@ -1188,6 +990,50 @@ public class TutorialSystem : ITutorialInterface
         });
 
         tutorialDictionary.Add(TutorialMode.AutoAttack, autoAttackTutorial);
+
+        TutorialRuntime passiveAbilityTutorial = new TutorialRuntime(TutorialMode.PasiveAbility);
+        passiveAbilityTutorial.AssignEvents(() =>
+        {
+            activeAbilityManager.AddPassiveAbility(PassiveAbilityType.FrostStrike);
+
+            CoroutineUtility.WaitForSeconds(2,()=> 
+            {
+                passiveAbilityTutorial.IsCompleted = true;
+            });
+        }, () =>
+        {
+             StartTutorialState (TutorialMode.ActiveAbility);
+        });
+
+        tutorialDictionary.Add(TutorialMode.PasiveAbility, passiveAbilityTutorial);
+
+        TutorialRuntime activeAbilityTutorial = new TutorialRuntime(TutorialMode.ActiveAbility);
+        activeAbilityTutorial.AssignEvents(() =>
+        {
+            activeAbilityManager.EquippedAbility(ActiveAbilityType.LightningArrow);
+        }, () =>
+        {
+            CoroutineUtility.WaitForSeconds(2, () =>
+            {
+                StartTutorialState(TutorialMode.UltimateAbility);
+            });   
+        });
+
+        tutorialDictionary.Add(TutorialMode.ActiveAbility, activeAbilityTutorial);
+
+        TutorialRuntime UltimateAbilityTutorial = new TutorialRuntime(TutorialMode.UltimateAbility);
+        UltimateAbilityTutorial.AssignEvents(() =>
+        {
+            combatSystem.SetSpecialBarValue(1);
+        }, () =>
+        {
+            CoroutineUtility.WaitForSeconds(2, () =>
+            {
+                ShowLevelPortal();
+            });
+        });
+
+        tutorialDictionary.Add(TutorialMode.UltimateAbility, UltimateAbilityTutorial);
     }
 
     public void StartTutorialState(TutorialMode tutorialMode)
@@ -1202,10 +1048,10 @@ public class TutorialSystem : ITutorialInterface
     public void DisplayTutorialStartUI(TutorialMode tutorialMode, Action OnStartUIClosed)
     {
         TutorialSO tutorialSO = tutorialHandler.GetTutorialSO(tutorialMode);
-        characterSystem.SetCharacterControllerState(false);
+        DisableMovement();
         uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.GetTutorialVisualData, ()=>
         {
-            characterSystem.SetCharacterControllerState(true);
+            EnableMovement();
             OnStartUIClosed?.Invoke();
         });
     }
