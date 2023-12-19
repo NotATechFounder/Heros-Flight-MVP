@@ -5,10 +5,17 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Pelumi.Juicer;
 
+public enum GameButtonVisiblity
+{
+    Visible,
+    Hidden
+}
+
 public class AdvanceButton : Button
 {
     public static event Action OnAnyButtonClicked;
 
+    [SerializeField] private GameButtonType buttonType;
     [SerializeField] private UnityEvent<bool> onClickToggle;
 
     private bool isOn = false;
@@ -36,6 +43,11 @@ public class AdvanceButton : Button
     [Space]
     [SerializeField] private float ButtonDownDuration = 0.1f;
     [SerializeField] private float ButtonUpDuration = 0.25f;
+
+    private GameButtonVisiblity gameButtonVisiblity;
+
+    public GameButtonType ButtonType { get { return buttonType; } }
+    public GameButtonVisiblity GetGameButtonVisiblity { get { return gameButtonVisiblity; } }
 
     protected override void Awake()
     {
@@ -86,6 +98,11 @@ public class AdvanceButton : Button
 
     public override void OnPointerClick(PointerEventData eventData)
     {
+        if (gameButtonVisiblity == GameButtonVisiblity.Hidden)
+        {
+            return;
+        }
+
         base.OnPointerClick(eventData);
         if (interactable)
         {
@@ -116,6 +133,7 @@ public class AdvanceButton : Button
             //}
         }
     }
+
     public override void OnPointerUp(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
@@ -136,6 +154,18 @@ public class AdvanceButton : Button
             //        }
             //    }
             //}
+        }
+    }
+
+    public void SetVisibility(GameButtonVisiblity state)
+    {
+        gameButtonVisiblity = state;
+        interactable = state == GameButtonVisiblity.Visible;
+
+        foreach (Image childImage in childImages)
+        {
+            if (childImage == buttonImage) continue;
+            childImage.color = state == GameButtonVisiblity.Visible ? Color.white : Color.grey;
         }
     }
 }

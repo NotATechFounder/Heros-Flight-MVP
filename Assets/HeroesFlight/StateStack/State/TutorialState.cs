@@ -128,14 +128,13 @@ namespace HeroesFlight.StateStack.State
 
             m_SceneActionsQueue.Start(uiSystem.UiEventHandler.LoadingMenu.UpdateLoadingBar, () =>
             {
-                uiSystem.UiEventHandler.MainMenu.Open();
+                //uiSystem.UiEventHandler.MainMenu.Open();
                 uiSystem.UiEventHandler.GameMenu.Close();
                 uiSystem.UiEventHandler.LoadingMenu.Close();
 
                 SubscribeMainMenuEvents();
 
                 traitSystem.Init();
-                uiSystem.UiEventHandler.MainMenu.Open();
                 dataSystem.CurrencyManager.TriggerAllCurrencyChange();
                 dataSystem.StatManager.ProcessTraitsStatsModifiers(traitSystem.GetUnlockedEffects());
                 uiSystem.UiEventHandler.MainMenu.LoadWorlds(dataSystem.WorldManger.Worlds);

@@ -56,6 +56,7 @@ public class TutorialSystem : ITutorialInterface
     TraitSystemInterface traitSystem;
     InventorySystemInterface inventorySystem;
     IHealthController characterHealthController;
+    RewardSystemInterface rewardSystem;
 
     BaseCharacterAttackController characterAttackController;
 
@@ -88,7 +89,8 @@ public class TutorialSystem : ITutorialInterface
     private Dictionary<TutorialMode, TutorialRuntime> tutorialDictionary = new Dictionary<TutorialMode, TutorialRuntime>();
 
     public TutorialSystem(DataSystemInterface dataSystem, CharacterSystemInterface characterSystem, NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem, 
-        CombatSystemInterface combatSystem, IUISystem uiSystem, ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystem, InventorySystemInterface inventorySystem)
+        CombatSystemInterface combatSystem, IUISystem uiSystem, 
+        ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystem, InventorySystemInterface inventorySystem, RewardSystemInterface rewardSystemInterface)
     {
         this.dataSystem = dataSystem;
         this.characterSystem = characterSystem;
@@ -99,6 +101,7 @@ public class TutorialSystem : ITutorialInterface
         this.progressionSystem = progressionSystem;
         this.traitSystem = traitSystem;
         this.inventorySystem = inventorySystem;
+        this.rewardSystem = rewardSystemInterface;
     }
 
     public void GameplayTutorialCompleted()
@@ -156,8 +159,8 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.GameMenu.GetPassiveAbilityLevel += activeAbilityManager.GetPassiveAbilityLevel;
       //  uiSystem.OnRestartLvlRequest += HandleLvlRestart;
         uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed += ContinueGameLoop;
-        uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
-        uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
+       // uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
+       // uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
 
         activeAbilityManager.OnEXPAdded += uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
 
@@ -305,8 +308,8 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= HandleSingleLevelUp;
         uiSystem.UiEventHandler.GameMenu.GetPassiveAbilityLevel -= activeAbilityManager.GetPassiveAbilityLevel;
         uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed -= ContinueGameLoop;
-        uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked -= HandleGameLoopFinish;
-        uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted -= HandleGameLoopFinish;
+       // uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked -= HandleGameLoopFinish;
+        //uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted -= HandleGameLoopFinish;
 
         characterAttackController.OnHitTarget -= OnEnemyHitSuccess;
         characterHealthController.OnDodged -= HandleCharacterDodged;
@@ -629,6 +632,7 @@ public class TutorialSystem : ITutorialInterface
                 break;
             case LevelType.Shrine:
                 EnableMovement();
+                StartTutorialState(TutorialMode.Shrine);
                 break;
             default: break;
         }
@@ -854,8 +858,13 @@ public class TutorialSystem : ITutorialInterface
         switch (newState)
         {
             case GameState.Won:
+
+                uiSystem.UiEventHandler.TutorialMenu.Close();
+
                 OnTutorialStateChanged?.Invoke(TutorialState.MainMenu);
-                HandleGameLoopFinish();
+
+                CoroutineUtility.Start(GameMenuRoutine());
+
                 break;
             case GameState.Died:
                 uiSystem.UiEventHandler.ReviveMenu.Open();
@@ -905,13 +914,6 @@ public class TutorialSystem : ITutorialInterface
             {
                 tutorialHandler.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
             });
-    }
-
-    void HandleGameLoopFinish()
-    {
-        //uiSystem.UiEventHandler.SummaryMenu.Open();
-        // TODO: Add exp to player
-        dataSystem.AccountLevelManager.AddExp(100);
     }
 
     void MoveNextLvl()
@@ -986,7 +988,6 @@ public class TutorialSystem : ITutorialInterface
         }, () =>
         {
             Debug.Log("auto Attack Tutorial ended");
-            // StartTutorialState (TutorialMode.AutoAttack);
         });
 
         tutorialDictionary.Add(TutorialMode.AutoAttack, autoAttackTutorial);
@@ -1034,6 +1035,30 @@ public class TutorialSystem : ITutorialInterface
         });
 
         tutorialDictionary.Add(TutorialMode.UltimateAbility, UltimateAbilityTutorial);
+
+        TutorialRuntime shrineTutorial = new TutorialRuntime(TutorialMode.Shrine);
+        shrineTutorial.AssignEvents(() =>
+        {
+            shrineTutorial.IsCompleted = true;
+        }, () =>
+        {
+            Debug.Log("shrine Tutorial ended");
+        });
+
+        tutorialDictionary.Add(TutorialMode.Shrine, shrineTutorial);
+
+        //TutorialRuntime equipTutorial = new TutorialRuntime(TutorialMode.Equip);
+        //equipTutorial.AssignEvents(() =>
+        //{
+        //    equipTutorial.IsCompleted = true;
+        //    rewardSystem.ProcessRewards(new List<Reward>() { tutorialHandler.FirstItemReward });
+        //    uiSystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(tutorialHandler.FirstItemReward));
+        //}, () =>
+        //{
+        //    Debug.Log("Equip Tutorial ended");
+        //});
+
+        //tutorialDictionary.Add(TutorialMode.Equip, equipTutorial);
     }
 
     public void StartTutorialState(TutorialMode tutorialMode)
@@ -1054,5 +1079,16 @@ public class TutorialSystem : ITutorialInterface
             EnableMovement();
             OnStartUIClosed?.Invoke();
         });
+    }
+
+    public IEnumerator GameMenuRoutine()
+    {
+        uiSystem.UiEventHandler.MainMenu.Open();
+        uiSystem.UiEventHandler.MainMenu.SetAllButtonVibility(GameButtonVisiblity.Hidden);
+
+        rewardSystem.ProcessRewards(new List<Reward>() { tutorialHandler.FirstItemReward });
+        uiSystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(tutorialHandler.FirstItemReward));
+
+        yield return new WaitUntil(() => uiSystem.UiEventHandler.RewardMenu.MenuStatus == UISystem.Menu.Status.Opened);   
     }
 }

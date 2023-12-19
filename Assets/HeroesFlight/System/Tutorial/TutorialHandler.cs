@@ -14,6 +14,7 @@ public class TutorialHandler : MonoBehaviour
     [SerializeField] BoosterDropSO mobDrop;
     [SerializeField] TutorialTrigger tutorialTrigger;
     [SerializeField] TutorialSO[] gameplayTutorial;
+    [SerializeField] Reward firstItemReward;
 
     private LevelPortal portal;
     private Level currentLevel;
@@ -27,6 +28,8 @@ public class TutorialHandler : MonoBehaviour
     public Level GetCurrentLevel => currentLevel;
 
     public TutorialSO[] GameplayTutorial => gameplayTutorial;
+
+    public Reward FirstItemReward => firstItemReward;
 
     private Dictionary<TutorialMode, TutorialSO> tutorialDictionary = new Dictionary<TutorialMode, TutorialSO>();
 
@@ -90,13 +93,11 @@ public class TutorialHandler : MonoBehaviour
         tutorialRuntime.OnEnd?.Invoke();
     }
 
-
     public TutorialSO GetTutorialSO(TutorialMode fly)
     {
         return tutorialDictionary[fly];
     }
 }
-
 
 public class TutorialRuntime
 {

@@ -16,8 +16,6 @@ namespace UISystem
 {
     public class ShopMenu : BaseMenu<ShopMenu>
     {
-
-
         public event Action<IAPHelper.ProductType> OnPurchaseSuccess;
         public event Action<ChestType> TryPurchaseChest;
         public event Action<GoldPackType> TryPurchaseGoldPack;
@@ -34,14 +32,8 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI gem1200Text;
         [SerializeField] private TextMeshProUGUI gem6500Text;
 
-        [Header("Reward")]
-        [SerializeField] private GameObject rewardDisplay;
-        [SerializeField] private GameObject rewardViewParent;
-        [SerializeField] private RewardView rewardViewPrefab;
-
         [Header("Other Buttons")]
         [SerializeField] private AdvanceButton restorePurchaseButton;
-        [SerializeField] private AdvanceButton closeRewardViewButton;
         [SerializeField] private AdvanceButton quitButton;
 
         private List<RewardView> rewardViews = new List<RewardView>();
@@ -69,8 +61,6 @@ namespace UISystem
             {
                 goldPackUI.BuyButton.onClick.AddListener(() => { TryPurchaseGoldPack?.Invoke(goldPackUI.GetGoldPackType); });
             }
-
-            closeRewardViewButton.onClick.AddListener(() => { rewardDisplay.SetActive(false); });
         }
 
         public override void OnOpened()
@@ -132,25 +122,6 @@ namespace UISystem
         public void OnPurchaseFailed(Product product, PurchaseFailureDescription purchaseFailureDescription)
         {
             Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", product.definition.storeSpecificId, purchaseFailureDescription.reason));
-        }
-
-        public void DisplayRewardsVisual(params RewardVisual[] rewardVisual)
-        {
-            foreach (RewardView rewardView in rewardViews)
-            {
-                ObjectPoolManager.ReleaseObject(rewardView.gameObject);
-            }
-            rewardViews.Clear();
-
-
-            for (int i = 0; i < rewardVisual.Length; i++)
-            {
-                RewardView rewardView = ObjectPoolManager.SpawnObject(rewardViewPrefab, rewardViewParent.transform, PoolType.UI);
-                rewardView.SetVisual(rewardVisual[i]);
-                rewardViews.Add(rewardView);
-            }
-
-            rewardDisplay.SetActive(true);
         }
 
         public void SetGoldPackInfo (GoldPackType goldPackType, int goldAmount, int price)

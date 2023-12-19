@@ -58,7 +58,6 @@ namespace HeroesFlight.System.Combat
             CoroutineUtility.Stop(tickRoutine);
         }
 
-
         public void RegisterEntity(CombatEntityModel model)
         {
             if (combatEntities.TryGetValue(model.HealthController, out var combatModel)) return;
