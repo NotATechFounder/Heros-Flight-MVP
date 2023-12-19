@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using HeroesFlight.Common;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Combat.Container;
 using HeroesFlight.System.Combat.Effects.Enum;
 using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.Handlers;
@@ -13,6 +14,7 @@ using HeroesFlight.System.UI;
 using HeroesFlightProject.System.Combat.Controllers;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using StansAssets.Foundation.Async;
+using StansAssets.Foundation.Extensions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,6 +28,7 @@ namespace HeroesFlight.System.Combat
             environmentSystem = environmentSystemInterface;
             this.uiSystem=uiSystem;
             comboHandler = new CharacterComboHandler();
+            damageTexthandler = new CombatDamageTextHandler(this.uiSystem);
             comboHandler.OnComboUpdated += UpdateCharacterComboUi;
             tick = new WaitForSeconds(1f);
         }
@@ -41,8 +44,10 @@ namespace HeroesFlight.System.Combat
 
         CharacterSkillHandler characterSkillHandler;
         CharacterComboHandler comboHandler;
+        CombatDamageTextHandler damageTexthandler;
         WorldBarUI specialBar;
-
+        private CombatContainer container;
+        
         private Coroutine tickRoutine;
         private WaitForSeconds tick;
         Dictionary<IHealthController,CombatEntityModel>  combatEntities= new ();
@@ -51,6 +56,8 @@ namespace HeroesFlight.System.Combat
         public void Init(Scene scene = default, Action onComplete = null)
         {
             tickRoutine = CoroutineUtility.Start(TickRoutine());
+            container= scene.GetComponentInChildren<CombatContainer>();
+            damageTexthandler.InjectContainer(container);
         }
 
         public void Reset()
@@ -139,15 +146,17 @@ namespace HeroesFlight.System.Combat
             if(obj.IntentModel.Amount==0)
                 return;
             
-            uiSystem.ShowDamageText(obj.IntentModel.Amount, obj.RequestOwner.HealthTransform,
-                obj.IntentModel.DamageCritType == DamageCritType.Critical, true,
-                obj.IntentModel.AttackType == AttackType.Healing);
+            damageTexthandler.ShowDamagedText(obj,true);
+            // uiSystem.ShowDamageText(obj.IntentModel.Amount, obj.RequestOwner.HealthTransform,
+            //     obj.IntentModel.DamageCritType == DamageCritType.Critical, true,
+            //     obj.IntentModel.AttackType == AttackType.Healing);
         }
 
         private void HandleAiDamaged(HealthModificationRequestModel obj)
         {
-            uiSystem.ShowDamageText(obj.IntentModel.Amount, obj.RequestOwner.HealthTransform,
-                obj.IntentModel.DamageCritType == DamageCritType.Critical, false);
+            damageTexthandler.ShowDamagedText(obj,false);
+            // uiSystem.ShowDamageText(obj.IntentModel.Amount, obj.RequestOwner.HealthTransform,
+            //     obj.IntentModel.DamageCritType == DamageCritType.Critical, false);
             comboHandler.RegisterCharacterHit();
             switch (obj.IntentModel.AttackType)
             {

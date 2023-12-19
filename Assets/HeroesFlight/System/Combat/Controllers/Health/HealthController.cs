@@ -245,20 +245,5 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             TryDealDamage(healthModificationIntentModel);
         }
 
-        public void TryDealLineDamage(int numberOfLines, float delayBetweenLines,
-            HealthModificationIntentModel healthModificationIntent)
-        {
-            StartCoroutine(LineDamageRoutine(numberOfLines, delayBetweenLines, healthModificationIntent));
-        }
-
-        public IEnumerator LineDamageRoutine(int numberOfLines, float delayBetweenLines,
-            HealthModificationIntentModel healthModificationIntent)
-        {
-            for (int i = 0; i < numberOfLines; i++)
-            {
-                TryDealDamage(healthModificationIntent);
-                yield return new WaitForSeconds(delayBetweenLines);
-            }
-        }
     }
 }

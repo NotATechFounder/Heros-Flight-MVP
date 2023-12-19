@@ -116,9 +116,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                             DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, owner));
                         break;
                     case DamgeType.Line:
-                        healthController.TryDealLineDamage(numberOfLines, lineDamageDelay,
-                            new HealthModificationIntentModel(damage, DamageCritType.NoneCritical, AttackType.Regular,
-                                CalculationType.Flat,owner));
+                        healthController.TryDealDamage(new HealthModificationIntentModel(damage, DamageCritType.NoneCritical, AttackType.Regular,
+                                CalculationType.Flat,owner,numberOfLines, lineDamageDelay));
                         break;
                  
                 }

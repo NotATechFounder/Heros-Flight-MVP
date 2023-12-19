@@ -21,7 +21,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         event Action<IHealthController> OnDeath;
         event Action OnDodged;
         void TryDealDamage(HealthModificationIntentModel healthModificationIntent);
-        void TryDealLineDamage(int numberOfLines, float delayBetweenLines, HealthModificationIntentModel healthModificationIntent);
         void ModifyHealth(HealthModificationIntentModel modificationIntentModel);
         void DealHealthPercentageDamage(float percentage, DamageCritType damageCritType,AttackType attackType);
         bool IsDead();

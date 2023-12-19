@@ -22,7 +22,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected float damage;
         protected float critChance;
-
+        private IHealthController healthController;
+        
+        
         public float SkillDamage => (damage / 100 * damageMultiplier)/damageInstances;
         public float SkillCritChance => critChance + critChanceModifier;
 
@@ -31,6 +33,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             Debug.Log($"Damage is {newDamage}");
             damage = newDamage;
             critChance = newCritChance;
+            healthController = GetComponentInParent<AiHealthController>();
         }
         protected bool DetermineIfCritical()
         {
@@ -50,22 +53,23 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected HealthModificationIntentModel CreateHealthModificationIntentModel(float damageToDeal,
             DamageCritType critType)
         {
-            return new HealthModificationIntentModel(damageToDeal, critType, AttackType.Regular, damageType, null);
+            return new HealthModificationIntentModel(damageToDeal, critType, AttackType.Regular, damageType, healthController,damageInstances,betweenInstancesDelay);
         }
         protected void TryDealDamage(IHealthController health)
         {
             var isCritical = DetermineIfCritical();
             var damageToDeal = CalculateDamage(isCritical);
             var damageModel = CreateHealthModificationIntentModel(damageToDeal, DetermineCritType(isCritical));
-            if (damageInstances <= 1)
-            {
-              
-                health.TryDealDamage(damageModel);
-            }
-            else
-            {
-                health.TryDealLineDamage(damageInstances, betweenInstancesDelay, damageModel);
-            }
+            // if (damageInstances <= 1)
+            // {
+            //   
+            //     health.TryDealDamage(damageModel);
+            // }
+            // else
+            // {
+            //     health.TryDealLineDamage(damageInstances, betweenInstancesDelay, damageModel);
+            // }
+            health.TryDealDamage(damageModel);
         }
     }
 }
