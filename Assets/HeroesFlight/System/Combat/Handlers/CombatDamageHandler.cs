@@ -8,9 +8,9 @@ using UnityEngine;
 
 namespace HeroesFlight.System.Combat.Handlers
 {
-    public class CombatDamageTextHandler
+    public class CombatDamageHandler
     {
-        public CombatDamageTextHandler(IUISystem uiSystemInterface)
+        public CombatDamageHandler(IUISystem uiSystemInterface)
         {
             uiSystem = uiSystemInterface;
         }
@@ -18,7 +18,7 @@ namespace HeroesFlight.System.Combat.Handlers
         private IUISystem uiSystem;
         private CombatContainer combatContainer;
 
-        public void ShowDamagedText(HealthModificationRequestModel model, bool isPlayer)
+        public void ProcessDamageIntent(HealthModificationRequestModel model, bool isPlayer)
         {
             if (model.IntentModel.Amount == 0)
                 return;
@@ -32,6 +32,8 @@ namespace HeroesFlight.System.Combat.Handlers
         {
             for (int i = 0; i < model.IntentModel.DamageInstancesCount; i++)
             {
+                model.RequestOwner.ModifyHealth(model.IntentModel);
+                model.RequestOwner.ReactToDamage( model.IntentModel.AttackType);
                 uiSystem.ShowDamageText(model.IntentModel.Amount, model.RequestOwner.HealthTransform,
                     model.IntentModel.DamageCritType == DamageCritType.Critical, isPlayer,
                     model.IntentModel.AttackType == AttackType.Healing);

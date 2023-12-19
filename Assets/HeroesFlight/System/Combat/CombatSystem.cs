@@ -28,7 +28,7 @@ namespace HeroesFlight.System.Combat
             environmentSystem = environmentSystemInterface;
             this.uiSystem=uiSystem;
             comboHandler = new CharacterComboHandler();
-            damageTexthandler = new CombatDamageTextHandler(this.uiSystem);
+            damageInstanceHandler = new CombatDamageHandler(this.uiSystem);
             comboHandler.OnComboUpdated += UpdateCharacterComboUi;
             tick = new WaitForSeconds(1f);
         }
@@ -44,7 +44,7 @@ namespace HeroesFlight.System.Combat
 
         CharacterSkillHandler characterSkillHandler;
         CharacterComboHandler comboHandler;
-        CombatDamageTextHandler damageTexthandler;
+        CombatDamageHandler damageInstanceHandler;
         WorldBarUI specialBar;
         private CombatContainer container;
         
@@ -57,7 +57,7 @@ namespace HeroesFlight.System.Combat
         {
             tickRoutine = CoroutineUtility.Start(TickRoutine());
             container= scene.GetComponentInChildren<CombatContainer>();
-            damageTexthandler.InjectContainer(container);
+            damageInstanceHandler.InjectContainer(container);
         }
 
         public void Reset()
@@ -110,7 +110,7 @@ namespace HeroesFlight.System.Combat
                 data.EffectHandler?.TriggerCombatEffect(CombatEffectApplicationType.OnTakeDamage,
                     requestModel);
 
-                requestModel.RequestOwner.ModifyHealth(requestModel.IntentModel);
+               
                 switch (data.EntityType)
                 {
                     case CombatEntityType.Player:
@@ -146,7 +146,7 @@ namespace HeroesFlight.System.Combat
             if(obj.IntentModel.Amount==0)
                 return;
             
-            damageTexthandler.ShowDamagedText(obj,true);
+            damageInstanceHandler.ProcessDamageIntent(obj,true);
             // uiSystem.ShowDamageText(obj.IntentModel.Amount, obj.RequestOwner.HealthTransform,
             //     obj.IntentModel.DamageCritType == DamageCritType.Critical, true,
             //     obj.IntentModel.AttackType == AttackType.Healing);
@@ -154,7 +154,7 @@ namespace HeroesFlight.System.Combat
 
         private void HandleAiDamaged(HealthModificationRequestModel obj)
         {
-            damageTexthandler.ShowDamagedText(obj,false);
+            damageInstanceHandler.ProcessDamageIntent(obj,false);
             // uiSystem.ShowDamageText(obj.IntentModel.Amount, obj.RequestOwner.HealthTransform,
             //     obj.IntentModel.DamageCritType == DamageCritType.Critical, false);
             comboHandler.RegisterCharacterHit();

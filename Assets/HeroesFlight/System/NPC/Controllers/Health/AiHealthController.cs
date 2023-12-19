@@ -19,13 +19,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public override void ModifyHealth(HealthModificationIntentModel modificationIntentModel)
         {
-            aiController.Aggravate();
-            if (modificationIntentModel.AttackType != AttackType.DoT)
-            {
-                aiController.ProcessKnockBack();
-            }
-
+          
             base.ModifyHealth(modificationIntentModel);
+        }
+
+        public override void ReactToDamage(AttackType attackType)
+        {
+            aiController.Aggravate();
+            if (attackType != AttackType.DoT)
+            {
+                aiController.ProcessHit();
+            }
+            base.ReactToDamage(attackType);
         }
 
         public void SetHealthStats(float maxHealth, float defence)

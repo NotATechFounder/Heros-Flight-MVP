@@ -1,14 +1,12 @@
-using HeroesFlight.Common.Enum;
-using HeroesFlight.System.Gameplay.Enum;
-using HeroesFlight.System.Gameplay.Model;
 using System;
+using HeroesFlight.Common.Enum;
 using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.Model;
+using HeroesFlight.System.Gameplay.Enum;
+using HeroesFlight.System.Gameplay.Model;
+using HeroesFlight.System.NPC.Controllers;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using System.Collections;
-using HeroesFlight.System.NPC.Controllers;
-using UnityEngine.Serialization;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -51,6 +49,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public float MaxHealth => maxHealth;
         public float CurrentHealth => currentHealth;
         public float CurrentHealthProportion => (float)currentHealth / maxHealth;
+        public float ImmortalityDuration => immortalityDuration;
         public event Action<HealthModificationRequestModel> OnDamageReceiveRequest;
         public event Action<HealthModificationIntentModel> OnHitWhileIsShielded;
         public event Action<IHealthController> OnDeath;
@@ -89,39 +88,112 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             }
         }
 
+        /// <summary>
+        /// Tries to deal damage with the given health modification intent.
+        /// </summary>
+        /// <param name="healthModificationIntent">The health modification intent model to deal damage with.</param>
         public virtual void TryDealDamage(HealthModificationIntentModel healthModificationIntent)
         {
-            // To remove
+            if (CanAvoidDamage(healthModificationIntent))
+            {
+                return;
+            }
+
+            ProcessDamage(healthModificationIntent);
+        }
+
+        /// <summary>
+        /// Determines if an entity can avoid damage based on the provided health modification intent.
+        /// </summary>
+        /// <param name="healthModificationIntent">The health modification intent model.</param>
+        /// <returns>True if the entity can avoid damage, otherwise false.</returns>
+        private bool CanAvoidDamage(HealthModificationIntentModel healthModificationIntent)
+        {
+            return IsDead() ||
+                   CheckIfAlreadyImmortal(healthModificationIntent) ||
+                   HasDodgedAttack() ||
+                   ProccesHitTypedHealth() ||
+                   ProcessShieldedState(healthModificationIntent);
+        }
+
+        /// <summary>
+        /// Process the damage received by the entity.
+        /// </summary>
+        /// <param name="healthModificationIntent">The health modification intent.</param>
+        private void ProcessDamage(HealthModificationIntentModel healthModificationIntent)
+        {
+            UpdateImmortalityState(healthModificationIntent);
+            UpdateIntentsModelTarget(healthModificationIntent);
+            InvokeDamageReceiveRequest(healthModificationIntent);
+        }
+
+        /// <summary>
+        /// Invokes the damage receive request event, passing the health modification intent.
+        /// </summary>
+        /// <param name="healthModificationIntent">The health modification intent model.</param>
+        private void InvokeDamageReceiveRequest(HealthModificationIntentModel healthModificationIntent)
+        {
+            OnDamageReceiveRequest?.Invoke(new HealthModificationRequestModel(healthModificationIntent, this));
+        }
+
+     
+
+        private void UpdateIntentsModelTarget(HealthModificationIntentModel healthModificationIntent)
+        {
+            healthModificationIntent.SetTarget(transform);
+        }
+
+        private bool ProccesHitTypedHealth()
+        {
             if (useHit)
             {
                 DealHit();
-                return;
+                return true;
             }
 
+            return false;
+        }
+
+        private bool ProcessShieldedState(HealthModificationIntentModel healthModificationIntent)
+        {
             if (IsShielded)
             {
                 OnHitWhileIsShielded?.Invoke(healthModificationIntent);
-                return;
+                return true;
             }
 
-            if (isCurrentlyImmortalByTime || isCurrentlyImmortalByState)
-            {
-                return;
-            }
+            return false;
+        }
 
-
-            if (IsDead())
-                return;
-
+        private bool HasDodgedAttack()
+        {
             if (DodgeAttack())
             {
                 OnDodged?.Invoke();
-                return;
+                return true;
+            }
+
+            return false;
+        }
+
+        private void UpdateImmortalityState(HealthModificationIntentModel healthModificationIntent)
+        {
+            if (becomeImmortalOnHit && healthModificationIntent.AttackType != AttackType.DoT)
+            {
+                IsImmortal = true;
+                currentImmortalityDuration = immortalityDuration;
+            }
+        }
+
+        private bool CheckIfAlreadyImmortal(HealthModificationIntentModel healthModificationIntent)
+        {
+            if (isCurrentlyImmortalByTime || isCurrentlyImmortalByState)
+            {
+                return true;
             }
 
 
-            healthModificationIntent.SetTarget(transform);
-            OnDamageReceiveRequest?.Invoke(new HealthModificationRequestModel(healthModificationIntent, this));
+            return false;
         }
 
         public virtual void ModifyHealth(HealthModificationIntentModel modificationIntentModel)
@@ -131,12 +203,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 var resultDamage = modificationIntentModel.Amount -
                                    StatCalc.GetPercentage(modificationIntentModel.Amount, defence);
                 currentHealth -= resultDamage;
-                flashEffect?.Flash(immortalityDuration);
-                if (becomeImmortalOnHit && modificationIntentModel.AttackType != AttackType.DoT)
-                {
-                    IsImmortal = true;
-                    currentImmortalityDuration = immortalityDuration;
-                }
             }
             else
             {
@@ -183,12 +249,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             return currentHealth <= 0;
         }
 
-        public virtual void Reset()
-        {
-            Init();
-            OnDamageReceiveRequest = null;
-            OnDeath = null;
-        }
 
         public virtual void Revive(float healthPercentage)
         {
@@ -213,10 +273,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             OnDeath?.Invoke(this);
         }
 
-        protected void TriggerDamageMessage(HealthModificationIntentModel healthModificationIntent)
-        {
-            healthModificationIntent.SetTarget(transform);
-        }
 
         protected void SetMaxHealth(float health)
         {
@@ -224,7 +280,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
         }
 
-        public bool DodgeAttack()
+        protected bool DodgeAttack()
         {
             return Random.Range(0, 100) < dodgeChance;
         }
@@ -245,5 +301,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             TryDealDamage(healthModificationIntentModel);
         }
 
+        public virtual void ReactToDamage(AttackType attackType)
+        {
+            flashEffect?.Flash(immortalityDuration);
+        }
     }
 }
