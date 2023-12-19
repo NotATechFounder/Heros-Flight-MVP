@@ -199,6 +199,12 @@ namespace HeroesFlight.System.Combat
             specialBar.ChangeValue(0);
         }
 
+        public void SetSpecialBarValue(float value)
+        {
+            specialBar.ChangeValue(value);
+            uiSystem.UpdateUltimateButton(value);
+        }
+
         public void StartCharacterComboCheck()
         {
            comboHandler.StartComboCheck();

@@ -28,7 +28,7 @@ namespace HeroesFlight.System.Gameplay.Model
        
         public WorldType WorldType => worldType;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
-        public Level AngelsGambitLevel => angelsGambitLevel;
+        public Level ShrineLevel => angelsGambitLevel;
         public BoosterDropSO BossDrop => bossDrop;
         public string WorldBossMusicKey => bossMusicKey;
         public SpawnModel SpawnModel => spawnModel;

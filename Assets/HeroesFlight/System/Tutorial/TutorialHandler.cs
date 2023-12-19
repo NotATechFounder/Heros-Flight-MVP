@@ -49,28 +49,15 @@ public class TutorialHandler : MonoBehaviour
 
     public Level GetLevel()
     {
-        if (CurrentLvlIndex >= tutorialModel.SpawnModel.Levels.Length)
-            return null;
-
-        if (CurrentLvlIndex == 0)
+        if (currentLevel != null)
         {
-            return currentLevel = tutorialModel.SpawnModel.Levels[CurrentLvlIndex];
-        }
-
-        if (tutorialModel != null && currentLevel.LevelType != LevelType.Shrine && CurrentLvlIndex % 2 != 0)
-        {
-            return currentLevel = tutorialModel.AngelsGambitLevel;
+            return currentLevel = tutorialModel.ShrineLevel;
         }
 
         currentLevel = tutorialModel.SpawnModel.Levels[CurrentLvlIndex];
         CurrentLvlIndex++;
 
         return currentLevel;
-    }
-
-    public Level GetAngelGambitLevel()
-    {
-        return tutorialModel.AngelsGambitLevel;
     }
 
     public void EnablePortal(Vector2 position)

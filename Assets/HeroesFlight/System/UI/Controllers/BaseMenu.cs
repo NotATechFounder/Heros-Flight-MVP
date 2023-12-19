@@ -10,6 +10,8 @@ namespace UISystem
         public event Action OnMenuOpened;
         public event Action OnMenuClosed;
 
+        public GameButton[] gameButtons;
+
         protected override void Awake()
         {
             if (Instance != null) Destroy(gameObject);
