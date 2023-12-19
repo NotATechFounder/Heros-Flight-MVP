@@ -68,24 +68,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
         {
             if (target.TryGetComponent<IHealthController>(out var health))
             {
-                if (canCrit)
-                {
-                    bool isCritical = Random.Range(0, 100) <= critChance;
-
-                    float damageToDeal = isCritical
-                        ? damage * critModifier
-                        : damage;
-
-                    var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
-                    var damageModel = new HealthModificationIntentModel(damageToDeal,
-                        type, AttackType.Regular, CalculationType.Flat, healthController);
-                    health.TryDealDamage(damageModel);
-                }
-                else
-                {
-                    health.TryDealDamage(new HealthModificationIntentModel(damage,
-                        DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, healthController));
-                }
+                TryDealDamage(health);
             }
         }
 
@@ -109,6 +92,8 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
             currentCooldown = CoolDown;
             StartCoroutine(ChargeMovement(direction));
         }
+        
+      
 
         void HandleAnimationEvents(AttackAnimationEvent obj)
         {

@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections;
-using HeroesFlight.Common.Enum;
-using HeroesFlight.System.Combat.Enum;
-using HeroesFlight.System.Gameplay.Enum;
-using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 {
@@ -17,7 +12,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
         [SerializeField] private float preDashDelay = 1f;
         [SerializeField] private float dashForce=100;
         [SerializeField] Trigger2DObserver observer;
-
+        [SerializeField] private bool useYAxis = true;
         private Rigidbody2D rigidbody2D;
         private IHealthController healthController;
         private EnemyAttackControllerBase attackController;
@@ -45,10 +40,20 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
                     targetObject.SetActive(false);
                     onComplete?.Invoke();
                 });
-                var direction = (attackController.Target.HealthTransform.position - transform.position).normalized;
+                var direction = CalculateDirection();
                 currentCooldown = CoolDown;
                 StartCoroutine(DashMovement(direction));
             }
+        }
+
+        private Vector3 CalculateDirection()
+        {
+            var direction = (attackController.Target.HealthTransform.position - transform.position).normalized;
+           if (!useYAxis)
+            {
+                direction.y = 0;
+            }
+            return direction;
         }
 
         private void HandleTargetEntered(Collider2D obj)
@@ -57,25 +62,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
             if (health != attackController.Target)
                 return;
             
-            
-            if (canCrit)
-            {
-                bool isCritical = Random.Range(0, 100) <= critChance;
-
-                float damageToDeal = isCritical
-                    ? damage * critModifier
-                    : damage;
-
-                var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
-                var damageModel = new HealthModificationIntentModel(damageToDeal,
-                    type, AttackType.Regular, CalculationType.Flat, healthController);
-                health.TryDealDamage(damageModel);
-            }
-            else
-            {
-                health.TryDealDamage(new HealthModificationIntentModel(damage,
-                    DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, healthController));
-            }
+            TryDealDamage(health);
         }
 
         IEnumerator DashMovement(Vector3 direction)
@@ -84,7 +71,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
             if (!healthController.IsDead())
             {
                 targetObject.SetActive(true);
-                rigidbody2D.AddForce(direction * dashForce, ForceMode2D.Impulse);    
+                rigidbody2D.velocity = direction * dashForce;
             }
             
         }

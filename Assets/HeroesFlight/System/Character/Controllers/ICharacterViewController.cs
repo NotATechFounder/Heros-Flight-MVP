@@ -8,5 +8,6 @@ namespace HeroesFlight.System.Character
     {
         void SetupView(AppearanceData data);
         void Equip(string itemSkin, ItemVisualType itemType);
+      
     }
 }

@@ -65,18 +65,18 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
                     bool isCritical = Random.Range(0, 100) <= critChance;
 
                     float damageToDeal = isCritical
-                        ? damage * critModifier
+                        ? SkillDamage * critModifier
                         : damage;
 
                     var type = isCritical ? DamageCritType.Critical : DamageCritType.NoneCritical;
                     var damageModel = new HealthModificationIntentModel(damageToDeal,
-                        type, AttackType.Regular, CalculationType.Flat, healthController);
+                        type, AttackType.Regular, damageType, healthController);
                     health.TryDealDamage(damageModel);
                 }
                 else
                 {
-                    health.TryDealDamage(new HealthModificationIntentModel(damage,
-                        DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, healthController));
+                    health.TryDealDamage(new HealthModificationIntentModel(SkillDamage,
+                        DamageCritType.NoneCritical, AttackType.Regular, damageType, healthController));
                 }
             }
         }

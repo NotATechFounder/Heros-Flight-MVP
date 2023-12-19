@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-
 namespace HeroesFlight.System.NPC.Controllers
 {
     public class AiViewController : MonoBehaviour,AiSubControllerInterface
@@ -13,14 +12,14 @@ namespace HeroesFlight.System.NPC.Controllers
         [SerializeField] Color fadeColor;
         MeshRenderer mesh;
         MaterialPropertyBlock propertyBlock;
+        
+      
 
         public void Init()
         {
             mesh = GetComponentInChildren<MeshRenderer>();
             propertyBlock = new MaterialPropertyBlock();
             mesh.GetPropertyBlock(propertyBlock);
-       
-
         }
 
         public void StartFadeIn(float duration,Action onComplete)
@@ -30,7 +29,6 @@ namespace HeroesFlight.System.NPC.Controllers
         
         public void UpdateAiRotation(Vector2 velocity)
         {
-        
             transform.eulerAngles = new Vector2(0, velocity.x >= 0 ? 0 : 180f);
             if (healthbarTransform != null)
             {
@@ -62,5 +60,7 @@ namespace HeroesFlight.System.NPC.Controllers
             mesh.SetPropertyBlock(propertyBlock);
             onComplete.Invoke();
         }
+
+       
     }
 }

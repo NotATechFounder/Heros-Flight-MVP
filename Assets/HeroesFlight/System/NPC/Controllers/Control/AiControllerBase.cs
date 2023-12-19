@@ -4,10 +4,10 @@ using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Data;
 using HeroesFlightProject.System.NPC.Enum;
 using HeroesFlightProject.System.NPC.State;
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 # endif
-using UnityEngine;
 
 namespace HeroesFlightProject.System.NPC.Controllers
 {
@@ -22,9 +22,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         public AiAgentModel AgentModel => m_Model;
         public Transform CurrentTarget => currentTarget;
 
-        public int GetHealth => currentHealth;
-
-        public float GetDamage => currentDamage;
+       
 
         protected AiViewController viewController;
         protected AiAnimatorInterface animator;
@@ -33,8 +31,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         protected Rigidbody2D rigidBody;
         protected Transform currentTarget;
         protected MonsterStatModifier statModifier;
-        protected int currentHealth;
-        protected float currentDamage;
+      
         protected bool isDisabled;
         protected FSMachine stateMachine;
         protected AiMoverInterface mover;
@@ -44,6 +41,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         float timeSinceAggravated = Mathf.Infinity;
         Vector2 wanderPosition;
+       
 
         public virtual void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier,
             Sprite currentCardIcon)
@@ -62,10 +60,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
             attacker = GetComponent<EnemyAttackControllerBase>();
             currentTarget = player;
             viewController.Init();
-
-            currentHealth = Mathf.RoundToInt(statModifier.CalculateAttack(health));
-
-            currentDamage = statModifier.CalculateAttack(damage);
             attacker.SetAttackStats(statModifier.CalculateAttack(damage), m_Model.AiData.AttackRange,
                 m_Model.AiData.AttackSpeed, m_Model.AiData.CriticalHitChance);
             attacker.SetTarget(player.GetComponent<IHealthController>());
@@ -101,7 +95,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         }
 
 
-        public virtual void ProcessKnockBack()
+        public virtual void ProcessHit()
         {
             animator.PlayHitAnimation(m_Model.AttacksInteruptable);
         }

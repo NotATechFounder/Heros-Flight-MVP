@@ -1,8 +1,5 @@
-﻿using HeroesFlight.System.Gameplay.Enum;
-using HeroesFlightProject.System.Gameplay.Controllers;
+﻿using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
-using UnityEngine;
-
 
 namespace HeroesFlightProject.System.NPC.State.AIStates
 {
@@ -23,6 +20,7 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
             aiController.FaceTarget();
             attackController.AttackTargets(() => { Exit(); });
             mover.SetMovementState(false);
+            base.Enter();
         }
 
         protected override void Update() { }

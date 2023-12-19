@@ -19,6 +19,7 @@ namespace HeroesFlight.System.NPC.Controllers
         MaterialPropertyBlock mpb;
         MeshRenderer meshRenderer;
         WaitForSeconds wait;
+        private Coroutine flashRoutine;
         int flashCount = 3;
 
         void Awake()
@@ -32,13 +33,20 @@ namespace HeroesFlight.System.NPC.Controllers
         public void Flash () 
         {
             meshRenderer.GetPropertyBlock(mpb);
-            StartCoroutine(FlashRoutine(interval));
+            flashRoutine=  StartCoroutine(FlashRoutine(interval));
         }
 
         public void Flash(float duration)
         {
+            if (flashRoutine != null)
+            {
+                StopCoroutine(flashRoutine);
+                var fillPhase = Shader.PropertyToID(fillPhaseProperty);
+                mpb.SetFloat(fillPhase, 0f);
+                meshRenderer.SetPropertyBlock(mpb);
+            }
             meshRenderer.GetPropertyBlock(mpb);
-            StartCoroutine(FlashRoutine(duration));
+            flashRoutine=  StartCoroutine(FlashRoutine(duration));
         }
 
         IEnumerator FlashRoutine (float duration) {

@@ -60,8 +60,8 @@ public class SwordWhirlwind : RegularActiveAbility
             if (collider2D[i].TryGetComponent(out IHealthController healthController))
             {
 
-                healthController.TryDealLineDamage(currentlinesOfDamage, lineDamageDelay, new HealthModificationIntentModel(currentDamage,
-                DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat,null));
+                healthController.TryDealDamage( new HealthModificationIntentModel(currentDamage,
+                DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat,null,linesOfDamage,lineDamageDelay));
             }
         }
     }
