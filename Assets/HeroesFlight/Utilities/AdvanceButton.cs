@@ -53,10 +53,7 @@ public class AdvanceButton : Button
     {
         base.Awake();
         buttonImage = transform.GetComponent<Image>();
-        if (ChangeChildColor)
-        {
-            childImages = GetComponentsInChildren<Image>();
-        }
+        childImages = GetComponentsInChildren<Image>();
     }
 
     protected override void Start()
