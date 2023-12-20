@@ -7,6 +7,7 @@ using UnityEngine;
 
 
 [CustomEditor(typeof(GameAreaModel))]
+[CanEditMultipleObjects]
 public class GameAreaModelEditor : Editor
 {
     SerializedProperty worldTypeProperty;
@@ -154,7 +155,7 @@ public class GameAreaModelEditor : Editor
         EditorGUILayout.LabelField("Level Complection ExpCurve", EditorStyles.boldLabel);
         DrawData(levelComplectionExpCurveProperty);
         EditorGUILayout.Space(10);
-        EditorGUILayout.LabelField("Run Complection ExpCurve", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("In Run Complection ExpCurve", EditorStyles.boldLabel);
         DrawData(runComplectionExpCurveProperty);
         EditorGUILayout.Space(20);
     }

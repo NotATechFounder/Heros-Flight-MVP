@@ -37,6 +37,10 @@ namespace HeroesFlight.System.Gameplay.Model
         public MobDifficultyHolder MobDifficulty => mobDifficulty;
         public MobDropTableHolder MobDropTableHolder => mobDropTable;
 
+        public CustomAnimationCurve LevelComplectionExpCurve => levelComplectionExpCurve;
+
+        public CustomAnimationCurve InRunComplectionExpCurve => runComplectionExpCurve;
+
         public float TimeStopRestoreSpeed => timeStopRestoreSpeed;
         public float TimeStopDuration => timeStopDuration;
     }

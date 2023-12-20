@@ -988,10 +988,10 @@ namespace HeroesFlight.System.Gameplay
         void HandleHeroProgression()
         {
             godsBenevolence.DeactivateGodsBenevolence();
-            environmentSystem.CurrencySpawner.ActivateExpItems(() =>
+            environmentSystem.CurrencySpawner.ActivateExpEffectItems(() =>
             {
-                progressionSystem.AddCurrency(CurrencyKeys.RunExperience, (int)currentLevel.ExpReward);
-                activeAbilityManager.AddExp(progressionSystem.GetCurrency(CurrencyKeys.RunExperience));
+                activeAbilityManager.AddExp(container.CurrentModel.InRunComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
+
                 progressionSystem.CollectRunCurrency();
             });
         }
@@ -1202,7 +1202,7 @@ namespace HeroesFlight.System.Gameplay
         {
             uiSystem.UiEventHandler.SummaryMenu.Open();
 
-            // TODO: Add exp to player
+            // TODO: Add exp to player, check if run has been completed before
             dataSystem.AccountLevelManager.AddExp(100);
         }
 

@@ -34,6 +34,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UISystem;
+using System.ComponentModel;
 
 public class TutorialSystem : ITutorialInterface
 {
@@ -828,10 +829,9 @@ public class TutorialSystem : ITutorialInterface
     void HandleHeroProgression()
     {
         godsBenevolence.DeactivateGodsBenevolence();
-        environmentSystem.CurrencySpawner.ActivateExpItems(() =>
+        environmentSystem.CurrencySpawner.ActivateExpEffectItems(() =>
         {
-            progressionSystem.AddCurrency(CurrencyKeys.RunExperience, (int)currentLevel.ExpReward);
-            activeAbilityManager.AddExp(progressionSystem.GetCurrency(CurrencyKeys.RunExperience));
+            activeAbilityManager.AddExp(100);
             progressionSystem.CollectRunCurrency();
         });
     }
@@ -1093,6 +1093,19 @@ public class TutorialSystem : ITutorialInterface
         });
 
         tutorialDictionary.Add(TutorialMode.Equip, equipItemTutorial);
+
+        TutorialRuntime unlockStatPointTutorial = new TutorialRuntime(TutorialMode.UnlockStatPoint);
+        unlockStatPointTutorial.AssignEvents(() =>
+        {
+            uiSystem.UiEventHandler.StatePointsMenu.Open();
+
+        }, () =>
+        {
+
+            Debug.Log("unlockStatPoint Tutorial ended");
+        });
+
+        tutorialDictionary.Add(TutorialMode.UnlockStatPoint, unlockStatPointTutorial);
     }
 
     private void AnyButtonPointerDown(GameButtonType type)
