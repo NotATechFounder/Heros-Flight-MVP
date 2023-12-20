@@ -88,6 +88,8 @@ public class TutorialSystem : ITutorialInterface
     private TutorialRuntime currentTutorialRuntime;
     private Dictionary<TutorialMode, TutorialRuntime> tutorialDictionary = new Dictionary<TutorialMode, TutorialRuntime>();
 
+    private bool itemEquipped;
+
     public TutorialSystem(DataSystemInterface dataSystem, CharacterSystemInterface characterSystem, NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem, 
         CombatSystemInterface combatSystem, IUISystem uiSystem, 
         ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystem, InventorySystemInterface inventorySystem, RewardSystemInterface rewardSystemInterface)
@@ -1047,18 +1049,12 @@ public class TutorialSystem : ITutorialInterface
 
         tutorialDictionary.Add(TutorialMode.Shrine, shrineTutorial);
 
-        //TutorialRuntime equipTutorial = new TutorialRuntime(TutorialMode.Equip);
-        //equipTutorial.AssignEvents(() =>
-        //{
-        //    equipTutorial.IsCompleted = true;
-        //    rewardSystem.ProcessRewards(new List<Reward>() { tutorialHandler.FirstItemReward });
-        //    uiSystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(tutorialHandler.FirstItemReward));
-        //}, () =>
-        //{
-        //    Debug.Log("Equip Tutorial ended");
-        //});
+        inventorySystem.InventoryHandler.OnItemEquipped += InventoryHandler_OnItemEquipped;
+    }
 
-        //tutorialDictionary.Add(TutorialMode.Equip, equipTutorial);
+    private void InventoryHandler_OnItemEquipped()
+    {
+        itemEquipped = true;
     }
 
     public void StartTutorialState(TutorialMode tutorialMode)
@@ -1084,10 +1080,16 @@ public class TutorialSystem : ITutorialInterface
     public IEnumerator GameMenuRoutine()
     {
         uiSystem.UiEventHandler.MainMenu.Open();
-        uiSystem.UiEventHandler.MainMenu.SetAllButtonVibility(GameButtonVisiblity.Hidden);
+        uiSystem.UiEventHandler.MainMenu.SetButtonVibilityOnly(GameButtonType.Mainmenu_Inventory, GameButtonVisiblity.Visible);
+
+        uiSystem.UiEventHandler.InventoryMenu.SetAllButtonVibility(GameButtonVisiblity.Hidden);
 
         rewardSystem.ProcessRewards(new List<Reward>() { tutorialHandler.FirstItemReward });
         uiSystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(tutorialHandler.FirstItemReward));
+
+        yield return new WaitUntil(() => itemEquipped);
+
+        uiSystem.UiEventHandler.InventoryMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
 
         yield return new WaitUntil(() => uiSystem.UiEventHandler.RewardMenu.MenuStatus == UISystem.Menu.Status.Opened);   
     }

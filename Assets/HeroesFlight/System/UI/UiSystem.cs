@@ -108,6 +108,7 @@ namespace HeroesFlight.System.UI
         private void MainMenu_OnNavigationButtonClicked(UISystem.MenuNavigationButtonType obj)
         {
             TryDisableMenu(UiEventHandler.SettingsMenu);
+            TryDisableMenu(UiEventHandler.RewardMenu);
 
             switch (obj)
             {
