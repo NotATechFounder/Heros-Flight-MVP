@@ -4,6 +4,7 @@ using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using StansAssets.Foundation.Async;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace HeroesFlight.System.NPC.Controllers.Ability
 {
@@ -11,10 +12,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
     {
         [Header("Spawn data")]
         [SerializeField] int amountToSpawn;
-        [SerializeField] AiControllerBase targetToSpawn;
-        [Header("Mobs stats")]
-        [SerializeField] int health;
-        [SerializeField] float damage;
+        [SerializeField] List<AiControllerBase> targetToSpawn=new ();
         List<AiControllerBase> spawnedMobs = new();
         public event Action<IHealthController> OnEnemySpawned;
         Transform player;
@@ -32,9 +30,8 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
             {
                 for (int i = 0; i < amountToSpawn; i++)
                 {
-                    var newMob = Instantiate(targetToSpawn, transform.position, Quaternion.identity);
-                    newMob.Init(player,health,damage,new MonsterStatModifier(),null);
-                  //  newMob.GetComponent<IHealthController>().Init();
+                    var targetMobIndex = Random.Range(0, targetToSpawn.Count);
+                    var newMob = Instantiate(targetToSpawn[targetMobIndex], transform.position, Quaternion.identity);
                     spawnedMobs.Add(newMob);
                     OnEnemySpawned?.Invoke( newMob.GetComponent<IHealthController>());
                 }

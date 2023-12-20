@@ -60,15 +60,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             var isCritical = DetermineIfCritical();
             var damageToDeal = CalculateDamage(isCritical);
             var damageModel = CreateHealthModificationIntentModel(damageToDeal, DetermineCritType(isCritical));
-            // if (damageInstances <= 1)
-            // {
-            //   
-            //     health.TryDealDamage(damageModel);
-            // }
-            // else
-            // {
-            //     health.TryDealLineDamage(damageInstances, betweenInstancesDelay, damageModel);
-            // }
+          
             health.TryDealDamage(damageModel);
         }
     }

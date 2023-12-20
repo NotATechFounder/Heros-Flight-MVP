@@ -34,7 +34,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
         Dictionary<BossCrystalsHealthController, List<BossAbilityBase>> abilityNodesCache = new();
 
 
-        public void Init()
+        public virtual void Init()
         {
             cameraShaker = FindObjectOfType<CameraController>().CameraShaker;
             animator = GetComponent<AiAnimationController>();

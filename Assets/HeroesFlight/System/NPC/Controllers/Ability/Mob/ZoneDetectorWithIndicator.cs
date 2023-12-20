@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class EntanglingRoot : AreaDamageEntity
+    public class ZoneDetectorWithIndicator : AreaDamageEntity
     {
         [SerializeField] GameObject staticIndicator;
 

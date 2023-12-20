@@ -16,11 +16,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [SerializeField] protected ParticleSystem abilityParticle;
         [SerializeField] protected bool abilityInteraptuble;
         protected AiAnimatorInterface animator;
+        protected AttackAbilityBaseNPC attackController;
         protected float currentCooldown;
        public float UseChance => useChance;
        protected virtual void Awake()
         {
             animator = GetComponentInParent<AiAnimatorInterface>();
+            attackController = GetComponentInParent<AttackAbilityBaseNPC>();
             currentCooldown = 0;
         }
 
