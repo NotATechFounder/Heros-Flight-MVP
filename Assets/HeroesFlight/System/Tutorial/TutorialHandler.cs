@@ -78,21 +78,6 @@ public class TutorialHandler : MonoBehaviour
         CurrentLvlIndex = v;
     }
 
-    public void StartTutorialState(TutorialRuntime tutorialRuntime)
-    {
-        StartCoroutine(TutorialState(tutorialRuntime));
-    }
-
-    public IEnumerator TutorialState(TutorialRuntime tutorialRuntime)
-    {
-        tutorialRuntime.OnBegin?.Invoke();
-        while (!tutorialRuntime.IsCompleted)
-        {
-            yield return null;
-        }
-        tutorialRuntime.OnEnd?.Invoke();
-    }
-
     public TutorialSO GetTutorialSO(TutorialMode fly)
     {
         return tutorialDictionary[fly];

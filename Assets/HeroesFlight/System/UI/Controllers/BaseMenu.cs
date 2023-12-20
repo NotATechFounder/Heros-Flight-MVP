@@ -18,7 +18,7 @@ namespace UISystem
             else
             {
                 base.Awake();
-                gameButtons = GetComponentsInChildren<AdvanceButton>();
+                gameButtons = GetComponentsInChildren<AdvanceButton>(true);
             }
         }
 
@@ -93,6 +93,19 @@ namespace UISystem
             {
                 button.SetVisibility(gameButtonVisiblity);
             }
+        }
+
+        public AdvanceButton GetButton(GameButtonType gameButtonType)
+        {
+            foreach (AdvanceButton button in gameButtons)
+            {
+                if (button.ButtonType == gameButtonType)
+                {
+                    return button;
+                }
+            }
+
+            return null;
         }
     }
 }
