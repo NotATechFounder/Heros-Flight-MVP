@@ -1,7 +1,6 @@
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Gameplay.Model;
-using HeroesFlight.System.NPC.Controllers;
-using UnityEngine;
+
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
@@ -40,13 +39,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             base.ProcessDeath();
         }
 
-        public override void Reset()
-        {
-            controller.SetActionState(true);
-            attackController.ToggleControllerState(true);
-            animator.PlayDeathAnimation();
-            base.Reset();
-        }
+      
 
         public override void Revive(float healthPercentage)
         {

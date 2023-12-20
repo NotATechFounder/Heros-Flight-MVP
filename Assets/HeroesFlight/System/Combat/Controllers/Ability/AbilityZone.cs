@@ -8,5 +8,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
     {
         public WarningLine ZoneVisual;
         public OverlapChecker ZoneChecker;
+        public float Width;
     }
 }

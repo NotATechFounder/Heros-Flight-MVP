@@ -19,8 +19,6 @@ namespace HeroesFlightProject.System.NPC.Controllers
             currentTarget = player;
             OnInit();
             viewController.StartFadeIn(2f,Enable);
-            currentHealth = Mathf.RoundToInt(statModifier.CalculateAttack(health));
-            currentDamage = statModifier.CalculateAttack(damage);
             DisplayModifiyer(currentCardIcon);
             Enable();
         }
@@ -51,9 +49,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
             base.Disable();
         }
 
-        public override void ProcessKnockBack()
+        public override void ProcessHit()
         {
-            base.ProcessKnockBack();
+            base.ProcessHit();
             rigidBody.velocity = Vector2.zero;
             var forceVector = currentTarget.position.x > transform.position.x ? Vector2.left : Vector2.right;
             forceVector.Normalize();

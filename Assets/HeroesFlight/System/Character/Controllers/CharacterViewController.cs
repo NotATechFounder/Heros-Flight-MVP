@@ -1,9 +1,12 @@
 using HeroesFlight.Common;
 using HeroesFlight.System.Character.Enum;
+using HeroesFlight.System.NPC.Controllers;
+using HeroesFlightProject.System.Gameplay.Controllers;
 using Spine;
 using Spine.Unity;
 using Spine.Unity.AttachmentTools;
 using UnityEngine;
+using NotImplementedException = System.NotImplementedException;
 
 
 namespace HeroesFlight.System.Character
@@ -23,6 +26,7 @@ namespace HeroesFlight.System.Character
         [SpineSkin][SerializeField] string fullSkin;
         SkeletonAnimation m_SkeletonAnimation;
 
+       
         // This "naked body" skin will likely change only once upon character creation,
         // so we store this combined set of non-equipment Skins for later re-use.
         Skin m_CharacterSkin;
@@ -143,5 +147,7 @@ namespace HeroesFlight.System.Character
         public void Equip(string itemSkin, ItemVisualType itemType)
         {
         }
+
+       
     }
 }

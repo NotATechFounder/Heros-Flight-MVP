@@ -6,7 +6,7 @@ using UnityEngine;
 public class TutorialSO : ScriptableObject
 {
     [SerializeField] private TutorialMode tutorialState;
-    [SerializeField] private List<TutorialStep> tutorialSteps = new List<TutorialStep>();
-    public List<TutorialStep> TutorialSteps => tutorialSteps;
+    [SerializeField] private TutorialVisualData tutorialVisualData;
+    public TutorialVisualData GetTutorialVisualData => tutorialVisualData;
     public TutorialMode tutorialMode => tutorialState;
 }

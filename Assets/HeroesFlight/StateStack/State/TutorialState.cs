@@ -140,7 +140,7 @@ namespace HeroesFlight.StateStack.State
                 dataSystem.StatManager.ProcessTraitsStatsModifiers(traitSystem.GetUnlockedEffects());
                 uiSystem.UiEventHandler.MainMenu.LoadWorlds(dataSystem.WorldManger.Worlds);
 
-                uiSystem.UiEventHandler.LoadingMenu.Open();
+                uiSystem.UiEventHandler.LoadingMenu.Close();
                 uiSystem.UiEventHandler.GameMenu.Close();
             });
         }
