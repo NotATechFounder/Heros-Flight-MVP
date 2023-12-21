@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HeroesFlightProject.System.Gameplay.Controllers
 {
-    public class AreaDamageMushroom : AreaDamageEntity
+    public class AreaDamageZoneConstant : AreaDamageEntity
     {
         [SerializeField] AnimationReferenceAsset idleAniamtion;
         [SerializeField] AnimationReferenceAsset activeAniamtion;
@@ -18,7 +18,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-        public override void StartDetection(Action onComplete)
+        public override void StartDetection(Action onComplete=null)
         {
             skeletonAnimation.AnimationState.SetAnimation(0, activeAniamtion, true);
             foreach (var particle in particleObject)

@@ -25,7 +25,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
         [Header("Effect To Apply on Target")] [SerializeField]
         RootStatusEffect rootEffect;
 
-        AreaDamageEntity[] mushrooms;
+        AreaDamageEntity[] detectors;
         GameObject runtimeEntityHolder;
 
         protected override void Awake()
@@ -33,8 +33,8 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
             currentCooldown = 0;
             animator = GetComponentInParent<AiAnimatorInterface>();
             runtimeEntityHolder = Instantiate(entityHolder, transform.position, Quaternion.identity);
-            mushrooms = runtimeEntityHolder.GetComponentsInChildren<AreaDamageEntity>();
-            foreach (var mushroom in mushrooms)
+            detectors = runtimeEntityHolder.GetComponentsInChildren<AreaDamageEntity>();
+            foreach (var mushroom in detectors)
             {
                 mushroom.Init();
                 mushroom.OnTargetsDetected += HandleTargetsDetected;
@@ -73,9 +73,6 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
         {
             base.UseAbility(onComplete);
             runtimeEntityHolder.transform.position = transform.position;
-
-            ToggleAllMushroomIndicators(true);
-
             if (zone == null)
             {
                 CoroutineUtility.WaitForSeconds(logicTriggerDelay, TriggerMushroomDetectionAndCameraShake);
@@ -88,7 +85,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
 
         private void ToggleAllMushroomIndicators(bool state)
         {
-            foreach (var mushroom in mushrooms)
+            foreach (var mushroom in detectors)
             {
                 mushroom.ToggleIndicator(state);
             }
@@ -101,7 +98,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
         {
             cameraShaker?.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion, .5f);
 
-            foreach (var mushroom in mushrooms)
+            foreach (var mushroom in detectors)
             {
                 mushroom.StartDetection();
             }
@@ -113,7 +110,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability
         /// </summary>
         public override void StopAbility()
         {
-            foreach (var mushroom in mushrooms)
+            foreach (var mushroom in detectors)
             {
                 mushroom.gameObject.SetActive(false);
             }

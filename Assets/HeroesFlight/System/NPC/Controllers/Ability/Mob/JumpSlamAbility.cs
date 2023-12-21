@@ -27,7 +27,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 
         private Rigidbody2D rigidbody2D;
         private IHealthController healthController;
-        private EnemyAttackControllerBase attackController;
+     
 
         protected override void Awake()
         {

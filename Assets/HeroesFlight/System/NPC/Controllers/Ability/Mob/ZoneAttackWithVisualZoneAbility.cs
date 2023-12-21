@@ -1,11 +1,7 @@
 ﻿using System;
-using HeroesFlight.Common.Enum;
-using HeroesFlight.System.Gameplay.Enum;
-using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 {
@@ -31,9 +27,15 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
                 animator.PlayDynamicAnimation(targetAnimation, onComplete);
             }
 
+            TriggerAbilityZones();
+        }
+
+        private void TriggerAbilityZones()
+        {
             foreach (var zone in abilityZones)
             {
-                zone.ZoneVisual.Trigger(() => { zone.ZoneChecker.DetectOverlap(); }, preDamageDelay, zone.Width);
+                zone.ZoneVisual.Trigger(() => { zone.ZoneChecker.DetectOverlap(); }, 
+                    preDamageDelay, zone.Width);
             }
         }
 
@@ -47,9 +49,5 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
                 }
             }
         }
-
-      
-
-      
     }
 }
