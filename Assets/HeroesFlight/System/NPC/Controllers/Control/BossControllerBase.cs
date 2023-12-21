@@ -2,20 +2,31 @@
 using System.Collections.Generic;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
+using HeroesFlightProject.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
 
 namespace HeroesFlight.System.NPC.Controllers.Control
 {
-    public class BossControllerBase : MonoBehaviour,BossControllerInterface
+    public class BossControllerBase : MonoBehaviour, BossControllerInterface
     {
         public event Action<Transform> OnCrystalDestroyed;
         public BossState State { get; protected set; }
-        public List<IHealthController> CrystalNodes { get;protected set; }
+        public List<IHealthController> CrystalNodes { get; protected set; }
         public event Action<float> OnHealthPercentageChange;
         public event Action<HealthModificationIntentModel> OnBeingDamaged;
         public event Action<BossState> OnBossStateChange;
-        public virtual void Init() { }
+
+        protected CameraShakerInterface cameraShaker;
+        protected AiAnimatorInterface animator;
+        protected float maxHealth;
+        protected bool initied;
+
+        public virtual void Init()
+        {
+            cameraShaker = FindObjectOfType<CameraController>().CameraShaker;
+            animator = GetComponent<AiAnimationController>();
+        }
 
         protected void InvokeHealthPercChangeEvent(float value)
         {
@@ -31,7 +42,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
         {
             OnCrystalDestroyed?.Invoke(target);
         }
-        
+
         protected void ChangeState(BossState newState)
         {
             if (State == newState)

@@ -1,38 +1,28 @@
-using System;
 using System.Collections.Generic;
 using Cinemachine;
 using HeroesFlight.System.Combat.Model;
-using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Model;
 using HeroesFlightProject.System.Gameplay.Controllers;
-using HeroesFlightProject.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace HeroesFlight.System.NPC.Controllers.Control
 {
-    public class BossControllerMF : BossControllerBase
+    public class BossController : BossControllerBase
     {
         [SerializeField] List<BossNodeBoundAbilitiesEntry> abilityNodes;
         [SerializeField] float defaultAbilitiesCooldown;
         [SerializeField] float currentCooldown;
 
-        CameraShakerInterface cameraShaker;
-        AiAnimatorInterface animator;
-
       
-        
-        float maxHealth;
-        bool initied;
-        Queue<BossAbilityBase> abilityQue = new ();
-        Dictionary<BossCrystalsHealthController, List<BossAbilityBase>> abilityNodesCache = new();
+        Queue<AbilityBaseNPC> abilityQue = new ();
+        Dictionary<BossCrystalsHealthController, List<AbilityBaseNPC>> abilityNodesCache = new();
 
 
-        public virtual void Init()
+        public override void Init()
         {
-            cameraShaker = FindObjectOfType<CameraController>().CameraShaker;
-            animator = GetComponent<AiAnimationController>();
+            base.Init();
             currentCooldown = defaultAbilitiesCooldown;
             CrystalNodes = new List<IHealthController>();
             foreach (var node in abilityNodes)
@@ -56,9 +46,17 @@ namespace HeroesFlight.System.NPC.Controllers.Control
         {
             InvokeOnBeingDamagedEvent(healthModificationRequestModel.IntentModel);
             var damagedHealth = healthModificationRequestModel.RequestOwner.HealthTransform.GetComponent<BossCrystalsHealthController>();
+            PickAffectedAbility(damagedHealth);
+            var currentHealth = CalculateCurrentHealth();
+            InvokeHealthPercChangeEvent(currentHealth); 
+        }
+
+        private void PickAffectedAbility(BossCrystalsHealthController damagedHealth)
+        {
             if (abilityNodesCache.TryGetValue(damagedHealth, out var abilities))
             {
-                BossAbilityBase targetAbility =null;
+               
+                AbilityBaseNPC targetAbility =null;
                 float totalChance = 0;
                 foreach (var ability in abilities)
                 {
@@ -70,26 +68,24 @@ namespace HeroesFlight.System.NPC.Controllers.Control
                 float currentChance = 0;
                 var rng = Random.Range(0, totalChance);
                 
-                    foreach (var ability in abilities)
+                foreach (var ability in abilities)
+                {
+                    currentChance += ability.UseChance;
+                    if (rng <= currentChance)
                     {
-                        currentChance += ability.UseChance;
-                        if (rng <= currentChance)
-                        {
-                            targetAbility = ability;
-                            break;
-                            ;
-                        }
+                        targetAbility = ability;
+                        break;
+                        ;
                     }
+                }
 
-                    if (targetAbility != null)
-                    {
-                        if (abilityQue.Count > 0)
-                            abilityQue.Dequeue();
-                        abilityQue.Enqueue(targetAbility);
-                    }
+                if (targetAbility != null)
+                {
+                    if (abilityQue.Count > 0)
+                        abilityQue.Dequeue();
+                    abilityQue.Enqueue(targetAbility);
+                }
             }
-            var currentHealth = CalculateCurrentHealth();
-            InvokeHealthPercChangeEvent(currentHealth); 
         }
 
         void HandleCrystalDeath(IHealthController obj)
@@ -98,7 +94,8 @@ namespace HeroesFlight.System.NPC.Controllers.Control
            
             if (currentHealth > 0)
             {
-              InvokeCrystalDestroyedEvent(obj.HealthTransform);
+                ChangeState(BossState.Damaged);
+                InvokeCrystalDestroyedEvent(obj.HealthTransform);
                 foreach (var abilityList in abilityNodesCache.Values)
                 {
                     foreach (var ability in abilityList)
@@ -107,7 +104,6 @@ namespace HeroesFlight.System.NPC.Controllers.Control
                     }
                   
                 }
-                ChangeState(BossState.Damaged);
                 cameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,1f);
                 var healthToRemove = obj as BossCrystalsHealthController;
                
@@ -181,7 +177,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
 
         void UseRandomAbility()
         {
-            BossAbilityBase targetAbility =null;
+            AbilityBaseNPC targetAbility =null;
             float totalChance = 0;
             foreach (var abilityList in abilityNodesCache.Values)
             {

@@ -6,13 +6,12 @@ using UnityEngine;
 namespace HeroesFlight.System.NPC.Model
 {
     [Serializable]
-    public class BossNodeBoundAbilitiesEntry
+    public class BossNodeBoundAbilitiesEntry 
     {
-        [SerializeField] BossCrystalsHealthController nodeHealth;
-        [SerializeField] List<BossAbilityBase> boundAbilities;
-        
+       [SerializeField] List<AbilityBaseNPC> boundAbilities;
+       [SerializeField] BossCrystalsHealthController nodeHealth;
         public BossCrystalsHealthController HealthController => nodeHealth;
-        public List<BossAbilityBase> Abilities => boundAbilities;
+        public List<AbilityBaseNPC> Abilities => boundAbilities;
 
     }
 }
