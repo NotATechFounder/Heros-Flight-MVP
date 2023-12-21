@@ -13,7 +13,7 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
         private AiMoverInterface mover;
         public override void Enter()
         {
-            mover.SetMovementState(false);
+            aiController.SetMovementState(false);
             mover.Disable();
             aiController.Disable();
             base.Enter();

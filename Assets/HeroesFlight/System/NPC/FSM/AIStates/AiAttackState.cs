@@ -19,7 +19,7 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
         {
             aiController.FaceTarget();
             attackController.AttackTargets(() => { Exit(); });
-            mover.SetMovementState(false);
+            aiController.SetMovementState(false);
             base.Enter();
         }
 

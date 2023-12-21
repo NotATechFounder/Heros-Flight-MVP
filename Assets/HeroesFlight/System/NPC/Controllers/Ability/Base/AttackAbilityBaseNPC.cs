@@ -27,6 +27,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         
         public float SkillDamage => (damage / 100 * damageMultiplier)/damageInstances;
         public float SkillCritChance => critChance + critChanceModifier;
+        public float BaseDamage => damage;
+        public float BaseCritChance => critChance;
 
         public void SetStats(float newDamage, float newCritChance)
         {
