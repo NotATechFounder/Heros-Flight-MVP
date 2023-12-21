@@ -14,19 +14,14 @@ namespace HeroesFlight.System.NPC.Controllers.Control
 {
     public class BossControllerMF : BossControllerBase
     {
-        [SerializeField] List<NodeBoundAbilitiesEntry> abilityNodes;
+        [SerializeField] List<BossNodeBoundAbilitiesEntry> abilityNodes;
         [SerializeField] float defaultAbilitiesCooldown;
         [SerializeField] float currentCooldown;
 
         CameraShakerInterface cameraShaker;
         AiAnimatorInterface animator;
 
-        public event Action<Transform> OnCrystalDestroyed;
-        public BossState State { get; private set; }
-        public List<IHealthController> CrystalNodes { get; private set; }
-        public event Action<float> OnHealthPercentageChange;
-        public event Action<HealthModificationIntentModel> OnBeingDamaged;
-        public event Action<BossState> OnBossStateChange;
+      
         
         float maxHealth;
         bool initied;
@@ -59,7 +54,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
 
         void HandleCrystalDamaged(HealthModificationRequestModel healthModificationRequestModel)
         {
-            OnBeingDamaged?.Invoke(healthModificationRequestModel.IntentModel);
+            InvokeOnBeingDamagedEvent(healthModificationRequestModel.IntentModel);
             var damagedHealth = healthModificationRequestModel.RequestOwner.HealthTransform.GetComponent<BossCrystalsHealthController>();
             if (abilityNodesCache.TryGetValue(damagedHealth, out var abilities))
             {
@@ -94,7 +89,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
                     }
             }
             var currentHealth = CalculateCurrentHealth();
-            OnHealthPercentageChange?.Invoke(currentHealth); 
+            InvokeHealthPercChangeEvent(currentHealth); 
         }
 
         void HandleCrystalDeath(IHealthController obj)
@@ -103,7 +98,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
            
             if (currentHealth > 0)
             {
-                OnCrystalDestroyed?.Invoke(obj.HealthTransform);
+              InvokeCrystalDestroyedEvent(obj.HealthTransform);
                 foreach (var abilityList in abilityNodesCache.Values)
                 {
                     foreach (var ability in abilityList)
@@ -244,16 +239,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
             ChangeState(BossState.UsingAbility);
         }
 
-        void ChangeState(BossState newState)
-        {
-            if (State == newState)
-                return;
-
-            State = newState;
-            Debug.Log(newState);
-            OnBossStateChange?.Invoke(State);
-        }
-
+    
 
         float CalculateCurrentHealth()
         {
