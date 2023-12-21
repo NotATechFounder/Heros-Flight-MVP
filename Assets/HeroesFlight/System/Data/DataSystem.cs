@@ -28,7 +28,7 @@ public class DataSystem : DataSystemInterface
     public WorldManager WorldManger { get; private set; }
 
     // Todo: Remove this
-    public bool TutorialMode => false;
+    public bool TutorialMode => true;
 
     public void Init(Scene scene = default, Action onComplete = null)
     {

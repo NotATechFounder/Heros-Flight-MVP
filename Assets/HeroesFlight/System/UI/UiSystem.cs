@@ -109,6 +109,7 @@ namespace HeroesFlight.System.UI
         {
             TryDisableMenu(UiEventHandler.SettingsMenu);
             TryDisableMenu(UiEventHandler.RewardMenu);
+            TryDisableMenu(UiEventHandler.StatePointsMenu);
 
             switch (obj)
             {

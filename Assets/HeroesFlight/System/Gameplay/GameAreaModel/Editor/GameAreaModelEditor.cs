@@ -22,7 +22,8 @@ public class GameAreaModelEditor : Editor
     SerializedProperty mobDropTableArray;
 
     SerializedProperty levelComplectionExpCurveProperty;
-    SerializedProperty runComplectionExpCurveProperty;
+    SerializedProperty inRunLevelComplectionExpCurveProperty;
+    SerializedProperty reRunComplectionExpCurveProperty;
 
     SerializedProperty bossDropProperty;
     SerializedProperty timeStopRestoreSpeedProperty;
@@ -46,7 +47,8 @@ public class GameAreaModelEditor : Editor
         bossDropProperty = serializedObject.FindProperty("bossDrop");
 
         levelComplectionExpCurveProperty = serializedObject.FindProperty("levelComplectionExpCurve");
-        runComplectionExpCurveProperty = serializedObject.FindProperty("runComplectionExpCurve");
+        inRunLevelComplectionExpCurveProperty = serializedObject.FindProperty("runComplectionExpCurve");
+        reRunComplectionExpCurveProperty = serializedObject.FindProperty("reRunComplectionExpCurve");
 
         timeStopRestoreSpeedProperty = serializedObject.FindProperty("timeStopRestoreSpeed");
         timeStopDurationProperty = serializedObject.FindProperty("timeStopDuration");
@@ -152,11 +154,14 @@ public class GameAreaModelEditor : Editor
     void DisplayExpCurves()
     {
         EditorGUILayout.Space(20);
+        EditorGUILayout.LabelField("In Run Level Complection ExpCurve", EditorStyles.boldLabel);
+        DrawData(inRunLevelComplectionExpCurveProperty);
+        EditorGUILayout.Space(10);
         EditorGUILayout.LabelField("Level Complection ExpCurve", EditorStyles.boldLabel);
         DrawData(levelComplectionExpCurveProperty);
         EditorGUILayout.Space(10);
-        EditorGUILayout.LabelField("In Run Complection ExpCurve", EditorStyles.boldLabel);
-        DrawData(runComplectionExpCurveProperty);
+        EditorGUILayout.LabelField("Re Run Complection ExpCurve", EditorStyles.boldLabel);
+        DrawData(reRunComplectionExpCurveProperty);
         EditorGUILayout.Space(20);
     }
 

@@ -1030,8 +1030,6 @@ namespace HeroesFlight.System.Gameplay
                     break;
                 case GameState.Won:
 
-                    //dataSystem.RewardHandler.GrantReward(new HeroRewardModel(RewardType.Hero,
-                    //    CharacterType.Storm));
                     dataSystem.CharacterManager.UnlockCharacter(CharacterType.Storm);
                     Debug.Log("Granting STORM");
 
@@ -1184,9 +1182,7 @@ namespace HeroesFlight.System.Gameplay
 
         void ShowGodBenevolencePrompt()
         {
-            //if (characterStatController.GetHealthPercentage() <= 30)
-
-            if (true)
+            if (characterStatController.GetHealthPercentage() <= 30)
             {
                 uiSystem.UiEventHandler.ConfirmationMenu.Display(uiSystem.UiEventHandler.PuzzleConfirmation,
                     uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.Open,
@@ -1203,7 +1199,15 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.SummaryMenu.Open();
 
             // TODO: Add exp to player, check if run has been completed before
-            dataSystem.AccountLevelManager.AddExp(100);
+
+            if (dataSystem.WorldManger.IsWorldUnlocked(dataSystem.WorldManger.SelectedWorld))
+            {
+
+            }
+            else
+            {
+                dataSystem.AccountLevelManager.AddExp(container.CurrentModel.LevelComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
+            }
         }
 
         void HandleLvlRestart()
