@@ -120,6 +120,7 @@ public class TutorialSystem : ITutorialInterface
     {
         Debug.Log("MainMenuTutorialCompleted");
         OnFullTutorialCompleted?.Invoke();
+        dataSystem.TutorialDataHolder.TutorialCompleted();
         dataSystem.TutorialDataHolder.GetTutorialHand.HideHand();
     }
 
@@ -1202,6 +1203,8 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.StatePointsMenu.SetAllButtonVibility(GameButtonVisiblity.Hidden);
 
         uiSystem.UiEventHandler.StatePointsMenu.ToggleAllStatButtonVisibility(StatPointButtonType.All, GameButtonVisiblity.Hidden);
+
+        dataSystem.StatPoints.SetPoints(1);
 
         uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.GetTutorialVisualData.TutorialSteps[1].stepDescription);
         uiSystem.UiEventHandler.StatePointsMenu.ToggleFirstStatButtonVisibility(StatPointButtonType.Up, GameButtonVisiblity.Visible);

@@ -141,6 +141,13 @@ public class StatPoints : MonoBehaviour
         OnSpChanged?.Invoke();
     }
 
+    public void SetPoints(int nuberOfPoints)
+    {
+        currentSp = nuberOfPoints;
+        Save();
+        OnSpChanged?.Invoke();
+    }
+
     public int GetSp(StatAttributeType statPointType)
     {
         return statPointsDic[statPointType];
