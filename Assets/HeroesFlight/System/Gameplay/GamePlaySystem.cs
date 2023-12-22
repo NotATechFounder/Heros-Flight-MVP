@@ -528,24 +528,34 @@ namespace HeroesFlight.System.Gameplay
 
             if (obj.EnemyType == EnemyType.MiniBoss)
             {
-                var attackController = obj.GetComponent<IAttackControllerInterface>();
-                var effectsController = obj.GetComponent<CombatEffectsController>();
-                combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
-                    CombatEntityType.MiniBoss));
-                uiSystem.ToggleSpecialEnemyHealthBar(true);
-                var mobSpawnAbility = obj.transform.GetComponentInChildren<SpawnEnemyAbility>();
-                if (mobSpawnAbility != null)
-                {
-                    mobSpawnAbility.OnEnemySpawned += HandleMobSpawnedByAbility;
-                }
+                HandleMinibossSpawned(obj, healthController);
             }
             else
             {
-                obj.OnDisabled += HandleEnemyDisabled;
-                var attackController = obj.GetComponent<IAttackControllerInterface>();
-                var effectsController = obj.GetComponent<CombatEffectsController>();
-                combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
-                    CombatEntityType.Mob));
+                HandleMobSpawned(obj, healthController);
+            }
+        }
+
+        private void HandleMobSpawned(AiControllerBase obj, IHealthController healthController)
+        {
+            obj.OnDisabled += HandleEnemyDisabled;
+            var attackController = obj.GetComponent<IAttackControllerInterface>();
+            var effectsController = obj.GetComponent<CombatEffectsController>();
+            combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
+                CombatEntityType.Mob));
+        }
+
+        private void HandleMinibossSpawned(AiControllerBase obj, IHealthController healthController)
+        {
+            var attackController = obj.GetComponent<IAttackControllerInterface>();
+            var effectsController = obj.GetComponent<CombatEffectsController>();
+            combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
+                CombatEntityType.MiniBoss));
+            uiSystem.ToggleSpecialEnemyHealthBar(true);
+            var mobSpawnAbility = obj.transform.GetComponentInChildren<SpawnEnemyAbility>();
+            if (mobSpawnAbility != null)
+            {
+                mobSpawnAbility.OnEnemySpawned += HandleMobSpawnedByAbility;
             }
         }
 
@@ -757,6 +767,7 @@ namespace HeroesFlight.System.Gameplay
                     characterSystem.SetCharacterControllerState(true);
                     break;
                 case LevelType.WorldBoss:
+                    enemiesToKill = 2;
                     HandleWorldBoss();
                     break;
             }
@@ -1022,7 +1033,8 @@ namespace HeroesFlight.System.Gameplay
             godsBenevolence.DeactivateGodsBenevolence();
             environmentSystem.CurrencySpawner.ActivateExpEffectItems(() =>
             {
-                activeAbilityManager.AddExp(container.CurrentModel.InRunComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
+                activeAbilityManager.AddExp(
+                    container.CurrentModel.InRunComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
 
                 progressionSystem.CollectRunCurrency();
             });
@@ -1096,7 +1108,29 @@ namespace HeroesFlight.System.Gameplay
         void HandleWorldBoss()
         {
             Debug.Log("WORLD BOSS LOGIC");
+            if (currentLevel.MiniHasBoss)
+            {
+                cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,
+                    3f, 3f);
+                uiSystem.ShowSpecialEnemyWarning(EncounterType.Miniboss);
+                uiSystem.UpdateEnemiesCounter(0);
+                combatSystem.StartCharacterComboCheck();
+                var miniboss = npcSystem.SpawnEntity(currentLevel.GetMinibossPrefab);
+                var healthController = miniboss.GetComponent<IHealthController>();
 
+
+                HandleMinibossSpawned(miniboss, healthController);
+                healthController.OnDeath += (health) => { InitWorldBossEncounter(); };
+                characterSystem.SetCharacterControllerState(true);
+            }
+            else
+            {
+                InitWorldBossEncounter();
+            }
+        }
+
+        private void InitWorldBossEncounter()
+        {
             //Init world boss
             AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicKey);
             uiSystem.UpdateEnemiesCounter(0);
@@ -1107,7 +1141,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.ShowSpecialEnemyWarning(EncounterType.Boss);
             uiSystem.UpdateSpecialEnemyHealthBar(1f);
             uiSystem.ToggleSpecialEnemyHealthBar(true);
-            
+
             environmentSystem.ParticleManager.Spawn("BossSpawn", new Vector2(2.2f, 8.6f));
 
 
@@ -1121,8 +1155,8 @@ namespace HeroesFlight.System.Gameplay
                 boss.OnHealthPercentageChange += HandleBossHealthChange;
                 boss.OnCrystalDestroyed += SpawnLootFromBoss;
                 characterSystem.SetCharacterControllerState(true);
-                boss.Init(npcSystem.NpcContainer.MobDifficulties.GetHealth(CurrentLvlIndex,EnemyType.Boss),
-                    npcSystem.NpcContainer.MobDifficulties.GetDamage(CurrentLvlIndex,EnemyType.Boss));
+                boss.Init(npcSystem.NpcContainer.MobDifficulties.GetHealth(CurrentLvlIndex, EnemyType.Boss),
+                    npcSystem.NpcContainer.MobDifficulties.GetDamage(CurrentLvlIndex, EnemyType.Boss));
                 foreach (var health in boss.CrystalNodes)
                 {
                     var effectsHandler = health.HealthTransform.GetComponent<CombatEffectsController>();
@@ -1134,7 +1168,7 @@ namespace HeroesFlight.System.Gameplay
                 {
                     mushroomTriggerAbility.OnEnemySpawned += HandleMobSpawnedByAbility;
                 }
-                
+
                 var mobSpawnAbility = boss.transform.GetComponentInChildren<SpawnEnemyAbility>();
                 if (mobSpawnAbility != null)
                 {
@@ -1147,9 +1181,11 @@ namespace HeroesFlight.System.Gameplay
         {
             var aiController = healthController.HealthTransform.GetComponent<AiControllerBase>();
             aiController.Init(characterVFXController.transform,
-                container.CurrentModel.MobDifficulty.GetHealth(container.CurrentLvlIndex, aiController.AgentModel.EnemyType),
-                container.CurrentModel.MobDifficulty.GetDamage(container.CurrentLvlIndex, aiController.AgentModel.EnemyType),
-                npcSystem.NpcContainer.MonsterStatController.GetMonsterStatModifier,null);
+                container.CurrentModel.MobDifficulty.GetHealth(container.CurrentLvlIndex,
+                    aiController.AgentModel.EnemyType),
+                container.CurrentModel.MobDifficulty.GetDamage(container.CurrentLvlIndex,
+                    aiController.AgentModel.EnemyType),
+                npcSystem.NpcContainer.MonsterStatController.GetMonsterStatModifier, null);
             var attackController =
                 healthController.HealthTransform.GetComponent<IAttackControllerInterface>();
             var effectsController =
@@ -1249,11 +1285,11 @@ namespace HeroesFlight.System.Gameplay
 
             if (dataSystem.WorldManger.IsWorldUnlocked(dataSystem.WorldManger.SelectedWorld))
             {
-
             }
             else
             {
-                dataSystem.AccountLevelManager.AddExp(container.CurrentModel.LevelComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
+                dataSystem.AccountLevelManager.AddExp(
+                    container.CurrentModel.LevelComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
             }
         }
 

@@ -226,6 +226,30 @@ namespace HeroesFlight.System.NPC.Container
                 StopCoroutine(spawningRoutine);
             }
         }
+
+        public AiControllerBase SpawnEntity(AiControllerBase prefab)
+        {
+            List<ISpawnPointInterface> targetPoints =
+                spawnPointsCache[prefab.AgentModel.EnemySpawmType];
+            AiControllerBase resultEnemy = Instantiate(prefab,
+                targetPoints.ElementAt(0).GetSpawnPosition(), Quaternion.identity);
+            resultEnemy.transform.parent = transform;
+
+            if (resultEnemy.EnemyType == EnemyType.MiniBoss)
+            {
+                resultEnemy.Init(player.transform, mobDifficulty.GetHealth(levelIndex, resultEnemy.EnemyType),
+                    mobDifficulty.GetDamage(levelIndex, resultEnemy.EnemyType),
+                    monsterStatController.GetMonsterStatModifier, null);
+            }
+            else
+            {
+                resultEnemy.Init(player.transform, mobDifficulty.GetHealth(levelIndex, resultEnemy.EnemyType),
+                    mobDifficulty.GetDamage(levelIndex, resultEnemy.EnemyType),
+                    monsterStatController.GetMonsterStatModifier, monsterStatController.CurrentCardIcon);
+            }
+
+            return resultEnemy;
+        }
     }
 }
 

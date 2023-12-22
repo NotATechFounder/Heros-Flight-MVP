@@ -37,5 +37,10 @@ namespace HeroesFlight.System.NPC
         {
             container.InjectPlayer(player);
         }
+
+        public AiControllerBase SpawnEntity(AiControllerBase prefab)
+        {
+            return container.SpawnEntity(prefab);
+        }
     }
 }

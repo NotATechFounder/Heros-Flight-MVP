@@ -136,6 +136,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
             }
             else
             {
+                Debug.Log("IM DEAD");
                 foreach (var abilityList in abilityNodesCache.Values)
                 {
                     foreach (var ability in abilityList)
@@ -148,7 +149,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
                 ChangeState(BossState.Dead);
                 animator.PlayDeathAnimation(() =>
                 {
-                    //gameObject.SetActive(false);
+                    gameObject.SetActive(false);
                 });
             }
         }
@@ -227,8 +228,8 @@ namespace HeroesFlight.System.NPC.Controllers.Control
 
 
             targetAbility.UseAbility(() => { ChangeState(BossState.Idle); });
-            currentCooldown = abilityCooldown;
             targetAbility.SetCoolDown(abilityCooldown);
+            currentCooldown = abilityCooldown+0.5f;
             ChangeState(BossState.UsingAbility);
         }
 
