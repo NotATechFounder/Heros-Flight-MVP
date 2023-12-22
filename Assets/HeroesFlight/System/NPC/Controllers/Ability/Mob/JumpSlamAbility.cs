@@ -97,6 +97,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 
         void HandleAnimationEvents(AttackAnimationEvent obj)
         {
+            Debug.Log("EVENT");
             if (abilityParticle != null)
             {
                 abilityParticle.Play();

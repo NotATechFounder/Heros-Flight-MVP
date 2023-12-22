@@ -46,7 +46,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             if (currentTrack.Animation.Name.Equals(targetTrack.Animation.Name) ||
                 currentTrack.Animation.Name.Equals(deathAnimation.Animation.Name))
                 return;
-
+            //skeletonAnimation.AnimationState.ClearTrack(movementTrackIndex);
             skeletonAnimation.AnimationState.SetAnimation(movementTrackIndex, targetTrack, true);
         }
 
@@ -93,7 +93,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 if (playingAttackAnimation && interruptAttack || !playingAttackAnimation)
                 {
                     var hitTrack = skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, hitAnimation, false);
-                    hitTrack.TimeScale = 2f;
+                  //  hitTrack.TimeScale = 2f;
                     skeletonAnimation.AnimationState.AddEmptyAnimation(hitTrackIndex, 0, 0);
                     CoroutineUtility.WaitForSeconds(hitAnimation.Animation.Duration / 2f,
                         () => { onCompleteAction?.Invoke(); });
@@ -101,8 +101,8 @@ namespace HeroesFlightProject.System.NPC.Controllers
             }
             else
             {
-                var hitTrack = skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, hitAnimation, false);
-                hitTrack.TimeScale = 2f;
+               var hitTrack = skeletonAnimation.AnimationState.SetAnimation(hitTrackIndex, hitAnimation, false);
+              //  hitTrack.TimeScale = 2f;
                 skeletonAnimation.AnimationState.AddEmptyAnimation(hitTrackIndex, 0, 0);
                 CoroutineUtility.WaitForSeconds(hitAnimation.Animation.Duration / 2f,
                     () => { onCompleteAction?.Invoke(); });
