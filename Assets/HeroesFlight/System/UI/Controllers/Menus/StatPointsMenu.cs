@@ -26,6 +26,7 @@ namespace UISystem
 
         [SerializeField] private AdvanceButton completeButton;
         [SerializeField] private AdvanceButton resetButton;
+        [SerializeField] private AdvanceButton closeButton;
 
         [SerializeField] private Transform container;
         [SerializeField] private TextMeshProUGUI levelText;
@@ -41,7 +42,7 @@ namespace UISystem
 
         private Dictionary<StatAttributeType, StatPointUI> statPointUIDic = new Dictionary<StatAttributeType, StatPointUI>();
 
-        public StatPointUI[] GetStatPointUIs => statPointUIDic.Values.ToArray();
+        public StatPointUI[] GetStatPointUIs { get; private set; }
 
         public override void OnCreated()
         {
@@ -54,6 +55,7 @@ namespace UISystem
 
             completeButton.onClick.AddListener(ForceClose);
             resetButton.onClick.AddListener(ResetButtonPressed);
+            closeButton.onClick.AddListener(ForceClose);
 
             CacheStatUI();
         }
@@ -117,6 +119,8 @@ namespace UISystem
 
                 statPointUIDic.Add(statpointSo.StatAttributeType, statPointUI);
             }
+
+            GetStatPointUIs = statPointUIDic.Values.ToArray();
         }
 
         public void InitStatUI()
@@ -165,5 +169,68 @@ namespace UISystem
             statPointUIDic[statAttributeType].OnNewDiceRoll(rolledValue);
             //InitStatUI();
         }
+
+        public void ToggleFirstStatButtonVisibility(StatPointButtonType statPointButtonType, GameButtonVisiblity gameButtonVisiblity)
+        {
+            StatPointUI statPointUI = GetStatPointUIs[0];
+
+            switch (statPointButtonType)
+            {
+                case StatPointButtonType.Up:
+                    statPointUI.UpButton.SetVisibility(gameButtonVisiblity);
+                    statPointUI.DownButton.SetVisibility(gameButtonVisiblity == GameButtonVisiblity.Visible ? GameButtonVisiblity.Hidden : GameButtonVisiblity.Visible);
+                    statPointUI.DiceButton.SetVisibility(gameButtonVisiblity == GameButtonVisiblity.Visible ? GameButtonVisiblity.Hidden : GameButtonVisiblity.Visible);
+                    break;
+                case StatPointButtonType.Down:
+                    statPointUI.DownButton.SetVisibility(gameButtonVisiblity);
+                    statPointUI.UpButton.SetVisibility(gameButtonVisiblity == GameButtonVisiblity.Visible ? GameButtonVisiblity.Hidden : GameButtonVisiblity.Visible);
+                    statPointUI.DiceButton.SetVisibility(gameButtonVisiblity == GameButtonVisiblity.Visible ? GameButtonVisiblity.Hidden : GameButtonVisiblity.Visible);
+                    break;
+                case StatPointButtonType.Dice:
+                    statPointUI.DiceButton.SetVisibility(gameButtonVisiblity);
+                    statPointUI.UpButton.SetVisibility(gameButtonVisiblity == GameButtonVisiblity.Visible ? GameButtonVisiblity.Hidden : GameButtonVisiblity.Visible);
+                    statPointUI.DownButton.SetVisibility(gameButtonVisiblity == GameButtonVisiblity.Visible ? GameButtonVisiblity.Hidden : GameButtonVisiblity.Visible);
+                    break;
+                default: break;
+            }
+        }
+
+        public void ToggleAllStatButtonVisibility(StatPointButtonType statPointButtonType, GameButtonVisiblity gameButtonVisiblity)
+        {
+            foreach (StatPointUI statPointUI in GetStatPointUIs)
+            {
+                ToggleStatPointButtonVisibility(statPointUI, statPointButtonType, gameButtonVisiblity);
+            }
+        }
+
+        public void ToggleStatPointButtonVisibility(StatPointUI statPointUI, StatPointButtonType statPointButtonType, GameButtonVisiblity gameButtonVisiblity)
+        {
+            switch (statPointButtonType)
+            {
+                case StatPointButtonType.All:
+                    statPointUI.DiceButton.SetVisibility(gameButtonVisiblity);
+                    statPointUI.UpButton.SetVisibility(gameButtonVisiblity);
+                    statPointUI.DownButton.SetVisibility(gameButtonVisiblity);
+                    break;
+                case StatPointButtonType.Up:
+                    statPointUI.UpButton.SetVisibility(gameButtonVisiblity);
+                    break;
+                case StatPointButtonType.Down:
+                    statPointUI.DownButton.SetVisibility(gameButtonVisiblity);
+                    break;
+                case StatPointButtonType.Dice:
+                    statPointUI.DiceButton.SetVisibility(gameButtonVisiblity);
+                    break;
+                default: break;
+            }
+        }
     }
+}
+
+public enum StatPointButtonType
+{
+    All,
+    Up,
+    Down,
+    Dice
 }

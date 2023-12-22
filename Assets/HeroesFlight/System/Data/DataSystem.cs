@@ -29,9 +29,8 @@ public class DataSystem : DataSystemInterface
 
     public TutorialDataHolder TutorialDataHolder { get; private set; }
 
-    // Todo: Remove this
-    public bool TutorialMode => false;
-
+    public bool TutorialMode => !TutorialDataHolder.GetData.IsCompleted;
+    
     public void Init(Scene scene = default, Action onComplete = null)
     {
         CurrencyManager = scene.GetComponent<CurrencyManager>();
@@ -55,8 +54,9 @@ public class DataSystem : DataSystemInterface
         CharacterManager.OnCharacterChanged += (characterSO) => StatManager.ProcessAllModifiers(characterSO.GetPlayerStatData);
         CharacterManager.Init(CurrencyManager);
 
-
         AccountLevelManager.OnLevelUp += StatPoints.AddPoints;
+
+        AccountLevelManager.Init();
 
         EnergyManager.Initialize(CurrencyManager);
 
