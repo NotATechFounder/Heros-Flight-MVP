@@ -30,8 +30,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected bool becomeImmortalOnHit;
 
         [SerializeField] protected float immortalityDuration = .5f;
-        [SerializeField] private bool isCurrentlyImmortalByTime;
-        [SerializeField] private bool isCurrentlyImmortalByState;
+        [SerializeField] protected bool isCurrentlyImmortalByTime;
+        [SerializeField] protected bool isCurrentlyImmortalByState;
         public event Action<Transform> OnBeingHitDamaged;
 
         public int MaxHit => maxHit;

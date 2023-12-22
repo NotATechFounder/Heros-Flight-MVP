@@ -27,7 +27,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 
         private Rigidbody2D rigidbody2D;
         private IHealthController healthController;
-        private EnemyAttackControllerBase attackController;
+     
 
         protected override void Awake()
         {
@@ -97,6 +97,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 
         void HandleAnimationEvents(AttackAnimationEvent obj)
         {
+            Debug.Log("EVENT");
             if (abilityParticle != null)
             {
                 abilityParticle.Play();

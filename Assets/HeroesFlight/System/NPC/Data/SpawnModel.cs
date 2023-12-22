@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HeroesFlight.System.NPC.Controllers.Control;
 using HeroesFlight.System.NPC.Data;
+using HeroesFlightProject.System.NPC.Controllers;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -54,6 +55,8 @@ namespace HeroesFlight.System.NPC.Model
                 return false;
             }
         }
+
+        public AiControllerBase GetMinibossPrefab => waves[0].AvaliableMiniBosses[0].Prefab;
 
         public bool HasBoss
         {

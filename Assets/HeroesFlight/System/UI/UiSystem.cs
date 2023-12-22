@@ -237,8 +237,9 @@ namespace HeroesFlight.System.UI
             else
             {
                 var damageText = NumberConverter.ConvertNumberToString((int)damage);
-                var spriteAsset = container.GetDamageTextSprite(isCritical);
+                var spriteAsset = container.GetDamageTextSprite(isCritical,isHeal);
                 var size = !isCritical ? 60 : 100;
+               
                 PopUpManager.Instance.PopUpTextAtTransfrom(target, Vector3.zero, damageText,
                     spriteAsset, size);
             }

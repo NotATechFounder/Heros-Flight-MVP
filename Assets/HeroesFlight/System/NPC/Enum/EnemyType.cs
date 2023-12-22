@@ -21,6 +21,7 @@ namespace HeroesFlightProject.System.NPC.Enum
         EagleWarrior,
         MagicEagleWarrior,
         MysticalFairy,
-        TreantGrey
+        TreantGrey,
+        Boss
     }
 }

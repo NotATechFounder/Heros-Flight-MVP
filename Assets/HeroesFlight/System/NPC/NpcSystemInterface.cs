@@ -13,5 +13,6 @@ namespace HeroesFlight.System.NPC
         event Action<AiControllerBase> OnEnemySpawned;
         void SpawnEnemies(Level level, int levelIndex);
         void InjectPlayer(Transform player);
+        AiControllerBase SpawnEntity(AiControllerBase prefab);
     }
 }
