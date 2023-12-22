@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using HeroesFlight.Common;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.FileManager.Stats;
@@ -74,7 +75,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryChangeSignal
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-           // RemoveMultipleToInventory(GetInventoryEquippedItems().ToArray());
+            RemoveMultipleToInventory(GetInventoryEquippedItems().ToArray());
         }
     }
 
@@ -159,6 +160,16 @@ public class InventoryHandler : MonoBehaviour, IInventoryChangeSignal
         OnInventoryUpdated?.Invoke();
     }
 
+    public void RemoveAllItems()
+    {
+        RemoveMultipleToInventory(equipmentItemDic.Values.ToArray());
+        RemoveMultipleToInventory(materialItemDic.Values.ToArray());
+        RemoveMultipleToInventory(equippedItemDic.Values.ToArray());
+
+        equipmentItemDic.Clear();
+        materialItemDic.Clear();
+        equippedItemDic.Clear();
+    }
 
     public void LoadInventoryItems()
     {

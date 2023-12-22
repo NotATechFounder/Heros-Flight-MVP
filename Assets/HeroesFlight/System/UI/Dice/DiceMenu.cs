@@ -21,11 +21,11 @@ namespace HeroesFlight.System.UI.DIce
         [SerializeField] private TextMeshProUGUI rollText;
         [SerializeField] private TextMeshProUGUI infoText;
         [Header("Buttons")]
-        [SerializeField] private Button rollButton;
-        [SerializeField] private Button backButton;
-        [SerializeField] private Button optionalROllButton;
-        [SerializeField] private Button infoButton;
-        [SerializeField] private Button closeInfoButton;
+        [SerializeField] private AdvanceButton rollButton;
+        [SerializeField] private AdvanceButton backButton;
+        [SerializeField] private AdvanceButton optionalROllButton;
+        [SerializeField] private AdvanceButton infoButton;
+        [SerializeField] private AdvanceButton closeInfoButton;
       
 
         private WaitForSeconds rollPeriod;
@@ -73,6 +73,12 @@ namespace HeroesFlight.System.UI.DIce
             {
                 Debug.Log($"disabling {infoCG.name}");
                 ToggleCanvasGroup(infoCG,false);
+            });
+
+            backButton.onClick.AddListener(() =>
+            {
+                ToggleCanvasGroup(rollCG, false);
+                Close();
             });
         }
 

@@ -304,6 +304,12 @@ namespace HeroesFlight.System.Gameplay
         /// </summary>
         void ResetConnections()
         {
+            this.npcSystem.OnEnemySpawned -= HandleEnemySpawned;
+            this.combatSystem.OnEntityReceivedDamage -= HandleEntityReceivedDamage;
+            this.combatSystem.OnEntityDied -= HandleEntityDied;
+            this.uiSystem.OnSpecialButtonClicked -= UseCharacterSpecial;
+            this.uiSystem.OnReviveCharacterRequest -= () => { ReviveCharacter(100f); };
+
             shrine.GetAngelEffectManager.OnPermanetCard -=
                 uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
             uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= shrine.GetAngelEffectManager.Exists;
