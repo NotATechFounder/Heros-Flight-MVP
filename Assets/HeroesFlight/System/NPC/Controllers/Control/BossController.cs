@@ -136,6 +136,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
             }
             else
             {
+                //TODO : BOSS DO NOT STOP USING SKILLS HERE
                 InvokeCrystalDestroyedEvent(obj.HealthTransform);
                 NotifyHealthChange();
                 Debug.Log("IM DEAD");
@@ -145,7 +146,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
                 ChangeState(BossState.Dead);
                 animator.PlayDeathAnimation(() =>
                 {
-                    //gameObject.SetActive(false);
+                    gameObject.SetActive(false);
                 });
             }
         }
@@ -220,7 +221,6 @@ namespace HeroesFlight.System.NPC.Controllers.Control
             {
                 foreach (var ability in abilityEntry)
                 {
-                    Debug.Log($"{CurrentHealthPercentage} and {ability.name} is ready ? {ability.ReadyToUse}");
                     if (ability.ReadyToUse)
                     {
                         abilitiesToUse.Add(ability);
