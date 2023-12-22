@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using HeroesFlight.Common.Animation;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using Pelumi.Juicer;
@@ -8,14 +10,25 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 {
     public class LightningStrikeAbility : AttackAbilityBaseNPC
     {
+        [Header("Ligtning strike parameters")]
+        [SerializeField] private int amountOfStrikes = 1;
+        [SerializeField] private float delayBetweenStrikes = 0.25f;
         [SerializeField] private ZoneDetectorWithIndicator detector;
-        private ZoneDetectorWithIndicator runtimeDetector;
+        private List<ZoneDetectorWithIndicator>  runtimeDetectors= new ();
         JuicerRuntime juicerRuntime;
+        private Transform target;
         protected override void Awake()
         {
             base.Awake();
-            runtimeDetector = Instantiate(detector, transform.position, Quaternion.identity);
-            runtimeDetector.OnTargetsDetected += HandleTargetsDetected;
+            for (int i = 0; i < amountOfStrikes; i++)
+            {
+                var runtimeDetector =Instantiate(detector, transform.position, Quaternion.identity);
+                runtimeDetector.OnTargetsDetected += HandleTargetsDetected;
+                    runtimeDetectors.Add(runtimeDetector);
+            }
+
+            target = GameObject.FindWithTag("Player").transform;
+
         }
 
         private void HandleTargetsDetected(int count, Collider2D[] targets)
@@ -42,10 +55,14 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
                 currentCooldown = CoolDown;
             }
 
-            var position = attackController.Target.HealthTransform.position;
-            runtimeDetector.transform.position = position;
-            runtimeDetector.StartDetection();
+          //  ActivateDetectors();
             currentCooldown = CoolDown;
+        }
+
+        private void ActivateDetectors()
+        {
+            StartCoroutine(ActivateDetectorsRoutine());
+           
         }
 
         void HandleAnimationEvents(AttackAnimationEvent obj)
@@ -55,7 +72,18 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
                 abilityParticle.Play();
             }
 
-           // runtimeDetector.StartDetection();
+            ActivateDetectors();
+        }
+
+        IEnumerator ActivateDetectorsRoutine()
+        {
+            for (int i = 0; i < amountOfStrikes; i++)
+            {
+                var position =target.position;
+                runtimeDetectors[i].transform.position = position;
+                runtimeDetectors[i].StartDetection();
+                yield return new WaitForSeconds(delayBetweenStrikes);
+            }
         }
     }
 }

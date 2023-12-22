@@ -1,6 +1,6 @@
-
 using TMPro;
 using UnityEngine;
+
 
 namespace HeroesFlight.System.UI.Container
 {
@@ -8,6 +8,14 @@ namespace HeroesFlight.System.UI.Container
     {
         [SerializeField] TMP_SpriteAsset normalDamageAsset;
         [SerializeField] TMP_SpriteAsset criticalDamageAsset;
+        [SerializeField] TMP_SpriteAsset healTextAsset;
+
+        //TODO: remove it after gettingactual heal text asset
+        private void Awake()
+        {
+            healTextAsset.material.color = Color.green;
+            ;
+        }
 
         public TMP_SpriteAsset GetDamageTextSprite(bool isCritical)
         {
@@ -17,8 +25,17 @@ namespace HeroesFlight.System.UI.Container
                     return normalDamageAsset;
                 case true:
                     return criticalDamageAsset;
-              
             }
+        }
+
+        public TMP_SpriteAsset GetDamageTextSprite(bool isCritical, bool isHeal)
+        {
+            if (isHeal)
+            {
+                return healTextAsset;
+            }
+
+            return GetDamageTextSprite(isCritical);
         }
     }
 }

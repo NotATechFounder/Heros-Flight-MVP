@@ -150,6 +150,9 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 case AnimationEventNames.AiDamageV3:
                     OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Shoot, 0, AttackType.Regular));
                     break;
+                case AnimationEventNames.AiDamageV4:
+                    OnAnimationEvent?.Invoke(new AttackAnimationEvent(AniamtionEventType.Shoot, 0, AttackType.Regular));
+                    break;
             }
         }
     }

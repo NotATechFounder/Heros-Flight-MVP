@@ -1107,7 +1107,8 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.ShowSpecialEnemyWarning(EncounterType.Boss);
             uiSystem.UpdateSpecialEnemyHealthBar(1f);
             uiSystem.ToggleSpecialEnemyHealthBar(true);
-            environmentSystem.ParticleManager.Spawn("BossSpawn", new Vector2(-4, 0));
+            
+            environmentSystem.ParticleManager.Spawn("BossSpawn", new Vector2(2.2f, 8.6f));
 
 
             cameraController.InitLevelOverview(6f, () =>
