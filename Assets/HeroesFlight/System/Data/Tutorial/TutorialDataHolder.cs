@@ -30,6 +30,7 @@ public class TutorialDataHolder : MonoBehaviour
         {
             tutorialDictionary.Add(tutorialSOs[i].tutorialMode, tutorialSOs[i]);
         }
+        Load();
     }
 
     public TutorialSO GetTutorialSO(TutorialMode tutorialMode)
