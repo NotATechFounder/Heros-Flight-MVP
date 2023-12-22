@@ -21,6 +21,7 @@ namespace HeroesFlight.System.Gameplay.Model
 
         [SerializeField] private CustomAnimationCurve levelComplectionExpCurve;
         [SerializeField] private CustomAnimationCurve runComplectionExpCurve;
+        [SerializeField] private CustomAnimationCurve reRunComplectionExpCurve;
 
         [Header("Time Stop Testing")]
         [SerializeField] float timeStopRestoreSpeed;
@@ -36,6 +37,10 @@ namespace HeroesFlight.System.Gameplay.Model
         public Environment.Objects.Crystal CrystalPrefab => crystalPrefab;
         public MobDifficultyHolder MobDifficulty => mobDifficulty;
         public MobDropTableHolder MobDropTableHolder => mobDropTable;
+
+        public CustomAnimationCurve LevelComplectionExpCurve => levelComplectionExpCurve;
+
+        public CustomAnimationCurve InRunComplectionExpCurve => runComplectionExpCurve;
 
         public float TimeStopRestoreSpeed => timeStopRestoreSpeed;
         public float TimeStopDuration => timeStopDuration;

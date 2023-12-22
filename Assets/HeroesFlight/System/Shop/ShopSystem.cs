@@ -85,7 +85,7 @@ public class ShopSystem : IShopSystemInterface
             dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, chest.GetGemChestPrice);
             List<Reward> rewards = chest.OpenChest();
             rewardSystem.ProcessRewards(rewards);
-            uISystem.UiEventHandler.ShopMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisuals(rewards).ToArray());
+            uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisuals(rewards).ToArray());
         }
         else
         {
@@ -105,7 +105,7 @@ public class ShopSystem : IShopSystemInterface
         {
             dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, content.cost);
             dataSystem.CurrencyManager.AddCurrency(content.reward.GetRewardObject<CurrencySO>(), content.reward.GetAmount());
-            uISystem.UiEventHandler.ShopMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(content.reward));
+            uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(content.reward));
         }
         else
         {

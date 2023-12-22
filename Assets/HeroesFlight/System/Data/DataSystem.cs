@@ -27,8 +27,10 @@ public class DataSystem : DataSystemInterface
     public EnergyManager EnergyManager { get; private set; }
     public WorldManager WorldManger { get; private set; }
 
+    public TutorialDataHolder TutorialDataHolder { get; private set; }
+
     // Todo: Remove this
-    public bool TutorialMode => false;
+    public bool TutorialMode => true;
 
     public void Init(Scene scene = default, Action onComplete = null)
     {
@@ -39,6 +41,9 @@ public class DataSystem : DataSystemInterface
         AccountLevelManager = scene.GetComponent<AccountLevelManager>();
         WorldManger = scene.GetComponent<WorldManager>();
         EnergyManager = scene.GetComponent<EnergyManager>();
+        TutorialDataHolder = scene.GetComponent<TutorialDataHolder>();
+
+        TutorialDataHolder.Init();
 
         CurrencyManager.LoadCurrencies();
 

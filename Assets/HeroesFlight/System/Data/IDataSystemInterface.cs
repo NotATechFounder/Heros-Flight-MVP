@@ -16,6 +16,8 @@ public interface DataSystemInterface : SystemInterface
     public WorldManager WorldManger { get; }
     public EnergyManager EnergyManager { get; }
 
+    public TutorialDataHolder TutorialDataHolder { get; }
+
     event Action OnApplicationQuit;
     void RequestDataSave();
 

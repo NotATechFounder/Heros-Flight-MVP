@@ -24,6 +24,7 @@ using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
 using Pelumi.ObjectPool;
+using Pelumi.Juicer;
 using Plugins.Audio_System;
 using StansAssets.Foundation.Async;
 using StansAssets.Foundation.Extensions;
@@ -32,6 +33,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UISystem;
+using System.ComponentModel;
 
 public class TutorialSystem : ITutorialInterface
 {
@@ -56,6 +59,7 @@ public class TutorialSystem : ITutorialInterface
     TraitSystemInterface traitSystem;
     InventorySystemInterface inventorySystem;
     IHealthController characterHealthController;
+    RewardSystemInterface rewardSystem;
 
     BaseCharacterAttackController characterAttackController;
 
@@ -87,8 +91,13 @@ public class TutorialSystem : ITutorialInterface
     private TutorialRuntime currentTutorialRuntime;
     private Dictionary<TutorialMode, TutorialRuntime> tutorialDictionary = new Dictionary<TutorialMode, TutorialRuntime>();
 
+    private Dictionary<GameButtonType, JuicerRuntime> tutorialButtonEffects = new Dictionary<GameButtonType,JuicerRuntime>();
+
+    private ButtonCheck buttonCheck;
+
     public TutorialSystem(DataSystemInterface dataSystem, CharacterSystemInterface characterSystem, NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem, 
-        CombatSystemInterface combatSystem, IUISystem uiSystem, ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystem, InventorySystemInterface inventorySystem)
+        CombatSystemInterface combatSystem, IUISystem uiSystem, 
+        ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystem, InventorySystemInterface inventorySystem, RewardSystemInterface rewardSystemInterface)
     {
         this.dataSystem = dataSystem;
         this.characterSystem = characterSystem;
@@ -99,6 +108,7 @@ public class TutorialSystem : ITutorialInterface
         this.progressionSystem = progressionSystem;
         this.traitSystem = traitSystem;
         this.inventorySystem = inventorySystem;
+        this.rewardSystem = rewardSystemInterface;
     }
 
     public void GameplayTutorialCompleted()
@@ -108,6 +118,7 @@ public class TutorialSystem : ITutorialInterface
 
     public void MainMenuTutorialCompleted()
     {
+        Debug.Log("MainMenuTutorialCompleted");
         OnFullTutorialCompleted?.Invoke();
     }
 
@@ -156,8 +167,8 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.GameMenu.GetPassiveAbilityLevel += activeAbilityManager.GetPassiveAbilityLevel;
       //  uiSystem.OnRestartLvlRequest += HandleLvlRestart;
         uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed += ContinueGameLoop;
-        uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
-        uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
+       // uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked += HandleGameLoopFinish;
+       // uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted += HandleGameLoopFinish;
 
         activeAbilityManager.OnEXPAdded += uiSystem.UiEventHandler.GameMenu.UpdateExpBar;
 
@@ -206,9 +217,15 @@ public class TutorialSystem : ITutorialInterface
             }
         }
 
+        inventorySystem.InventoryHandler.OnItemEquipped += InventoryHandler_OnItemEquipped;
+        AdvanceButton.OnAnyButtonPointerDown += AnyButtonPointerDown;
+
+        buttonCheck = new ButtonCheck();
+
         RegisterShrineNPCUIEvents();
 
-        InitialseTutorialRuntimeStates();
+        InitialseGameplayTutorialRuntimeStates();
+        InitialseUITutorialRuntimeStates();
 
         StartGameSession();
 
@@ -223,6 +240,7 @@ public class TutorialSystem : ITutorialInterface
 
     private void GameMenu_OnLevelUpComplete(int obj)
     {
+        Debug.Log("GameMenu_OnLevelUpComplete");
         StartTutorialState(TutorialMode.PasiveAbility);
 
        // uiSystem.UiEventHandler.AbilitySelectMenu.Open();
@@ -294,6 +312,12 @@ public class TutorialSystem : ITutorialInterface
     /// </summary>
     void ResetConnections()
     {
+        this.npcSystem.OnEnemySpawned -= HandleEnemySpawned;
+        this.combatSystem.OnEntityReceivedDamage -= HandleEntityReceivedDamage;
+        this.combatSystem.OnEntityDied -= HandleEntityDied;
+        this.uiSystem.OnSpecialButtonClicked -= UseCharacterSpecial;
+        this.uiSystem.OnReviveCharacterRequest -= () => { ReviveCharacter(100f); };
+
         shrine.GetAngelEffectManager.OnPermanetCard -=
             uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
         uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= shrine.GetAngelEffectManager.Exists;
@@ -305,8 +329,8 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= HandleSingleLevelUp;
         uiSystem.UiEventHandler.GameMenu.GetPassiveAbilityLevel -= activeAbilityManager.GetPassiveAbilityLevel;
         uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnMenuClosed -= ContinueGameLoop;
-        uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked -= HandleGameLoopFinish;
-        uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted -= HandleGameLoopFinish;
+       // uiSystem.UiEventHandler.ReviveMenu.OnCloseButtonClicked -= HandleGameLoopFinish;
+        //uiSystem.UiEventHandler.ReviveMenu.OnCountDownCompleted -= HandleGameLoopFinish;
 
         characterAttackController.OnHitTarget -= OnEnemyHitSuccess;
         characterHealthController.OnDodged -= HandleCharacterDodged;
@@ -343,7 +367,15 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.AbilitySelectMenu.GetPassiveAbilityLevel -= activeAbilityManager.GetPassiveAbilityLevel;
         uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed -= HeroProgressionCompleted;
 
+        uiSystem.UiEventHandler.GameMenu.OnLevelUpComplete -= GameMenu_OnLevelUpComplete;
+
+        uiSystem.UiEventHandler.TutorialMenu.OnShowClicked -= DisableMovement;
+        uiSystem.UiEventHandler.TutorialMenu.OnHideClicked -= EnableMovement;
+
         UnRegisterShrineNPCUIEvents();
+
+        inventorySystem.InventoryHandler.OnItemEquipped -= InventoryHandler_OnItemEquipped;
+        AdvanceButton.OnAnyButtonPointerDown -= AnyButtonPointerDown;
     }
 
     /// <summary>
@@ -629,6 +661,7 @@ public class TutorialSystem : ITutorialInterface
                 break;
             case LevelType.Shrine:
                 EnableMovement();
+                StartTutorialState(TutorialMode.Shrine);
                 break;
             default: break;
         }
@@ -810,10 +843,9 @@ public class TutorialSystem : ITutorialInterface
     void HandleHeroProgression()
     {
         godsBenevolence.DeactivateGodsBenevolence();
-        environmentSystem.CurrencySpawner.ActivateExpItems(() =>
+        environmentSystem.CurrencySpawner.ActivateExpEffectItems(() =>
         {
-            progressionSystem.AddCurrency(CurrencyKeys.RunExperience, (int)currentLevel.ExpReward);
-            activeAbilityManager.AddExp(progressionSystem.GetCurrency(CurrencyKeys.RunExperience));
+            activeAbilityManager.AddExp(100);
             progressionSystem.CollectRunCurrency();
         });
     }
@@ -854,8 +886,13 @@ public class TutorialSystem : ITutorialInterface
         switch (newState)
         {
             case GameState.Won:
+
+                //uiSystem.UiEventHandler.TutorialMenu.Close();
+
                 OnTutorialStateChanged?.Invoke(TutorialState.MainMenu);
-                HandleGameLoopFinish();
+
+                StartTutorialState(tutorialDictionary[TutorialMode.Equip]);
+
                 break;
             case GameState.Died:
                 uiSystem.UiEventHandler.ReviveMenu.Open();
@@ -907,13 +944,6 @@ public class TutorialSystem : ITutorialInterface
             });
     }
 
-    void HandleGameLoopFinish()
-    {
-        //uiSystem.UiEventHandler.SummaryMenu.Open();
-        // TODO: Add exp to player
-        dataSystem.AccountLevelManager.AddExp(100);
-    }
-
     void MoveNextLvl()
     {
         characterSystem.SetCharacterControllerState(false);
@@ -961,7 +991,12 @@ public class TutorialSystem : ITutorialInterface
         });
     }
 
-    public void InitialseTutorialRuntimeStates()
+    private void InventoryHandler_OnItemEquipped()
+    {
+      //  tutorialDictionary[TutorialMode.Equip].IsCompleted = true;
+    }
+
+    public void InitialseGameplayTutorialRuntimeStates()
     {
         TutorialRuntime flyTutorial = new TutorialRuntime(TutorialMode.Fly);
         flyTutorial.AssignEvents(() =>
@@ -986,7 +1021,6 @@ public class TutorialSystem : ITutorialInterface
         }, () =>
         {
             Debug.Log("auto Attack Tutorial ended");
-            // StartTutorialState (TutorialMode.AutoAttack);
         });
 
         tutorialDictionary.Add(TutorialMode.AutoAttack, autoAttackTutorial);
@@ -1034,6 +1068,51 @@ public class TutorialSystem : ITutorialInterface
         });
 
         tutorialDictionary.Add(TutorialMode.UltimateAbility, UltimateAbilityTutorial);
+
+        TutorialRuntime shrineTutorial = new TutorialRuntime(TutorialMode.Shrine);
+        shrineTutorial.AssignEvents(() =>
+        {
+            shrineTutorial.IsCompleted = true;
+        }, () =>
+        {
+            Debug.Log("shrine Tutorial ended");
+        });
+
+        tutorialDictionary.Add(TutorialMode.Shrine, shrineTutorial);
+    }
+
+    public void InitialseUITutorialRuntimeStates()
+    {
+        TutorialRuntime equipItemTutorial = new TutorialRuntime(TutorialMode.Equip);
+        equipItemTutorial.AssignEvents(() =>
+        {
+            CoroutineUtility.Start (EquipTutorialRoutine());
+        }, () =>
+        {
+            StartTutorialState(tutorialDictionary[TutorialMode.UnlockStatPoint]);
+        });
+
+        tutorialDictionary.Add(TutorialMode.Equip, equipItemTutorial);
+
+        TutorialRuntime unlockStatPointTutorial = new TutorialRuntime(TutorialMode.UnlockStatPoint);
+        unlockStatPointTutorial.AssignEvents(() =>
+        {
+            CoroutineUtility.Start (StatPointTutorialRoutine());
+
+        }, () =>
+        {
+            MainMenuTutorialCompleted();
+        });
+
+        tutorialDictionary.Add(TutorialMode.UnlockStatPoint, unlockStatPointTutorial);
+    }
+
+    private void AnyButtonPointerDown(GameButtonType type)
+    {
+        if (tutorialButtonEffects.ContainsKey(type))
+        {
+            tutorialButtonEffects[type].Stop();
+        }
     }
 
     public void StartTutorialState(TutorialMode tutorialMode)
@@ -1041,13 +1120,13 @@ public class TutorialSystem : ITutorialInterface
         DisplayTutorialStartUI(tutorialMode, () =>
         {
             currentTutorialRuntime = tutorialDictionary[tutorialMode];
-            tutorialHandler.StartTutorialState(currentTutorialRuntime);
+            StartTutorialState(currentTutorialRuntime);
         });
     }
 
     public void DisplayTutorialStartUI(TutorialMode tutorialMode, Action OnStartUIClosed)
     {
-        TutorialSO tutorialSO = tutorialHandler.GetTutorialSO(tutorialMode);
+        TutorialSO tutorialSO = dataSystem.TutorialDataHolder.GetTutorialSO(tutorialMode);
         DisableMovement();
         uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.GetTutorialVisualData, ()=>
         {
@@ -1055,4 +1134,136 @@ public class TutorialSystem : ITutorialInterface
             OnStartUIClosed?.Invoke();
         });
     }
+
+    public void StartTutorialState(TutorialRuntime tutorialRuntime)
+    {
+        CoroutineUtility.Start(TutorialStateRoutine(tutorialRuntime));
+    }
+
+    public IEnumerator TutorialStateRoutine(TutorialRuntime tutorialRuntime)
+    {
+        tutorialRuntime.OnBegin?.Invoke();
+        while (!tutorialRuntime.IsCompleted)
+        {
+            yield return null;
+        }
+        tutorialRuntime.OnEnd?.Invoke();
+    }
+
+    public void StopTutorialButtonEffects()
+    {
+        foreach (var item in tutorialButtonEffects)
+        {
+            item.Value.Stop();
+        }
+    }
+
+    public IEnumerator EquipTutorialRoutine()
+    {
+        TutorialSO tutorialSO = dataSystem.TutorialDataHolder.GetTutorialSO(TutorialMode.Equip);
+
+        // First phase
+        uiSystem.UiEventHandler.MainMenu.Open();
+
+        rewardSystem.ProcessRewards(new List<Reward>() { tutorialHandler.FirstItemReward });
+        uiSystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(tutorialHandler.FirstItemReward));
+
+        uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.GetTutorialVisualData.TutorialSteps[0].stepDescription);
+        yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.MainMenu, GameButtonType.Mainmenu_Inventory);
+
+        // Second phase
+        uiSystem.UiEventHandler.MainMenu.SetSingleButtonVibility(GameButtonType.Mainmenu_Inventory, GameButtonVisiblity.Hidden);
+
+        uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.GetTutorialVisualData.TutorialSteps[1].stepDescription);
+
+        yield return WaitForButtonPressed(uiSystem.UiEventHandler.InventoryMenu.FirstItemUIButton);
+
+        yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.InventoryMenu, GameButtonType.Inventory_Equip);
+
+        uiSystem.UiEventHandler.MainMenu.SetSingleButtonVibility(GameButtonType.Inventory_Equip, GameButtonVisiblity.Hidden);
+
+        yield return new WaitForSeconds(2f);
+
+        uiSystem.UiEventHandler.InventoryMenu.Close();
+
+        tutorialDictionary[TutorialMode.Equip].IsCompleted = true;
+    }
+
+    public IEnumerator StatPointTutorialRoutine()
+    {
+        TutorialSO tutorialSO = dataSystem.TutorialDataHolder.GetTutorialSO(TutorialMode.UnlockStatPoint);
+
+        // First phase
+        uiSystem.UiEventHandler.MainMenu.SetAllButtonVibility(GameButtonVisiblity.Hidden);
+
+        uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.GetTutorialVisualData.TutorialSteps[0].stepDescription);
+
+        uiSystem.UiEventHandler.StatePointsMenu.Open();
+
+        uiSystem.UiEventHandler.StatePointsMenu.SetAllButtonVibility(GameButtonVisiblity.Hidden);
+
+        yield return WaitForButtonPressed(uiSystem.UiEventHandler.StatePointsMenu.GetStatPointUIs[0].DiceButton);
+
+        // focus on info incon for dice and wait for it to be pressed
+
+        // enable other buttons
+
+        // show that complete saves all the data
+
+
+        //uiSystem.UiEventHandler.TutorialMenu.Display("Equip Item");
+        yield return new WaitUntil(() => uiSystem.UiEventHandler.StatePointsMenu.MenuStatus == Menu.Status.Closed);
+
+        uiSystem.UiEventHandler.InventoryMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
+        uiSystem.UiEventHandler.MainMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
+
+        uiSystem.UiEventHandler.StatePointsMenu.Close();
+
+        uiSystem.UiEventHandler.TutorialMenu.Close();
+
+        tutorialDictionary[TutorialMode.UnlockStatPoint].IsCompleted = true;
+    }
+
+    public IEnumerator WaitForGameButtonPressed<T>(BaseMenu<T> theMenu, GameButtonType gameButtonType) where T : BaseMenu<T>
+    {
+        AdvanceButton advanceButton = theMenu.GetButton(gameButtonType);
+        theMenu.SetButtonVibilityOnly(gameButtonType, GameButtonVisiblity.Visible);
+        TriggerTutorialButtonEffects(theMenu, gameButtonType);
+
+       yield return WaitForButtonPressed (advanceButton);
+    }
+
+    public IEnumerator WaitForButtonPressed (AdvanceButton advanceButton)
+    {
+        dataSystem.TutorialDataHolder.GetTutorialHand.ShowHand((RectTransform)advanceButton.transform);
+        buttonCheck.SetButton(advanceButton);
+        yield return new WaitUntil(() => buttonCheck.IsPressed);
+    }
+
+    public void TriggerTutorialButtonEffects<T>(BaseMenu<T> theMenu, GameButtonType gameButtonType) where T : BaseMenu<T>
+    {
+        AdvanceButton inventoryButton = theMenu.GetButton(gameButtonType);
+        if (inventoryButton == null) return;
+        JuicerRuntime juicerRuntime = inventoryButton.transform.JuicyScale(1.1f, 0.25f).SetLoop(-1).Start();
+        tutorialButtonEffects.Add(gameButtonType, juicerRuntime);
+    }
+}
+
+public class ButtonCheck
+{
+    public bool IsPressed { get; private set; }
+    private AdvanceButton advanceButton;
+
+    public void SetButton(AdvanceButton advanceButton)
+    {
+        this.advanceButton = advanceButton;
+        advanceButton.onClick.AddListener(OnPressed);
+        IsPressed = false;
+    }
+
+    public void OnPressed()
+    {
+        IsPressed = true;
+        advanceButton.onClick.RemoveListener(OnPressed);
+    }   
 }

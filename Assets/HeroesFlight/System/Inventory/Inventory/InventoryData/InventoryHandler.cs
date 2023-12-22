@@ -22,6 +22,7 @@ public class InventoryAddModificator
 
 public class InventoryHandler : MonoBehaviour, IInventoryChangeSignal
 {
+    public event Action OnItemEquipped;
     public event Action OnInventoryUpdated;
     public event Action<List<StatTypeWithValue>> OnEqiuppedItemsStatChanged;
 
@@ -194,6 +195,8 @@ public class InventoryHandler : MonoBehaviour, IInventoryChangeSignal
         ProcessEquippedItemStats();
 
         mainItemInventorySO.Save();
+
+        OnItemEquipped?.Invoke();
     }
 
     public void UnEquipItem(Item item)

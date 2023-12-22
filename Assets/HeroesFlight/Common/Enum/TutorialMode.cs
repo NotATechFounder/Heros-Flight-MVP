@@ -9,6 +9,7 @@
     Equip,
     LevelUp,
     AccountLevelUp,
-    UnlockTrait,
-    ItemShop
+    UnlockStatPoint,
+    ItemShop,
+    Trait
 }

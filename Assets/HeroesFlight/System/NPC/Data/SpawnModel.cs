@@ -20,13 +20,11 @@ namespace HeroesFlight.System.NPC.Model
         [SerializeField] private LevelType levelType = LevelType.NormalCombat;
         [SerializeField] float lvlDuration = 120f;
         [SerializeField] private GameObject levelPrefab;
-        [SerializeField] private float expReward = 100f;
         [SerializeField] private float timeBetweenWaves = 3f;
         [SerializeField] private Wave[] waves;
 
         public LevelType LevelType => levelType;
         public GameObject LevelPrefab => levelPrefab;
-        public float ExpReward => expReward;
         public float TimeBetweenWaves => timeBetweenWaves;
         public Wave[] Waves => waves;
         public float LevelDuration => lvlDuration;

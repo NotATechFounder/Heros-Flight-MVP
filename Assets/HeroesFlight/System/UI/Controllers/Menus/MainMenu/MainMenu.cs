@@ -245,7 +245,7 @@ namespace UISystem
 
         private void DisplayWorldInfo(WorldType worldType, bool isUnlocked)
         {
-            playButton.interactable = isUnlocked;
+            playButton.SetVisibility(isUnlocked ? GameButtonVisiblity.Visible : GameButtonVisiblity.Hidden);
             worldLock.gameObject.SetActive(!isUnlocked);
 
             worldImage.sprite = worldVisualDic[worldType].icon;

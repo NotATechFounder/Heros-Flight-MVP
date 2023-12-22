@@ -166,11 +166,8 @@ public class AchievementSystem : IAchievementSystemInterface
         questRewardHandler.RewardClaimed();
         List<Reward> rewards = questRewardHandler.CurrentQuest.GetQuestRewardPack().GetReward();
         rewardSystemInterface.ProcessRewards(rewards);
-        List<RewardVisual> rewardVisuals = new List<RewardVisual>();
-        rewardVisuals = rewardSystemInterface.GetRewardVisuals(rewards);
-        uiSystem.UiEventHandler.ShopMenu.DisplayRewardsVisual (rewardVisuals.ToArray());
-        uiSystem.UiEventHandler.MainMenu.ClickNavigationButton(UISystem.MenuNavigationButtonType.Shop);
-
+        List<RewardVisual> rewardVisuals = rewardSystemInterface.GetRewardVisuals(rewards);
+        uiSystem.UiEventHandler.RewardMenu.DisplayRewardsVisual (rewardVisuals.ToArray());
         UpdateQuestVisual();
     }
 
