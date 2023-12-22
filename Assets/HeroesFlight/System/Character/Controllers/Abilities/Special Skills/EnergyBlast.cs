@@ -35,7 +35,8 @@ public class EnergyBlast : RegularActiveAbility
     {
         GetEffectParticleByLevel().gameObject.SetActive(true);
         currentlinesOfDamage = GetMajorValueByLevel(linesOfDamage, linesOfDamagePerIncrease);
-        currentDamage = (int)StatCalc.GetPercentage(baseDamage, damagePercentageCurve.GetCurrentValueFloat(currentLevel));
+        currentDamage =
+            (int)StatCalc.GetPercentage(baseDamage, damagePercentageCurve.GetCurrentValueFloat(currentLevel));
         overlapChecker.DetectOverlap();
     }
 
@@ -46,7 +47,6 @@ public class EnergyBlast : RegularActiveAbility
 
     public override void OnCoolDownEnded()
     {
-
     }
 
     public void Initialize(int level, int baseDamage, CharacterSimpleController characterControllerInterface)
@@ -70,9 +70,9 @@ public class EnergyBlast : RegularActiveAbility
         {
             if (collider2D[i].TryGetComponent(out IHealthController healthController))
             {
-
-                healthController.TryDealLineDamage(currentlinesOfDamage,0.25f,new HealthModificationIntentModel(currentDamage,
-                DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, null));
+                healthController.TryDealDamage(new HealthModificationIntentModel(currentDamage,
+                    DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, null, currentlinesOfDamage,
+                    0.25f));
             }
         }
     }

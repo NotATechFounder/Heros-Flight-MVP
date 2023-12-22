@@ -12,7 +12,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         AiAgentModel AgentModel { get; }
         Transform CurrentTarget { get; }
         MonsterStatModifier GetMonsterStatModifier();
-        void ProcessKnockBack();
+        void ProcessHit();
         void Aggravate();
         void SetMovementState(bool canMove);
         void Init(Transform player, int health, float damage, MonsterStatModifier monsterStatModifier, Sprite currentCardIcon);

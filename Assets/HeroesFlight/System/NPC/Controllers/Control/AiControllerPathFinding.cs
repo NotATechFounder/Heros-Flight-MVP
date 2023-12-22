@@ -41,10 +41,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
 
         public override void Disable()
         {
-            if (knockBackRoutine != null)
-            {
-                StopCoroutine(knockBackRoutine);
-            }
+            CleanKnockBack();
 
 
             setter.target = null;
@@ -54,8 +51,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
             base.Disable();
         }
 
-
-        void OnDestroy()
+        private void CleanKnockBack()
         {
             if (knockBackRoutine != null)
             {
@@ -63,7 +59,13 @@ namespace HeroesFlightProject.System.NPC.Controllers
             }
         }
 
-        public override void ProcessKnockBack()
+
+        void OnDestroy()
+        {
+            CleanKnockBack();
+        }
+
+        public override void ProcessHit()
         {
             
             if (!m_Model.UseKnockBack)
@@ -80,9 +82,11 @@ namespace HeroesFlightProject.System.NPC.Controllers
               
                 var forceVector = currentTarget.position.x >= transform.position.x ? Vector2.left : Vector2.right;
                 mover.ProcessKnockBack(forceVector, m_Model.KnockBackForce,m_Model.KnockBackDuration);
-                // var forceVector = (transform.position - currentTarget.position).normalized;
+                CleanKnockBack();
                 knockBackRoutine = StartCoroutine(KnockBackRoutine(forceVector));
             }
+
+         
         }
 
         protected override Vector2 GetVelocity()
