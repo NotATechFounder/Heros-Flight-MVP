@@ -6,6 +6,7 @@ using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Controllers.Control;
 using HeroesFlightProject.System.Gameplay.Controllers;
+using StansAssets.Foundation.Async;
 using UnityEngine;
 
 namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
@@ -15,6 +16,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
         [SerializeField] private int maxUes = 1;
         [SerializeField] private float healAmount = 20f;
         [SerializeField] private float healthThresholdToUse = 50f;
+        [SerializeField] private float preHealDelay = 1f;
         [SerializeField] private int currentUses;
         private BossController bossController;
 
@@ -26,23 +28,42 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
             base.Awake();
             currentUses = maxUes;
             bossController = GetComponentInParent<BossController>();
-           
         }
 
         public override void UseAbility(Action onComplete = null)
         {
-            base.UseAbility(onComplete);
-            currentUses--;
-            foreach (var controller in bossController.CrystalNodes)
+            Debug.Log("Trying to heal?");
+            if (bossController.CurrentHealthPercentage > healthThresholdToUse)
             {
-                if(controller.IsDead())
-                    continue;
-                
-                controller.TryDealDamage(new HealthModificationIntentModel(healAmount, DamageCritType.NoneCritical,
-                    AttackType.Healing, CalculationType.Percentage, null, 1, .1f));
+                onComplete?.Invoke();
+                return;
             }
 
-            bossController.NotifyHealthChange();
+            base.UseAbility(onComplete);
+            currentUses--;
+            TryHealCrystals();
+        }
+
+        private void TryHealCrystals()
+        {
+            CoroutineUtility.WaitForSeconds(preHealDelay, () =>
+            {
+                foreach (var controller in bossController.CrystalNodes)
+                {
+                    if (controller.IsDead())
+                        continue;
+
+                    controller.TryDealDamage(new HealthModificationIntentModel(healAmount, DamageCritType.NoneCritical,
+                        AttackType.Healing, CalculationType.Percentage, null, 1, .1f));
+                }
+                
+                if (abilityParticle != null)
+                {
+                    abilityParticle.Play();
+                }
+                bossController.NotifyHealthChange();
+            });
+          
         }
     }
 }

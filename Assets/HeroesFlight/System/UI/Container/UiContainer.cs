@@ -10,12 +10,6 @@ namespace HeroesFlight.System.UI.Container
         [SerializeField] TMP_SpriteAsset criticalDamageAsset;
         [SerializeField] TMP_SpriteAsset healTextAsset;
 
-        //TODO: remove it after gettingactual heal text asset
-        private void Awake()
-        {
-            healTextAsset.material.color = Color.green;
-            ;
-        }
 
         public TMP_SpriteAsset GetDamageTextSprite(bool isCritical)
         {

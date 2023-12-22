@@ -30,7 +30,7 @@ public class DataSystem : DataSystemInterface
     public TutorialDataHolder TutorialDataHolder { get; private set; }
 
     // Todo: Remove this
-    public bool TutorialMode => true;
+    public bool TutorialMode => false;
 
     public void Init(Scene scene = default, Action onComplete = null)
     {

@@ -48,7 +48,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
 
             initied = true;
             animator.PlayHitAnimation(false);
-            CurrentHealthPercentage = 100;
+            CalculateCurrentHealth();
         }
 
         void HandleCrystalDamaged(HealthModificationRequestModel healthModificationRequestModel)
@@ -136,22 +136,32 @@ namespace HeroesFlight.System.NPC.Controllers.Control
             }
             else
             {
+                InvokeCrystalDestroyedEvent(obj.HealthTransform);
+                NotifyHealthChange();
                 Debug.Log("IM DEAD");
-                foreach (var abilityList in abilityNodesCache.Values)
-                {
-                    foreach (var ability in abilityList)
-                    {
-                        ability.StopAbility();
-                    }
-                }
+                ResetAbilities();
 
                 cameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion, 2f);
                 ChangeState(BossState.Dead);
                 animator.PlayDeathAnimation(() =>
                 {
-                    gameObject.SetActive(false);
+                    //gameObject.SetActive(false);
                 });
             }
+        }
+
+        private void ResetAbilities()
+        {
+            foreach (var abilityList in abilityNodesCache.Values)
+            {
+                foreach (var ability in abilityList)
+                {
+                    ability.StopAbility();
+                }
+            }
+
+            if (abilityQue.Count > 0)
+                abilityQue.Clear();
         }
 
 
@@ -178,7 +188,6 @@ namespace HeroesFlight.System.NPC.Controllers.Control
         {
             if (abilityQue.Count > 0)
             {
-                Debug.Log("Gona use qued ability");
                 UseQueuedAbility();
             }
             else
@@ -190,46 +199,64 @@ namespace HeroesFlight.System.NPC.Controllers.Control
 
         void UseRandomAbility()
         {
-            AbilityBaseNPC targetAbility = null;
             float totalChance = 0;
-            List<AbilityBaseNPC> abilitiesToUse = new();
+            List<AbilityBaseNPC> readyAbilities = new List<AbilityBaseNPC>();
+            FilterAndAddReadyToUseAbilities(readyAbilities, ref totalChance);
+            AbilityBaseNPC targetAbility;
+            SelectTargetAbilityFromPool(readyAbilities, totalChance, out targetAbility);
+            if (targetAbility != null)
+            {
+                UseTargetAbility(targetAbility);
+            }
+            else
+            {
+                Debug.Log("No ability was available to use.");
+            }
+        }
+
+        private void FilterAndAddReadyToUseAbilities(List<AbilityBaseNPC> abilitiesToUse, ref float totalChance)
+        {
             foreach (var abilityEntry in abilityNodesCache.Values)
             {
                 foreach (var ability in abilityEntry)
                 {
-                    if (ability.ReadyToUse) abilitiesToUse.Add(ability);
+                    Debug.Log($"{CurrentHealthPercentage} and {ability.name} is ready ? {ability.ReadyToUse}");
+                    if (ability.ReadyToUse)
+                    {
+                        abilitiesToUse.Add(ability);
+                        totalChance += ability.UseChance;
+                    }
                 }
             }
+        }
 
-
-            foreach (var ability in abilitiesToUse)
-            {
-                totalChance += ability.UseChance;
-            }
-
-
+        private void SelectTargetAbilityFromPool(List<AbilityBaseNPC> readyAbilities, float totalChance,
+            out AbilityBaseNPC targetAbility)
+        {
+            targetAbility = null;
             float currentChance = 0;
-            var rng = Random.Range(0, totalChance);
-
-            foreach (var ability in abilitiesToUse)
+            float rng = Random.Range(0, totalChance);
+            foreach (var ability in readyAbilities)
             {
                 currentChance += ability.UseChance;
                 if (rng <= currentChance)
                 {
                     targetAbility = ability;
                     break;
-                    ;
                 }
             }
+        }
 
-
+        void UseTargetAbility(AbilityBaseNPC targetAbility)
+        {
             Debug.Log($"using ability {targetAbility.gameObject.name}");
+
             var abilityCooldown = targetAbility.CoolDown;
+            targetAbility.UseAbility(() => ChangeState(BossState.Idle));
 
-
-            targetAbility.UseAbility(() => { ChangeState(BossState.Idle); });
             targetAbility.SetCoolDown(abilityCooldown);
-            currentCooldown = abilityCooldown+0.5f;
+            currentCooldown = abilityCooldown + 0.5f;
+
             ChangeState(BossState.UsingAbility);
         }
 
@@ -254,7 +281,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
                     currentHealth += health.CurrentHealth;
             }
 
-            CurrentHealthPercentage = currentHealth / maxHealth;
+            CurrentHealthPercentage = (currentHealth / maxHealth) * 100;
             return currentHealth / maxHealth;
         }
 

@@ -25,7 +25,6 @@ namespace HeroesFlight.System.NPC.Controllers.Control
 
         public virtual void Init(float maxHealth,float damage)
         {
-            Debug.Log($"{maxHealth} nad {damage}");
             cameraShaker = FindObjectOfType<CameraController>().CameraShaker;
             animator = GetComponent<AiAnimationController>();
             this.maxHealth = maxHealth;
@@ -53,8 +52,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
                 return;
 
             State = newState;
-            Debug.Log(newState);
-            OnBossStateChange?.Invoke(State);
+           OnBossStateChange?.Invoke(State);
         }
     }
 }

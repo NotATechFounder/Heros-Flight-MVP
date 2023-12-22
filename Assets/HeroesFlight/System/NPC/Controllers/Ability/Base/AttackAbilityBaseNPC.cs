@@ -22,7 +22,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected float damage;
         protected float critChance;
-        private IHealthController healthController;
+        protected IHealthController healthController;
         
         
         public float SkillDamage => (damage / 100 * damageMultiplier)/damageInstances;
