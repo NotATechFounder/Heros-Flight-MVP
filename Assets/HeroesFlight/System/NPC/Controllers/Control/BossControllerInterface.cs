@@ -16,7 +16,7 @@ namespace HeroesFlight.System.NPC.Controllers.Control
         public event Action<float> OnHealthPercentageChange;
         public event Action<HealthModificationIntentModel> OnBeingDamaged;
         public event Action<BossState> OnBossStateChange;
-        void Init();
+        void Init(float maxHealth,float damage);
         
     }
 }

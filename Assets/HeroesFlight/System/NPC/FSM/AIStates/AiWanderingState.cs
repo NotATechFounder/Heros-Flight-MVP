@@ -23,7 +23,7 @@ namespace HeroesFlightProject.System.NPC.State.AIStates
         public override void Enter()
         {
             mover.MoveToTarget(null);
-            mover.SetMovementState(true);
+            aiController.SetMovementState(true);
             base.Enter();
         }
 

@@ -29,8 +29,8 @@ public class DataSystem : DataSystemInterface
 
     public TutorialDataHolder TutorialDataHolder { get; private set; }
 
-    // Todo: Remove this
     public bool TutorialMode => !TutorialDataHolder.GetData.IsCompleted;
+    
     public void Init(Scene scene = default, Action onComplete = null)
     {
         CurrencyManager = scene.GetComponent<CurrencyManager>();

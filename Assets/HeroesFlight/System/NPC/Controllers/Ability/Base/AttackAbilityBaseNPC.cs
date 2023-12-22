@@ -22,11 +22,13 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         protected float damage;
         protected float critChance;
-        private IHealthController healthController;
+        protected IHealthController healthController;
         
         
         public float SkillDamage => (damage / 100 * damageMultiplier)/damageInstances;
         public float SkillCritChance => critChance + critChanceModifier;
+        public float BaseDamage => damage;
+        public float BaseCritChance => critChance;
 
         public void SetStats(float newDamage, float newCritChance)
         {
@@ -60,15 +62,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             var isCritical = DetermineIfCritical();
             var damageToDeal = CalculateDamage(isCritical);
             var damageModel = CreateHealthModificationIntentModel(damageToDeal, DetermineCritType(isCritical));
-            // if (damageInstances <= 1)
-            // {
-            //   
-            //     health.TryDealDamage(damageModel);
-            // }
-            // else
-            // {
-            //     health.TryDealLineDamage(damageInstances, betweenInstancesDelay, damageModel);
-            // }
+          
             health.TryDealDamage(damageModel);
         }
     }

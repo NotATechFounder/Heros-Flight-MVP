@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HeroesFlight.System.Gameplay.Model;
 using Spine.Unity;
 using StansAssets.Foundation.Async;
@@ -17,6 +18,8 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         [Header("Do not modify")]
         [SerializeField] string fillPhaseProperty = "_FillPhase";
         [SerializeField] string fillColorProperty = "_FillColor";
+        [Header("Optional health controllers preventing this one from taking damage")]
+        [SerializeField] private List<BossCrystalsHealthController> healthControllersToDestroyFirst = new();
 
         MaterialPropertyBlock mpb;
         MeshRenderer meshRenderer;
@@ -26,11 +29,45 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             base.Init();
             mpb = new MaterialPropertyBlock();
             meshRenderer = GetComponentInChildren<MeshRenderer>();
+            CheckOptionalImmortality();
+        }
+
+        private void CheckOptionalImmortality()
+        {
+            if (healthControllersToDestroyFirst.Count > 0)
+            {
+                SetInvulnerableState(true);
+                foreach (var controller in healthControllersToDestroyFirst)
+                {
+                    controller.OnDeath += HandleOptionalControllerDeath;
+                }
+            }
+        }
+
+        private void HandleOptionalControllerDeath(IHealthController obj)
+        {
+            var controller = obj as BossCrystalsHealthController;
+            controller.OnDeath -= HandleOptionalControllerDeath;
+            healthControllersToDestroyFirst.Remove(controller);
+            CheckEndOfOptionalImmortalityConditions();
+        }
+
+        private void CheckEndOfOptionalImmortalityConditions()
+        {
+            if (healthControllersToDestroyFirst.Count == 0)
+            {
+                SetInvulnerableState(false);
+            }
         }
 
         public void SetDefence(float value)
         {
             defence = value;
+        }
+
+        public void SetMaxHealth(float value)
+        {
+            maxHealth = value;
         }
 
         public override void TryDealDamage(HealthModificationIntentModel healthModificationIntent)

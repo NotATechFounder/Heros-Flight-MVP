@@ -43,9 +43,10 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         }
 
 
-        IEnumerator DetectionRoutine(Action onComplete)
+       protected virtual IEnumerator DetectionRoutine(Action onComplete)
         {
             float currentDuration = 0;
+            
             while (currentDuration < duration)
             {
                 overlap.DetectOverlap();

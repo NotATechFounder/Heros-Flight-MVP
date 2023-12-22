@@ -35,7 +35,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 cameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Explosion,.5f);
                 foreach (var mushroom in mushrooms)
                 {
-                   mushroom.Init(player,health,damage,new MonsterStatModifier(),null);
+                  // mushroom.Init(player,health,damage,new MonsterStatModifier(),null);
                    OnEnemySpawned?.Invoke( mushroom.GetComponent<IHealthController>());
                 }
             });

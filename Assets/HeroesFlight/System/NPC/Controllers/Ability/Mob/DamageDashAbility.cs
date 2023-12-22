@@ -14,8 +14,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
         [SerializeField] Trigger2DObserver observer;
         [SerializeField] private bool useYAxis = true;
         private Rigidbody2D rigidbody2D;
-        private IHealthController healthController;
-        private EnemyAttackControllerBase attackController;
+      
 
         protected override void Awake()
         {

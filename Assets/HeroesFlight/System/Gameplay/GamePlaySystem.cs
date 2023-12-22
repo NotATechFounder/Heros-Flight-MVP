@@ -50,7 +50,8 @@ namespace HeroesFlight.System.Gameplay
         public GamePlaySystem(DataSystemInterface dataSystem, CharacterSystemInterface characterSystem,
             NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem,
             CombatSystemInterface combatSystem,
-            IUISystem uiSystem, ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystemInterface, InventorySystemInterface inventorySystemInterface)
+            IUISystem uiSystem, ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystemInterface,
+            InventorySystemInterface inventorySystemInterface)
         {
             this.dataSystem = dataSystem;
             this.npcSystem = npcSystem;
@@ -60,7 +61,12 @@ namespace HeroesFlight.System.Gameplay
             this.uiSystem = uiSystem;
             this.progressionSystem = progressionSystem;
             traitSystem = traitSystemInterface;
-            InventorySystem = inventorySystemInterface;        
+            InventorySystem = inventorySystemInterface;
+            this.npcSystem.OnEnemySpawned += HandleEnemySpawned;
+            this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
+            this.combatSystem.OnEntityDied += HandleEntityDied;
+            this.uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
+            this.uiSystem.OnReviveCharacterRequest += () => { ReviveCharacter(100f); };
         }
 
         CountDownTimer GameTimer;
@@ -118,12 +124,7 @@ namespace HeroesFlight.System.Gameplay
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
-            this.npcSystem.OnEnemySpawned += HandleEnemySpawned;
-            this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
-            this.combatSystem.OnEntityDied += HandleEntityDied;
-            this.uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
-            this.uiSystem.OnReviveCharacterRequest += () => { ReviveCharacter(100f); };
-
+          
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
 
             shrine = scene.GetComponentInChildren<Shrine>();
@@ -158,8 +159,9 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
 
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =  godsBenevolence.GetRandomGodsBenevolenceVisualSO;
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved +=    godsBenevolence.ActivateGodsBenevolence;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =
+                godsBenevolence.GetRandomGodsBenevolenceVisualSO;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved += godsBenevolence.ActivateGodsBenevolence;
 
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened += StoreRunReward;
             uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete += HandleSingleLevelUp;
@@ -189,16 +191,24 @@ namespace HeroesFlight.System.Gameplay
             activeAbilityManager.OnPassiveAbilityEquipped += uiSystem.UiEventHandler.GameMenu.VisualisePassiveAbility;
             activeAbilityManager.OnPassiveAbilityRemoved += uiSystem.UiEventHandler.GameMenu.RemovePassiveAbility;
             activeAbilityManager.OnRegularActiveAbilitySwapped += uiSystem.UiEventHandler.GameMenu.SwapActiveAbility;
-            activeAbilityManager.OnRegularActiveAbilityUpgraded += uiSystem.UiEventHandler.GameMenu.UpgradeActiveAbility;
+            activeAbilityManager.OnRegularActiveAbilityUpgraded +=
+                uiSystem.UiEventHandler.GameMenu.UpgradeActiveAbility;
 
             uiSystem.UiEventHandler.AbilitySelectMenu.OnRegularAbilitySelected += activeAbilityManager.EquippedAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected += activeAbilityManager.AddPassiveAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility += activeAbilityManager.GetRandomActiveAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetActiveAbilityLevel += activeAbilityManager.GetActiveAbilityLevel;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility += activeAbilityManager.GetRandomPassiveAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetPassiveAbilityLevel += activeAbilityManager.GetPassiveAbilityLevel;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected +=
+                activeAbilityManager.AddPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility +=
+                activeAbilityManager.GetRandomActiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData +=
+                activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetActiveAbilityLevel +=
+                activeAbilityManager.GetActiveAbilityLevel;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility +=
+                activeAbilityManager.GetRandomPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData +=
+                activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetPassiveAbilityLevel +=
+                activeAbilityManager.GetPassiveAbilityLevel;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += HeroProgressionCompleted;
 
             goldModifier = 0;
@@ -288,7 +298,7 @@ namespace HeroesFlight.System.Gameplay
                     break;
                 case CombatEntityType.MiniBoss:
                     HandleEnemyDamaged(damageModel.DamageIntentModel);
-                 //   HandleMinibossHealthChange(damageModel.HealthPercentagePercentageLeft);
+                    //   HandleMinibossHealthChange(damageModel.HealthPercentagePercentageLeft);
                     break;
                 case CombatEntityType.Boss:
                     HandleEnemyDamaged(damageModel.DamageIntentModel);
@@ -316,7 +326,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
 
-            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -=  godsBenevolence.ActivateGodsBenevolence;
+            uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -= godsBenevolence.ActivateGodsBenevolence;
             uiSystem.UiEventHandler.SummaryMenu.OnMenuOpened -= StoreRunReward;
             uiSystem.UiEventHandler.GameMenu.OnSingleLevelUpComplete -= HandleSingleLevelUp;
             uiSystem.UiEventHandler.GameMenu.GetPassiveAbilityLevel -= activeAbilityManager.GetPassiveAbilityLevel;
@@ -347,16 +357,24 @@ namespace HeroesFlight.System.Gameplay
             activeAbilityManager.OnPassiveAbilityEquipped -= uiSystem.UiEventHandler.GameMenu.VisualisePassiveAbility;
             activeAbilityManager.OnPassiveAbilityRemoved -= uiSystem.UiEventHandler.GameMenu.RemovePassiveAbility;
             activeAbilityManager.OnRegularActiveAbilitySwapped -= uiSystem.UiEventHandler.GameMenu.SwapActiveAbility;
-            activeAbilityManager.OnRegularActiveAbilityUpgraded -= uiSystem.UiEventHandler.GameMenu.UpgradeActiveAbility;
+            activeAbilityManager.OnRegularActiveAbilityUpgraded -=
+                uiSystem.UiEventHandler.GameMenu.UpgradeActiveAbility;
 
             uiSystem.UiEventHandler.AbilitySelectMenu.OnRegularAbilitySelected -= activeAbilityManager.EquippedAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected -= activeAbilityManager.AddPassiveAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility -= activeAbilityManager.GetRandomActiveAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData -= activeAbilityManager.GetActiveAbilityVisualData;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetActiveAbilityLevel -= activeAbilityManager.GetActiveAbilityLevel;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility -= activeAbilityManager.GetRandomPassiveAbility;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData -= activeAbilityManager.GetPassiveAbilityVisualData;
-            uiSystem.UiEventHandler.AbilitySelectMenu.GetPassiveAbilityLevel -= activeAbilityManager.GetPassiveAbilityLevel;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnPassiveAbilitySelected -=
+                activeAbilityManager.AddPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbility -=
+                activeAbilityManager.GetRandomActiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomActiveAbilityVisualData -=
+                activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetActiveAbilityLevel -=
+                activeAbilityManager.GetActiveAbilityLevel;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbility -=
+                activeAbilityManager.GetRandomPassiveAbility;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetRandomPassiveAbilityVisualData -=
+                activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.AbilitySelectMenu.GetPassiveAbilityLevel -=
+                activeAbilityManager.GetPassiveAbilityLevel;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed -= HeroProgressionCompleted;
 
             UnRegisterShrineNPCUIEvents();
@@ -469,7 +487,8 @@ namespace HeroesFlight.System.Gameplay
             characterStatController = characterController.CharacterTransform.GetComponent<CharacterStatController>();
             characterStatController.Initialize(dataSystem.StatManager.GetStatModel());
 
-            CombatEffectsController effectsController = characterController.CharacterTransform.GetComponent<CombatEffectsController>();
+            CombatEffectsController effectsController =
+                characterController.CharacterTransform.GetComponent<CombatEffectsController>();
             combatSystem.RegisterEntity(new CombatEntityModel(characterHealthController, characterAttackController,
                 effectsController,
                 CombatEntityType.Player));
@@ -515,33 +534,34 @@ namespace HeroesFlight.System.Gameplay
 
             if (obj.EnemyType == EnemyType.MiniBoss)
             {
-                var attackController = obj.GetComponent<IAttackControllerInterface>();
-                var effectsController = obj.GetComponent<CombatEffectsController>();
-                combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
-                    CombatEntityType.MiniBoss));
-                uiSystem.ToggleSpecialEnemyHealthBar(true);
-                var spawnAbility = obj.transform.GetComponentInChildren<SpawnEnemyAbility>();
-                if (spawnAbility != null)
-                {
-                    spawnAbility.OnEnemySpawned += (healthController) =>
-                    {
-                        var attackController =
-                            healthController.HealthTransform.GetComponent<IAttackControllerInterface>();
-                        var effectsController =
-                            healthController.HealthTransform.GetComponent<CombatEffectsController>();
-                        combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController,
-                            effectsController,
-                            CombatEntityType.TempMob));
-                    };
-                }
+                HandleMinibossSpawned(obj, healthController);
             }
             else
             {
-                obj.OnDisabled += HandleEnemyDisabled;
-                var attackController = obj.GetComponent<IAttackControllerInterface>();
-                var effectsController = obj.GetComponent<CombatEffectsController>();
-                combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
-                    CombatEntityType.Mob));
+                HandleMobSpawned(obj, healthController);
+            }
+        }
+
+        private void HandleMobSpawned(AiControllerBase obj, IHealthController healthController)
+        {
+            obj.OnDisabled += HandleEnemyDisabled;
+            var attackController = obj.GetComponent<IAttackControllerInterface>();
+            var effectsController = obj.GetComponent<CombatEffectsController>();
+            combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
+                CombatEntityType.Mob));
+        }
+
+        private void HandleMinibossSpawned(AiControllerBase obj, IHealthController healthController)
+        {
+            var attackController = obj.GetComponent<IAttackControllerInterface>();
+            var effectsController = obj.GetComponent<CombatEffectsController>();
+            combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
+                CombatEntityType.MiniBoss));
+            uiSystem.ToggleSpecialEnemyHealthBar(true);
+            var mobSpawnAbility = obj.transform.GetComponentInChildren<SpawnEnemyAbility>();
+            if (mobSpawnAbility != null)
+            {
+                mobSpawnAbility.OnEnemySpawned += HandleMobSpawnedByAbility;
             }
         }
 
@@ -585,7 +605,8 @@ namespace HeroesFlight.System.Gameplay
         {
             GameEffectController.ForceStop(() =>
             {
-                dataSystem.WorldManger.SetMaxLevelReached(dataSystem.WorldManger.SelectedWorld, container.CurrentLvlIndex);
+                dataSystem.WorldManger.SetMaxLevelReached(dataSystem.WorldManger.SelectedWorld,
+                    container.CurrentLvlIndex);
 
                 if (container.FinishedLoop)
                 {
@@ -600,8 +621,9 @@ namespace HeroesFlight.System.Gameplay
                 {
                     var traitValue = traitSystem.GetTraitEffect(traitId[0].TargetTrait.Id);
                     characterSystem.CurrentCharacter.CharacterTransform.GetComponent<IHealthController>().TryDealDamage(
-                        new HealthModificationIntentModel(traitValue.Value, DamageCritType.NoneCritical, AttackType.Healing,
-                            CalculationType.Percentage,null));
+                        new HealthModificationIntentModel(traitValue.Value, DamageCritType.NoneCritical,
+                            AttackType.Healing,
+                            CalculationType.Percentage, null));
                 }
 
                 ChangeState(GameState.WaitingPortal);
@@ -751,6 +773,7 @@ namespace HeroesFlight.System.Gameplay
                     characterSystem.SetCharacterControllerState(true);
                     break;
                 case LevelType.WorldBoss:
+                    enemiesToKill = 2;
                     HandleWorldBoss();
                     break;
             }
@@ -887,11 +910,16 @@ namespace HeroesFlight.System.Gameplay
             {
                 return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
             };
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes += activeAbilityManager.GetEqqipedActiveAbilities;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetRandomActiveAbilityTypes += activeAbilityManager.GetRandomActiveAbilityFromAll;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityVisualData += activeAbilityManager.GetActiveAbilityVisualData;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityLevel += activeAbilityManager.GetActiveAbilityLevel;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped += activeAbilityManager.SwapActiveAbility;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes +=
+                activeAbilityManager.GetEqqipedActiveAbilities;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetRandomActiveAbilityTypes +=
+                activeAbilityManager.GetRandomActiveAbilityFromAll;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityVisualData +=
+                activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityLevel +=
+                activeAbilityManager.GetActiveAbilityLevel;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped +=
+                activeAbilityManager.SwapActiveAbility;
 
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
@@ -900,11 +928,16 @@ namespace HeroesFlight.System.Gameplay
             {
                 return shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
             };
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes += activeAbilityManager.GetEqquipedPassiveAbilities;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetRandomPassiveAbilityTypes += activeAbilityManager.GetRandomPassiveAbilityFromAll;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityVisualData += activeAbilityManager.GetPassiveAbilityVisualData;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityLevel += activeAbilityManager.GetPassiveAbilityLevel;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped += activeAbilityManager.SwapPassiveAbility;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes +=
+                activeAbilityManager.GetEqquipedPassiveAbilities;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetRandomPassiveAbilityTypes +=
+                activeAbilityManager.GetRandomPassiveAbilityFromAll;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityVisualData +=
+                activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityLevel +=
+                activeAbilityManager.GetPassiveAbilityLevel;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped +=
+                activeAbilityManager.SwapPassiveAbility;
         }
 
         void UnRegisterShrineNPCUIEvents()
@@ -931,11 +964,16 @@ namespace HeroesFlight.System.Gameplay
             {
                 return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
             };
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes -= activeAbilityManager.GetEqqipedActiveAbilities;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetRandomActiveAbilityTypes -= activeAbilityManager.GetRandomActiveAbilityFromAll;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityVisualData -= activeAbilityManager.GetActiveAbilityVisualData;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityLevel -= activeAbilityManager.GetActiveAbilityLevel;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped -= activeAbilityManager.SwapActiveAbility;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes -=
+                activeAbilityManager.GetEqqipedActiveAbilities;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetRandomActiveAbilityTypes -=
+                activeAbilityManager.GetRandomActiveAbilityFromAll;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityVisualData -=
+                activeAbilityManager.GetActiveAbilityVisualData;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetActiveAbilityLevel -=
+                activeAbilityManager.GetActiveAbilityLevel;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped -=
+                activeAbilityManager.SwapActiveAbility;
 
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
@@ -944,11 +982,16 @@ namespace HeroesFlight.System.Gameplay
             {
                 return shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
             };
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes -= activeAbilityManager.GetEqquipedPassiveAbilities;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetRandomPassiveAbilityTypes -= activeAbilityManager.GetRandomPassiveAbilityFromAll;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityVisualData -= activeAbilityManager.GetPassiveAbilityVisualData;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityLevel -= activeAbilityManager.GetPassiveAbilityLevel;
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped -= activeAbilityManager.SwapPassiveAbility;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes -=
+                activeAbilityManager.GetEqquipedPassiveAbilities;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetRandomPassiveAbilityTypes -=
+                activeAbilityManager.GetRandomPassiveAbilityFromAll;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityVisualData -=
+                activeAbilityManager.GetPassiveAbilityVisualData;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetPassiveAbilityLevel -=
+                activeAbilityManager.GetPassiveAbilityLevel;
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPassiveAbilitySwapped -=
+                activeAbilityManager.SwapPassiveAbility;
         }
 
         void HandleCrystalHit(Transform transform)
@@ -996,7 +1039,8 @@ namespace HeroesFlight.System.Gameplay
             godsBenevolence.DeactivateGodsBenevolence();
             environmentSystem.CurrencySpawner.ActivateExpEffectItems(() =>
             {
-                activeAbilityManager.AddExp(container.CurrentModel.InRunComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
+                activeAbilityManager.AddExp(
+                    container.CurrentModel.InRunComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
 
                 progressionSystem.CollectRunCurrency();
             });
@@ -1070,7 +1114,29 @@ namespace HeroesFlight.System.Gameplay
         void HandleWorldBoss()
         {
             Debug.Log("WORLD BOSS LOGIC");
+            if (currentLevel.MiniHasBoss)
+            {
+                cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,
+                    3f, 3f);
+                uiSystem.ShowSpecialEnemyWarning(EncounterType.Miniboss);
+                uiSystem.UpdateEnemiesCounter(0);
+                combatSystem.StartCharacterComboCheck();
+                var miniboss = npcSystem.SpawnEntity(currentLevel.GetMinibossPrefab);
+                var healthController = miniboss.GetComponent<IHealthController>();
 
+
+                HandleMinibossSpawned(miniboss, healthController);
+                healthController.OnDeath += (health) => { InitWorldBossEncounter(); };
+                characterSystem.SetCharacterControllerState(true);
+            }
+            else
+            {
+                InitWorldBossEncounter();
+            }
+        }
+
+        private void InitWorldBossEncounter()
+        {
             //Init world boss
             AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicKey);
             uiSystem.UpdateEnemiesCounter(0);
@@ -1081,7 +1147,8 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.ShowSpecialEnemyWarning(EncounterType.Boss);
             uiSystem.UpdateSpecialEnemyHealthBar(1f);
             uiSystem.ToggleSpecialEnemyHealthBar(true);
-            environmentSystem.ParticleManager.Spawn("BossSpawn", new Vector2(-4, 0));
+
+            environmentSystem.ParticleManager.Spawn("BossSpawn", new Vector2(2.2f, 8.6f));
 
 
             cameraController.InitLevelOverview(6f, () =>
@@ -1094,28 +1161,44 @@ namespace HeroesFlight.System.Gameplay
                 boss.OnHealthPercentageChange += HandleBossHealthChange;
                 boss.OnCrystalDestroyed += SpawnLootFromBoss;
                 characterSystem.SetCharacterControllerState(true);
-                boss.Init();
+                boss.Init(npcSystem.NpcContainer.MobDifficulties.GetHealth(CurrentLvlIndex, EnemyType.Boss),
+                    npcSystem.NpcContainer.MobDifficulties.GetDamage(CurrentLvlIndex, EnemyType.Boss));
                 foreach (var health in boss.CrystalNodes)
                 {
                     var effectsHandler = health.HealthTransform.GetComponent<CombatEffectsController>();
                     combatSystem.RegisterEntity(new CombatEntityModel(health, effectsHandler, CombatEntityType.Boss));
                 }
 
-                var spawnAbility = boss.transform.GetComponentInChildren<BossMushroomSummonAbility>();
-                if (spawnAbility != null)
+                var mushroomTriggerAbility = boss.transform.GetComponentInChildren<BossMushroomSummonAbility>();
+                if (mushroomTriggerAbility != null)
                 {
-                    spawnAbility.OnEnemySpawned += (healthController) =>
-                    {
-                        var attackController =
-                            healthController.HealthTransform.GetComponent<IAttackControllerInterface>();
-                        var effectsController =
-                            healthController.HealthTransform.GetComponent<CombatEffectsController>();
-                        combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController,
-                            effectsController,
-                            CombatEntityType.TempMob));
-                    };
+                    mushroomTriggerAbility.OnEnemySpawned += HandleMobSpawnedByAbility;
+                }
+
+                var mobSpawnAbility = boss.transform.GetComponentInChildren<SpawnEnemyAbility>();
+                if (mobSpawnAbility != null)
+                {
+                    mobSpawnAbility.OnEnemySpawned += HandleMobSpawnedByAbility;
                 }
             });
+        }
+
+        private void HandleMobSpawnedByAbility(IHealthController healthController)
+        {
+            var aiController = healthController.HealthTransform.GetComponent<AiControllerBase>();
+            aiController.Init(characterVFXController.transform,
+                container.CurrentModel.MobDifficulty.GetHealth(container.CurrentLvlIndex,
+                    aiController.AgentModel.EnemyType),
+                container.CurrentModel.MobDifficulty.GetDamage(container.CurrentLvlIndex,
+                    aiController.AgentModel.EnemyType),
+                npcSystem.NpcContainer.MonsterStatController.GetMonsterStatModifier, null);
+            var attackController =
+                healthController.HealthTransform.GetComponent<IAttackControllerInterface>();
+            var effectsController =
+                healthController.HealthTransform.GetComponent<CombatEffectsController>();
+            combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController,
+                effectsController,
+                CombatEntityType.TempMob));
         }
 
         void HandleBossStateChange(BossState obj)
@@ -1208,11 +1291,11 @@ namespace HeroesFlight.System.Gameplay
 
             if (dataSystem.WorldManger.IsWorldUnlocked(dataSystem.WorldManger.SelectedWorld))
             {
-
             }
             else
             {
-                dataSystem.AccountLevelManager.AddExp(container.CurrentModel.LevelComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
+                dataSystem.AccountLevelManager.AddExp(
+                    container.CurrentModel.LevelComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
             }
         }
 
@@ -1286,6 +1369,6 @@ namespace HeroesFlight.System.Gameplay
             {
                 ContinueGameLoop();
             }
-        }    
+        }
     }
 }
