@@ -118,6 +118,7 @@ public class TutorialSystem : ITutorialInterface
 
     public void MainMenuTutorialCompleted()
     {
+        Debug.Log("MainMenuTutorialCompleted");
         OnFullTutorialCompleted?.Invoke();
     }
 
@@ -992,7 +993,7 @@ public class TutorialSystem : ITutorialInterface
 
     private void InventoryHandler_OnItemEquipped()
     {
-        tutorialDictionary[TutorialMode.Equip].IsCompleted = true;
+      //  tutorialDictionary[TutorialMode.Equip].IsCompleted = true;
     }
 
     public void InitialseGameplayTutorialRuntimeStates()
@@ -1088,11 +1089,7 @@ public class TutorialSystem : ITutorialInterface
             CoroutineUtility.Start (EquipTutorialRoutine());
         }, () =>
         {
-
             StartTutorialState(tutorialDictionary[TutorialMode.UnlockStatPoint]);
-           // MainMenuTutorialCompleted();
-
-            Debug.Log("Equip Tutorial ended");
         });
 
         tutorialDictionary.Add(TutorialMode.Equip, equipItemTutorial);
@@ -1104,23 +1101,10 @@ public class TutorialSystem : ITutorialInterface
 
         }, () =>
         {
-
-            Debug.Log("unlockStatPoint Tutorial ended");
+            MainMenuTutorialCompleted();
         });
 
         tutorialDictionary.Add(TutorialMode.UnlockStatPoint, unlockStatPointTutorial);
-
-        TutorialRuntime traitTutorial = new TutorialRuntime(TutorialMode.Trait);
-        traitTutorial.AssignEvents(() =>
-        {
-            CoroutineUtility.Start(TraitTutorialRoutine());
-
-        }, () =>
-        {
-
-        });
-
-        tutorialDictionary.Add(TutorialMode.Trait, traitTutorial);
     }
 
     private void AnyButtonPointerDown(GameButtonType type)
@@ -1190,20 +1174,19 @@ public class TutorialSystem : ITutorialInterface
         // Second phase
         uiSystem.UiEventHandler.MainMenu.SetSingleButtonVibility(GameButtonType.Mainmenu_Inventory, GameButtonVisiblity.Hidden);
 
-        Debug.Log("Equip Item :" + uiSystem.UiEventHandler.InventoryMenu.FirstItemUI);
-        dataSystem.TutorialDataHolder.GetTutorialHand.ShowHand((RectTransform)uiSystem.UiEventHandler.InventoryMenu.FirstItemUI);
-
         uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.GetTutorialVisualData.TutorialSteps[1].stepDescription);
+
+        yield return WaitForButtonPressed(uiSystem.UiEventHandler.InventoryMenu.FirstItemUIButton);
+
         yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.InventoryMenu, GameButtonType.Inventory_Equip);
 
         uiSystem.UiEventHandler.MainMenu.SetSingleButtonVibility(GameButtonType.Inventory_Equip, GameButtonVisiblity.Hidden);
 
+        yield return new WaitForSeconds(2f);
+
         uiSystem.UiEventHandler.InventoryMenu.Close();
 
-        // uiSystem.UiEventHandler.InventoryMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
-        // uiSystem.UiEventHandler.MainMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
-
-        uiSystem.UiEventHandler.TutorialMenu.Close();
+        tutorialDictionary[TutorialMode.Equip].IsCompleted = true;
     }
 
     public IEnumerator StatPointTutorialRoutine()
@@ -1213,57 +1196,46 @@ public class TutorialSystem : ITutorialInterface
         // First phase
         uiSystem.UiEventHandler.MainMenu.SetAllButtonVibility(GameButtonVisiblity.Hidden);
 
-        uiSystem.UiEventHandler.StatePointsMenu.Open();
-
-        uiSystem.UiEventHandler.StatePointsMenu.SetSingleButtonVibility(GameButtonType.StatPoints_Complete, GameButtonVisiblity.Visible);
-
-        // give xp
         uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.GetTutorialVisualData.TutorialSteps[0].stepDescription);
 
+        uiSystem.UiEventHandler.StatePointsMenu.Open();
+
+        uiSystem.UiEventHandler.StatePointsMenu.SetAllButtonVibility(GameButtonVisiblity.Hidden);
+
+        yield return WaitForButtonPressed(uiSystem.UiEventHandler.StatePointsMenu.GetStatPointUIs[0].DiceButton);
+
+        // focus on info incon for dice and wait for it to be pressed
+
+        // enable other buttons
+
+        // show that complete saves all the data
+
+
         //uiSystem.UiEventHandler.TutorialMenu.Display("Equip Item");
-        yield return new WaitUntil(() => uiSystem.UiEventHandler.StatePointsMenu.MenuStatus == UISystem.Menu.Status.Closed);
+        yield return new WaitUntil(() => uiSystem.UiEventHandler.StatePointsMenu.MenuStatus == Menu.Status.Closed);
 
         uiSystem.UiEventHandler.InventoryMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
         uiSystem.UiEventHandler.MainMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
 
         uiSystem.UiEventHandler.StatePointsMenu.Close();
-    }
-
-    public IEnumerator TraitTutorialRoutine()
-    {
-        // First phase
-        uiSystem.UiEventHandler.MainMenu.Open();
-
-        rewardSystem.ProcessRewards(new List<Reward>() { tutorialHandler.FirstItemReward });
-        uiSystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(tutorialHandler.FirstItemReward));
-
-        uiSystem.UiEventHandler.TutorialMenu.Display("Open Inventory");
-        yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.MainMenu, GameButtonType.Mainmenu_Inventory);
-
-        // Second phase
-        uiSystem.UiEventHandler.MainMenu.SetSingleButtonVibility(GameButtonType.Mainmenu_Inventory, GameButtonVisiblity.Hidden);
-
-        //uiSystem.UiEventHandler.TutorialMenu.Display("Equip Item");
-        yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.InventoryMenu, GameButtonType.Inventory_Equip);
-
-        uiSystem.UiEventHandler.InventoryMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
-        uiSystem.UiEventHandler.MainMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
 
         uiSystem.UiEventHandler.TutorialMenu.Close();
+
+        tutorialDictionary[TutorialMode.UnlockStatPoint].IsCompleted = true;
     }
 
     public IEnumerator WaitForGameButtonPressed<T>(BaseMenu<T> theMenu, GameButtonType gameButtonType) where T : BaseMenu<T>
     {
         AdvanceButton advanceButton = theMenu.GetButton(gameButtonType);
-        buttonCheck.SetButton(advanceButton);
         theMenu.SetButtonVibilityOnly(gameButtonType, GameButtonVisiblity.Visible);
         TriggerTutorialButtonEffects(theMenu, gameButtonType);
-        dataSystem.TutorialDataHolder.GetTutorialHand.ShowHand((RectTransform)advanceButton.transform);
-       yield return new WaitUntil(() => buttonCheck.IsPressed);
+
+       yield return WaitForButtonPressed (advanceButton);
     }
 
     public IEnumerator WaitForButtonPressed (AdvanceButton advanceButton)
     {
+        dataSystem.TutorialDataHolder.GetTutorialHand.ShowHand((RectTransform)advanceButton.transform);
         buttonCheck.SetButton(advanceButton);
         yield return new WaitUntil(() => buttonCheck.IsPressed);
     }

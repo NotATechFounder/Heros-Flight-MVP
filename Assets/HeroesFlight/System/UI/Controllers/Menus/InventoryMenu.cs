@@ -54,7 +54,7 @@ namespace UISystem
         [SerializeField] private EquippedSlot selectedEquippedSlot;
         [SerializeField] EquipmentEntryUi selectedItem;
 
-        public Transform FirstItemUI => equipmentHolderContent.GetChild(0);
+        public AdvanceButton FirstItemUIButton => equipmentHolderContent.GetChild(0).GetComponent<ItemUI>().SelectButton;
 
         public override void OnCreated()
         {
