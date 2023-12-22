@@ -38,6 +38,8 @@ namespace HeroesFlight.System.NPC.Container
         private int levelIndex;
         Level currentLevel;
         public MonsterStatController MonsterStatController => monsterStatController;
+        public MobDifficultyHolder MobDifficulties => mobDifficulty;
+        public int LvlIndex => levelIndex;
 
         private void Update()
         {

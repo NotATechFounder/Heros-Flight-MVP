@@ -1122,7 +1122,8 @@ namespace HeroesFlight.System.Gameplay
                 boss.OnHealthPercentageChange += HandleBossHealthChange;
                 boss.OnCrystalDestroyed += SpawnLootFromBoss;
                 characterSystem.SetCharacterControllerState(true);
-                boss.Init();
+                boss.Init(npcSystem.NpcContainer.MobDifficulties.GetHealth(CurrentLvlIndex,EnemyType.Boss),
+                    npcSystem.NpcContainer.MobDifficulties.GetDamage(CurrentLvlIndex,EnemyType.Boss));
                 foreach (var health in boss.CrystalNodes)
                 {
                     var effectsHandler = health.HealthTransform.GetComponent<CombatEffectsController>();

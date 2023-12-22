@@ -65,6 +65,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             defence = value;
         }
 
+        public void SetMaxHealth(float value)
+        {
+            maxHealth = value;
+        }
+
         public override void TryDealDamage(HealthModificationIntentModel healthModificationIntent)
         {
             base.TryDealDamage(healthModificationIntent);

@@ -11,18 +11,18 @@ namespace HeroesFlight.System.NPC.Controllers.Control
 {
     public class BossController : BossControllerBase
     {
-        [SerializeField] List<BossNodeBoundAbilitiesEntry> abilityNodes;
+        [SerializeField] List<BossNodeBoundAbilitiesEntry> abilityNodes= new ();
         [SerializeField] float defaultAbilitiesCooldown;
         [SerializeField] float currentCooldown;
-
+        [SerializeField] private bool boundAbilitiesToCrystals = true;
       
         Queue<AbilityBaseNPC> abilityQue = new ();
         Dictionary<BossCrystalsHealthController, List<AbilityBaseNPC>> abilityNodesCache = new();
 
 
-        public override void Init()
+        public override void Init(float maxHealth,float damage)
         {
-            base.Init();
+            base.Init(maxHealth,damage);
             currentCooldown = defaultAbilitiesCooldown;
             CrystalNodes = new List<IHealthController>();
             foreach (var node in abilityNodes)
@@ -31,11 +31,17 @@ namespace HeroesFlight.System.NPC.Controllers.Control
                 foreach (var ability in node.Abilities)
                 {
                     ability.InjectShaker(cameraShaker);
+                    if (ability.GetType() == typeof(AttackAbilityBaseNPC))
+                    {
+                        var attackAbility = ability as AttackAbilityBaseNPC;
+                        attackAbility.SetStats(damage,0);
+                    }
                 }
+                
                 node.HealthController.OnDeath += HandleCrystalDeath;
                 node.HealthController.OnDamageReceiveRequest += HandleCrystalDamaged;
                 CrystalNodes.Add(node.HealthController);
-                maxHealth +=  node.HealthController.MaxHealth;
+                node.HealthController.SetMaxHealth(maxHealth/abilityNodes.Count);
             }
             
             initied = true;
@@ -53,6 +59,9 @@ namespace HeroesFlight.System.NPC.Controllers.Control
 
         private void PickAffectedAbility(BossCrystalsHealthController damagedHealth)
         {
+            if (!boundAbilitiesToCrystals)
+                return;
+            
             if (abilityNodesCache.TryGetValue(damagedHealth, out var abilities))
             {
                

@@ -20,12 +20,15 @@ namespace HeroesFlight.System.NPC.Controllers.Control
         protected CameraShakerInterface cameraShaker;
         protected AiAnimatorInterface animator;
         protected float maxHealth;
+        protected float baseDamage;
         protected bool initied;
 
-        public virtual void Init()
+        public virtual void Init(float maxHealth,float damage)
         {
             cameraShaker = FindObjectOfType<CameraController>().CameraShaker;
             animator = GetComponent<AiAnimationController>();
+            this.maxHealth = maxHealth;
+            baseDamage = damage;
         }
 
         protected void InvokeHealthPercChangeEvent(float value)
