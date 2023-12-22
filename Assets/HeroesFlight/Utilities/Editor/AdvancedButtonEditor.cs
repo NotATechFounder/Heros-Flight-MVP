@@ -8,11 +8,13 @@ using UnityEditor.UI;
 [CanEditMultipleObjects]
 public class AdvancedButtonEditor : ButtonEditor
 {
+    private SerializedProperty buttonType;
     private SerializedProperty onClickToggle;
 
     protected override void OnEnable()
     {
         base.OnEnable();
+        buttonType = serializedObject.FindProperty("buttonType");
         onClickToggle = serializedObject.FindProperty("onClickToggle");
     }
 
@@ -23,6 +25,7 @@ public class AdvancedButtonEditor : ButtonEditor
         base.OnInspectorGUI();
 
         serializedObject.Update();
+        EditorGUILayout.PropertyField(buttonType);
         EditorGUILayout.PropertyField(onClickToggle);
         serializedObject.ApplyModifiedProperties();
     }

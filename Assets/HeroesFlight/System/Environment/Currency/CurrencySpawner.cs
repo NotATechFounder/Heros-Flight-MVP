@@ -39,7 +39,7 @@ public class CurrencySpawner : MonoBehaviour
 
     public bool AllExpCollected() => spawnedExpItems.TrueForAll(item => item.IsCollected);
 
-    public void ActivateExpItems(Action OnAllExpCollected)
+    public void ActivateExpEffectItems(Action OnAllExpCollected)
     {
         StartCoroutine(ActivateExpItemsWithDelay(OnAllExpCollected));
     }

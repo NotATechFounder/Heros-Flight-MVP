@@ -10,7 +10,7 @@ namespace UISystem
         public event Action OnMenuOpened;
         public event Action OnMenuClosed;
 
-        public GameButton[] gameButtons;
+        private AdvanceButton[] gameButtons;
 
         protected override void Awake()
         {
@@ -18,6 +18,7 @@ namespace UISystem
             else
             {
                 base.Awake();
+                gameButtons = GetComponentsInChildren<AdvanceButton>(true);
             }
         }
 
@@ -57,6 +58,54 @@ namespace UISystem
         public override void OnMenuDestroyed()
         {
             Instance = null;
+        }
+
+        public void SetSingleButtonVibility(GameButtonType gameButtonType, GameButtonVisiblity gameButtonVisiblity)
+        {
+            foreach (AdvanceButton button in gameButtons)
+            {
+                if (button.ButtonType == gameButtonType)
+                {
+                    button.SetVisibility(gameButtonVisiblity);
+                    return;
+                }
+            }
+        }
+
+        public void SetButtonVibilityOnly(GameButtonType gameButtonType, GameButtonVisiblity gameButtonVisiblity)
+        {
+            foreach (AdvanceButton button in gameButtons)
+            {
+                if (button.ButtonType == gameButtonType)
+                {
+                    button.SetVisibility(gameButtonVisiblity);
+                }
+                else
+                {
+                    button.SetVisibility(gameButtonVisiblity == GameButtonVisiblity.Visible ? GameButtonVisiblity.Hidden : GameButtonVisiblity.Visible);
+                }
+            }
+        }
+
+        public void SetAllButtonVibility(GameButtonVisiblity gameButtonVisiblity)
+        {
+            foreach (AdvanceButton button in gameButtons)
+            {
+                button.SetVisibility(gameButtonVisiblity);
+            }
+        }
+
+        public AdvanceButton GetButton(GameButtonType gameButtonType)
+        {
+            foreach (AdvanceButton button in gameButtons)
+            {
+                if (button.ButtonType == gameButtonType)
+                {
+                    return button;
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -47,9 +47,6 @@ public class WorldManager : MonoBehaviour
         }
 
         return false;
-        // int maxUnlockedWorldIndex = Array.IndexOf(Enum.GetValues(typeof(WorldType)), data.LastUnlockedWorld);
-        // int worldIndex = Array.IndexOf(Enum.GetValues(typeof(WorldType)), worldType);
-        // return worldIndex <= maxUnlockedWorldIndex;
     }
 
     public void UnlockWorld(WorldType typeToUnlock)
@@ -57,17 +54,13 @@ public class WorldManager : MonoBehaviour
         data.worldInfoData.Find(x => x.worldType == typeToUnlock).isUnlocked = true;
         Save();
     }
-    // public void UnlockNext()
-    // {
-    //     int maxUnlockedWorldIndex = Array.IndexOf(Enum.GetValues(typeof(WorldType)), data.LastUnlockedWorld);
-    //     int nextWorldIndex = maxUnlockedWorldIndex + 1;
-    //     if (nextWorldIndex < worlds.Length)
-    //     {
-    //         data.LastUnlockedWorld = (WorldType)Enum.GetValues(typeof(WorldType)).GetValue(nextWorldIndex);
-    //     }
-    //
-    //     Save();
-    // }
+
+
+    public void UnlockNextWorld()
+    {
+        WorldType nextWorld = (WorldType)((int)selectedWorld + 1);
+        UnlockWorld(nextWorld);
+    }
 
     public int GetMaxLevelReached(WorldType worldType)
     {

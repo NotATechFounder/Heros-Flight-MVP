@@ -128,14 +128,13 @@ namespace HeroesFlight.StateStack.State
 
             m_SceneActionsQueue.Start(uiSystem.UiEventHandler.LoadingMenu.UpdateLoadingBar, () =>
             {
-                uiSystem.UiEventHandler.MainMenu.Open();
+                //uiSystem.UiEventHandler.MainMenu.Open();
                 uiSystem.UiEventHandler.GameMenu.Close();
                 uiSystem.UiEventHandler.LoadingMenu.Close();
 
                 SubscribeMainMenuEvents();
 
                 traitSystem.Init();
-                uiSystem.UiEventHandler.MainMenu.Open();
                 dataSystem.CurrencyManager.TriggerAllCurrencyChange();
                 dataSystem.StatManager.ProcessTraitsStatsModifiers(traitSystem.GetUnlockedEffects());
                 uiSystem.UiEventHandler.MainMenu.LoadWorlds(dataSystem.WorldManger.Worlds);
@@ -147,6 +146,8 @@ namespace HeroesFlight.StateStack.State
 
         private void HandleTutorialComplete()
         {
+            ITutorialInterface tutorialInterface = GetService<ITutorialInterface>();
+            tutorialInterface.Reset();
             UnSubscribeMainMenuEvents();
             AppStateStack.State.Set(ApplicationState.MainMenu);
             GetService<RewardSystemInterface>().SetCurrentState(GameStateType.MainMenu);
@@ -179,6 +180,7 @@ namespace HeroesFlight.StateStack.State
             uiSystem.UiEventHandler.StatePointsMenu.GetAvailabletSp += dataSystem.StatPoints.GetAvailableSp;
             uiSystem.UiEventHandler.StatePointsMenu.OnCompletePressed += dataSystem.StatPoints.Confirm;
             uiSystem.UiEventHandler.StatePointsMenu.GetDiceRollValue += dataSystem.StatPoints.GetDiceRollValue;
+            uiSystem.UiEventHandler.StatePointsMenu.OnResetButtonPressed += dataSystem.StatPoints.ResetSp;
 
             uiSystem.UiEventHandler.StatePointsMenu.OnDiceClicked += OnDiceClicked;
 
@@ -224,6 +226,7 @@ namespace HeroesFlight.StateStack.State
             uiSystem.UiEventHandler.StatePointsMenu.GetAvailabletSp -= dataSystem.StatPoints.GetAvailableSp;
             uiSystem.UiEventHandler.StatePointsMenu.OnCompletePressed -= dataSystem.StatPoints.Confirm;
             uiSystem.UiEventHandler.StatePointsMenu.GetDiceRollValue -= dataSystem.StatPoints.GetDiceRollValue;
+            uiSystem.UiEventHandler.StatePointsMenu.OnResetButtonPressed -= dataSystem.StatPoints.ResetSp;
 
             uiSystem.UiEventHandler.StatePointsMenu.OnDiceClicked -= OnDiceClicked;
 

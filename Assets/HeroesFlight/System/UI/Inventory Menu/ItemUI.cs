@@ -30,6 +30,8 @@ public class ItemUI : MonoBehaviour
 
     public InventoryItemUiEntry GetItem => item;    
 
+    public AdvanceButton SelectButton => selectButton;
+
     private void Start()
     {
         selectButton.onClick.AddListener(SelectItem);

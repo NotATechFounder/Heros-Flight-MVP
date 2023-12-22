@@ -11,7 +11,6 @@ public class AccountLevelManager : MonoBehaviour
         public float currentExp;
     }
 
-
     public event Action<int, int> OnLevelUp;
 
     [SerializeField] private string saveID;

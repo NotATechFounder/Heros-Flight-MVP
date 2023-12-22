@@ -39,6 +39,9 @@ public class StatPointUI : MonoBehaviour
     private Dictionary <StatType, StatValueUI> statTypePerSp = new Dictionary<StatType, StatValueUI>();
 
     public StatPointSO StatPointSO => statPointSO;
+    public AdvanceButton UpButton => upButton;
+    public AdvanceButton DownButton => downButton;
+    public AdvanceButton DiceButton => diceButton;
 
     JuicerRuntime levelUpEffect;
 

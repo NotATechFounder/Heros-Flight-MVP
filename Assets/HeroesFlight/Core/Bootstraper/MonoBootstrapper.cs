@@ -50,7 +50,8 @@ namespace HeroesFlight.Core.Bootstrapper
             IShopSystemInterface shopSystem = new ShopSystem (uiSystem, rewardSystem, inventorySystem, dataSystem);
             GamePlaySystemInterface gamePlaySystem =
                 new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem,traitSystem, inventorySystem);
-            ITutorialInterface tutorialInterface = new TutorialSystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem, uiSystem, progressionSystem, traitSystem, inventorySystem);
+            ITutorialInterface tutorialInterface = 
+                new TutorialSystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem, uiSystem, progressionSystem, traitSystem, inventorySystem, rewardSystem);
 
             IAchievementSystemInterface achievementSystem = new AchievementSystem(uiSystem,rewardSystem, inventorySystem, gamePlaySystem,combatSystem, environmentSystem, dataSystem);
 

@@ -5,6 +5,7 @@ using StansAssets.Foundation.Async;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UISystem;
 using UnityEngine;
@@ -39,6 +40,8 @@ namespace UISystem
         JuicerRuntime closeEffectContainer;
 
         private Dictionary<StatAttributeType, StatPointUI> statPointUIDic = new Dictionary<StatAttributeType, StatPointUI>();
+
+        public StatPointUI[] GetStatPointUIs => statPointUIDic.Values.ToArray();
 
         public override void OnCreated()
         {
