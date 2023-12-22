@@ -62,28 +62,35 @@ namespace HeroesFlight.System.Gameplay
             this.progressionSystem = progressionSystem;
             traitSystem = traitSystemInterface;
             InventorySystem = inventorySystemInterface;
-            this.npcSystem.OnEnemySpawned += HandleEnemySpawned;
-            this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
-            this.combatSystem.OnEntityDied += HandleEntityDied;
-            this.uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
-            this.uiSystem.OnReviveCharacterRequest += () => { ReviveCharacter(100f); };
+           
         }
 
         CountDownTimer GameTimer;
+
         GameEffectController GameEffectController;
 
         GodsBenevolence godsBenevolence;
+
         Shrine shrine;
+
         ActiveAbilityManager activeAbilityManager;
 
         DataSystemInterface dataSystem;
+
         EnvironmentSystemInterface environmentSystem;
+
         NpcSystemInterface npcSystem;
+
         CombatSystemInterface combatSystem;
+
         IUISystem uiSystem;
+
         ProgressionSystemInterface progressionSystem;
+
         CharacterSystemInterface characterSystem;
+
         TraitSystemInterface traitSystem;
+
         InventorySystemInterface InventorySystem;
 
         GameplayContainer container;
@@ -105,6 +112,7 @@ namespace HeroesFlight.System.Gameplay
         GameState currentState;
 
         int enemiesToKill;
+
         int CurrentLvlIndex => container.CurrentLvlIndex;
 
         int MaxLvlIndex => container.MaxLvlIndex;
@@ -119,12 +127,18 @@ namespace HeroesFlight.System.Gameplay
         Level currentLevel;
 
         List<Environment.Objects.Crystal> crystals = new();
+
         private bool revivedByFeatThisRun = false;
+
         private int goldModifier;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
-          
+            npcSystem.OnEnemySpawned += HandleEnemySpawned;
+            combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
+            combatSystem.OnEntityDied += HandleEntityDied;
+            uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
+            uiSystem.OnReviveCharacterRequest += ReviveCharacterWithFullHP;
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
 
             shrine = scene.GetComponentInChildren<Shrine>();
@@ -226,6 +240,21 @@ namespace HeroesFlight.System.Gameplay
             OnComplete?.Invoke();
         }
 
+        public void Reset()
+        {
+            Debug.Log("reseting gameplay");
+            npcSystem.OnEnemySpawned -= HandleEnemySpawned;
+            combatSystem.OnEntityReceivedDamage -= HandleEntityReceivedDamage;
+            combatSystem.OnEntityDied -= HandleEntityDied;
+            uiSystem.OnSpecialButtonClicked -= UseCharacterSpecial;
+            uiSystem.OnReviveCharacterRequest -= ReviveCharacterWithFullHP;
+            ResetLogic();
+            ResetConnections();
+            container.SetStartingIndex(0);
+            revivedByFeatThisRun = false;
+            goldModifier = 0;
+        }
+
         private void AbilitySelectMenu_OnMenuClosed()
         {
             throw new NotImplementedException();
@@ -248,15 +277,6 @@ namespace HeroesFlight.System.Gameplay
                     }
                     , ContinueGameLoop);
             });
-        }
-
-        public void Reset()
-        {
-            ResetLogic();
-            ResetConnections();
-            container.SetStartingIndex(0);
-            revivedByFeatThisRun = false;
-            goldModifier = 0;
         }
 
         /// <summary>
@@ -1109,6 +1129,7 @@ namespace HeroesFlight.System.Gameplay
             }
         }
 
+
         //Boss
 
         void HandleWorldBoss()
@@ -1369,6 +1390,11 @@ namespace HeroesFlight.System.Gameplay
             {
                 ContinueGameLoop();
             }
+        }
+
+        private void ReviveCharacterWithFullHP()
+        {
+            ReviveCharacter(100f);
         }
     }
 }
