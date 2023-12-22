@@ -41,6 +41,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 
         void NotifyTargetDetected(int count, Collider2D[] targets)
         {
+            Debug.Log("target detected");
             for (int i = 0; i < count; i++)
             {
                 if (targets[i].TryGetComponent<IHealthController>(out var health))
