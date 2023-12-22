@@ -167,6 +167,30 @@ public class StatPoints : MonoBehaviour
         OnStatValueChanged();
         Save();
     }
+
+    public void ResetSp()
+    {
+        skillPointData.avaliableSp = currentSp;
+
+        foreach (var keyValuePair in tempStatPointsDic)
+        {
+            skillPointData.avaliableSp += keyValuePair.Value;
+        }
+
+        foreach (var keyValuePair in statPointsDic)
+        {
+            skillPointData.avaliableSp += keyValuePair.Value;
+        }
+
+        tempStatPointsDic.Clear();
+        statPointsDic.Clear();
+
+        currentSp = skillPointData.avaliableSp;
+
+        Save();
+
+        OnStatValueChanged();
+    }
 }
 
 [Serializable]

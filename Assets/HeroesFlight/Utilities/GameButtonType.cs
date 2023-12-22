@@ -7,4 +7,6 @@
 
     Inventory_ChangeHero, Inventory_StatPoints, Inventory_Equipments, Inventory_Materials,
     Inventory_Dismatle, Inventory_Upgrade, Inventory_Equip,
+
+    StatPoints_Complete, StatPoints_Reset
 }

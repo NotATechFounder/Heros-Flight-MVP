@@ -60,7 +60,7 @@ namespace UISystem
             Instance = null;
         }
 
-        public void SetButtonVibility(GameButtonType gameButtonType, GameButtonVisiblity gameButtonVisiblity)
+        public void SetSingleButtonVibility(GameButtonType gameButtonType, GameButtonVisiblity gameButtonVisiblity)
         {
             foreach (AdvanceButton button in gameButtons)
             {

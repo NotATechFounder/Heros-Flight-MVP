@@ -146,6 +146,8 @@ namespace HeroesFlight.StateStack.State
 
         private void HandleTutorialComplete()
         {
+            ITutorialInterface tutorialInterface = GetService<ITutorialInterface>();
+            tutorialInterface.Reset();
             UnSubscribeMainMenuEvents();
             AppStateStack.State.Set(ApplicationState.MainMenu);
             GetService<RewardSystemInterface>().SetCurrentState(GameStateType.MainMenu);
@@ -178,6 +180,7 @@ namespace HeroesFlight.StateStack.State
             uiSystem.UiEventHandler.StatePointsMenu.GetAvailabletSp += dataSystem.StatPoints.GetAvailableSp;
             uiSystem.UiEventHandler.StatePointsMenu.OnCompletePressed += dataSystem.StatPoints.Confirm;
             uiSystem.UiEventHandler.StatePointsMenu.GetDiceRollValue += dataSystem.StatPoints.GetDiceRollValue;
+            uiSystem.UiEventHandler.StatePointsMenu.OnResetButtonPressed += dataSystem.StatPoints.ResetSp;
 
             uiSystem.UiEventHandler.StatePointsMenu.OnDiceClicked += OnDiceClicked;
 
@@ -223,6 +226,7 @@ namespace HeroesFlight.StateStack.State
             uiSystem.UiEventHandler.StatePointsMenu.GetAvailabletSp -= dataSystem.StatPoints.GetAvailableSp;
             uiSystem.UiEventHandler.StatePointsMenu.OnCompletePressed -= dataSystem.StatPoints.Confirm;
             uiSystem.UiEventHandler.StatePointsMenu.GetDiceRollValue -= dataSystem.StatPoints.GetDiceRollValue;
+            uiSystem.UiEventHandler.StatePointsMenu.OnResetButtonPressed -= dataSystem.StatPoints.ResetSp;
 
             uiSystem.UiEventHandler.StatePointsMenu.OnDiceClicked -= OnDiceClicked;
 

@@ -10,5 +10,6 @@
     LevelUp,
     AccountLevelUp,
     UnlockStatPoint,
-    ItemShop
+    ItemShop,
+    Trait
 }

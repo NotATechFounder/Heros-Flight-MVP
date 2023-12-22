@@ -14,10 +14,17 @@ public class TutorialMenu : BaseMenu<TutorialMenu>
     public Action OnShowClicked;
     public Action OnHideClicked;
 
+    [Header("Game Tutorial")]
+    [SerializeField] private Transform gameContent;
+    [SerializeField] private Transform content;
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private Transform tutorialStepParent;
     [SerializeField] private TutorialStepUI tutorialStepUIPrefab;
-    [SerializeField] private Transform content;
+
+
+    [Header("UI Tutorial")]
+    [SerializeField] private Transform uiTutorialParent;
+    [SerializeField] private TextMeshProUGUI titleTextUI;
 
     [Header("Buttons")]
     [SerializeField] private AdvanceButton hideButton;
@@ -60,6 +67,7 @@ public class TutorialMenu : BaseMenu<TutorialMenu>
 
     public override void OnClosed()
     {
+        uiTutorialParent.gameObject.SetActive(false);
         closeEffectBG.Start();
     }
 
@@ -98,5 +106,13 @@ public class TutorialMenu : BaseMenu<TutorialMenu>
         content.gameObject.SetActive(false);
         hideButton.gameObject.SetActive(true);
         OnStartedClicked?.Invoke();
+    }
+
+    public void Display(string info)
+    {
+        titleTextUI.text = info;
+        uiTutorialParent.gameObject.SetActive(true);
+        gameContent.gameObject.SetActive(false);
+        Open();
     }
 }

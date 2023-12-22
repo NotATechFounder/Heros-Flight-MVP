@@ -31,18 +31,12 @@ public class TutorialHandler : MonoBehaviour
 
     public Reward FirstItemReward => firstItemReward;
 
-    private Dictionary<TutorialMode, TutorialSO> tutorialDictionary = new Dictionary<TutorialMode, TutorialSO>();
 
     public void Init()
     {
         portal = Instantiate(tutorialModel.PortalPrefab, transform.position, Quaternion.identity);
         portal.gameObject.SetActive(false);
         portal.OnPlayerEntered += HandlePlayerTriggerPortal;
-
-        for (int i = 0; i < gameplayTutorial.Length; i++)
-        {
-            tutorialDictionary.Add(gameplayTutorial[i].tutorialMode, gameplayTutorial[i]);
-        }
     }
 
     private void HandlePlayerTriggerPortal()
@@ -76,29 +70,5 @@ public class TutorialHandler : MonoBehaviour
     internal void SetStartingIndex(int v)
     {
         CurrentLvlIndex = v;
-    }
-
-    public TutorialSO GetTutorialSO(TutorialMode fly)
-    {
-        return tutorialDictionary[fly];
-    }
-}
-
-public class TutorialRuntime
-{
-    public TutorialMode TutorialMode;
-    public bool IsCompleted;
-    public Action OnBegin;
-    public Action OnEnd;
-
-    public TutorialRuntime(TutorialMode tutorialMode)
-    {
-        TutorialMode = tutorialMode;
-    }
-
-    public void AssignEvents(Action onBegin, Action onEnd)
-    {
-        OnBegin = onBegin;
-        OnEnd = onEnd;
     }
 }

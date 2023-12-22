@@ -54,6 +54,8 @@ namespace UISystem
         [SerializeField] private EquippedSlot selectedEquippedSlot;
         [SerializeField] EquipmentEntryUi selectedItem;
 
+        public Transform FirstItemUI => equipmentHolderContent.GetChild(0);
+
         public override void OnCreated()
         {
             openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
@@ -154,6 +156,7 @@ namespace UISystem
             {
                 slot.UnOccupy();
             }
+
             foreach (ItemUI itemUI in itemUIDic.Values)
             {
                 ObjectPoolManager.ReleaseObject(itemUI);
