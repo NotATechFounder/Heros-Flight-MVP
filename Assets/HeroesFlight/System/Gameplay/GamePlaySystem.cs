@@ -1099,9 +1099,7 @@ namespace HeroesFlight.System.Gameplay
                 case GameState.Ongoing:
                     break;
                 case GameState.Won:
-
                     dataSystem.CharacterManager.UnlockCharacter(CharacterType.Storm);
-                    Debug.Log("Granting STORM");
 
                     HandleGameLoopFinish();
                     break;
@@ -1112,11 +1110,9 @@ namespace HeroesFlight.System.Gameplay
                     break;
                 case GameState.WaitingPortal:
 
-                    Debug.Log(CurrentLvlIndex);
                     if (CurrentLvlIndex == 3)
                     {
                         dataSystem.CharacterManager.UnlockCharacter(CharacterType.Lancer);
-                        Debug.Log("Granting LANCER");
                     }
 
                     CoroutineUtility.Start(WaitingPortalRoutine());
@@ -1306,18 +1302,8 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleGameLoopFinish()
         {
+            dataSystem.AccountLevelManager.AddExp(container.CurrentModel.LevelComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
             uiSystem.UiEventHandler.SummaryMenu.Open();
-
-            // TODO: Add exp to player, check if run has been completed before
-
-            if (dataSystem.WorldManger.IsWorldUnlocked(dataSystem.WorldManger.SelectedWorld))
-            {
-            }
-            else
-            {
-                dataSystem.AccountLevelManager.AddExp(
-                    container.CurrentModel.LevelComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
-            }
         }
 
         void HandleLvlRestart()

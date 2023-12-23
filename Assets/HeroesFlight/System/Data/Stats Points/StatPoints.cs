@@ -134,12 +134,12 @@ public class StatPoints : MonoBehaviour
     }
 
 
-    public void AddPoints(int newLevel, int nuberOfPoints)
-    {
-        currentSp += nuberOfPoints;
-        Save();
-        OnSpChanged?.Invoke();
-    }
+    //public void AddPoints(int newLevel, int nuberOfPoints)
+    //{
+    //    currentSp += nuberOfPoints;
+    //    Save();
+    //    OnSpChanged?.Invoke();
+    //}
 
     public void SetPoints(int nuberOfPoints)
     {
@@ -197,6 +197,13 @@ public class StatPoints : MonoBehaviour
         Save();
 
         OnStatValueChanged();
+    }
+
+    public void AddPoints(LevelSystem.ExpIncreaseResponse response)
+    {
+        currentSp += response.numberOfLevelsGained;
+        Save();
+        OnSpChanged?.Invoke();
     }
 }
 

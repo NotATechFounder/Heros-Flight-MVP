@@ -1216,7 +1216,7 @@ public class TutorialSystem : ITutorialInterface
 
         uiSystem.UiEventHandler.StatePointsMenu.ToggleAllStatButtonVisibility(StatPointButtonType.All, GameButtonVisiblity.Hidden);
 
-        dataSystem.StatPoints.SetPoints(1);
+        dataSystem.AccountLevelManager.SetXp(100);
 
         uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.GetTutorialVisualData.TutorialSteps[1].stepDescription);
         uiSystem.UiEventHandler.StatePointsMenu.ToggleFirstStatButtonVisibility(StatPointButtonType.Up, GameButtonVisiblity.Visible);

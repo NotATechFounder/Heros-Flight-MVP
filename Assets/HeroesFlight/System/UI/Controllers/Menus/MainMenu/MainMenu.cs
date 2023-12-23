@@ -60,11 +60,17 @@ namespace UISystem
         public event Action OnQuestClaimButtonPressed;
         public event Func <QuestStatusRequest> questStatusRequest;
 
-        [Header("UI")]
+        public event Func<LevelSystem.ExpIncreaseResponse> GetCurrentAccountLevelXP;
+
+        [Header("Top UI")]
         [SerializeField] private TextMeshProUGUI goldText;
         [SerializeField] private TextMeshProUGUI gemText;
         [SerializeField] private TextMeshProUGUI energyText;
         [SerializeField] private TextMeshProUGUI energyTimeText;
+
+        [Header("Account UI")]
+        [SerializeField] private TextMeshProUGUI acctLevelText;
+        [SerializeField] private Image acctLevelBar;
 
         [Header("Quest")]
         [SerializeField] private TextMeshProUGUI questText;
@@ -274,6 +280,12 @@ namespace UISystem
             {
                 navigationButton.advanceButton.onClick.Invoke();
             }
+        }
+
+        public void AccountLevelUp(LevelSystem.ExpIncreaseResponse response)
+        {
+            acctLevelText.text = response.currentLevel.ToString();
+            acctLevelBar.fillAmount = response.normalizedExp;
         }
     }
 }

@@ -138,6 +138,7 @@ namespace HeroesFlight.StateStack.State
                 dataSystem.CurrencyManager.TriggerAllCurrencyChange();
                 dataSystem.StatManager.ProcessTraitsStatsModifiers(traitSystem.GetUnlockedEffects());
                 uiSystem.UiEventHandler.MainMenu.LoadWorlds(dataSystem.WorldManger.Worlds);
+                uiSystem.UiEventHandler.MainMenu.AccountLevelUp(dataSystem.AccountLevelManager.GetExpIncreaseResponse());
 
                 uiSystem.UiEventHandler.LoadingMenu.Close();
                 uiSystem.UiEventHandler.GameMenu.Close();
@@ -195,8 +196,10 @@ namespace HeroesFlight.StateStack.State
             uiSystem.UiEventHandler.MainMenu.OnWorldChanged += dataSystem.WorldManger.SetSelectedWorld;
             uiSystem.UiEventHandler.MainMenu.GetMaxLevelReached += dataSystem.WorldManger.GetMaxLevelReached;
 
-
             dataSystem.EnergyManager.OnEnergyTimerUpdated += uiSystem.UiEventHandler.MainMenu.UpdateEnergyTime;
+
+            dataSystem.AccountLevelManager.OnLevelUp += uiSystem.UiEventHandler.MainMenu.AccountLevelUp;
+            //uiSystem.UiEventHandler.MainMenu.GetCurrentAccountLevelXP += dataSystem.AccountLevelManager.GetExpIncreaseResponse;
         }
         public void UnSubscribeMainMenuEvents()
         {
@@ -245,6 +248,9 @@ namespace HeroesFlight.StateStack.State
 
             uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;
             traitSystem.OnTraitsStateChange -= HandleTraitStateChange;
+
+            dataSystem.AccountLevelManager.OnLevelUp -= uiSystem.UiEventHandler.MainMenu.AccountLevelUp;
+            //uiSystem.UiEventHandler.MainMenu.GetCurrentAccountLevelXP -= dataSystem.AccountLevelManager.GetExpIncreaseResponse;
         }
 
         void HandleGameStartRequest()
