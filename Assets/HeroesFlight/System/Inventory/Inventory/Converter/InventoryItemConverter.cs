@@ -36,6 +36,18 @@ namespace HeroesFlight.System.Inventory.Inventory.Converter
                 item.itemSO.Name, item.itemSO.description);
         }
 
+        public InventoryItemUiEntry GetMaterialSO(string id)
+        {
+          ItemSO itemSO =  handler.GetItemSO(id);
+            if (itemSO == null)
+                return null;
+
+            return new InventoryItemUiEntry(itemSO.ID,
+                itemSO.icon, 0,
+                itemSO.itemType, handler.GetPalette(Rarity.Common),
+                itemSO.Name, itemSO.description);
+        }
+
         public InventoryItemUiEntry GetEquipment(string id)
         {
             var item= handler.GetEqupItemById(id);

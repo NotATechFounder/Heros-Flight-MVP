@@ -46,6 +46,7 @@ namespace HeroesFlight.StateStack.State
                     dataSystem.CurrencyManager.TriggerAllCurrencyChange();
                     dataSystem.StatManager.ProcessTraitsStatsModifiers(traitSystem.GetUnlockedEffects());
                     uiSystem.UiEventHandler.MainMenu.LoadWorlds(dataSystem.WorldManger.Worlds);
+                    uiSystem.UiEventHandler.MainMenu.AccountLevelUp(dataSystem.AccountLevelManager.GetExpIncreaseResponse());
                     break;
                 case StackAction.Paused:
                     break;
@@ -96,13 +97,14 @@ namespace HeroesFlight.StateStack.State
             uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed += HandleGameStartRequest;
             dataSystem.CurrencyManager.OnCurrencyChanged += uiSystem.UiEventHandler.MainMenu.CurrencyChanged;
 
-
             uiSystem.UiEventHandler.MainMenu.IsWorldUnlocked += dataSystem.WorldManger.IsWorldUnlocked;
             uiSystem.UiEventHandler.MainMenu.OnWorldChanged += dataSystem.WorldManger.SetSelectedWorld;
             uiSystem.UiEventHandler.MainMenu.GetMaxLevelReached += dataSystem.WorldManger.GetMaxLevelReached;
 
-
             dataSystem.EnergyManager.OnEnergyTimerUpdated += uiSystem.UiEventHandler.MainMenu.UpdateEnergyTime;
+
+            //uiSystem.UiEventHandler.MainMenu.GetCurrentAccountLevelXP += dataSystem.AccountLevelManager.GetExpIncreaseResponse;
+            dataSystem.AccountLevelManager.OnLevelUp += uiSystem.UiEventHandler.MainMenu.AccountLevelUp;
         }
         public void UnSubscribeEvents()
         {
@@ -151,6 +153,9 @@ namespace HeroesFlight.StateStack.State
 
             uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;
             traitSystem.OnTraitsStateChange -= HandleTraitStateChange;
+
+            dataSystem.AccountLevelManager.OnLevelUp -= uiSystem.UiEventHandler.MainMenu.AccountLevelUp;
+            //uiSystem.UiEventHandler.MainMenu.GetCurrentAccountLevelXP -= dataSystem.AccountLevelManager.GetExpIncreaseResponse;
         }
 
         void HandleGameStartRequest()

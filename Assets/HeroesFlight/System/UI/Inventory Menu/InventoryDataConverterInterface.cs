@@ -9,5 +9,6 @@
         int GetMaterialAmount(EquipmentEntryUi equipmentEntryUi);
         int GetMaterialSpentAmount(EquipmentEntryUi equipmentEntryUi);
         int GetGoldSpentAmount(EquipmentEntryUi equipmentEntryUi);
+        InventoryItemUiEntry GetMaterialSO(string id);
     }
 }

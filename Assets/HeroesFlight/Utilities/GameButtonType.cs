@@ -11,4 +11,8 @@
     StatPoints_Complete, StatPoints_Reset,StatPoints_Close,
 
     DiceMenu_Roll, DiceMenu_Optional, DiceMenu_Info, DiceMenu_InfoClose, DiceMenu_Close,
+
+    ShopMenu_RegularChest, ShopMenu_RareChest, ShopMenu_EpicChest, ShopMenu_EpicChest10,
+    ShopMenu_SmallGemPack, ShopMenu_MediumGemPack, ShopMenu_LargeGemPack, ShopMenu_XLargeGemPack,
+    ShopMenu_SmallGoldPack, ShopMenu_MediumGoldPack, Shopmenu_LargeGoldPack
 }

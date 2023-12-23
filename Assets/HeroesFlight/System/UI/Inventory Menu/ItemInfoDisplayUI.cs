@@ -96,7 +96,7 @@ public class ItemInfoDisplayUI : MonoBehaviour
     {
         this.item = item;
         SetItemLevel();
-        SeUpgradeInfo();
+        SetUpgradeInfo();
 
         DisplayItemEffects();
     }
@@ -120,20 +120,13 @@ public class ItemInfoDisplayUI : MonoBehaviour
         }
     }
 
-    void SeUpgradeInfo()
+    void SetUpgradeInfo()
     {
         var materialItem = converter.GetMaterial("M_" + item.EquipmentType.ToString());
        
         if (materialItem == null)
         {
-            var inventoryItem = converter.GetEquipment(item.ID);
-           
-            upgradeMaterialIcon.sprite = inventoryItem.Icon;
-            requiredMaterialName.text = inventoryItem.Name;
-            materialAmountDisplay.text =
-              converter.GetMaterialAmount(item) + " / " + 0.ToString();
-            materialAmountDisplay.color = Color.red;
-            return;
+            materialItem = converter.GetMaterialSO("M_" + item.EquipmentType.ToString());
         }
 
         var materialsRequired =  converter.GetMaterialAmount(item);
