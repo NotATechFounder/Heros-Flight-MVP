@@ -1103,10 +1103,22 @@ public class TutorialSystem : ITutorialInterface
 
         }, () =>
         {
-            MainMenuTutorialCompleted();
+            // MainMenuTutorialCompleted();
+            StartTutorialState(tutorialDictionary[TutorialMode.ItemShop]);
         });
 
         tutorialDictionary.Add(TutorialMode.UnlockStatPoint, unlockStatPointTutorial);
+
+        TutorialRuntime itemShopTutorial = new TutorialRuntime(TutorialMode.ItemShop);
+        itemShopTutorial.AssignEvents(() =>
+        {
+            CoroutineUtility.Start(ShopTutorialRoutine());
+        }, () =>
+        {
+            MainMenuTutorialCompleted();
+        });
+
+        tutorialDictionary.Add(TutorialMode.ItemShop, itemShopTutorial);
     }
 
     private void AnyButtonPointerDown(GameButtonType type)
@@ -1226,19 +1238,41 @@ public class TutorialSystem : ITutorialInterface
 
         yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.DiceMenu, GameButtonType.DiceMenu_Close);
 
-        uiSystem.UiEventHandler.TutorialMenu.Display("Tutorial completed");
-
         yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.StatePointsMenu, GameButtonType.StatPoints_Close);
 
         uiSystem.UiEventHandler.StatePointsMenu.ToggleAllStatButtonVisibility(StatPointButtonType.All, GameButtonVisiblity.Visible);
 
-        uiSystem.UiEventHandler.InventoryMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
-        uiSystem.UiEventHandler.MainMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
-        uiSystem.UiEventHandler.StatePointsMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
+        uiSystem.UiEventHandler.InventoryMenu.Close();
+
+        tutorialDictionary[TutorialMode.UnlockStatPoint].IsCompleted = true;
+    }
+
+    public IEnumerator ShopTutorialRoutine()
+    {
+        TutorialSO tutorialSO = dataSystem.TutorialDataHolder.GetTutorialSO(TutorialMode.ItemShop);
+
+        dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.Gem, 50);
+
+        uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.GetTutorialVisualData.TutorialSteps[0].stepDescription);
+
+        yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.MainMenu, GameButtonType.Mainmenu_Shop);
+
+        uiSystem.UiEventHandler.TutorialMenu.Display(tutorialSO.GetTutorialVisualData.TutorialSteps[1].stepDescription);
+
+        yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.ShopMenu, GameButtonType.ShopMenu_RareChest);
+
+        uiSystem.UiEventHandler.TutorialMenu.Display("Tutorial completed");
+
+        yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.MainMenu, GameButtonType.Mainmenu_World);
 
         uiSystem.UiEventHandler.TutorialMenu.Close();
 
-        tutorialDictionary[TutorialMode.UnlockStatPoint].IsCompleted = true;
+        uiSystem.UiEventHandler.InventoryMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
+        uiSystem.UiEventHandler.MainMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
+        uiSystem.UiEventHandler.StatePointsMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
+        uiSystem.UiEventHandler.ShopMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
+
+        tutorialDictionary[TutorialMode.ItemShop].IsCompleted = true;
     }
 
     public IEnumerator WaitForGameButtonPressed<T>(BaseMenu<T> theMenu, GameButtonType gameButtonType) where T : BaseMenu<T>
