@@ -1,0 +1,194 @@
+Silver_Chest.png
+size:2048,2048
+filter:Linear,Linear
+pma:true
+Key_2
+bounds:1789,1550,245,116
+VFX/Flare_single
+bounds:294,555,61,190
+offsets:99,37,256,256
+VFX/Noise/Comp 1_0
+bounds:890,1143,440,294
+offsets:27,124,512,512
+VFX/Noise/Comp 1_1
+bounds:441,847,437,293
+offsets:29,124,512,512
+VFX/Noise/Comp 1_10
+bounds:441,555,441,290
+offsets:26,124,512,512
+VFX/Noise/Comp 1_11
+bounds:884,555,440,290
+offsets:27,124,512,512
+VFX/Noise/Comp 1_12
+bounds:1605,262,438,289
+offsets:30,124,512,512
+VFX/Noise/Comp 1_17
+bounds:1323,847,435,294
+offsets:31,124,512,512
+VFX/Noise/Comp 1_18
+bounds:2,846,437,296
+offsets:30,124,512,512
+VFX/Noise/Comp 1_19
+bounds:447,1142,441,295
+offsets:26,124,512,512
+VFX/Noise/Comp 1_2
+bounds:1169,259,434,292
+offsets:31,124,512,512
+VFX/Noise/Comp 1_20
+bounds:895,1735,444,295
+offsets:24,124,512,512
+VFX/Noise/Comp 1_21
+bounds:2,1735,445,295
+offsets:23,124,512,512
+VFX/Noise/Comp 1_22
+bounds:449,1735,444,295
+offsets:24,124,512,512
+VFX/Noise/Comp 1_23
+bounds:896,1439,444,294
+offsets:25,124,512,512
+VFX/Noise/Comp 1_24
+bounds:1342,1144,443,294
+offsets:26,124,512,512
+VFX/Noise/Comp 1_25
+bounds:2,1144,443,294
+offsets:26,124,512,512
+VFX/Noise/Comp 1_26
+bounds:450,1439,444,294
+offsets:25,124,512,512
+VFX/Noise/Comp 1_27
+bounds:2,1440,446,293
+offsets:23,124,512,512
+VFX/Noise/Comp 1_28
+bounds:1342,1440,445,293
+offsets:24,124,512,512
+VFX/Noise/Comp 1_29
+bounds:1341,1735,443,295
+offsets:25,124,512,512
+VFX/Noise/Comp 1_5
+bounds:733,260,434,293
+offsets:28,124,512,512
+VFX/Noise/Comp 1_6
+bounds:1326,553,436,292
+offsets:26,124,512,512
+VFX/Noise/Comp 1_7
+bounds:294,262,437,291
+offsets:25,124,512,512
+VFX/Noise/Comp 1_8
+bounds:2,405,439,290
+offsets:25,124,512,512
+rotate:90
+VFX/Noise/Comp 1_9
+bounds:880,850,441,290
+offsets:25,124,512,512
+VFX/Sparks/Comp 1_10
+bounds:2,86,317,290
+offsets:98,91,512,512
+rotate:90
+VFX/Sparks/Comp 1_14
+bounds:1605,2,343,258
+offsets:86,119,512,512
+VFX/Sparks/Comp 1_15
+bounds:1764,793,349,260
+offsets:83,116,512,512
+rotate:90
+VFX/Sparks/Comp 1_19
+bounds:1025,17,365,240
+offsets:77,130,512,512
+VFX/Sparks/Comp 1_20
+bounds:294,18,366,242
+offsets:78,127,512,512
+VFX/Sparks/Comp 1_21
+bounds:1788,1144,367,244
+offsets:79,123,512,512
+rotate:90
+VFX/Sparks/Comp 1_22
+bounds:1789,1668,362,245
+offsets:84,119,512,512
+rotate:90
+VFX/Sparks/Comp 1_23
+bounds:662,14,361,244
+offsets:85,116,512,512
+VFX/Sparks/Comp 1_4
+bounds:1392,41,216,207
+offsets:145,141,512,512
+rotate:90
+VFX/Sparks/Comp 1_5
+bounds:1764,563,244,228
+offsets:132,129,512,512
+
+Silver_Chest_2.png
+size:2048,2048
+filter:Linear,Linear
+pma:true
+Bottom Part
+bounds:1150,1104,302,168
+Key_1
+bounds:2,1084,258,188
+Money
+bounds:1174,211,440,284
+Open Part
+bounds:657,1113,282,159
+Top Part
+bounds:1454,1089,323,183
+VFX/Flare_Hafl
+bounds:442,1105,213,167
+offsets:22,78,256,256
+VFX/Glow
+bounds:941,1065,207,207
+offsets:22,26,256,256
+VFX/Noise/Comp 1_13
+bounds:741,274,431,289
+offsets:38,124,512,512
+VFX/Noise/Comp 1_14
+bounds:311,298,428,290
+offsets:41,124,512,512
+VFX/Noise/Comp 1_15
+bounds:1241,497,422,292
+offsets:42,124,512,512
+VFX/Noise/Comp 1_16
+bounds:1664,232,426,293
+offsets:39,124,512,512
+rotate:90
+VFX/Noise/Comp 1_3
+bounds:2,107,431,291
+offsets:33,124,512,512
+rotate:90
+VFX/Noise/Comp 1_4
+bounds:295,2,428,294
+offsets:35,124,512,512
+VFX/Sparks/Comp 1_11
+bounds:2,830,325,252
+offsets:94,129,512,512
+VFX/Sparks/Comp 1_12
+bounds:567,590,332,256
+offsets:91,124,512,512
+VFX/Sparks/Comp 1_13
+bounds:901,565,338,258
+offsets:88,120,512,512
+VFX/Sparks/Comp 1_16
+bounds:1447,791,354,232
+offsets:80,144,512,512
+VFX/Sparks/Comp 1_17
+bounds:329,731,360,236
+offsets:77,139,512,512
+rotate:90
+VFX/Sparks/Comp 1_18
+bounds:1803,660,363,239
+offsets:77,134,512,512
+rotate:90
+VFX/Sparks/Comp 1_3
+bounds:261,1093,179,178
+offsets:163,155,512,512
+rotate:90
+VFX/Sparks/Comp 1_6
+bounds:1779,1025,265,247
+offsets:123,118,512,512
+VFX/Sparks/Comp 1_7
+bounds:657,848,281,263
+offsets:116,108,512,512
+VFX/Sparks/Comp 1_8
+bounds:1150,825,295,277
+offsets:109,98,512,512
+VFX/Sparks/Comp 1_9
+bounds:2,540,307,288
+offsets:103,91,512,512

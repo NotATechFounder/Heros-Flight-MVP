@@ -1,0 +1,192 @@
+Legendary_Chest.png
+size:2048,2048
+filter:Linear,Linear
+pma:true
+Key_2
+bounds:294,560,245,116
+rotate:90
+Money
+bounds:1760,809,440,284
+rotate:270
+VFX/Flare_single
+bounds:2,28,61,190
+offsets:99,37,256,256
+rotate:90
+VFX/Noise/Comp 1_0
+bounds:890,1148,440,294
+offsets:27,124,512,512
+VFX/Noise/Comp 1_1
+bounds:441,852,437,293
+offsets:29,124,512,512
+VFX/Noise/Comp 1_10
+bounds:441,560,441,290
+offsets:26,124,512,512
+VFX/Noise/Comp 1_11
+bounds:884,560,440,290
+offsets:27,124,512,512
+VFX/Noise/Comp 1_12
+bounds:1605,267,438,289
+offsets:30,124,512,512
+VFX/Noise/Comp 1_17
+bounds:1323,852,435,294
+offsets:31,124,512,512
+VFX/Noise/Comp 1_18
+bounds:2,851,437,296
+offsets:30,124,512,512
+VFX/Noise/Comp 1_19
+bounds:447,1147,441,295
+offsets:26,124,512,512
+VFX/Noise/Comp 1_2
+bounds:1169,264,434,292
+offsets:31,124,512,512
+VFX/Noise/Comp 1_20
+bounds:895,1740,444,295
+offsets:24,124,512,512
+VFX/Noise/Comp 1_21
+bounds:2,1740,445,295
+offsets:23,124,512,512
+VFX/Noise/Comp 1_22
+bounds:449,1740,444,295
+offsets:24,124,512,512
+VFX/Noise/Comp 1_23
+bounds:896,1444,444,294
+offsets:25,124,512,512
+VFX/Noise/Comp 1_24
+bounds:1342,1149,443,294
+offsets:26,124,512,512
+VFX/Noise/Comp 1_25
+bounds:2,1149,443,294
+offsets:26,124,512,512
+VFX/Noise/Comp 1_26
+bounds:450,1444,444,294
+offsets:25,124,512,512
+VFX/Noise/Comp 1_27
+bounds:2,1445,446,293
+offsets:23,124,512,512
+VFX/Noise/Comp 1_28
+bounds:1342,1445,445,293
+offsets:24,124,512,512
+VFX/Noise/Comp 1_29
+bounds:1341,1740,443,295
+offsets:25,124,512,512
+VFX/Noise/Comp 1_5
+bounds:733,265,434,293
+offsets:28,124,512,512
+VFX/Noise/Comp 1_6
+bounds:1326,558,436,292
+offsets:26,124,512,512
+VFX/Noise/Comp 1_7
+bounds:294,267,437,291
+offsets:25,124,512,512
+VFX/Noise/Comp 1_8
+bounds:2,410,439,290
+offsets:25,124,512,512
+rotate:90
+VFX/Noise/Comp 1_9
+bounds:880,855,441,290
+offsets:25,124,512,512
+VFX/Sparks/Comp 1_10
+bounds:2,91,317,290
+offsets:98,91,512,512
+rotate:90
+VFX/Sparks/Comp 1_15
+bounds:294,5,349,260
+offsets:83,116,512,512
+VFX/Sparks/Comp 1_19
+bounds:1789,1670,365,240
+offsets:77,130,512,512
+rotate:90
+VFX/Sparks/Comp 1_20
+bounds:1378,20,366,242
+offsets:78,127,512,512
+VFX/Sparks/Comp 1_21
+bounds:645,19,367,244
+offsets:79,123,512,512
+VFX/Sparks/Comp 1_22
+bounds:1014,17,362,245
+offsets:84,119,512,512
+VFX/Sparks/Comp 1_23
+bounds:1788,1251,361,244
+offsets:85,116,512,512
+rotate:90
+VFX/Sparks/Comp 1_6
+bounds:1764,560,265,247
+offsets:123,118,512,512
+VFX/Sparks/Comp 1_7
+bounds:1746,2,281,263
+offsets:116,108,512,512
+
+Legendary_Chest_2.png
+size:2048,2048
+filter:Linear,Linear
+pma:true
+Bottom Part
+bounds:1381,702,369,235
+rotate:90
+Key_1
+bounds:2,1113,258,188
+Open Part
+bounds:1084,1128,318,173
+Top Part
+bounds:1650,1085,385,216
+VFX/Flare_Hafl
+bounds:442,1134,213,167
+offsets:22,78,256,256
+VFX/Glow
+bounds:657,1094,207,207
+offsets:22,26,256,256
+VFX/Noise/Comp 1_13
+bounds:1016,298,431,289
+offsets:38,124,512,512
+VFX/Noise/Comp 1_14
+bounds:2,304,428,290
+offsets:41,124,512,512
+VFX/Noise/Comp 1_15
+bounds:1618,533,422,292
+offsets:42,124,512,512
+VFX/Noise/Comp 1_16
+bounds:432,271,426,293
+offsets:39,124,512,512
+VFX/Noise/Comp 1_3
+bounds:1449,240,431,291
+offsets:33,124,512,512
+VFX/Noise/Comp 1_4
+bounds:860,2,428,294
+offsets:35,124,512,512
+VFX/Sparks/Comp 1_11
+bounds:2,859,325,252
+offsets:94,129,512,512
+VFX/Sparks/Comp 1_12
+bounds:1650,827,332,256
+offsets:91,124,512,512
+VFX/Sparks/Comp 1_13
+bounds:367,596,338,258
+offsets:88,120,512,512
+VFX/Sparks/Comp 1_14
+bounds:1016,589,343,258
+offsets:86,119,512,512
+VFX/Sparks/Comp 1_16
+bounds:329,860,354,232
+offsets:80,144,512,512
+VFX/Sparks/Comp 1_17
+bounds:685,856,360,236
+offsets:77,139,512,512
+VFX/Sparks/Comp 1_18
+bounds:2,618,363,239
+offsets:77,134,512,512
+VFX/Sparks/Comp 1_3
+bounds:261,1122,179,178
+offsets:163,155,512,512
+rotate:90
+VFX/Sparks/Comp 1_4
+bounds:866,1094,216,207
+offsets:145,141,512,512
+VFX/Sparks/Comp 1_5
+bounds:1404,1073,244,228
+offsets:132,129,512,512
+VFX/Sparks/Comp 1_8
+bounds:1084,849,295,277
+offsets:109,98,512,512
+VFX/Sparks/Comp 1_9
+bounds:707,566,307,288
+offsets:103,91,512,512
