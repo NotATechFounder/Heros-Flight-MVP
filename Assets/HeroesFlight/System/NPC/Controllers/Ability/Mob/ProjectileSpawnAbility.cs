@@ -85,7 +85,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 
         protected virtual void HandleAnimationEvents(AttackAnimationEvent obj)
         {
-            if (obj.Type == AniamtionEventType.Shoot)
+            if (obj.Type == AniamtionEventType.Shoot || obj.Type == AniamtionEventType.Attack)
             {
                 SpawnProjectiles(CalculateProjectilesCount());
             }
