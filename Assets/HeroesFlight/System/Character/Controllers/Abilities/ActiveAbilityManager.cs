@@ -65,6 +65,8 @@ public class ActiveAbilityManager : MonoBehaviour
     private BaseCharacterAttackController characterAttackController;
     private CombatEffectsController characterEffectsController;
 
+    bool AllAbilitySlotsFull => eqquipedActiveActivities.Count >= 3 && eqquipedPassiveAbilities.Count >= 3;
+
 
     private void Awake()
     {
@@ -296,6 +298,8 @@ public class ActiveAbilityManager : MonoBehaviour
         {
             randomAbilities = GetRandomActiveAbilityFromAll(amount, passiveActiveAbilityTypeExeption);
         }
+
+        Debug.Log("Random Abilities: " + randomAbilities.Count);
 
         return randomAbilities;
     }

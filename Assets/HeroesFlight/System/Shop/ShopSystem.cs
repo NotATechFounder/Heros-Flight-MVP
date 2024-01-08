@@ -32,6 +32,8 @@ public class ShopSystem : IShopSystemInterface
     public void InjectUiConnection()
     {
         // Suscribe to UI events
+        uISystem.UiEventHandler.ShopMenu.OnPurchaseSuccess += OnPurchaseSuccess;
+
         uISystem.UiEventHandler.ShopMenu.TryPurchaseChest += BuyChestWithGem;
         uISystem.UiEventHandler.ShopMenu.TryPurchaseGoldPack += BuyGoldPack;
 
@@ -43,6 +45,26 @@ public class ShopSystem : IShopSystemInterface
         foreach (Chest chest in ShopDataHolder.GetChests)
         {
             uISystem.UiEventHandler.ShopMenu.SetChestInfo(chest.GetChestType, chest.GetChestInfo, chest.GetGemChestPrice);
+        }
+    }
+
+    private void OnPurchaseSuccess(IAPHelper.ProductType obj)
+    {
+        switch (obj)
+        {
+            case IAPHelper.ProductType.Gem80:
+                dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, 80);
+                break;
+            case IAPHelper.ProductType.Gem500:
+                dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, 500);
+                break;
+            case IAPHelper.ProductType.Gem1200:
+                dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, 1200);
+                break;
+            case IAPHelper.ProductType.Gem6500:
+                dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, 6500);
+                break;
+            default: break;
         }
     }
 
