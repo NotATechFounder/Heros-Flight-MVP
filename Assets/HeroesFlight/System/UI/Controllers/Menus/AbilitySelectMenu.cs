@@ -61,41 +61,33 @@ namespace UISystem
         {
             RefreshAbilities();
 
-            //bool activeAbilityChance = UnityEngine.Random.Range(0, 100) < 50;
+            List<PassiveAbilityType> passiveAbilityTypes = GetRandomPassiveAbility.Invoke(2, currentPassiveDisplayed);
 
-            bool activeAbilityChance = true;
-
-            List<PassiveAbilityType> passiveAbilityTypes = GetRandomPassiveAbility.Invoke(3, currentPassiveDisplayed);
+            ActiveAbilityType passiveActiveAbilityType = GetRandomActiveAbility.Invoke(1, new List<ActiveAbilityType>() { currentActiveDisplayed })[0];
 
             currentPassiveDisplayed.Clear();
 
             for (int i = 0; i < passiveAbilityTypes.Count; i++)
             {
-                if (activeAbilityChance && i == 2)
+                currentPassiveDisplayed.Add(passiveAbilityTypes[i]);
+                PassiveAbilityVisualData abilityVisualData = GetRandomPassiveAbilityVisualData.Invoke(passiveAbilityTypes[i]);
+                abilityButtonUIs[i].SetInfo(abilityVisualData.Icon, "Passive", abilityVisualData.DisplayName, abilityVisualData.Description, GetPassiveAbilityLevel(passiveAbilityTypes[i]));
+                PassiveAbilityType passiveAbilityType = passiveAbilityTypes[i];
+                abilityButtonUIs[i].GetAdvanceButton.onClick.AddListener(() =>
                 {
-                    ActiveAbilityType passiveActiveAbilityType = GetRandomActiveAbility.Invoke(1, new List<ActiveAbilityType>() { currentActiveDisplayed })[0];
-                    currentActiveDisplayed = passiveActiveAbilityType;
-                    ActiveAbilityVisualData regularAbilityVisualData = GetRandomActiveAbilityVisualData.Invoke(passiveActiveAbilityType);
-                    abilityButtonUIs[i].SetInfo(regularAbilityVisualData.Icon,"Active", regularAbilityVisualData.DisplayName, regularAbilityVisualData.Description, GetActiveAbilityLevel(passiveActiveAbilityType));
-                    abilityButtonUIs[i].GetAdvanceButton.onClick.AddListener(() =>
-                    {
-                        OnRegularAbilitySelected?.Invoke(passiveActiveAbilityType);
-                        AbilitySelected();
-                    });
-                }
-                else
-                {
-                    currentPassiveDisplayed.Add(passiveAbilityTypes[i]);
-                    PassiveAbilityVisualData abilityVisualData = GetRandomPassiveAbilityVisualData.Invoke(passiveAbilityTypes[i]);
-                    abilityButtonUIs[i].SetInfo(abilityVisualData.Icon, "Passive", abilityVisualData.DisplayName, abilityVisualData.Description, GetPassiveAbilityLevel(passiveAbilityTypes[i]));
-                    PassiveAbilityType passiveAbilityType = passiveAbilityTypes[i];
-                    abilityButtonUIs[i].GetAdvanceButton.onClick.AddListener(() =>
-                    {
-                        OnPassiveAbilitySelected?.Invoke(passiveAbilityType);
-                        AbilitySelected();
-                    });
-                }
+                    OnPassiveAbilitySelected?.Invoke(passiveAbilityType);
+                    AbilitySelected();
+                });
             }
+
+            currentActiveDisplayed = passiveActiveAbilityType;
+            ActiveAbilityVisualData regularAbilityVisualData = GetRandomActiveAbilityVisualData.Invoke(passiveActiveAbilityType);
+            abilityButtonUIs[2].SetInfo(regularAbilityVisualData.Icon, "Active", regularAbilityVisualData.DisplayName, regularAbilityVisualData.Description, GetActiveAbilityLevel(passiveActiveAbilityType));
+            abilityButtonUIs[2].GetAdvanceButton.onClick.AddListener(() =>
+            {
+                OnRegularAbilitySelected?.Invoke(passiveActiveAbilityType);
+                AbilitySelected();
+            });
         }
 
         public void ReRoll()

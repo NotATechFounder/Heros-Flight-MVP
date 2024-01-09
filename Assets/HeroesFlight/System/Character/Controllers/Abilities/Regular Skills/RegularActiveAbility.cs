@@ -49,7 +49,9 @@ public abstract class RegularActiveAbility : MonoBehaviour
 
     public ParticleSystem GetEffectParticleByLevel()
     {
-        return effectParticle[Mathf.FloorToInt((currentLevel - 1) / majorBoostLevel)];
+        //return effectParticle[Mathf.FloorToInt((currentLevel - 1) / majorBoostLevel)];
+        int effetIndex = Mathf.Min(currentLevel, 3) - 1;
+        return effectParticle[effetIndex];
     }
 
     public IEnumerator MultiCast()

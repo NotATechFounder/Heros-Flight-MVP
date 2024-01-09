@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Codice.Client.BaseCommands;
 using Pelumi.Juicer;
+using Spine;
+using Spine.Unity;
 using TMPro;
 using UISystem;
 using UnityEngine;
@@ -20,18 +23,27 @@ namespace HeroesFlight.System.UI.DIce
         [SerializeField] private CanvasGroup infoCG;
         [SerializeField] private TextMeshProUGUI rollText;
         [SerializeField] private TextMeshProUGUI infoText;
+
         [Header("Buttons")]
         [SerializeField] private AdvanceButton rollButton;
         [SerializeField] private AdvanceButton backButton;
         [SerializeField] private AdvanceButton optionalROllButton;
         [SerializeField] private AdvanceButton infoButton;
         [SerializeField] private AdvanceButton closeInfoButton;
-      
+
+        [Header("Dice")]
+        [SerializeField] private SkeletonGraphic skeletonAnimation;
+
 
         private WaitForSeconds rollPeriod;
         private Coroutine rollRoutine;
 
         private Action onRollAction;
+
+
+        private int endValue;
+        private Color endColor;
+        private Action onRollEnd;
 
         public void ShowDiceMenu(int initialValue,Action OnRoll)
         {
@@ -43,10 +55,10 @@ namespace HeroesFlight.System.UI.DIce
 
         public void RollDiceUi(int resultValue, Color endColor, Action OnComplete)
         {
-            if (rollRoutine != null)
-                StopCoroutine(rollRoutine);
-
-            rollRoutine = StartCoroutine(RollDiceRoutine(resultValue, endColor, OnComplete));
+            endValue = resultValue;
+            this.endColor = endColor;
+            onRollEnd = OnComplete;
+            RollDice(resultValue);
         }
 
         public void ShowDiceInfo(string info)
@@ -80,6 +92,8 @@ namespace HeroesFlight.System.UI.DIce
                 ToggleCanvasGroup(rollCG, false);
                 Close();
             });
+
+            skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
         }
 
         public override void OnOpened()
@@ -99,47 +113,28 @@ namespace HeroesFlight.System.UI.DIce
 
         void ToggleCanvasGroup(CanvasGroup cg, bool isEnabled)
         {
-            if (isEnabled)
-            {
-                cg.alpha = 1;
-                cg.interactable = true;
-                cg.blocksRaycasts = true;
-            }
-            else
-            {
-                cg.alpha = 0;
-                cg.interactable = false;
-                cg.blocksRaycasts = false;
-            }
+            cg.alpha = isEnabled ? 1 : 0;
+            cg.interactable = isEnabled;
+            cg.blocksRaycasts = isEnabled;
         }
 
-        IEnumerator RollDiceRoutine(int endValue, Color endColor, Action OnComplete)
+        public void RollDice(int endValue)
         {
             backButton.interactable = false;
             rollButton.interactable = false;
-            //  optionalROllButton.interactable = false;
             infoButton.interactable = false;
-            var totallRolls = 15;
-            while (totallRolls > 0)
-            {
-                yield return rollPeriod;
-                totallRolls--;
-                rollText.text = Random.Range(0, 13).ToString();
-            }
+            skeletonAnimation.AnimationState.SetAnimation(0, endValue.ToString(), false);
+        }
 
-
-            yield return new WaitForSeconds(.5f);
+        private void AnimationState_Complete(TrackEntry trackEntry)
+        {
             rollText.text = endValue.ToString();
             rollText.color = endColor;
-            rollText.transform.JuicyScale(3, .5f).Start();
-            yield return new WaitForSeconds(.55f);
-            rollText.transform.JuicyScale(1, .5f).Start();
-            yield return new WaitForSeconds(.55f);
+            onRollEnd?.Invoke();
+
             backButton.interactable = true;
             rollButton.interactable = true;
-            // optionalROllButton.interactable = true;
-             infoButton.interactable = true;
-            OnComplete?.Invoke();
+            infoButton.interactable = true;
         }
     }
 }
