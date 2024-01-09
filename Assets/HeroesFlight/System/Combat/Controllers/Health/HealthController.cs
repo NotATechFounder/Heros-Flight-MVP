@@ -124,7 +124,18 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             UpdateImmortalityState(healthModificationIntent);
             UpdateIntentsModelTarget(healthModificationIntent);
+            UpdateIntentModelValues(healthModificationIntent);
             InvokeDamageReceiveRequest(healthModificationIntent);
+        }
+
+        private void UpdateIntentModelValues(HealthModificationIntentModel healthModificationIntent)
+        {
+            if (healthModificationIntent.AttackType != AttackType.Healing)
+            {
+                var resultDamage = healthModificationIntent.Amount -
+                                   StatCalc.GetPercentage(healthModificationIntent.Amount, defence);
+                healthModificationIntent.ModifyAmount(resultDamage);
+            }
         }
 
         /// <summary>
@@ -136,7 +147,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             OnDamageReceiveRequest?.Invoke(new HealthModificationRequestModel(healthModificationIntent, this));
         }
 
-     
 
         private void UpdateIntentsModelTarget(HealthModificationIntentModel healthModificationIntent)
         {
@@ -200,9 +210,9 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         {
             if (modificationIntentModel.AttackType != AttackType.Healing)
             {
-                var resultDamage = modificationIntentModel.Amount -
-                                   StatCalc.GetPercentage(modificationIntentModel.Amount, defence);
-                currentHealth -= resultDamage;
+                currentHealth -= modificationIntentModel.Amount;
+                if (currentHealth < 0)
+                    currentHealth = 0;
             }
             else
             {

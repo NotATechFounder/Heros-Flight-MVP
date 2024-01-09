@@ -146,16 +146,12 @@ namespace HeroesFlight.System.Combat
                 return;
             
             damageInstanceHandler.ProcessDamageIntent(obj,true);
-            // uiSystem.ShowDamageText(obj.IntentModel.Amount, obj.RequestOwner.HealthTransform,
-            //     obj.IntentModel.DamageCritType == DamageCritType.Critical, true,
-            //     obj.IntentModel.AttackType == AttackType.Healing);
         }
 
         private void HandleAiDamaged(HealthModificationRequestModel obj)
         {
             damageInstanceHandler.ProcessDamageIntent(obj,false);
-            // uiSystem.ShowDamageText(obj.IntentModel.Amount, obj.RequestOwner.HealthTransform,
-            //     obj.IntentModel.DamageCritType == DamageCritType.Critical, false);
+           
             comboHandler.RegisterCharacterHit();
             switch (obj.IntentModel.AttackType)
             {
