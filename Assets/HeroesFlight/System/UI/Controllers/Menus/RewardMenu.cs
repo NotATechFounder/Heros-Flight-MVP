@@ -11,6 +11,7 @@ using UnityEngine.Purchasing.Extension;
 using UnityEngine.Purchasing;
 using Spine.Unity;
 using Spine;
+using StansAssets.Foundation.Async;
 
 namespace UISystem
 {
@@ -43,6 +44,7 @@ namespace UISystem
 
         private List<RewardView> rewardViews = new List<RewardView>();
         private ChestEffect selectedChestEffect;
+        private RewardVisual[] rewardVisualArray;
 
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
@@ -58,6 +60,8 @@ namespace UISystem
             glowBgSpinEffect = glowBg.transform.JuicyRotate(new Vector3(0, 0, 360), 1f).SetLoop(-1);
 
             quitButton.onClick.AddListener(Close);
+
+            AssignChestAnimation();
         }
 
         public override void OnOpened()
@@ -88,7 +92,7 @@ namespace UISystem
             }
         }
 
-        public void DisplayRewardsVisual(params RewardVisual[] rewardVisual)
+        public void DisplayRewards(params RewardVisual[] rewardVisual)
         {
             foreach (RewardView rewardView in rewardViews)
             {
@@ -103,16 +107,35 @@ namespace UISystem
                 rewardView.SetVisual(rewardVisual[i]);
                 rewardViews.Add(rewardView);
             }
+        }
 
+        public void DisplayRewardsVisual(params RewardVisual[] rewardVisual)
+        {
             Open();
+            DisplayRewards(rewardVisual);
         }
 
         public void DisplayRewardsVisual(ChestType chestType, params RewardVisual[] rewardVisual)
         {
+            Open();
+
+            if (selectedChestEffect != null)
+            {
+                selectedChestEffect.SetActive(false);
+            }
+
             selectedChestEffect = Array.Find(chestEffects, x => x.chestType == chestType);
             selectedChestEffect.SetActive(true);
-            selectedChestEffect.skeletonAnimation.AnimationState.SetAnimation(0, IdleAnimation, false);
-            //DisplayRewardsVisual(rewardVisual);
+            rewardVisualArray = rewardVisual;
+
+            selectedChestEffect.skeletonAnimation.AnimationState.SetAnimation(0, IdleAnimation, true);
+
+            CoroutineUtility.WaitForSeconds(1f, () =>
+            {
+                selectedChestEffect.skeletonAnimation.AnimationState.SetAnimation(0, OpenAnimation, false);
+            });
+
+            DisplayRewardsVisual(rewardVisualArray);
         }
 
         private void AnimationState_Event(TrackEntry trackEntry, Spine.Event e)
@@ -125,9 +148,17 @@ namespace UISystem
 
         private void AnimationState_Complete(TrackEntry trackEntry)
         {
-            throw new NotImplementedException();
-        }
+            switch (trackEntry.Animation.Name)
+            {
+                case IdleAnimation:
 
+
+                    break;
+                case OpenAnimation:
+
+                    break;
+            }
+        }
 
         private void OnChestRewardFinish()
         {

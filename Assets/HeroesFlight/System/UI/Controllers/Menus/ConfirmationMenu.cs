@@ -94,9 +94,14 @@ namespace UISystem
 
         public void Display (ConfirmationUISO confirmationUISO, Action Yes, Action No)
         {
-            if (confirmationUISO.Icon != null)
+            Display (confirmationUISO.TitleText, confirmationUISO.QuestionText, confirmationUISO.DescriptionText,  Yes, No, confirmationUISO.Icon);
+        }
+
+        public void Display(string TitleText, string QuestionText, string DescriptionText, Action Yes, Action No, Sprite Icon = null)
+        {
+            if (Icon != null)
             {
-                headerIcon.sprite = confirmationUISO.Icon;
+                headerIcon.sprite = Icon;
                 headerIcon.enabled = true;
             }
             else
@@ -104,9 +109,9 @@ namespace UISystem
                 headerIcon.enabled = false;
             }
 
-            titleText.text = confirmationUISO.TitleText;
-            questionText.text = confirmationUISO.QuestionText;
-            descriptionText.text = confirmationUISO.DescriptionText;
+            titleText.text = TitleText;
+            questionText.text = QuestionText;
+            descriptionText.text = DescriptionText;
             onYesButtonPressed = Yes;
             onNoButtonPressed = No;
             Open();

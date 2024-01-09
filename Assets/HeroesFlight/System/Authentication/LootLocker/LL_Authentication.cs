@@ -16,6 +16,12 @@ public class LL_Authentication : MonoBehaviour
     public LoginMode CurrentLoginMode => currentLoginMode;
     public LLPlayerProfile GetPlayerProfile => playerProfile;
 
+    private void Start()
+    {
+        // To Remove later
+        TryLogin (LoginMode.Guest);
+    }
+
     public bool IsOnline()
     {
         return Application.internetReachability != NetworkReachability.NotReachable;
