@@ -54,6 +54,11 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
                 });
                 currentCooldown = CoolDown;
             }
+            
+            if (abilityParticle != null)
+            {
+                abilityParticle.Play();
+            }
 
           //  ActivateDetectors();
             currentCooldown = CoolDown;
@@ -67,12 +72,7 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 
         void HandleAnimationEvents(AttackAnimationEvent obj)
         {
-            if (abilityParticle != null)
-            {
-                abilityParticle.Play();
-            }
-
-            ActivateDetectors();
+           ActivateDetectors();
         }
 
         IEnumerator ActivateDetectorsRoutine()
