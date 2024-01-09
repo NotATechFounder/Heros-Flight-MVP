@@ -20,6 +20,8 @@ public class AccountLevelManager : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private Data data;
 
+    public int CurrentPlayerLvl => levelSystem.CurrentLevel;
+    
     public void Init()
     {
         Load();
