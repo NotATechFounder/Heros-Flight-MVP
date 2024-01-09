@@ -57,7 +57,7 @@ namespace UISystem
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
             closeEffectBG.SetOnCompleted(CloseMenu);
 
-            glowBgSpinEffect = glowBg.transform.JuicyRotate(new Vector3(0, 0, 360), 1f).SetLoop(-1);
+            glowBgSpinEffect = glowBg.transform.JuicyRotate(new Vector3(0, 0, 360), 1f).SetLoop(-1, LoopType.Incremental);
 
             quitButton.onClick.AddListener(Close);
 
