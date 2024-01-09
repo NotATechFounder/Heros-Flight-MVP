@@ -83,9 +83,11 @@ namespace UISystem
         [SerializeField] private Transform passiveAbilityHolder;
         [SerializeField] private PassiveAbilityDisplayUI[] passiveAbilityDisplayUIs; 
 
-
         [Header("Boosters")]
         [SerializeField] private BoosterUI[] boosterButtons;
+
+        [Header("Progression")]
+        [SerializeField] private GroupImageFill progressionFill;
 
         [Header("Transition")]
         [SerializeField] private AnimationCurve transitionCurve;
@@ -462,6 +464,11 @@ namespace UISystem
         public void UpgradeActiveAbility(ActiveAbilityType type, int arg2)
         {
             currentActiveDisplayed[type].SetLevel(arg2);
+        }
+
+        public void SetProgressionFill (float value)
+        {
+            progressionFill.SetValue(value);
         }
     }
 }

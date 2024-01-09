@@ -788,6 +788,8 @@ namespace HeroesFlight.System.Gameplay
 
                     characterSystem.SetCharacterControllerState(true);
 
+                    uiSystem.UiEventHandler.GameMenu.SetProgressionFill(CurrentLvlIndex / (float) MaxLvlIndex);
+
                     break;
                 case LevelType.Shrine:
                     characterSystem.SetCharacterControllerState(true);

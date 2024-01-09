@@ -34,7 +34,7 @@ public class GroupImageFill : MonoBehaviour
         int numFills = fills.Length;
         if (numFills <= 0)
         {
-            Debug.LogError("No Image fills assigned to the GroupSlider!");
+            //Debug.LogError("No Image fills assigned to the GroupSlider!");
             return;
         }
 
