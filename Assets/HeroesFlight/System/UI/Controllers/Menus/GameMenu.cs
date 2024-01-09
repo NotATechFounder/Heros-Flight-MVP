@@ -43,7 +43,7 @@ namespace UISystem
         [SerializeField] private Sprite timeOutSprite;
 
         [Header("Gameplay")]
-        [SerializeField] private TextMeshProUGUI coinText;
+        [SerializeField] private TextMeshProUGUI ruinShardText;
         [SerializeField] private TextMeshProUGUI timerText;
         [SerializeField] private TextMeshProUGUI enemyCountText;
         [SerializeField] private AdvanceButton pauseButton;
@@ -95,7 +95,7 @@ namespace UISystem
         private Dictionary<PassiveAbilityType, PassiveAbilityDisplayUI> currentPassiveDisplayed = new Dictionary<PassiveAbilityType, PassiveAbilityDisplayUI>();
         private Dictionary<ActiveAbilityType, AbilityTriggerButton> currentActiveDisplayed = new Dictionary<ActiveAbilityType, AbilityTriggerButton>();
 
-        public TextMeshProUGUI CoinText => coinText;
+        public TextMeshProUGUI RuinShardText => ruinShardText;
         public AbilityTriggerButton[] ActiveAbilityTriggerButtons => activeAbilityButtons;
 
 
@@ -178,7 +178,7 @@ namespace UISystem
 
         public override void ResetMenu()
         {
-            coinText.text = "0";
+            ruinShardText.text = "0";
             timerText.text = "00:00";
             enemyCountText.text = "0";
             comboCounterText.text = "0";
@@ -236,9 +236,9 @@ namespace UISystem
             CoroutineUtility.WaitForSeconds(duration, () => infoPanel.gameObject.SetActive(false));
         }
 
-        public void UpdateCoinText(float value)
+        public void UpdateRuinShardText(float value)
         {
-            coinText.JuicyTextNumber(value, 0.5f).Start();
+            ruinShardText.JuicyTextNumber(value, 0.5f).Start();
         }
 
         public void UpdateTimerText(float value)

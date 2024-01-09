@@ -604,7 +604,7 @@ namespace HeroesFlight.System.Gameplay
 
             environmentSystem.ParticleManager.Spawn("Loot_Spawn", position, Quaternion.Euler(new Vector3(-90, 0, 0)));
 
-            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, 10 + goldModifier, position);
+            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RuneShard, 10 + goldModifier, position);
 
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RunExperience, 0, position);
 
@@ -838,7 +838,7 @@ namespace HeroesFlight.System.Gameplay
                     environmentSystem.BoosterSpawner.SpawnBoostLoot(crystal.BoosterDropSO, crystal.transform.position);
                     for (int i = 0; i < crystal.GoldInBatch; i++)
                     {
-                        environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.Gold, crystal.GoldAmount,
+                        environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RuneShard, crystal.GoldAmount,
                             crystal.transform.position);
                     }
                 };
@@ -1082,9 +1082,9 @@ namespace HeroesFlight.System.Gameplay
 
             switch (key)
             {
-                case CurrencyKeys.Gold:
-                    characterVFXController.TriggerCurrencyEffect(CurrencyKeys.Gold);
-                    uiSystem.UpdateCoinsUi(progressionSystem.GetCurrency(CurrencyKeys.Gold));
+                case CurrencyKeys.RuneShard:
+                    characterVFXController.TriggerCurrencyEffect(CurrencyKeys.RuneShard);
+                    uiSystem.UpdateRuinShardUi(progressionSystem.GetCurrency(CurrencyKeys.RuneShard));
                     break;
                 case CurrencyKeys.Experience:
                     characterVFXController.TriggerCurrencyEffect(CurrencyKeys.Experience);

@@ -13,6 +13,13 @@ namespace UISystem
 {
     public class InventoryMenu : BaseMenu<InventoryMenu>
     {
+        public enum SortType
+        {
+            Type,
+            Name,
+            Rarity
+        }
+
         public event Func<StatModel> GetStatModel;
         public event Func<CharacterSO> GetSelectedCharacterSO;
         public event Action OnChangeHeroButtonClicked;
@@ -30,12 +37,15 @@ namespace UISystem
         [SerializeField] private GameObject equipmentSelectVisual;
         [SerializeField] private AdvanceButton viewMaterials;
         [SerializeField] private GameObject materialSelectVisual;
+        [SerializeField] private RectTransform sortButtonsHolder;
+        [SerializeField] private AdvanceButton[] sortButtons;
 
         [Header("Texts")] [SerializeField] private TextMeshProUGUI currentAtk;
         [SerializeField] private TextMeshProUGUI currentHp;
         [SerializeField] private TextMeshProUGUI currentDef;
 
-        [Header("Data")] [SerializeField] private UiSpineViewController uiSpineViewController;
+        [Header("Data")] 
+        [SerializeField] private UiSpineViewController uiSpineViewController;
 
         [Header("Inventory")] 
         [SerializeField] private ItemUI itemUIPrefab;
@@ -50,6 +60,7 @@ namespace UISystem
         JuicerRuntime closeEffectBG;
 
         [Header("Debug")] private Dictionary<string, ItemUI> itemUIDic = new Dictionary<string, ItemUI>();
+        private List<ItemUI> equipppmentUIList = new List<ItemUI>();
         [SerializeField] private ItemUI selectedItemUI;
         [SerializeField] private EquippedSlot selectedEquippedSlot;
         [SerializeField] EquipmentEntryUi selectedItem;
@@ -84,6 +95,16 @@ namespace UISystem
                 equipmentHolder.gameObject.SetActive(false);
                 equipmentSelectVisual.SetActive(false);
             });
+
+            for (int i = 0; i < sortButtons.Length; i++)
+            {
+                SortType sortType = (SortType) i;
+                sortButtons[i].onClick.AddListener(() =>
+                {
+                    SortItems(sortType);
+                    sortButtonsHolder.gameObject.SetActive(false);
+                });
+            }
         }
 
         public override void OnOpened()
@@ -163,6 +184,8 @@ namespace UISystem
             }
 
             itemUIDic.Clear();
+
+            equipppmentUIList.Clear();
         }
 
         public void UpdateInventoryView(List<EquipmentEntryUi> equipementItems, List<InventoryItemUiEntry> materials)
@@ -302,6 +325,11 @@ namespace UISystem
             itemUI.SetItem(item, item.RarityPallete);
             itemUI.OnSelectItem = OnItemSelected;
             itemUIDic.Add(item.ID, itemUI);
+
+            if (item.ItemType == ItemType.Equipment)
+            {
+                equipppmentUIList.Add(itemUI);
+            }
         }
 
         public void OnItemSelected(ItemUI itemUI)
@@ -389,6 +417,98 @@ namespace UISystem
             }
 
             return null;
+        }
+
+        public void SortItems(SortType sortType)
+        {
+            switch (sortType)
+            {
+                case SortType.Type:
+                    SortEquipmentsByType();
+                    break;
+                case SortType.Name:
+                    SortEquipmentsByName();
+                    break;
+                case SortType.Rarity:
+                    SortEquipmentsByRarity();
+                    break;
+            }
+        }
+
+        private void SortEquipmentsByType()
+        {
+          equipppmentUIList.Sort((x, y) =>
+          {
+                if (x.GetItem.ItemType == ItemType.Equipment && y.GetItem.ItemType == ItemType.Equipment)
+                {
+                    EquipmentEntryUi xItem = x.GetItem as EquipmentEntryUi;
+                    EquipmentEntryUi yItem = y.GetItem as EquipmentEntryUi;
+
+                    if (xItem.EquipmentType == yItem.EquipmentType)
+                    {
+                        return xItem.ItemRarity.CompareTo(yItem.ItemRarity);
+                    }
+                    else
+                    { 
+                        return xItem.EquipmentType.CompareTo(yItem.EquipmentType);
+                    }
+                }
+                else
+                { 
+                    return 0;
+                }
+            });
+
+            for (int i = 0; i < equipppmentUIList.Count; i++)
+            {
+                equipppmentUIList[i].transform.SetSiblingIndex(i);
+            }
+        }
+
+        private void SortEquipmentsByName()
+        {
+            equipppmentUIList.Sort((x, y) =>
+            {
+                if (x.GetItem.ItemType == ItemType.Equipment && y.GetItem.ItemType == ItemType.Equipment)
+                {
+                    EquipmentEntryUi xItem = x.GetItem as EquipmentEntryUi;
+                    EquipmentEntryUi yItem = y.GetItem as EquipmentEntryUi;
+
+                    return xItem.Name.CompareTo(yItem.Name);
+                }
+                else
+                {
+                    return 0;
+                }
+            });
+
+            for (int i = 0; i < equipppmentUIList.Count; i++)
+            {
+                equipppmentUIList[i].transform.SetSiblingIndex(i);
+            }
+        }
+
+        private void SortEquipmentsByRarity()
+        {
+            equipppmentUIList.Sort((x, y) =>
+            {
+                if (x.GetItem.ItemType == ItemType.Equipment && y.GetItem.ItemType == ItemType.Equipment)
+                {
+                    EquipmentEntryUi xItem = x.GetItem as EquipmentEntryUi;
+                    EquipmentEntryUi yItem = y.GetItem as EquipmentEntryUi;
+
+                    return xItem.ItemRarity.CompareTo(yItem.ItemRarity);
+                }
+                else
+                {
+                    return 0;
+                }
+            });
+
+            for (int i = 0; i < equipppmentUIList.Count; i++)
+            {
+                equipppmentUIList[i].transform.SetSiblingIndex(i);
+            }
         }
     }
 }

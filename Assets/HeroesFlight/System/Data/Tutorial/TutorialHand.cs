@@ -17,6 +17,7 @@ public class TutorialHand : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
         handScaleEffect = hand.JuicyScale(maxScale, 0.5f).SetLoop(-1);
         handMoveEffect = hand.JuicyLocalMove(new Vector3(hand.transform.localPosition.x, hand.transform.localPosition.y + moveDistance, hand.transform.localPosition.z), 0.5f).SetLoop(-1);
+        hand.gameObject.SetActive(false);
     }
 
     public void ShowHand(RectTransform parent)

@@ -225,6 +225,7 @@ namespace Pelumi.Juicer
             if (_coroutine != null)
             {
                 Juicer.StopCoroutine(_coroutine);
+                _coroutine = null;
             }
         }
     }

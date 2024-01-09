@@ -23,7 +23,7 @@ namespace HeroesFlight.System.UI
         void ToggleSpecialEnemyHealthBar(bool isEnabled);
         void UpdateComboUI(int count);
         void ShowSpecialEnemyWarning(EncounterType encounterType);
-        void UpdateCoinsUi(int amount);
+        void UpdateRuinShardUi(int amount);
         void ShowPopupAtPosition(string info, Vector2 pos, Color color);
         void AssignGameEvents();
     }

@@ -10,31 +10,17 @@ using UnityEngine;
 
 public class TutorialMenu : BaseMenu<TutorialMenu>
 {
-    private Action OnStartedClicked;
-    public Action OnShowClicked;
-    public Action OnHideClicked;
-
     [Header("Game Tutorial")]
-    [SerializeField] private Transform gameContent;
     [SerializeField] private Transform content;
-    [SerializeField] private TextMeshProUGUI titleText;
-    [SerializeField] private Transform tutorialStepParent;
-    [SerializeField] private TutorialStepUI tutorialStepUIPrefab;
-
 
     [Header("UI Tutorial")]
-    [SerializeField] private Transform uiTutorialParent;
-    [SerializeField] private TextMeshProUGUI titleTextUI;
+    [SerializeField] private TextMeshProUGUI titleText;
+    [SerializeField] private TextMeshProUGUI descriptionText;
 
-    [Header("Buttons")]
-    [SerializeField] private AdvanceButton hideButton;
-    [SerializeField] private AdvanceButton showButton;
-    [SerializeField] private AdvanceButton startButton;
-
+    private TutorialVisualData tutorialVisual;
+    [SerializeField] private int currentStepIndex = 0;
     JuicerRuntime openEffectBG;
     JuicerRuntime closeEffectBG;
-
-    private List<TutorialStepUI> tutorialStepUIs = new List<TutorialStepUI>();
 
     public override void OnCreated()
     {
@@ -42,23 +28,8 @@ public class TutorialMenu : BaseMenu<TutorialMenu>
 
         closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
         closeEffectBG.SetOnCompleted(CloseMenu);
-
-        hideButton.onClick.AddListener(HideClicked);
-        showButton.onClick.AddListener(ShowClicked);
-        startButton.onClick.AddListener(StartedClicked);
     }
 
-    private void HideClicked()
-    {
-        OnHideClicked?.Invoke();
-        content.gameObject.SetActive(false);
-    }
-
-    private void ShowClicked()
-    {
-        OnShowClicked?.Invoke();
-        content.gameObject.SetActive(true);
-    }
 
     public override void OnOpened()
     {
@@ -67,7 +38,6 @@ public class TutorialMenu : BaseMenu<TutorialMenu>
 
     public override void OnClosed()
     {
-        uiTutorialParent.gameObject.SetActive(false);
         closeEffectBG.Start();
     }
 
@@ -76,43 +46,28 @@ public class TutorialMenu : BaseMenu<TutorialMenu>
 
     }
 
-    public void Display (TutorialVisualData tutorialVisualData, Action OnStarted = null)
+    public void SetTutorialDataToDisplay(TutorialVisualData tutorialVisualData, Action OnDisplayed = null)
     {
-        foreach (var item in tutorialStepUIs)
-        {
-            ObjectPoolManager.ReleaseObject(item);
-        }
-
-        tutorialStepUIs.Clear();
-
+        currentStepIndex = 0;
+        tutorialVisual = tutorialVisualData;
         titleText.text = tutorialVisualData.Title;
+        descriptionText.text = tutorialVisualData.TutorialSteps[currentStepIndex].stepDescription;
+        OnDisplayed?.Invoke();
+    }
 
-        for (int i = 0; i < tutorialVisualData.TutorialSteps.Count; i++)
+    public void NextVisualStep()
+    {
+        currentStepIndex++;
+        if (currentStepIndex >= tutorialVisual.TutorialSteps.Count)
         {
-            TutorialStepUI tutorialStepUI = ObjectPoolManager.SpawnObject (tutorialStepUIPrefab, tutorialStepParent);
-            tutorialStepUI.SetUp(tutorialVisualData.TutorialSteps[i]);
-            tutorialStepUIs.Add(tutorialStepUI);
+            return;
         }
-        OnStartedClicked = OnStarted;
-        content.gameObject.SetActive(true);
-        startButton.gameObject.SetActive(true);
-        hideButton.gameObject.SetActive(false);
-        Open();
+        descriptionText.text = tutorialVisual.TutorialSteps[currentStepIndex].stepDescription;
     }
 
-    public void StartedClicked()
+    public void DisplayMessage(string info)
     {
-        startButton.gameObject.SetActive(false);
-        content.gameObject.SetActive(false);
-        hideButton.gameObject.SetActive(true);
-        OnStartedClicked?.Invoke();
-    }
-
-    public void Display(string info)
-    {
-        titleTextUI.text = info;
-        uiTutorialParent.gameObject.SetActive(true);
-        gameContent.gameObject.SetActive(false);
-        Open();
+        titleText.text = "";
+        descriptionText.text = info;
     }
 }
