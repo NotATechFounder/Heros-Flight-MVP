@@ -13,17 +13,21 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 {
     public class ProjectileSpawnAbility : AttackAbilityBaseNPC
     {
-        [Header("Main  data segment")]
-        [SerializeField] ProjectileControllerBase projectilePrefab;
+        [Header("Main  data segment")] [SerializeField]
+        ProjectileControllerBase projectilePrefab;
+
         [SerializeField] int projectileCount = 3;
         [SerializeField] float spreadAngle = 15f;
         [SerializeField] private Transform spawnPoint;
+
         [Header("Optional mode segment")] [SerializeField]
         bool useWarningLines;
+
         [SerializeField] WarningLine warningLinePrefab;
-      
+
         [Header("Double trigger segment")] [SerializeField]
         private bool canDoubleTrigger;
+
         [SerializeField] private float doubleTriggerChance;
 
         private List<Vector3> offsets = new List<Vector3>();
@@ -38,11 +42,6 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
             healthController = GetComponentInParent<AiHealthController>();
             aiController = GetComponentInParent<AiControllerBase>();
             currentCooldown = 0;
-            if (!useWarningLines)
-            {
-                animator.OnAnimationEvent += HandleAnimationEvents;
-            }
-
             CalculateOffsets();
         }
 
@@ -85,8 +84,12 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
 
         protected virtual void HandleAnimationEvents(AttackAnimationEvent obj)
         {
-            if (obj.Type == AniamtionEventType.Shoot)
+            Debug.Log("Unbsubscribing");
+            animator.OnAnimationEvent -= HandleAnimationEvents;
+            //Due to how events are named across different animations
+            if (obj.Type == AniamtionEventType.Shoot || obj.Type == AniamtionEventType.Attack)
             {
+                Debug.Log("Spawning projectiles");
                 SpawnProjectiles(CalculateProjectilesCount());
             }
         }
@@ -110,7 +113,12 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
         {
             if (targetAnimation != null)
             {
-                animator.StartAttackAnimation(targetAnimation, () => { onComplete?.Invoke(); });
+                animator.PlayDynamicAnimation(targetAnimation, () =>
+                {
+                    Debug.Log("Unbsubscribing");
+                    animator.OnAnimationEvent -= HandleAnimationEvents;
+                    onComplete?.Invoke();
+                });
                 currentCooldown = CoolDown;
             }
 
@@ -118,6 +126,11 @@ namespace HeroesFlight.System.NPC.Controllers.Ability.Mob
             if (useWarningLines)
             {
                 SpawnProjectilesWithDangerLines(CalculateProjectilesCount());
+            }
+            else
+            {
+                Debug.Log("Subscribing");
+                animator.OnAnimationEvent += HandleAnimationEvents;
             }
         }
 
