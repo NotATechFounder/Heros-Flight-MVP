@@ -7,11 +7,26 @@ using UnityEngine.UI;
 public class GroupImageFill : MonoBehaviour
 {
     [Range(0.0f, 1.0f)][SerializeField] private float _value = 0f;
-    [SerializeField] private Image[] fills;
+    [SerializeField] private Image[] bars;
+    private Image[] fills;
 
     private void OnValidate()
     {
+        fills = new Image[bars.Length];
+        for (int i = 0; i < bars.Length; i++)
+        {
+            fills[i] = bars[i].transform.GetChild(0).GetComponent<Image>();
+        }
         UpdateValue();
+    }
+
+    private void Awake()
+    {
+        fills = new Image[bars.Length];
+        for (int i = 0; i < bars.Length; i++)
+        {
+            fills[i] = bars[i].transform.GetChild(0).GetComponent<Image>();
+        }
     }
 
     private void UpdateValue()
@@ -19,7 +34,7 @@ public class GroupImageFill : MonoBehaviour
         int numFills = fills.Length;
         if (numFills <= 0)
         {
-            Debug.LogError("No Image fills assigned to the GroupSlider!");
+            //Debug.LogError("No Image fills assigned to the GroupSlider!");
             return;
         }
 

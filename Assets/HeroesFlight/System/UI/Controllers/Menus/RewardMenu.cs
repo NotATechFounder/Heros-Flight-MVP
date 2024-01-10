@@ -69,8 +69,14 @@ namespace UISystem
             canvasGroup.alpha = 0;
             openEffectBG.Start();
             glowBgSpinEffect.Start();
-        }
 
+            foreach (RewardView rewardView in rewardViews)
+            {
+                ObjectPoolManager.ReleaseObject(rewardView.gameObject);
+            }
+
+            rewardViews.Clear();
+        }
 
         public override void OnClosed()
         {
@@ -94,13 +100,6 @@ namespace UISystem
 
         public void DisplayRewards(params RewardVisual[] rewardVisual)
         {
-            foreach (RewardView rewardView in rewardViews)
-            {
-                ObjectPoolManager.ReleaseObject(rewardView.gameObject);
-            }
-
-            rewardViews.Clear();
-
             for (int i = 0; i < rewardVisual.Length; i++)
             {
                 RewardView rewardView = ObjectPoolManager.SpawnObject(rewardViewPrefab, rewardViewParent.transform, PoolType.UI);
@@ -135,7 +134,11 @@ namespace UISystem
                 selectedChestEffect.skeletonAnimation.AnimationState.SetAnimation(0, OpenAnimation, false);
             });
 
-            DisplayRewardsVisual(rewardVisualArray);
+            CoroutineUtility.WaitForSeconds(.5f, () =>
+            {
+                DisplayRewardsVisual(rewardVisualArray);
+            });
+ 
         }
 
         private void AnimationState_Event(TrackEntry trackEntry, Spine.Event e)
