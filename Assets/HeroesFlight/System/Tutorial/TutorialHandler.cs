@@ -13,7 +13,6 @@ public class TutorialHandler : MonoBehaviour
     [SerializeField] GameAreaModel tutorialModel;
     [SerializeField] BoosterDropSO mobDrop;
     [SerializeField] TutorialTrigger tutorialTrigger;
-    [SerializeField] TutorialSO[] gameplayTutorial;
     [SerializeField] Reward firstItemReward;
 
     private LevelPortal portal;
@@ -26,8 +25,6 @@ public class TutorialHandler : MonoBehaviour
     public BoosterDropSO GetMobDrop => mobDrop;
     public TutorialTrigger GetTutorialTrigger => tutorialTrigger;
     public Level GetCurrentLevel => currentLevel;
-
-    public TutorialSO[] GameplayTutorial => gameplayTutorial;
 
     public Reward FirstItemReward => firstItemReward;
 

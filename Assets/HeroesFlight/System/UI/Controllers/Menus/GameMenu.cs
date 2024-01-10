@@ -43,7 +43,7 @@ namespace UISystem
         [SerializeField] private Sprite timeOutSprite;
 
         [Header("Gameplay")]
-        [SerializeField] private TextMeshProUGUI coinText;
+        [SerializeField] private TextMeshProUGUI ruinShardText;
         [SerializeField] private TextMeshProUGUI timerText;
         [SerializeField] private TextMeshProUGUI enemyCountText;
         [SerializeField] private AdvanceButton pauseButton;
@@ -83,19 +83,24 @@ namespace UISystem
         [SerializeField] private Transform passiveAbilityHolder;
         [SerializeField] private PassiveAbilityDisplayUI[] passiveAbilityDisplayUIs; 
 
-
         [Header("Boosters")]
         [SerializeField] private BoosterUI[] boosterButtons;
+
+        [Header("Progression")]
+        [SerializeField] private GroupImageFill progressionFill;
 
         [Header("Transition")]
         [SerializeField] private AnimationCurve transitionCurve;
         [SerializeField] private GameObject transitionPanel;
         [SerializeField] private CanvasGroup transitionCanvasGroup;
 
+        [Header("Canvas Groups")]
+        [SerializeField] private CanvasGroup actionButtonsCanvasGroup;
+
         private Dictionary<PassiveAbilityType, PassiveAbilityDisplayUI> currentPassiveDisplayed = new Dictionary<PassiveAbilityType, PassiveAbilityDisplayUI>();
         private Dictionary<ActiveAbilityType, AbilityTriggerButton> currentActiveDisplayed = new Dictionary<ActiveAbilityType, AbilityTriggerButton>();
 
-        public TextMeshProUGUI CoinText => coinText;
+        public TextMeshProUGUI RuinShardText => ruinShardText;
         public AbilityTriggerButton[] ActiveAbilityTriggerButtons => activeAbilityButtons;
 
 
@@ -178,7 +183,7 @@ namespace UISystem
 
         public override void ResetMenu()
         {
-            coinText.text = "0";
+            ruinShardText.text = "0";
             timerText.text = "00:00";
             enemyCountText.text = "0";
             comboCounterText.text = "0";
@@ -236,9 +241,9 @@ namespace UISystem
             CoroutineUtility.WaitForSeconds(duration, () => infoPanel.gameObject.SetActive(false));
         }
 
-        public void UpdateCoinText(float value)
+        public void UpdateRuinShardText(float value)
         {
-            coinText.JuicyTextNumber(value, 0.5f).Start();
+            ruinShardText.JuicyTextNumber(value, 0.5f).Start();
         }
 
         public void UpdateTimerText(float value)
@@ -462,6 +467,23 @@ namespace UISystem
         public void UpgradeActiveAbility(ActiveAbilityType type, int arg2)
         {
             currentActiveDisplayed[type].SetLevel(arg2);
+        }
+
+        public void SetProgressionFill (float value)
+        {
+            progressionFill.SetValue(value);
+        }
+
+        public void ToggleActionButtonsVisibility(bool value)
+        {
+            ToggleCanvasGroup (actionButtonsCanvasGroup, value);
+        }
+
+        void ToggleCanvasGroup(CanvasGroup cg, bool isEnabled)
+        {
+            cg.alpha = isEnabled ? 1 : 0;
+            cg.interactable = isEnabled;
+            cg.blocksRaycasts = isEnabled;
         }
     }
 }

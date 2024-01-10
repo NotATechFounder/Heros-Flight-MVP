@@ -6,10 +6,8 @@
     ActiveAbility,
     UltimateAbility,
     Shrine,
-    Equip,
+    FirstRewardEquip,
     LevelUp,
-    AccountLevelUp,
-    UnlockStatPoint,
-    ItemShop,
-    Trait
+    StatPoint,
+    OpenShop,
 }

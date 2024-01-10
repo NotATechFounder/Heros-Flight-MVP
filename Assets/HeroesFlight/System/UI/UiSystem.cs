@@ -96,7 +96,7 @@ namespace HeroesFlight.System.UI
 
             UiEventHandler.SummaryMenu.OnMenuOpened += () => { };
 
-            UiEventHandler.SummaryMenu.GetCurrentGold = () => { return UiEventHandler.GameMenu.CoinText.text; };
+            UiEventHandler.SummaryMenu.GetCurrentGold = () => { return UiEventHandler.GameMenu.RuinShardText.text; };
 
             UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
             {
@@ -266,9 +266,9 @@ namespace HeroesFlight.System.UI
             UiEventHandler.GameMenu.ShowMiniBossWarning(encounterType);
         }
 
-        public void UpdateCoinsUi(int amount)
+        public void UpdateRuinShardUi(int amount)
         {
-            UiEventHandler.GameMenu.UpdateCoinText(amount);
+            UiEventHandler.GameMenu.UpdateRuinShardText(amount);
         }
     }
 }

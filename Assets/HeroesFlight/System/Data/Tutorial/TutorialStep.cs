@@ -6,16 +6,17 @@ using UnityEngine;
 public class TutorialVisualData
 {
     [SerializeField] private string title;
-    [SerializeField] private List<TutorialStep> tutorialSteps = new List<TutorialStep>();
-
+    [SerializeField] private List<TutorialStep> steps;
+   
     public string Title => title;
-    public List<TutorialStep> TutorialSteps => tutorialSteps;
+    public List<TutorialStep> TutorialSteps => steps;
 }
 
 [System.Serializable]
 public class TutorialStep
 {
-    public Sprite stepImage;
     [TextArea(3, 10)]
-    public string stepDescription;
+    [SerializeField] private string description;
+
+    public string stepDescription => description;
 }

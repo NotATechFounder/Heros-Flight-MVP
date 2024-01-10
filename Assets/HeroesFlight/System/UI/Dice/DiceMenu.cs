@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Codice.Client.BaseCommands;
 using Pelumi.Juicer;
 using Spine;
 using Spine.Unity;
 using TMPro;
 using UISystem;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
-
-using Random = UnityEngine.Random;
 
 namespace HeroesFlight.System.UI.DIce
 {
@@ -32,18 +26,18 @@ namespace HeroesFlight.System.UI.DIce
         [SerializeField] private AdvanceButton closeInfoButton;
 
         [Header("Dice")]
+        [SerializeField] private CanvasGroup diceView;
         [SerializeField] private SkeletonGraphic skeletonAnimation;
 
 
-        private WaitForSeconds rollPeriod;
-        private Coroutine rollRoutine;
-
         private Action onRollAction;
-
 
         private int endValue;
         private Color endColor;
         private Action onRollEnd;
+
+        private JuicerRuntime diceRollStartEffect;
+        private JuicerRuntime diceRollEndEffect;
 
         public void ShowDiceMenu(int initialValue,Action OnRoll)
         {
@@ -58,7 +52,7 @@ namespace HeroesFlight.System.UI.DIce
             endValue = resultValue;
             this.endColor = endColor;
             onRollEnd = OnComplete;
-            RollDice(resultValue);
+            RollDice();
         }
 
         public void ShowDiceInfo(string info)
@@ -78,12 +72,10 @@ namespace HeroesFlight.System.UI.DIce
 
         public override void OnCreated()
         {
-            rollPeriod = new WaitForSeconds(0.1f);
             rollButton.onClick.AddListener(() => { onRollAction?.Invoke(); });
             infoButton.onClick.AddListener(()=>{ShowDiceInfo(string.Empty);});
             closeInfoButton.onClick.AddListener(() =>
             {
-                Debug.Log($"disabling {infoCG.name}");
                 ToggleCanvasGroup(infoCG,false);
             });
 
@@ -93,7 +85,26 @@ namespace HeroesFlight.System.UI.DIce
                 Close();
             });
 
+            diceRollStartEffect = diceView.JuicyAlpha(1, .5f).SetOnCompleted(() =>
+            {
+                diceView.interactable = true;
+                diceView.blocksRaycasts = true;
+                skeletonAnimation.AnimationState.SetAnimation(0, endValue.ToString(), false);
+            });
+
+            diceRollEndEffect = diceView.JuicyAlpha(0, .5f).SetOnCompleted(() =>
+            {
+                diceView.interactable = false;
+                diceView.blocksRaycasts = false;
+
+                backButton.interactable = true;
+                rollButton.interactable = true;
+                infoButton.interactable = true;
+            });
+
             skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
+
+            ToggleCanvasGroup (diceView, false);
         }
 
         public override void OnOpened()
@@ -110,7 +121,6 @@ namespace HeroesFlight.System.UI.DIce
             rollText.color = Color.white;
         }
 
-
         void ToggleCanvasGroup(CanvasGroup cg, bool isEnabled)
         {
             cg.alpha = isEnabled ? 1 : 0;
@@ -118,12 +128,12 @@ namespace HeroesFlight.System.UI.DIce
             cg.blocksRaycasts = isEnabled;
         }
 
-        public void RollDice(int endValue)
+        public void RollDice()
         {
             backButton.interactable = false;
             rollButton.interactable = false;
             infoButton.interactable = false;
-            skeletonAnimation.AnimationState.SetAnimation(0, endValue.ToString(), false);
+            diceRollStartEffect.Start();
         }
 
         private void AnimationState_Complete(TrackEntry trackEntry)
@@ -132,9 +142,7 @@ namespace HeroesFlight.System.UI.DIce
             rollText.color = endColor;
             onRollEnd?.Invoke();
 
-            backButton.interactable = true;
-            rollButton.interactable = true;
-            infoButton.interactable = true;
+            diceRollEndEffect.Start();
         }
     }
 }
