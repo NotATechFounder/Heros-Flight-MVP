@@ -21,7 +21,7 @@ namespace HeroesFlight.System.Stats.Handlers
             data.OnApplicationQuit += SaveTraitData;
             this.uiSystem = uiSystem;
             diceSystem = diceSystemInterface;
-            traitHandler = new TraitHandler(new Vector2Int(4, 8));
+            traitHandler = new TraitHandler(new Vector2Int(4, 8),dataSystem);
             LoadData();
         }
 

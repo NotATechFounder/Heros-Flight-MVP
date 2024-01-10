@@ -12,15 +12,17 @@ namespace HeroesFlight.System.Stats.Handlers
 {
     public class TraitHandler
     {
-        public TraitHandler(Vector2Int featTreeSize)
+        public TraitHandler(Vector2Int featTreeSize, DataSystemInterface dataSystem)
         {
             size = featTreeSize;
+            this.dataSystem = dataSystem;
             LoadCache();
         }
 
         private const string LOAD_FOLDER = "Traits/";
         private Dictionary<string, TraitStateModel> unlockedTraits = new();
         private Dictionary<string, Trait> traitMap = new();
+        private DataSystemInterface dataSystem;
 
         private Vector2Int size;
 
@@ -126,26 +128,31 @@ namespace HeroesFlight.System.Stats.Handlers
         TraitModel GenerateTraitModel(Trait targetTrait)
         {
             TraitModelState state;
-            if (IsFeatUnlocked(targetTrait.DependantId))
-            {
-                state = TraitModelState.UnlockPossible;
-            }
-            else
-            {
-                state = TraitModelState.UnlockBlocked;
-            }
-
             if (IsFeatUnlocked(targetTrait.Id))
             {
                 state = TraitModelState.Unlocked;
             }
-
-
+            else
+            {
+                if (IsFeatUnlocked(targetTrait.DependantId) && dataSystem.AccountLevelManager.CurrentPlayerLvl>=targetTrait.RequiredLvl)
+                {
+                    state = TraitModelState.UnlockPossible;
+                }
+                else
+                {
+                    state = TraitModelState.UnlockBlocked;
+                }
+            }
+            
+            Debug.Log($"Generating model for {targetTrait.Id}");
+            bool enoughCurrency =
+                dataSystem.CurrencyManager.GetCurrecy(targetTrait.Currency.GetKey).GetCurrencyAmount >=
+                targetTrait.Cost;
             return new TraitModel(targetTrait.Id, targetTrait.Tier, targetTrait.Slot, targetTrait.RequiredLvl,
                 targetTrait.DependantId, targetTrait.Cost, targetTrait.Currency, state, targetTrait.Icon,
                 targetTrait.Effect.Value,
                 GetTraitModificationValue(targetTrait.Id).Value, targetTrait.Description,
-                targetTrait.Effect.CanBeRerolled);
+                targetTrait.Effect.CanBeRerolled,enoughCurrency);
         }
 
         public void LoadData(List<TraitSaveModel> savedData)

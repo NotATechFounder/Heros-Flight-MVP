@@ -13,7 +13,7 @@ namespace HeroesFlight.System.FileManager.Model
             Id = string.Empty;
         }
         public TraitModel(string id, int tier, int slot, int requiredLvl, string blockingId, int cost,CurrencySO targetCurrency,
-            TraitModelState currentState, Sprite visual, int baseValue,int currentValue,string description,bool canBeRerolled)
+            TraitModelState currentState, Sprite visual, int baseValue,int currentValue,string description,bool canBeRerolled,bool hasEnoughCurrency)
         {
             Id = id;
             Tier = tier;
@@ -28,6 +28,7 @@ namespace HeroesFlight.System.FileManager.Model
             CanBeRerolled = canBeRerolled;
             TargetCurrency = targetCurrency;
             Description = description;
+            HasEnoughCurrency = hasEnoughCurrency;
         }
 
         public string Id { get; }
@@ -43,5 +44,6 @@ namespace HeroesFlight.System.FileManager.Model
         public string Description{ get; }
         public bool CanBeRerolled{ get; }
         public CurrencySO TargetCurrency { get; }
+        public bool HasEnoughCurrency { get; }
     }
 }

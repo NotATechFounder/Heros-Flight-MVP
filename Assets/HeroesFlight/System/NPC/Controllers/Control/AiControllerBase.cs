@@ -123,7 +123,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
                 {
                     gameObject.SetActive(false);
                 }
-            });
+            },m_Model.DeathAnimationSpeedModifier);
         }
 
         public bool TryGetController<T>(out T controller)

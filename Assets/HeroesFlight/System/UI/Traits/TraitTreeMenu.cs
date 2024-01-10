@@ -64,6 +64,10 @@ namespace HeroesFlight.System.UI.Traits
                     popup.HidePopup();
             };
             popup.OnTraitModificationRequest += TransferTraitModificationRequest;
+            popup.OnClose += () =>
+            {
+                selectedModel = null;
+            };
             errorButton.onClick.AddListener(() => { ToggleCanvasGroup(errorMessageCG, false); });
         }
 
@@ -75,7 +79,7 @@ namespace HeroesFlight.System.UI.Traits
 
         public void UpdateTreeView(TraitTreeModel tree)
         {
-            OnCreated();
+           // OnCreated();
             if (tree == null) return;
 
             currentTree = tree;
@@ -141,10 +145,11 @@ namespace HeroesFlight.System.UI.Traits
         {
             contentLayout = TierSlotsParent.GetComponent<GridLayoutGroup>();
             tierLayout = TierSlotPrefab.GetComponent<GridLayoutGroup>();
-            nodeStartOffset = tierLayout.cellSize.x / 200;
+            // nodeDistanceOffsetBonusPerTier = contentLayout.spacing.y / 100;
+            nodeStartOffset = tierLayout.cellSize.x/ 200 ;
             nodeDistanceOffsetX = tierLayout.spacing.x / 100;
             nodeDistanceOffsetY = tierLayout.spacing.y / 100;
-            nodeDistanceOffsetBonusPerTier = contentLayout.spacing.y / 100;
+            nodeDistanceOffsetBonusPerTier = contentLayout.spacing.y/ 50;
             exitButton.onClick.AddListener(Close);
             diceInfoButton.onClick.AddListener(() =>
             {

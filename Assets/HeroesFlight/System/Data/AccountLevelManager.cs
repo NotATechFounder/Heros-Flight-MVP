@@ -20,6 +20,8 @@ public class AccountLevelManager : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private Data data;
 
+    public int CurrentPlayerLvl => levelSystem.CurrentLevel;
+    
     public void Init()
     {
         Load();
@@ -28,6 +30,14 @@ public class AccountLevelManager : MonoBehaviour
         {
             OnLevelUp?.Invoke(response);
         };
+    }
+    //FOR DEBUG
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            AddExp(500);
+        }
     }
 
     public LevelSystem.ExpIncreaseResponse GetExpIncreaseResponse()

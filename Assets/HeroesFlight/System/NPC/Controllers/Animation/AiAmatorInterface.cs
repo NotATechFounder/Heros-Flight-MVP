@@ -13,7 +13,7 @@ namespace HeroesFlightProject.System.NPC.Controllers
         void StartAttackAnimation(AnimationReferenceAsset animationReference,Action onComplete=null);
         void StartAttackAnimation(Action onComplete=null);
         void StopAttackAnimation();
-        void PlayDeathAnimation(Action onCompleteAction);
+        void PlayDeathAnimation(Action onCompleteAction,float timeScale=1f);
         void PlayHitAnimation(bool interruptAttack,Action onCompleteAction=null);
         void PlayDynamicAnimation(AnimationReferenceAsset animationReference, Action onCompleteAction = null);
         void StopDynamicAnimation();
