@@ -1286,6 +1286,7 @@ public class TutorialSystem : ITutorialInterface
         uiSystem.UiEventHandler.StatePointsMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
         uiSystem.UiEventHandler.ShopMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
         uiSystem.UiEventHandler.InventoryMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
+        uiSystem.UiEventHandler.DiceMenu.SetAllButtonVibility(GameButtonVisiblity.Visible);
 
         tutorialDictionary[TutorialMode.OpenShop].IsCompleted = true;
     }

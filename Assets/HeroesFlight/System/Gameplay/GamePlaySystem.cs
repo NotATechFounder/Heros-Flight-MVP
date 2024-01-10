@@ -792,6 +792,7 @@ namespace HeroesFlight.System.Gameplay
 
                     break;
                 case LevelType.Shrine:
+                    uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(false);
                     characterSystem.SetCharacterControllerState(true);
                     break;
                 case LevelType.WorldBoss:
@@ -1346,6 +1347,7 @@ namespace HeroesFlight.System.Gameplay
                             newLevel.LevelType == LevelType.WorldBoss)
                         {
                             CoroutineUtility.Start(ContinueGameLoopRoutine());
+                            uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(true);
                         }
                         else
                         {

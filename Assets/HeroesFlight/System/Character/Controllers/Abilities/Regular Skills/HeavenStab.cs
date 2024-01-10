@@ -13,6 +13,8 @@ using UnityEngine;
 
 public class HeavenStab : RegularActiveAbility
 {
+    [SerializeField] private float damageRate;
+
     [Header("LineDamage")]
     [SerializeField] private float firstAttackDelay = 0.1f;
     [SerializeField] private float lineDamageDelay = 0.25f;
@@ -24,11 +26,17 @@ public class HeavenStab : RegularActiveAbility
     [SerializeField] private ProjectileControllerBase projectileController;
     [SerializeField] private Transform visual;
 
+    private ParticleSystem hitEffect;
+
     private int baseDamage;
     private float currentDamagePercentage;
     private int currentDamage;
     private int currentlinesOfDamage;
     private CharacterSimpleController characterControllerInterface;
+
+    private OverlapChecker overlapChecker;
+    private float currentTime;
+    bool isOn = false;
 
     public override void OnActivated()
     {
@@ -75,25 +83,52 @@ public class HeavenStab : RegularActiveAbility
     {
         ProjectileControllerBase bullet = ObjectPoolManager.SpawnObject(projectileController, transform.position, Quaternion.identity);
         bullet.transform.localScale = new Vector3(visual.localScale.x * bullet.transform.localScale.y, bullet.transform.localScale.y, 1);
+        OverlapChecker overlapChecker = bullet.GetComponent<OverlapChecker>();
+        hitEffect = bullet.GetComponentInChildren<ParticleSystem>();
+
+        overlapChecker.OnDetect = OnDetect;
+        this.overlapChecker = overlapChecker;
 
         bullet.SetupProjectile(currentDamage, -visual.localScale.x * Vector2.right);
-        bullet.SetLine(currentlinesOfDamage, 0.25f);
-        bullet.OnHit += HandleOnHit;
         bullet.OnDeactivate += HandleArrowDisable;
-    }
-
-    void HandleOnHit(ProjectileControllerInterface obj)
-    {
-
     }
 
     void HandleArrowDisable(ProjectileControllerInterface obj)
     {
+        overlapChecker = null;
         AudioManager.PlaySoundEffect("LightningExplosion", SoundEffectCategory.Hero);
-        obj.OnHit -= HandleArrowDisable;
         obj.OnDeactivate -= HandleArrowDisable;
         var arrow = obj as ProjectileControllerBase;
         ObjectPoolManager.ReleaseObject(arrow.gameObject);
+    }
+
+    private void OnDetect(int arg1, Collider2D[] collider2D)
+    {
+        for (int i = 0; i < arg1; i++)
+        {
+            if (collider2D[i].TryGetComponent(out IHealthController healthController))
+            {
+                healthController.TryDealDamage(new HealthModificationIntentModel(currentDamage,
+                DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat, null, currentlinesOfDamage));
+                hitEffect.Play();
+            }
+        }
+    }
+
+    private void Update()
+    {
+        if (overlapChecker)
+        {
+            if (currentTime <= 0)
+            {
+                currentTime = damageRate;
+                overlapChecker.DetectOverlap();
+            }
+            else
+            {
+                currentTime -= Time.deltaTime;
+            }
+        }
     }
 
     private void OnDestroy()

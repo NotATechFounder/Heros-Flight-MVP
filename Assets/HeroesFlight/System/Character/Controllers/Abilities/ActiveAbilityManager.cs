@@ -88,7 +88,8 @@ public class ActiveAbilityManager : MonoBehaviour
 
             EquippedAbility(ActiveAbilityType.EnergyBlast);
             EquippedAbility(ActiveAbilityType.IlluminatedArrows);
-            EquippedAbility(ActiveAbilityType.HeavenHammer);
+            EquippedAbility(ActiveAbilityType.HeavenStab);
+            // EquippedAbility(ActiveAbilityType.HeavenHammer);
         }
 
         if (Input.GetKeyDown(KeyCode.Keypad1))
