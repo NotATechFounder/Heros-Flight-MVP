@@ -17,11 +17,12 @@ namespace HeroesFlight.System.UI.FeatsTree
         [SerializeField] private TextMeshProUGUI curRankText, costText;
         [SerializeField] private CanvasGroup thisCG, costCG;
         [SerializeField] private Color UnlockedColor, NotUnlockedColor, NotUnlockableColor, MaxRankColor;
-
+        [SerializeField] private GameObject unlockableMark,greyBlocker;
+        
         [SerializeField] private Sprite UnlockedImage,
             NotUnlockedImage,
             NotUnlockableImage,
-            MaxRankImage;
+            MaxRankImage,lockedBg,unlockedBG;
            
 
         public TraitModel currentModel;
@@ -102,6 +103,7 @@ namespace HeroesFlight.System.UI.FeatsTree
                 border.color = UnlockedColor;
                 rankBorder.color = UnlockedColor;
                 border.sprite =  UnlockedImage;
+                background.sprite = unlockedBG;
             }
             else
             {
@@ -117,8 +119,10 @@ namespace HeroesFlight.System.UI.FeatsTree
                     rankBorder.color = NotUnlockableColor;
                     border.sprite =  NotUnlockableImage;
                 }
-               
-            }
+                background.sprite = lockedBg; 
+            } 
+            greyBlocker.SetActive(!known);
+            unlockableMark.SetActive(!known && isFeatUnlockable);
         }
 
       

@@ -64,6 +64,10 @@ namespace HeroesFlight.System.UI.Traits
                     popup.HidePopup();
             };
             popup.OnTraitModificationRequest += TransferTraitModificationRequest;
+            popup.OnClose += () =>
+            {
+                selectedModel = null;
+            };
             errorButton.onClick.AddListener(() => { ToggleCanvasGroup(errorMessageCG, false); });
         }
 
@@ -75,7 +79,7 @@ namespace HeroesFlight.System.UI.Traits
 
         public void UpdateTreeView(TraitTreeModel tree)
         {
-            OnCreated();
+           // OnCreated();
             if (tree == null) return;
 
             currentTree = tree;

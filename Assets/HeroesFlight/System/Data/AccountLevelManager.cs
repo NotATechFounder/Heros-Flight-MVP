@@ -31,6 +31,14 @@ public class AccountLevelManager : MonoBehaviour
             OnLevelUp?.Invoke(response);
         };
     }
+    //FOR DEBUG
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            AddExp(500);
+        }
+    }
 
     public LevelSystem.ExpIncreaseResponse GetExpIncreaseResponse()
     {

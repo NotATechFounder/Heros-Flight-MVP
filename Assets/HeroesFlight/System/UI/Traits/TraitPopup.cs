@@ -24,6 +24,7 @@ namespace HeroesFlight.System.UI.Traits
         [SerializeField] private TextMeshProUGUI currencyText;
 
         public event Action<TraitModificationEventModel> OnTraitModificationRequest;
+        public event Action OnClose;
         RectTransform rect;
         private CanvasGroup canvasGroup;
         private TraitPopupState state;
@@ -54,20 +55,22 @@ namespace HeroesFlight.System.UI.Traits
             state = newState;
             // rect.anchoredPosition3D = position;
             titleText.text = targetModel.Id;
-            DescriptionText.text =  ModifyDescription(model);
             switch (targetModel.State)
             {
                 case TraitModelState.UnlockBlocked:
                     blockedBlock.SetActive(true);
                     unlockBlock.SetActive(false);
                     rerollBlock.SetActive(false);
+                    DescriptionText.text = $"Unlocks at LVL {model.RequiredLvl}";
                     break;
                 case TraitModelState.UnlockPossible:
                     currencyIcon.sprite = model.TargetCurrency.GetSprite;
                     currencyText.text = model.Cost.ToString();
+                    currencyText.color = model.HasEnoughCurrency ? Color.white : Color.red;
                     blockedBlock.SetActive(false);
                     unlockBlock.SetActive(true);
                     rerollBlock.SetActive(false);
+                    DescriptionText.text =  ModifyDescription(model);
                     break;
                 case TraitModelState.Unlocked:
                     if (model.CanBeRerolled)
@@ -82,7 +85,7 @@ namespace HeroesFlight.System.UI.Traits
                         unlockBlock.SetActive(false);
                         rerollBlock.SetActive(false);
                     }
-
+                    DescriptionText.text =  ModifyDescription(model);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -114,6 +117,7 @@ namespace HeroesFlight.System.UI.Traits
         public void HidePopup()
         {
             state = TraitPopupState.Disabled;
+            OnClose?.Invoke();
             ToggleCanvasGroup(canvasGroup, false);
         }
 
