@@ -1168,7 +1168,7 @@ namespace HeroesFlight.System.Gameplay
             environmentSystem.ParticleManager.Spawn("BossSpawn", new Vector2(2.2f, 8.6f));
 
 
-            cameraController.InitLevelOverview(6f, () =>
+            cameraController.InitLevelOverview(4.8f, () =>
             {
                 cameraController.UpdateCharacterCameraFrustrum(1.5f, true);
                 boss = npcSystem.NpcContainer.SpawnBoss(currentLevel);

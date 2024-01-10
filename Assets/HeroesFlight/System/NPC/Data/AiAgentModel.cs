@@ -18,6 +18,8 @@ namespace HeroesFlightProject.System.NPC.Data
         [SerializeField] float knockBackForce;
         [SerializeField] float knockBackDuration = 0.1f;
 
+        [Header("Aniamtions timescale modifiers")] 
+        [SerializeField]  float deathAniamtionSpeedModifier = 1f;
         [Header("StatsData")]
         [SerializeField] MonsterStatData aiData;
      
@@ -31,6 +33,7 @@ namespace HeroesFlightProject.System.NPC.Data
         public bool AttacksInteruptable => attacksInteruptable;
         public bool UseKnockBack => useKnockback;
         public MonsterStatData AiData => aiData;
-     
+        public float DeathAnimationSpeedModifier => deathAniamtionSpeedModifier;
+
     }
 }

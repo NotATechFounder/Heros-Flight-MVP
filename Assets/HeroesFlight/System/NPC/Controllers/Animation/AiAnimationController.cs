@@ -75,13 +75,14 @@ namespace HeroesFlightProject.System.NPC.Controllers
             track.MixDuration = .5f;
         }
 
-        public void PlayDeathAnimation(Action onCompleteAction)
+        public void PlayDeathAnimation(Action onCompleteAction,float timeScale=1f)
         {
-            skeletonAnimation.AnimationState.SetAnimation(movementTrackIndex, deathAnimation, false);
+            var track=skeletonAnimation.AnimationState.SetAnimation(movementTrackIndex, deathAnimation, false);
+            track.TimeScale = timeScale;
             skeletonAnimation.AnimationState.SetEmptyAnimation(hitTrackIndex, 0);
             skeletonAnimation.AnimationState.SetEmptyAnimation(attackTrackIndex, 0);
             skeletonAnimation.AnimationState.SetEmptyAnimation(dynamicTrackIndex, 0);
-            CoroutineUtility.WaitForSeconds(deathAnimation.Animation.Duration, () => { onCompleteAction?.Invoke(); });
+            CoroutineUtility.WaitForSeconds(deathAnimation.Animation.Duration/timeScale, () => { onCompleteAction?.Invoke(); });
         }
 
         public void PlayHitAnimation(bool interruptAttack, Action onCompleteAction = null)
