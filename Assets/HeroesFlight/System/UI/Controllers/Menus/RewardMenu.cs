@@ -36,6 +36,7 @@ namespace UISystem
 
         [Header("Reward")]
         [SerializeField] private RectTransform glowBg;
+        [SerializeField] private RectTransform rewardParent;
         [SerializeField] private GameObject rewardViewParent;
         [SerializeField] private RewardView rewardViewPrefab;
 
@@ -76,6 +77,8 @@ namespace UISystem
             }
 
             rewardViews.Clear();
+
+            quitButton.gameObject.SetActive(false);
         }
 
         public override void OnClosed()
@@ -106,6 +109,10 @@ namespace UISystem
                 rewardView.SetVisual(rewardVisual[i]);
                 rewardViews.Add(rewardView);
             }
+
+            rewardParent.gameObject.SetActive(true);
+
+            quitButton.gameObject.SetActive(true);
         }
 
         public void DisplayRewardsVisual(params RewardVisual[] rewardVisual)
@@ -116,7 +123,7 @@ namespace UISystem
 
         public void DisplayRewardsVisual(ChestType chestType, params RewardVisual[] rewardVisual)
         {
-            Open();
+            rewardParent.gameObject.SetActive(false);
 
             if (selectedChestEffect != null)
             {
@@ -127,25 +134,21 @@ namespace UISystem
             selectedChestEffect.SetActive(true);
             rewardVisualArray = rewardVisual;
 
+            Open();
+
             selectedChestEffect.skeletonAnimation.AnimationState.SetAnimation(0, IdleAnimation, true);
 
             CoroutineUtility.WaitForSeconds(1f, () =>
             {
                 selectedChestEffect.skeletonAnimation.AnimationState.SetAnimation(0, OpenAnimation, false);
             });
-
-            CoroutineUtility.WaitForSeconds(.5f, () =>
-            {
-                DisplayRewardsVisual(rewardVisualArray);
-            });
- 
         }
 
         private void AnimationState_Event(TrackEntry trackEntry, Spine.Event e)
         {
             if (e.Data.Name == "Display")
             {
-  
+                DisplayRewards(rewardVisualArray);
             }
         }
 

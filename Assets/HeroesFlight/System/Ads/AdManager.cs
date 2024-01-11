@@ -6,13 +6,14 @@ using UnityEngine.Advertisements;
 public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityAdsLoadListener, IUnityAdsShowListener
 {
 #if UNITY_ANDROID
-    private static readonly string storeID = "4407797";
+    private static readonly string storeID = "5523599";
+        private static readonly string videoID = "Interstitial_Android";
+            private static readonly string rewaredID = "Rewarded_Android";
 #elif UNITY_IOS
-    private static readonly string storeID = "4407796";
+    private static readonly string storeID = "5523598";
+    private static readonly string videoID = "Interstitial_iOS";
+    private static readonly string rewaredID = "Rewarded_iOS";
 #endif
-
-    private static readonly string videoID = "video";
-    private static readonly string rewaredID = "rewardedVideo";
 
     private Action adSuccess;
     private Action adSkipped;
@@ -24,20 +25,12 @@ public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityA
  private static bool testMode = false;
 #endif
 
-    public static AdManager instance;
-
-    private void Awake()
+    public void Init()
     {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-            Advertisement.Initialize(storeID, testMode);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (!Advertisement.isInitialized && !Advertisement.isSupported) return;
+        Advertisement.Initialize(storeID, testMode, this);
+        Advertisement.Load(rewaredID, this);
+        Advertisement.Load(videoID, this);
     }
 
     public void OnInitializationComplete()
@@ -47,7 +40,7 @@ public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityA
 
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)
     {
-
+        Debug.LogError("Error: " + message);
     }
 
     public void OnUnityAdsAdLoaded(string placementId)
@@ -101,22 +94,16 @@ public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityA
         }
     }
 
-    public static void ShowStandardAd()
+    public void ShowStandardAd()
     {
-        Advertisement.Show(videoID);
+        Advertisement.Show(videoID, this);
     }
 
-    public static void ShowRewarededAd(Action success, Action skipped, Action failed)
+    public void ShowRewarededAd(Action success, Action skipped = null, Action failed = null)
     {
-        instance.adSuccess = success;
-        instance.adSkipped = skipped;
-        instance.adFailed = failed;
-        Advertisement.Show(rewaredID);
-    }
-
-
-    public static void HideBanner()
-    {
-        Advertisement.Banner.Hide();
+        adSuccess = success;
+        adSkipped = skipped;
+        adFailed = failed;
+        Advertisement.Show(rewaredID, this);
     }
 }

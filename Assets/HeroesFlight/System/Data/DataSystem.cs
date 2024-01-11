@@ -15,19 +15,14 @@ public class DataSystem : DataSystemInterface
     }
 
     public CharacterManager CharacterManager { get; private set; }
-
     public CurrencyManager CurrencyManager { get; private set; }
-
     public StatManager StatManager { get; private set; }
-
     public StatPoints StatPoints { get; private set; }
-
     public AccountLevelManager AccountLevelManager { get; private set; }
- 
     public EnergyManager EnergyManager { get; private set; }
     public WorldManager WorldManger { get; private set; }
-
     public TutorialDataHolder TutorialDataHolder { get; private set; }
+    public AdManager AdManager { get; private set; }
 
     public bool TutorialMode => !TutorialDataHolder.GetData.IsCompleted;
     
@@ -40,7 +35,10 @@ public class DataSystem : DataSystemInterface
         AccountLevelManager = scene.GetComponent<AccountLevelManager>();
         WorldManger = scene.GetComponent<WorldManager>();
         EnergyManager = scene.GetComponent<EnergyManager>();
+        AdManager = scene.GetComponent<AdManager>();
         TutorialDataHolder = scene.GetComponent<TutorialDataHolder>();
+
+        AdManager.Init();
 
         TutorialDataHolder.Init();
 
