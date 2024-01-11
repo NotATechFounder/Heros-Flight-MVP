@@ -445,15 +445,11 @@ namespace HeroesFlight.System.Gameplay
             combatSystem.UseCharacterUltimate(() =>
             {
                 cameraController.SetCameraState(GameCameraType.Skill);
-                characterHealthController.SetInvulnerableState(true);
-                characterSystem.SetCharacterControllerState(false);
-                characterAttackController.ToggleControllerState(false);
+                TogglePlayerState(false,false);
             }, () =>
             {
                 cameraController.SetCameraState(GameCameraType.Character);
-                characterSystem.SetCharacterControllerState(true);
-                characterAttackController.ToggleControllerState(true);
-                characterHealthController.SetInvulnerableState(false);
+                TogglePlayerState(true,true);
             });
         }
 
@@ -623,6 +619,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandlePlayerWon()
         {
+            characterHealthController.SetInvulnerableState(true);
             GameEffectController.ForceStop(() =>
             {
                 dataSystem.WorldManger.SetMaxLevelReached(dataSystem.WorldManger.SelectedWorld,
@@ -750,19 +747,20 @@ namespace HeroesFlight.System.Gameplay
             switch (currentLevel.LevelType)
             {
                 case LevelType.NormalCombat:
-
+                    
                     enemiesToKill = currentLevel.MiniHasBoss
                         ? currentLevel.TotalMobsToSpawn + 1
                         : currentLevel.TotalMobsToSpawn;
                     uiSystem.UpdateEnemiesCounter(enemiesToKill);
                     combatSystem.StartCharacterComboCheck();
-
+                    TogglePlayerState(true,false);
                     ChangeState(GameState.Ongoing);
                     if (currentLevel.MiniHasBoss)
                     {
                         cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,
                             3f, 3f);
                         uiSystem.ShowSpecialEnemyWarning(EncounterType.Miniboss);
+                        TogglePlayerState(true,true);
                         SpawnEnemies(currentLevel);
                     }
                     else
@@ -773,6 +771,7 @@ namespace HeroesFlight.System.Gameplay
                             GameTimer.Start(2, null,
                                 () =>
                                 {
+                                    TogglePlayerState(true,true);
                                     SpawnEnemies(currentLevel);
                                     GameTimer.Start(currentLevel.LevelDuration, uiSystem.UpdateGameTimeUI,
                                         () =>
@@ -786,14 +785,14 @@ namespace HeroesFlight.System.Gameplay
                         });
                     }
 
-                    characterSystem.SetCharacterControllerState(true);
-
+                   
                     uiSystem.UiEventHandler.GameMenu.SetProgressionFill(CurrentLvlIndex / (float) MaxLvlIndex);
 
                     break;
                 case LevelType.Shrine:
                     uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(false);
                     characterSystem.SetCharacterControllerState(true);
+                  
                     break;
                 case LevelType.WorldBoss:
                     enemiesToKill = 2;
@@ -1147,7 +1146,7 @@ namespace HeroesFlight.System.Gameplay
 
                 HandleMinibossSpawned(miniboss, healthController);
                 healthController.OnDeath += (health) => { InitWorldBossEncounter(); };
-                characterSystem.SetCharacterControllerState(true);
+                TogglePlayerState(true,true);
             }
             else
             {
@@ -1170,9 +1169,10 @@ namespace HeroesFlight.System.Gameplay
 
             environmentSystem.ParticleManager.Spawn("BossSpawn", new Vector2(2.2f, 8.6f));
 
-
+                
             cameraController.InitLevelOverview(4.8f, () =>
             {
+                TogglePlayerState(true,true);
                 cameraController.UpdateCharacterCameraFrustrum(1.5f, true);
                 boss = npcSystem.NpcContainer.SpawnBoss(currentLevel);
                 boss.OnBossStateChange += HandleBossStateChange;
@@ -1328,8 +1328,7 @@ namespace HeroesFlight.System.Gameplay
                 shrine.OnShrineExit();
             }
 
-            characterSystem.SetCharacterControllerState(false);
-
+          
             CoroutineUtility.WaitForSeconds(0.5f, () =>
             {
                 Level newLevel = null;
@@ -1351,7 +1350,7 @@ namespace HeroesFlight.System.Gameplay
                         }
                         else
                         {
-                            characterSystem.SetCharacterControllerState(true);
+                            TogglePlayerState(true,true);
                         }
                     });
             });
@@ -1363,7 +1362,7 @@ namespace HeroesFlight.System.Gameplay
             {
                 npcSystem.Reset();
                 characterSystem.ResetCharacter(GetPlayerSpawnPosition);
-                characterSystem.SetCharacterControllerState(false);
+                TogglePlayerState(false,false);
                 StartGameLoop();
             });
         }
@@ -1385,6 +1384,13 @@ namespace HeroesFlight.System.Gameplay
         private void ReviveCharacterWithFullHP()
         {
             ReviveCharacter(100f);
+        }
+
+        void TogglePlayerState(bool canMove,bool canAttack)
+        {
+            TogglePlayerMovement(canMove);
+            characterAttackController.ToggleControllerState(canAttack);
+            characterHealthController.SetInvulnerableState(!canAttack);
         }
     }
 }
