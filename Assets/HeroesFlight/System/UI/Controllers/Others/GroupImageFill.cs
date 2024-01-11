@@ -22,6 +22,12 @@ public class GroupImageFill : MonoBehaviour
 
     private void Awake()
     {
+        LoadFills();
+    }
+
+    public void LoadFills()
+    {
+        if (fills != null) return;
         fills = new Image[bars.Length];
         for (int i = 0; i < bars.Length; i++)
         {
@@ -31,6 +37,8 @@ public class GroupImageFill : MonoBehaviour
 
     private void UpdateValue()
     {
+        LoadFills();
+
         int numFills = fills.Length;
         if (numFills <= 0)
         {
