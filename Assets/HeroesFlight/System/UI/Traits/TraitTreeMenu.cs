@@ -160,11 +160,13 @@ namespace HeroesFlight.System.UI.Traits
         public override void OnOpened()
         {
             Show();
+            notifier.enabled = true;
         }
 
         public override void OnClosed()
         {
             selectedModel = null;
+            notifier.enabled = false;
             Hide();
         }
 
@@ -417,6 +419,7 @@ namespace HeroesFlight.System.UI.Traits
 
         void ToggleCanvasGroup(CanvasGroup cg, bool isEnabled)
         {
+            gameObject.SetActive(isEnabled);
             if (isEnabled)
             {
                 cg.alpha = 1;
