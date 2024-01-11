@@ -1,0 +1,109 @@
+using System;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.Advertisements;
+
+public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityAdsLoadListener, IUnityAdsShowListener
+{
+#if UNITY_ANDROID
+    private static readonly string storeID = "5523599";
+        private static readonly string videoID = "Interstitial_Android";
+            private static readonly string rewaredID = "Rewarded_Android";
+#elif UNITY_IOS
+    private static readonly string storeID = "5523598";
+    private static readonly string videoID = "Interstitial_iOS";
+    private static readonly string rewaredID = "Rewarded_iOS";
+#endif
+
+    private Action adSuccess;
+    private Action adSkipped;
+    private Action adFailed;
+
+#if UNITY_EDITOR
+    private static bool testMode = true;
+#else
+ private static bool testMode = false;
+#endif
+
+    public void Init()
+    {
+        if (!Advertisement.isInitialized && !Advertisement.isSupported) return;
+        Advertisement.Initialize(storeID, testMode, this);
+        Advertisement.Load(rewaredID, this);
+        Advertisement.Load(videoID, this);
+    }
+
+    public void OnInitializationComplete()
+    {
+ 
+    }
+
+    public void OnInitializationFailed(UnityAdsInitializationError error, string message)
+    {
+        Debug.LogError("Error: " + message);
+    }
+
+    public void OnUnityAdsAdLoaded(string placementId)
+    {
+
+    }
+
+    public void OnUnityAdsFailedToLoad(string placementId, UnityAdsLoadError error, string message)
+    {
+  
+    }
+
+    public void OnUnityAdsShowFailure(string placementId, UnityAdsShowError error, string message)
+    {
+
+    }
+
+    public void OnUnityAdsShowStart(string placementId)
+    {
+
+    }
+
+    public void OnUnityAdsShowClick(string placementId)
+    {
+        
+    }
+
+    public void OnUnityAdsShowComplete(string placementId, UnityAdsShowCompletionState showCompletionState)
+    {
+        switch (showCompletionState)
+        {
+            case UnityAdsShowCompletionState.SKIPPED:
+                if (placementId == rewaredID)
+                {
+                    adSkipped();
+                }
+                break;
+            case UnityAdsShowCompletionState.COMPLETED:
+                if (placementId == rewaredID)
+                {
+                    adSuccess();
+                }
+                break;
+            case UnityAdsShowCompletionState.UNKNOWN:
+                if (placementId == rewaredID)
+                {
+                    adFailed();
+                }
+                break;
+            default:   break;
+        }
+    }
+
+    public void ShowStandardAd()
+    {
+        Advertisement.Show(videoID, this);
+    }
+
+    public void ShowRewarededAd(Action success, Action skipped = null, Action failed = null)
+    {
+        adSuccess = success;
+        adSkipped = skipped;
+        adFailed = failed;
+        Advertisement.Show(rewaredID, this);
+    }
+}
