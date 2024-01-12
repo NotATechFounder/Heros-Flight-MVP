@@ -134,6 +134,7 @@ namespace HeroesFlight.System.Gameplay
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
+            dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard,0);
             npcSystem.OnEnemySpawned += HandleEnemySpawned;
             combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
             combatSystem.OnEntityDied += HandleEntityDied;
@@ -243,6 +244,7 @@ namespace HeroesFlight.System.Gameplay
         public void Reset()
         {
             Debug.Log("reseting gameplay");
+            dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard,0);
             npcSystem.OnEnemySpawned -= HandleEnemySpawned;
             combatSystem.OnEntityReceivedDamage -= HandleEntityReceivedDamage;
             combatSystem.OnEntityDied -= HandleEntityDied;
@@ -445,11 +447,13 @@ namespace HeroesFlight.System.Gameplay
             combatSystem.UseCharacterUltimate(() =>
             {
                 cameraController.SetCameraState(GameCameraType.Skill);
-                TogglePlayerState(false,false);
+                TogglePlayerCombatState(false);
+                TogglePlayerMovementState(false);
             }, () =>
             {
                 cameraController.SetCameraState(GameCameraType.Character);
-                TogglePlayerState(true,true);
+                TogglePlayerCombatState(true);
+                TogglePlayerMovementState(true);
             });
         }
 
@@ -539,10 +543,7 @@ namespace HeroesFlight.System.Gameplay
                 container.CurrentModel.TimeStopDuration);
         }
 
-        void HandleMinibossHealthChange(float healthProportion)
-        {
-            uiSystem.UpdateSpecialEnemyHealthBar(healthProportion);
-        }
+     
 
         void HandleEnemySpawned(AiControllerBase obj)
         {
@@ -619,7 +620,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandlePlayerWon()
         {
-            characterHealthController.SetInvulnerableState(true);
+           TogglePlayerCombatState(false);
             GameEffectController.ForceStop(() =>
             {
                 dataSystem.WorldManger.SetMaxLevelReached(dataSystem.WorldManger.SelectedWorld,
@@ -627,8 +628,7 @@ namespace HeroesFlight.System.Gameplay
 
                 if (container.FinishedLoop)
                 {
-                    characterAttackController.ToggleControllerState(false);
-
+                   TogglePlayerMovementState(false);
                     CoroutineUtility.WaitForSeconds(6f, () => { ChangeState(GameState.Won); });
 
                     return;
@@ -753,14 +753,15 @@ namespace HeroesFlight.System.Gameplay
                         : currentLevel.TotalMobsToSpawn;
                     uiSystem.UpdateEnemiesCounter(enemiesToKill);
                     combatSystem.StartCharacterComboCheck();
-                    TogglePlayerState(true,false);
+                    TogglePlayerMovementState(true);
+                    TogglePlayerCombatState(false);
                     ChangeState(GameState.Ongoing);
                     if (currentLevel.MiniHasBoss)
                     {
                         cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,
                             3f, 3f);
                         uiSystem.ShowSpecialEnemyWarning(EncounterType.Miniboss);
-                        TogglePlayerState(true,true);
+                        TogglePlayerCombatState(true);
                         SpawnEnemies(currentLevel);
                     }
                     else
@@ -771,7 +772,7 @@ namespace HeroesFlight.System.Gameplay
                             GameTimer.Start(2, null,
                                 () =>
                                 {
-                                    TogglePlayerState(true,true);
+                                    TogglePlayerCombatState(true);
                                     SpawnEnemies(currentLevel);
                                     GameTimer.Start(currentLevel.LevelDuration, uiSystem.UpdateGameTimeUI,
                                         () =>
@@ -802,7 +803,7 @@ namespace HeroesFlight.System.Gameplay
         }
 
 
-        void TogglePlayerMovement(bool state)
+        void TogglePlayerMovementState(bool state)
         {
             characterSystem.SetCharacterControllerState(state);
         }
@@ -871,7 +872,7 @@ namespace HeroesFlight.System.Gameplay
                         () =>
                         {
                             uiSystem.UiEventHandler.AngelGambitMenu.Open();
-                            TogglePlayerMovement(false);
+                            TogglePlayerMovementState(false);
                         });
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.ActiveAbilityReRoller].Initialize(
@@ -879,7 +880,7 @@ namespace HeroesFlight.System.Gameplay
                         () =>
                         {
                             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.Open();
-                            TogglePlayerMovement(false);
+                            TogglePlayerMovementState(false);
                         });
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.PassiveAbilityReRoller].Initialize(
@@ -887,7 +888,7 @@ namespace HeroesFlight.System.Gameplay
                         () =>
                         {
                             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.Open();
-                            TogglePlayerMovement(false);
+                            TogglePlayerMovementState(false);
                         });
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.HealingMagicRune].Initialize(
@@ -895,7 +896,7 @@ namespace HeroesFlight.System.Gameplay
                         () =>
                         {
                             uiSystem.UiEventHandler.HealingNPCMenu.Open();
-                            TogglePlayerMovement(false);
+                            TogglePlayerMovementState(false);
                         });
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.Blacksmith].Initialize(
@@ -909,14 +910,14 @@ namespace HeroesFlight.System.Gameplay
 
         void RegisterShrineNPCUIEvents()
         {
-            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += () => TogglePlayerMovementState(true);
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += (angelCard) =>
             {
                 shrine.Purchase(ShrineNPCType.AngelsGambit);
             };
 
 
-            uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed += () => TogglePlayerMovementState(true);
             uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice +=
                 shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
             uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested += (currencyType) =>
@@ -925,7 +926,7 @@ namespace HeroesFlight.System.Gameplay
             };
             uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted += () => { shrine.GetHealer.Heal(); };
 
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovementState(true);
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
                 shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
@@ -943,7 +944,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped +=
                 activeAbilityManager.SwapActiveAbility;
 
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovementState(true);
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
                 shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
@@ -964,13 +965,13 @@ namespace HeroesFlight.System.Gameplay
 
         void UnRegisterShrineNPCUIEvents()
         {
-            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= () => TogglePlayerMovementState(true);
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= (angelCard) =>
             {
                 shrine.Purchase(ShrineNPCType.AngelsGambit);
             };
 
-            uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed -= () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed -= () => TogglePlayerMovementState(true);
             uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice -=
                 shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
             uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested -= (currencyType) =>
@@ -979,7 +980,7 @@ namespace HeroesFlight.System.Gameplay
             };
             uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted -= () => { shrine.GetHealer.Heal(); };
 
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovementState(true);
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
                 shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
@@ -997,7 +998,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnActiveAbilitySwapped -=
                 activeAbilityManager.SwapActiveAbility;
 
-            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovement(true);
+            uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovementState(true);
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
                 shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
@@ -1085,8 +1086,10 @@ namespace HeroesFlight.System.Gameplay
             switch (key)
             {
                 case CurrencyKeys.RuneShard:
+                    var currentAmount = progressionSystem.GetCurrency(CurrencyKeys.RuneShard);
                     characterVFXController.TriggerCurrencyEffect(CurrencyKeys.RuneShard);
-                    uiSystem.UpdateRuinShardUi(progressionSystem.GetCurrency(CurrencyKeys.RuneShard));
+                    uiSystem.UpdateRuinShardUi(currentAmount);
+                    dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard,currentAmount);
                     break;
                 case CurrencyKeys.Experience:
                     characterVFXController.TriggerCurrencyEffect(CurrencyKeys.Experience);
@@ -1146,7 +1149,8 @@ namespace HeroesFlight.System.Gameplay
 
                 HandleMinibossSpawned(miniboss, healthController);
                 healthController.OnDeath += (health) => { InitWorldBossEncounter(); };
-                TogglePlayerState(true,true);
+                TogglePlayerCombatState(true);
+                TogglePlayerMovementState(true);
             }
             else
             {
@@ -1172,7 +1176,8 @@ namespace HeroesFlight.System.Gameplay
                 
             cameraController.InitLevelOverview(4.8f, () =>
             {
-                TogglePlayerState(true,true);
+                TogglePlayerMovementState(true);
+                TogglePlayerCombatState(true);
                 cameraController.UpdateCharacterCameraFrustrum(1.5f, true);
                 boss = npcSystem.NpcContainer.SpawnBoss(currentLevel);
                 boss.OnBossStateChange += HandleBossStateChange;
@@ -1350,7 +1355,7 @@ namespace HeroesFlight.System.Gameplay
                         }
                         else
                         {
-                            TogglePlayerState(true,true);
+                            TogglePlayerMovementState(true);
                         }
                     });
             });
@@ -1361,8 +1366,7 @@ namespace HeroesFlight.System.Gameplay
             CoroutineUtility.WaitForSeconds(0.5f, () =>
             {
                 npcSystem.Reset();
-                characterSystem.ResetCharacter(GetPlayerSpawnPosition);
-                TogglePlayerState(false,false);
+                //TogglePlayerCombatState(false,false);
                 StartGameLoop();
             });
         }
@@ -1386,9 +1390,8 @@ namespace HeroesFlight.System.Gameplay
             ReviveCharacter(100f);
         }
 
-        void TogglePlayerState(bool canMove,bool canAttack)
+        void TogglePlayerCombatState(bool canAttack)
         {
-            TogglePlayerMovement(canMove);
             characterAttackController.ToggleControllerState(canAttack);
             characterHealthController.SetInvulnerableState(!canAttack);
         }

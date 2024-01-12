@@ -58,6 +58,7 @@ public class CurrencySO : RewardBaseSO, IHasID
 
     public void IncreaseCurrency(float amount, bool notify = true)
     {
+        Debug.Log($"adding {amount} to { _currencyData.Amount} ");
         _currencyData.Amount += amount;
         Save();
         if (notify) OnCurrencyChange?.Invoke(this, true);
