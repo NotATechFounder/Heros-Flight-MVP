@@ -43,7 +43,7 @@ namespace HeroesFlight.Core.Bootstrapper
             CharacterSystemInterface characterSystem = new CharacterSystem(inputSystem);
             NpcSystemInterface npcSystem = new NpcSystem();
             ProgressionSystemInterface progressionSystem = new ProgressionSystem(dataSystem);
-            DiceSystemInterface diceSystem = new DiceSystem(uiSystem);
+            DiceSystemInterface diceSystem = new DiceSystem(uiSystem, dataSystem);
             TraitSystemInterface traitSystem = new TraitsSystem(dataSystem, uiSystem,diceSystem);
             InventorySystemInterface inventorySystem = new InventorySystem(dataSystem,uiSystem);
             RewardSystemInterface rewardSystem = new RewardSystem(dataSystem, inventorySystem, uiSystem);
