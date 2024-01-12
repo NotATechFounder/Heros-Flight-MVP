@@ -107,7 +107,6 @@ public class CharacterUI : MonoBehaviour
     public void LockedState()
     {
         characterImage.sprite = currentCharacter.CharacterUiData.CharacterLockedImage;
-        characterLockedName.sprite = currentCharacter.CharacterUiData.CharacterLockedName;
     }
 
     public void SelectedState()
@@ -130,7 +129,6 @@ public class CharacterUI : MonoBehaviour
     public void UnlockedState()
     {
         characterImage.sprite = currentCharacter.CharacterUiData.CharacterUnlockedImage;
-        characterUnlockedName.sprite = currentCharacter.CharacterUiData.CharacterUnlockedName;
         characterClassIcon.sprite = currentCharacter.CharacterUiData.CharacterClassIcon;
         characterClassName.sprite = currentCharacter.CharacterUiData.CharacterClassName;
     }

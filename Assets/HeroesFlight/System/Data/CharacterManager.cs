@@ -21,9 +21,9 @@ public class CharacterManager : MonoBehaviour
     public bool TryBuyCharacter(CharacterType characterType)
     {
         CharacterSO characterSO = GetCharacterSO(characterType);
-        if (currencyManager.GetCurrencyAmount (characterSO.CurrencySO.GetID()) >= characterSO.UnlockPrice)
+        if (currencyManager.GetCurrencyAmount (CurrencyKeys.Gem) >= characterSO.UnlockPrice)
         {
-            currencyManager.ReduceCurency(characterSO.CurrencySO.GetID(), characterSO.UnlockPrice);
+            currencyManager.ReduceCurency(CurrencyKeys.Gem, characterSO.UnlockPrice);
             UnlockCharacter(characterType);
             return true;
         }

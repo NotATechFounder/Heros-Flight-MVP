@@ -140,9 +140,9 @@ namespace UISystem
 
             uiSpineViewController.SetupView(currentCharacterInView.GetCharacterSO);
             heroName.text = currentCharacterInView.GetCharacterSO.CharacterType.ToString();
-            heroDescription.text = "Description: ";
-            heroPlayStyle.text = "Playstyle: ";
-            heroUltimateInfo.text = "Ultimate: ";
+            heroDescription.text = currentCharacterInView.GetCharacterSO.CharacterUiData.Description;
+            heroPlayStyle.text = currentCharacterInView.GetCharacterSO.CharacterUiData.PlaystyleDescription;
+            heroUltimateInfo.text = currentCharacterInView.GetCharacterSO.CharacterUiData.UltimateDescription;
             currentAtk.text = currentCharacterInView.GetCharacterSO.GetPlayerStatData.PhysicalDamage.max.ToString("F0");
             currentHp.text = currentCharacterInView.GetCharacterSO.GetPlayerStatData.Health.ToString("F0");
             currentDef.text = currentCharacterInView.GetCharacterSO.GetPlayerStatData.Defense.ToString("F0");

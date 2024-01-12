@@ -141,5 +141,23 @@ namespace UISystem
 
             chestUI.SetChestUI(info, gemPrice);
         }
+
+        public void SetRegularChestAdsCount(int count)
+        {
+            ChestUI chestUI = Array.Find(chestUIArray, chest => chest.GetChestType == ChestType.Regular);
+            if (chestUI == null)
+                return;
+
+            chestUI.SetPrice(count);
+        }
+
+        public void SetSmallGoldPackAdsCount(int count)
+        {
+            GoldPackUI goldPackUI = Array.Find(goldPackUIArray, goldPack => goldPack.GetGoldPackType == GoldPackType.Small);
+            if (goldPackUI == null)
+                return;
+
+            goldPackUI.SetPrice(count);
+        }
     }
 }

@@ -18,6 +18,9 @@ public class ShopDataHolder : MonoBehaviour
     public Chest[] GetChests => chests;
     public GoldPackGroup GoldPackGroup => goldPack;
 
+    public TimedRewardHandler GetTimedRegularChestRewardHandler => regularChestRewardHandler;
+    public TimedRewardHandler GetTimeGoldPackRewardHandlerGold => goldChestRewardHandler;
+
     public Chest GetChest(ChestType chestType)
     {
         return Array.Find(chests, chest => chest.GetChestType == chestType);
@@ -28,31 +31,38 @@ public class ShopDataHolder : MonoBehaviour
         return goldPack;
     }
 
+    public void Init()
+    {
+        SetRegularChestTimeReward();
+        SetGoldChestTimeReward();
+    }
+
     public void SetRegularChestTimeReward()
     {
+        regularChestRewardHandler.LoadData();
+
         reqularChestTimeReward = new TimedReward();
         reqularChestTimeReward.OnInternetConnected = () =>
         {
-            Debug.Log("Internet Connected");
+  
         };
 
         reqularChestTimeReward.OnInternetDisconnected = () =>
         {
-            Debug.Log("Internet Disconnected");
+   
         };
 
         reqularChestTimeReward.OnRewardReadyToBeCollected = () =>
         {
-            Debug.Log("Reward Ready To Be Collected");
+            reqularChestTimeReward.ClaimTimedReward();
         };
 
         reqularChestTimeReward.RewardPlayer = (LastRewardClaimDate) =>
         {
-            // enable button
-            Debug.Log("Reward Player");
+            regularChestRewardHandler.ResetRewardCount(LastRewardClaimDate);
         };
 
-        reqularChestTimeReward.OnTimerUpdateed = (time) =>
+        reqularChestTimeReward.OnTimerUpdated = (time) =>
         {
             // Debug.Log("Timer Updated" + time);
         };
@@ -63,34 +73,35 @@ public class ShopDataHolder : MonoBehaviour
 
     public void SetGoldChestTimeReward()
     {
+        goldChestRewardHandler.LoadData();
+
         goldTimeReward = new TimedReward();
         goldTimeReward.OnInternetConnected = () =>
         {
-            Debug.Log("Internet Connected");
+
         };
 
         goldTimeReward.OnInternetDisconnected = () =>
         {
-            Debug.Log("Internet Disconnected");
+
         };
 
         goldTimeReward.OnRewardReadyToBeCollected = () =>
         {
-            Debug.Log("Reward Ready To Be Collected");
+            goldTimeReward.ClaimTimedReward();
         };
 
         goldTimeReward.RewardPlayer = (LastRewardClaimDate) =>
         {
-            // enable button
-            Debug.Log("Reward Player");
+            goldChestRewardHandler.ResetRewardCount(LastRewardClaimDate);
         };
 
-        goldTimeReward.OnTimerUpdateed = (time) =>
+        goldTimeReward.OnTimerUpdated = (time) =>
         {
             // Debug.Log("Timer Updated" + time);
         };
 
         goldTimeReward.Init(this, goldChestRewardHandler.GetLastRewardTime, goldChestRewardHandler.GetTimeType,
-                       goldChestRewardHandler.GetNextRewardTimeAdded, goldChestRewardHandler.GetCheckingInterval);
+            goldChestRewardHandler.GetNextRewardTimeAdded, goldChestRewardHandler.GetCheckingInterval);
     }
 }

@@ -11,7 +11,7 @@ public class TimedReward
     public Action OnInternetDisconnected;
     public Action OnRewardReadyToBeCollected;
     public Action<string> RewardPlayer;
-    public Action<string> OnTimerUpdateed;
+    public Action<string> OnTimerUpdated;
 
     [SerializeField] TimeType timeType;
     [SerializeField] double nextRewardDelay = 20f;
@@ -132,7 +132,7 @@ public class TimedReward
         else if (time.Days == 0 && time.Hours == 0) timeValue = String.Format("{0:D2}M : {1:D2}S", time.Minutes, time.Seconds);
         else timeValue = String.Format("{0:D2}H: {1:D2}M : {2:D2}S", time.Hours, time.Minutes, time.Seconds);
 
-        OnTimerUpdateed?.Invoke(timeValue);
+        OnTimerUpdated?.Invoke(timeValue);
     }
 
     private DateTime AddDuration(DateTime dateTime, int duration)

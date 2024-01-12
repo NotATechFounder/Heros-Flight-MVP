@@ -26,4 +26,9 @@ public class GoldPackGroup
     {
         return goldPacks[index];
     }
+
+    public GoldPack GetPack(GoldPackType goldPackType)
+    {
+        return System.Array.Find(goldPacks, pack => pack.goldPackType == goldPackType);
+    }
 }

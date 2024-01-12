@@ -56,7 +56,7 @@ public class RewardDataHandler : MonoBehaviour
             Save();
         };
 
-        timedReward.OnTimerUpdateed = (time) =>
+        timedReward.OnTimerUpdated = (time) =>
         {
             // Debug.Log("Timer Updated" + time);
         };
