@@ -1,5 +1,7 @@
 ﻿using System;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.UI.Enum;
+using HeroesFlight.System.UI.Model;
 using UnityEngine;
 
 namespace HeroesFlight.System.UI
@@ -8,7 +10,7 @@ namespace HeroesFlight.System.UI
     {
         event Action OnReturnToMainMenuRequest;
         event Action OnRestartLvlRequest;
-        event Action OnReviveCharacterRequest;
+        event Action<ReviveRequestModel> OnReviveCharacterRequest;
         event Action OnSpecialButtonClicked;
         event Action<int> OnPassiveAbilityButtonClicked;
         public UIEventHandler UiEventHandler { get; }

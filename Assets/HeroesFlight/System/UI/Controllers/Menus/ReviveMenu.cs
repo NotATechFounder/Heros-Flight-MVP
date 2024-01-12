@@ -19,6 +19,8 @@ namespace UISystem
         [SerializeField] private AdvanceButton watchAdsButton;
         [SerializeField] private AdvanceButton gemButton;
         [SerializeField] private AnimationCurve animationCurve;
+        [SerializeField] private GameObject gamesReviveBlocker;
+        [SerializeField] private Image timerProgressImage;
 
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
@@ -40,7 +42,7 @@ namespace UISystem
             countDownTextEffect.SetEase(animationCurve);
 
             watchAdsButton.onClick.AddListener(() =>
-            { 
+            {
                 if (OnWatchAdsButtonClicked?.Invoke() == true)
                 {
                     startTimer.Stop();
@@ -75,23 +77,19 @@ namespace UISystem
 
         public override void ResetMenu()
         {
-
         }
 
         public void StartTimer()
         {
             startTimer.Start(countDownTime, (current) =>
             {
+                timerProgressImage.fillAmount = current/countDownTime;
                 if ((int)current != (int)startTimer.GetLastTime)
                 {
                     countDownTextEffect.Start();
                     countDownText.text = Mathf.CeilToInt(current).ToString();
                 }
-
-            }, () =>
-            {
-                CountDownCompleteAction();
-            });
+            }, () => { CountDownCompleteAction(); });
         }
 
         private void CloseButtonAction()
@@ -105,6 +103,13 @@ namespace UISystem
         {
             OnCountDownCompleted?.Invoke();
             Close();
+        }
+
+        public void OpenWithContext(bool hasEnoughGems)
+        {
+            gemButton.interactable = hasEnoughGems;
+            gamesReviveBlocker.SetActive(!hasEnoughGems);
+            Open();
         }
     }
 }

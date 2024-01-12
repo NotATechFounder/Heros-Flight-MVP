@@ -1,8 +1,10 @@
+using System;
 using Pelumi.ObjectPool;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 public class ShootingHazard : EnironmentHazard
 {
@@ -13,6 +15,7 @@ public class ShootingHazard : EnironmentHazard
     [SerializeField] private WarningLine warningLine;
     [SerializeField] private HazardArrow[] hazardArrow;
     private bool isTriggered;
+    private HazardArrow currentProjectile;
 
     private void Start()
     {
@@ -35,15 +38,15 @@ public class ShootingHazard : EnironmentHazard
         var width = arrowPrefab.GetComponent<BoxCollider2D>().size.x;
         warningLine.Trigger(() =>
         {
-            HazardArrow arrow = ObjectPoolManager.SpawnObject(arrowPrefab, warningLine.transform.position, Quaternion.identity);
+            currentProjectile = ObjectPoolManager.SpawnObject(arrowPrefab, warningLine.transform.position, Quaternion.identity);
           
-            arrow.SetupArrow(healthPercentage, warningLine.GetFowardDirection);
+            currentProjectile.SetupArrow(healthPercentage, warningLine.GetFowardDirection);
             isTriggered = false;
         }, warningLineDuration,width);
     }
 
 
-    public IEnumerator Runtime()
+    private IEnumerator Runtime()
     {
         while (true)
         {
@@ -53,4 +56,10 @@ public class ShootingHazard : EnironmentHazard
             yield return null;
         }
     }
+
+    private void OnDestroy()
+    { 
+        Debug.Log("releasing projectile");
+        ObjectPoolManager.ReleaseObject(currentProjectile);
+      }
 }
