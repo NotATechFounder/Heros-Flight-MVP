@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 
 namespace UISystem
@@ -16,7 +17,14 @@ namespace UISystem
         public void SetChestUI(string chestInfoText, int chestPriceText)
         {
             this.chestInfoText.text = chestInfoText;
-            this.chestPriceText.text = chestPriceText.ToString();
+            SetPrice (chestPriceText);
+        }
+
+        public void SetPrice(int price)
+        {
+            string priceText = price == 0 ? "Not Ready" : price.ToString();
+            chestPriceText.text = priceText;
+            chestButton.SetVisibility(price == 0 ? GameButtonVisiblity.Hidden : GameButtonVisiblity.Visible);
         }
     }
 }

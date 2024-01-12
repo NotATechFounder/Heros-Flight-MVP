@@ -1,5 +1,6 @@
 ﻿using System;
 using HeroesFlight.Core.StateStack.Enum;
+using HeroesFlight.System.Dice;
 using HeroesFlight.System.Inventory;
 using JetBrains.Annotations;
 using StansAssets.Foundation.Patterns;
@@ -71,6 +72,8 @@ namespace HeroesFlight.StateStack.State
                 shopSystem.Init(loadedScene);
                 IAchievementSystemInterface achievementSystemInterface = GetService<IAchievementSystemInterface>();
                 achievementSystemInterface.Init(loadedScene);
+                DiceSystemInterface diceSystemInterface = GetService<DiceSystemInterface>();
+                diceSystemInterface.Init(loadedScene);
                 AppStateStack.State.Set(ApplicationState.Initialization);
 
             });

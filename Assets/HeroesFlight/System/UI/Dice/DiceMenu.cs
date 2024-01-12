@@ -11,6 +11,9 @@ namespace HeroesFlight.System.UI.DIce
 {
     public class DiceMenu : BaseMenu<DiceMenu>
     {
+        public event Func<bool> OnAdsRollPressed;
+        public event Func<bool> OnGemRollPressed;
+
         [Header("Canvas groups")] 
         [SerializeField] private CanvasGroup mainCG;
         [SerializeField] private CanvasGroup rollCG;
@@ -19,9 +22,9 @@ namespace HeroesFlight.System.UI.DIce
         [SerializeField] private TextMeshProUGUI infoText;
 
         [Header("Buttons")]
-        [SerializeField] private AdvanceButton rollButton;
+        [SerializeField] private AdvanceButton adsRollButton;
+        [SerializeField] private AdvanceButton gemROllButton;
         [SerializeField] private AdvanceButton backButton;
-        [SerializeField] private AdvanceButton optionalROllButton;
         [SerializeField] private AdvanceButton infoButton;
         [SerializeField] private AdvanceButton closeInfoButton;
 
@@ -72,8 +75,20 @@ namespace HeroesFlight.System.UI.DIce
 
         public override void OnCreated()
         {
-            rollButton.onClick.AddListener(() => { onRollAction?.Invoke(); });
+            adsRollButton.onClick.AddListener(() => 
+            {
+                if(OnAdsRollPressed?.Invoke() ?? false)
+                onRollAction?.Invoke(); 
+            });
+
+            gemROllButton.onClick.AddListener(() =>
+            { 
+                if(OnGemRollPressed?.Invoke() ?? false)
+                onRollAction?.Invoke();
+            });
+
             infoButton.onClick.AddListener(()=>{ShowDiceInfo(string.Empty);});
+
             closeInfoButton.onClick.AddListener(() =>
             {
                 ToggleCanvasGroup(infoCG,false);
@@ -98,7 +113,8 @@ namespace HeroesFlight.System.UI.DIce
                 diceView.blocksRaycasts = false;
 
                 backButton.interactable = true;
-                rollButton.interactable = true;
+                adsRollButton.interactable = true;
+                gemROllButton.interactable = true;
                 infoButton.interactable = true;
             });
 
@@ -121,6 +137,11 @@ namespace HeroesFlight.System.UI.DIce
             rollText.color = Color.white;
         }
 
+        public void TriggerRollAction()
+        {
+            onRollAction?.Invoke();
+        }
+
         void ToggleCanvasGroup(CanvasGroup cg, bool isEnabled)
         {
             cg.alpha = isEnabled ? 1 : 0;
@@ -131,7 +152,8 @@ namespace HeroesFlight.System.UI.DIce
         public void RollDice()
         {
             backButton.interactable = false;
-            rollButton.interactable = false;
+            adsRollButton.interactable = false;
+            gemROllButton.interactable = false;
             infoButton.interactable = false;
             diceRollStartEffect.Start();
         }
@@ -143,6 +165,11 @@ namespace HeroesFlight.System.UI.DIce
             onRollEnd?.Invoke();
 
             diceRollEndEffect.Start();
+        }
+
+        public void SetAdsCount(int index)
+        {
+            adsRollButton.SetVisibility( index > 0 ? GameButtonVisiblity.Visible : GameButtonVisiblity.Hidden);
         }
     }
 }

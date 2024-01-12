@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+using StansAssets.Foundation.Extensions;
+using System;
 using System.Collections.Generic;
 using HeroesFlight.System.UI;
 using UnityEngine;
@@ -9,7 +11,7 @@ namespace HeroesFlight.System.Dice
 {
     public class DiceSystem : DiceSystemInterface
     {
-        public DiceSystem(IUISystem uiSystem)
+        public DiceSystem(IUISystem uiSystem, DataSystemInterface dataSysten)
         {
             totalWeight = PoorThreshHold + AverageThreshHold + GreatThreshHold + PoorThreshHold+PowerFulThreshHold;
             rollCache.Add(RollType.Poor,PoorThreshHold);
@@ -18,7 +20,10 @@ namespace HeroesFlight.System.Dice
             rollCache.Add(RollType.PowerFul,PowerFulThreshHold);
 
             this.uiSystem = uiSystem;
+            this.dataSystem = dataSysten;
         }
+
+        private DataSystemInterface dataSystem;
         private const int PoorThreshHold = 15;
         private const int AverageThreshHold = 60;
         private const int GreatThreshHold = 20;
@@ -26,8 +31,41 @@ namespace HeroesFlight.System.Dice
         private Dictionary<RollType, int> rollCache = new();
         private int totalWeight;
 
+        private DiceHandler diceHandler;
+
         private IUISystem uiSystem;
-        public void Init(Scene scene = default, Action onComplete = null) {}
+        public void Init(Scene scene = default, Action onComplete = null) 
+        {
+            diceHandler = scene.GetComponent<DiceHandler>();
+            diceHandler.Init();
+        }
+
+        public void InjectUiConnection()
+        {
+            uiSystem.UiEventHandler.DiceMenu.OnGemRollPressed += () =>
+            {
+                float gem =  dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem);
+                if (gem < diceHandler.GetGemCost)
+                {
+                    return false;
+                }
+
+                Debug.Log("Gem Roll Pressed");
+                dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, diceHandler.GetGemCost);
+                return true;
+            };
+
+            uiSystem.UiEventHandler.DiceMenu.OnAdsRollPressed += () =>
+            {
+                Debug.Log ("Ads Roll Pressed");
+                diceHandler.GetTimedRewardHandler.ReduceRewardCount();
+                return true;
+            };
+
+            diceHandler.GetTimedRewardHandler.OnRewardChanged += uiSystem.UiEventHandler.DiceMenu.SetAdsCount;
+
+            uiSystem.UiEventHandler.DiceMenu.SetAdsCount(diceHandler.GetTimedRewardHandler.GetRewardCount);
+        }
 
         public void Reset() { }
 
@@ -67,11 +105,8 @@ namespace HeroesFlight.System.Dice
             uiSystem.UiEventHandler.DiceMenu.RollDiceUi(resultRoll,ConvertDiceRollToColor(currentRollType), () =>
             {
                 onComplete?.Invoke(resultRoll);    
-            });
-            
-           
+            });                 
         }
-
 
         Color ConvertDiceRollToColor(RollType type)
         {

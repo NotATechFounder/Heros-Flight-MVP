@@ -9,15 +9,12 @@ using UnityEngine;
 public class CharacterSO : ScriptableObject
 {
     [Header("Character Info")]
-    [SerializeField] string characterName;
     [SerializeField] CharacterType characterType;
 
     [Header("Unlock Info")]
     [SerializeField] bool isUnlockedDefault;
     [SerializeField] bool isSelectedDefault;
-    [SerializeField] string unlockDescription;
     [SerializeField] private int unlockPrice;
-    [SerializeField] CurrencySO currencySO;
 
     [Header("Others")]
     [SerializeField] AppearanceData appearanceData;
@@ -33,12 +30,9 @@ public class CharacterSO : ScriptableObject
     [Header("Character Data - Modified in run time")]
     [SerializeField] Data characterData;
 
-    public string CharacterName => characterName;
     public CharacterType CharacterType => characterType;
 
-    public string UnlockDescription => unlockDescription;
     public int UnlockPrice => unlockPrice;
-    public CurrencySO CurrencySO => currencySO;
     public PlayerStatData GetPlayerStatData => playerStatData;
     public AppearanceData GetAppearanceData => appearanceData;
     public CharacterAnimations CharacterAnimations => m_AnimationData;
@@ -95,20 +89,28 @@ public class CharacterSO : ScriptableObject
 [Serializable]
 public class CharacterUiData
 {
+    [Header ("Info")]
+    [SerializeField] string characterName;
+    [TextArea(3, 10)] [SerializeField] private string description;
+    [TextArea(3, 10)] [SerializeField] private string unlockDescription;
+    [TextArea(3, 10)] [SerializeField] private string playstyleDescription;
+    [TextArea(3, 10)] [SerializeField] private string ultimateDescription;
+
     [Header("Unlocked Info")]
     [SerializeField] private Sprite characterUnlockedImage;
-    [SerializeField] private Sprite characterUnlockedName;
     [SerializeField] private Sprite characterClassIcon;
     [SerializeField] private Sprite characterClassName;
 
     [Header("Locked Info")]
     [SerializeField] private Sprite characterLockedImage;
-    [SerializeField] private Sprite characterLockedName;
+
+    public string CharacterName => characterName;
+    public string Description => description;
+    public string PlaystyleDescription => playstyleDescription;
+    public string UltimateDescription => ultimateDescription;
 
     public Sprite CharacterUnlockedImage => characterUnlockedImage;
-    public Sprite CharacterUnlockedName => characterUnlockedName;
     public Sprite CharacterClassIcon => characterClassIcon;
     public Sprite CharacterClassName => characterClassName;
     public Sprite CharacterLockedImage => characterLockedImage;
-    public Sprite CharacterLockedName => characterLockedName;
 }

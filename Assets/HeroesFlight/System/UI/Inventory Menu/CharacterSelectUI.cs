@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CharacterSelectUI : MonoBehaviour
 {
@@ -27,12 +28,11 @@ public class CharacterSelectUI : MonoBehaviour
     [SerializeField] private GameObject unlockedUI;
     [SerializeField] private Image characterUnlockedName;
     [SerializeField] private Image characterClassIcon;
-    [SerializeField] private Image characterClassName;
+    [SerializeField] private TextMeshProUGUI characterClassName;
     [SerializeField] private AdvanceButton selectButton;
 
     [Header("Locked UI")]
     [SerializeField] private GameObject lockedUI;
-    [SerializeField] private Image characterLockedName;
 
     [Header("Selected UI")]
     [SerializeField] private Image selectedUIIcon;
@@ -93,7 +93,7 @@ public class CharacterSelectUI : MonoBehaviour
     public void LockedState()
     {
         characterImage.sprite = currentCharacter.CharacterUiData.CharacterLockedImage;
-        characterLockedName.sprite = currentCharacter.CharacterUiData.CharacterLockedName;
+        characterClassName.text = currentCharacter.CharacterUiData.CharacterName;
     }
 
     public void SelectedState()
@@ -111,9 +111,8 @@ public class CharacterSelectUI : MonoBehaviour
     public void UnlockedState()
     {
         characterImage.sprite = currentCharacter.CharacterUiData.CharacterUnlockedImage;
-        characterUnlockedName.sprite = currentCharacter.CharacterUiData.CharacterUnlockedName;
         characterClassIcon.sprite = currentCharacter.CharacterUiData.CharacterClassIcon;
-        characterClassName.sprite = currentCharacter.CharacterUiData.CharacterClassName;
+        characterClassName.text = currentCharacter.CharacterUiData.CharacterName;
     }
 
     public void ToggleInView(bool state)
