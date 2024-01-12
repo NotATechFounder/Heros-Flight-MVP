@@ -895,7 +895,8 @@ namespace HeroesFlight.System.Gameplay
                         shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune],
                         () =>
                         {
-                            uiSystem.UiEventHandler.HealingNPCMenu.Open();
+                            uiSystem.UiEventHandler.HealingNPCMenu.Open(dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.RuneShard),
+                                dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem));
                             TogglePlayerMovementState(false);
                         });
 

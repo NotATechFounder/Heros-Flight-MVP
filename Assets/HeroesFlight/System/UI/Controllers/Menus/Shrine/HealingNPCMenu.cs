@@ -27,6 +27,9 @@ public class HealingNPCMenu : BaseMenu<HealingNPCMenu>
     [SerializeField] private TextMeshProUGUI gemsText;
     [SerializeField] private TextMeshProUGUI adsText;
 
+    [Header("Blockers")]
+    [SerializeField] private GameObject runesBlocker;
+    [SerializeField] private GameObject gemsBlocker;
     JuicerRuntime openEffectBG;
     JuicerRuntime openEffectContainer;
     JuicerRuntime closeEffectBG;
@@ -83,5 +86,19 @@ public class HealingNPCMenu : BaseMenu<HealingNPCMenu>
             OnPurchaseCompleted?.Invoke();
             Close();
         }
+    }
+
+    public void Open(float playerRuneShards, float playerGems)
+    {
+        SetupButtonsView(playerRuneShards, playerGems);
+        Open();
+    }
+
+    private void SetupButtonsView(float playerRuneShards, float playerGems)
+    {
+        runesBlocker.SetActive(playerRuneShards<GetCurrencyPrice(ShrineNPCCurrencyType.RuneShard));
+        runeShardsButton.interactable = playerRuneShards >= GetCurrencyPrice(ShrineNPCCurrencyType.RuneShard);
+        gemsBlocker.SetActive(playerGems<GetCurrencyPrice(ShrineNPCCurrencyType.Gem));
+        gemsButton.interactable = playerGems >= GetCurrencyPrice(ShrineNPCCurrencyType.Gem);
     }
 }
