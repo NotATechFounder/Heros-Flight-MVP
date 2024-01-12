@@ -18,6 +18,8 @@ public interface DataSystemInterface : SystemInterface
 
     public TutorialDataHolder TutorialDataHolder { get; }
 
+    public AdManager AdManager { get; }
+
     event Action OnApplicationQuit;
     void RequestDataSave();
 

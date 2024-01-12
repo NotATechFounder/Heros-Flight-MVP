@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Codice.CM.WorkspaceServer.WorkspaceTreeDataStore;
 
 public class ShopSystem : IShopSystemInterface
 {
@@ -97,23 +98,32 @@ public class ShopSystem : IShopSystemInterface
         rewardSystem.ProcessRewards(rewards);
     }
 
-    //public void BuyChestWithGold(ChestType chestType)
-    //{
-    //    Chest chest = ShopDataHolder.GetChest(chestType);
-    //    if (chest == null)
-    //        return;
+    public void BuyChestWithAds(ChestType chestType)
+    {
+        Chest chest = ShopDataHolder.GetChest(chestType);
+        if (chest == null)
+            return;
 
-    //    if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gold) >= chest.GetGemChestPrice)
-    //    {
-    //        Debug.Log("Chest bought");
-    //        dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gold, chest.GetGemChestPrice);
-    //        rewardSystem.ProcessRewards(chest.OpenChest());
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("Not enough gold");
-    //    }
-    //}
+        if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gold) >= chest.GetGemChestPrice)
+        {
+            //Debug.Log("Chest bought");
+            //dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gold, chest.GetGemChestPrice);
+            //rewardSystem.ProcessRewards(chest.OpenChest());
+
+            //      uISystem.UiEventHandler.
+
+            dataSystem.AdManager.ShowRewarededAd(() =>
+            {
+                List<Reward> rewards = chest.OpenChest();
+                rewardSystem.ProcessRewards(rewards);
+                uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(chestType, rewardSystem.GetRewardVisuals(rewards).ToArray());
+            });
+        }
+        else
+        {
+            Debug.Log("Not enough gold");
+        }
+    }
 
     public void BuyChestWithGem(ChestType chestType)
     {
@@ -142,15 +152,28 @@ public class ShopSystem : IShopSystemInterface
             return;
 
         GoldPackGroup.GoldPack content = pack.GetContent(index);
-        if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= content.cost)
+
+        if (goldPack == GoldPackType.Small)
         {
-            dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, content.cost);
-            dataSystem.CurrencyManager.AddCurrency(content.reward.GetRewardObject<CurrencySO>(), content.reward.GetAmount());
-            uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(content.reward));
+            // use ads
+            dataSystem.AdManager.ShowRewarededAd(() =>
+            {
+                dataSystem.CurrencyManager.AddCurrency(content.reward.GetRewardObject<CurrencySO>(), content.reward.GetAmount());
+                uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(content.reward));
+            });
         }
         else
         {
-            Debug.Log("Not enough gems");
+            if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= content.cost)
+            {
+                dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, content.cost);
+                dataSystem.CurrencyManager.AddCurrency(content.reward.GetRewardObject<CurrencySO>(), content.reward.GetAmount());
+                uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(content.reward));
+            }
+            else
+            {
+                Debug.Log("Not enough gems");
+            }
         }
     }
 
