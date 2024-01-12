@@ -35,6 +35,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UISystem;
 using System.ComponentModel;
+using HeroesFlight.System.UI.Model;
 
 public class TutorialSystem : ITutorialInterface
 {
@@ -130,7 +131,7 @@ public class TutorialSystem : ITutorialInterface
         this.combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
         this.combatSystem.OnEntityDied += HandleEntityDied;
         this.uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
-        this.uiSystem.OnReviveCharacterRequest += () => { ReviveCharacter(100f); };
+        this.uiSystem.OnReviveCharacterRequest +=ReviveCharacterWithFullHP;
 
         cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
 
@@ -316,7 +317,7 @@ public class TutorialSystem : ITutorialInterface
         this.combatSystem.OnEntityReceivedDamage -= HandleEntityReceivedDamage;
         this.combatSystem.OnEntityDied -= HandleEntityDied;
         this.uiSystem.OnSpecialButtonClicked -= UseCharacterSpecial;
-        this.uiSystem.OnReviveCharacterRequest -= () => { ReviveCharacter(100f); };
+        this.uiSystem.OnReviveCharacterRequest -= ReviveCharacterWithFullHP;
 
         shrine.GetAngelEffectManager.OnPermanetCard -=
             uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
@@ -1314,6 +1315,11 @@ public class TutorialSystem : ITutorialInterface
         JuicerRuntime juicerRuntime = inventoryButton.transform.JuicyScale(1.1f, 0.25f).SetLoop(-1).Start();
         tutorialButtonEffects.Add(gameButtonType, juicerRuntime);
     }
+    
+    private void ReviveCharacterWithFullHP(ReviveRequestModel reviveRequestModel)
+    {
+        ReviveCharacter(100f);
+    }
 }
 
 public class ButtonCheck
@@ -1351,4 +1357,5 @@ public class WaitForButtonPressed : CustomYieldInstruction
     {
         this.buttonCheck = buttonCheck;
     }
+  
 }

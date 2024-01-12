@@ -28,6 +28,8 @@ using HeroesFlight.System.Stats.Handlers;
 using HeroesFlight.System.Stats.Traits.Effects;
 using HeroesFlight.System.Stats.Traits.Enum;
 using HeroesFlight.System.UI;
+using HeroesFlight.System.UI.Enum;
+using HeroesFlight.System.UI.Model;
 using HeroesFlightProject.System.Combat.Controllers;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
@@ -62,7 +64,6 @@ namespace HeroesFlight.System.Gameplay
             this.progressionSystem = progressionSystem;
             traitSystem = traitSystemInterface;
             InventorySystem = inventorySystemInterface;
-           
         }
 
         CountDownTimer GameTimer;
@@ -134,12 +135,12 @@ namespace HeroesFlight.System.Gameplay
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
-            dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard,0);
+            dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard, 0);
             npcSystem.OnEnemySpawned += HandleEnemySpawned;
             combatSystem.OnEntityReceivedDamage += HandleEntityReceivedDamage;
             combatSystem.OnEntityDied += HandleEntityDied;
             uiSystem.OnSpecialButtonClicked += UseCharacterSpecial;
-            uiSystem.OnReviveCharacterRequest += ReviveCharacterWithFullHP;
+            uiSystem.OnReviveCharacterRequest += ReviveCharacterWithFullHp;
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
 
             shrine = scene.GetComponentInChildren<Shrine>();
@@ -244,12 +245,12 @@ namespace HeroesFlight.System.Gameplay
         public void Reset()
         {
             Debug.Log("reseting gameplay");
-            dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard,0);
+            dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard, 0);
             npcSystem.OnEnemySpawned -= HandleEnemySpawned;
             combatSystem.OnEntityReceivedDamage -= HandleEntityReceivedDamage;
             combatSystem.OnEntityDied -= HandleEntityDied;
             uiSystem.OnSpecialButtonClicked -= UseCharacterSpecial;
-            uiSystem.OnReviveCharacterRequest -= ReviveCharacterWithFullHP;
+            uiSystem.OnReviveCharacterRequest -= ReviveCharacterWithFullHp;
             ResetLogic();
             ResetConnections();
             container.SetStartingIndex(0);
@@ -340,7 +341,7 @@ namespace HeroesFlight.System.Gameplay
             this.combatSystem.OnEntityReceivedDamage -= HandleEntityReceivedDamage;
             this.combatSystem.OnEntityDied -= HandleEntityDied;
             this.uiSystem.OnSpecialButtonClicked -= UseCharacterSpecial;
-            this.uiSystem.OnReviveCharacterRequest -= () => { ReviveCharacter(100f); };
+            this.uiSystem.OnReviveCharacterRequest -= ReviveCharacterWithFullHp;
 
             shrine.GetAngelEffectManager.OnPermanetCard -=
                 uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
@@ -543,7 +544,6 @@ namespace HeroesFlight.System.Gameplay
                 container.CurrentModel.TimeStopDuration);
         }
 
-     
 
         void HandleEnemySpawned(AiControllerBase obj)
         {
@@ -620,7 +620,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandlePlayerWon()
         {
-           TogglePlayerCombatState(false);
+            TogglePlayerCombatState(false);
             GameEffectController.ForceStop(() =>
             {
                 dataSystem.WorldManger.SetMaxLevelReached(dataSystem.WorldManger.SelectedWorld,
@@ -628,7 +628,7 @@ namespace HeroesFlight.System.Gameplay
 
                 if (container.FinishedLoop)
                 {
-                   TogglePlayerMovementState(false);
+                    TogglePlayerMovementState(false);
                     CoroutineUtility.WaitForSeconds(6f, () => { ChangeState(GameState.Won); });
 
                     return;
@@ -747,7 +747,7 @@ namespace HeroesFlight.System.Gameplay
             switch (currentLevel.LevelType)
             {
                 case LevelType.NormalCombat:
-                    
+
                     enemiesToKill = currentLevel.MiniHasBoss
                         ? currentLevel.TotalMobsToSpawn + 1
                         : currentLevel.TotalMobsToSpawn;
@@ -786,14 +786,14 @@ namespace HeroesFlight.System.Gameplay
                         });
                     }
 
-                   
-                    uiSystem.UiEventHandler.GameMenu.SetProgressionFill(CurrentLvlIndex / (float) MaxLvlIndex);
+
+                    uiSystem.UiEventHandler.GameMenu.SetProgressionFill(CurrentLvlIndex / (float)MaxLvlIndex);
 
                     break;
                 case LevelType.Shrine:
                     uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(false);
                     characterSystem.SetCharacterControllerState(true);
-                  
+
                     break;
                 case LevelType.WorldBoss:
                     enemiesToKill = 2;
@@ -1089,7 +1089,7 @@ namespace HeroesFlight.System.Gameplay
                     var currentAmount = progressionSystem.GetCurrency(CurrencyKeys.RuneShard);
                     characterVFXController.TriggerCurrencyEffect(CurrencyKeys.RuneShard);
                     uiSystem.UpdateRuinShardUi(currentAmount);
-                    dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard,currentAmount);
+                    dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard, currentAmount);
                     break;
                 case CurrencyKeys.Experience:
                     characterVFXController.TriggerCurrencyEffect(CurrencyKeys.Experience);
@@ -1109,7 +1109,9 @@ namespace HeroesFlight.System.Gameplay
                     HandleGameLoopFinish();
                     break;
                 case GameState.Died:
-                    uiSystem.UiEventHandler.ReviveMenu.Open();
+                    //TODO: remove hardcoded values
+                    uiSystem.UiEventHandler.ReviveMenu.OpenWithContext(
+                        dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) > 50);
                     break;
                 case GameState.Ended:
                     break;
@@ -1173,7 +1175,7 @@ namespace HeroesFlight.System.Gameplay
 
             environmentSystem.ParticleManager.Spawn("BossSpawn", new Vector2(2.2f, 8.6f));
 
-                
+
             cameraController.InitLevelOverview(4.8f, () =>
             {
                 TogglePlayerMovementState(true);
@@ -1310,7 +1312,8 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleGameLoopFinish()
         {
-            dataSystem.AccountLevelManager.AddExp(container.CurrentModel.LevelComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
+            dataSystem.AccountLevelManager.AddExp(
+                container.CurrentModel.LevelComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
             uiSystem.UiEventHandler.SummaryMenu.Open();
         }
 
@@ -1333,7 +1336,7 @@ namespace HeroesFlight.System.Gameplay
                 shrine.OnShrineExit();
             }
 
-          
+
             CoroutineUtility.WaitForSeconds(0.5f, () =>
             {
                 Level newLevel = null;
@@ -1385,9 +1388,22 @@ namespace HeroesFlight.System.Gameplay
             }
         }
 
-        private void ReviveCharacterWithFullHP()
+        private void ReviveCharacterWithFullHp(ReviveRequestModel reviveRequestModel)
         {
-            ReviveCharacter(100f);
+            switch (reviveRequestModel.ReviveType)
+            {
+                case UiReviveType.Gems:
+                    if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= reviveRequestModel.Cost)
+                    {
+                        dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, reviveRequestModel.Cost);
+                        ReviveCharacter(100f);
+                    }
+
+                    break;
+                case UiReviveType.Ads:
+                    ReviveCharacter(100f);
+                    break;
+            }
         }
 
         void TogglePlayerCombatState(bool canAttack)

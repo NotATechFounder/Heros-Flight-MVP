@@ -1,6 +1,8 @@
 using System;
 using HeroesFlight.Common.Enum;
 using HeroesFlight.System.UI.Container;
+using HeroesFlight.System.UI.Enum;
+using HeroesFlight.System.UI.Model;
 using StansAssets.Foundation.Extensions;
 using UISystem;
 using UnityEngine;
@@ -16,7 +18,7 @@ namespace HeroesFlight.System.UI
 
         public event Action OnRestartLvlRequest;
 
-        public event Action OnReviveCharacterRequest;
+        public event Action<ReviveRequestModel> OnReviveCharacterRequest;
 
         public event Action OnSpecialButtonClicked;
 
@@ -83,13 +85,13 @@ namespace HeroesFlight.System.UI
 
             UiEventHandler.ReviveMenu.OnWatchAdsButtonClicked += () =>
             {
-                OnReviveCharacterRequest?.Invoke();
+                OnReviveCharacterRequest?.Invoke(new ReviveRequestModel(UiReviveType.Ads,0));
                 return true;
             };
 
             UiEventHandler.ReviveMenu.OnGemButtonClicked += () =>
             {
-                OnRestartLvlRequest?.Invoke();
+                OnReviveCharacterRequest?.Invoke(new ReviveRequestModel(UiReviveType.Gems,50));
                 return true;
             };
 
