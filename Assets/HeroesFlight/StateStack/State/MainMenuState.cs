@@ -105,6 +105,7 @@ namespace HeroesFlight.StateStack.State
 
             //uiSystem.UiEventHandler.MainMenu.GetCurrentAccountLevelXP += dataSystem.AccountLevelManager.GetExpIncreaseResponse;
             dataSystem.AccountLevelManager.OnLevelUp += uiSystem.UiEventHandler.MainMenu.AccountLevelUp;
+            dataSystem.AccountLevelManager.OnLevelUp += uiSystem.UiEventHandler.LevelUpMenu.AccountLevelUp;
         }
         public void UnSubscribeEvents()
         {
@@ -155,6 +156,7 @@ namespace HeroesFlight.StateStack.State
             traitSystem.OnTraitsStateChange -= HandleTraitStateChange;
 
             dataSystem.AccountLevelManager.OnLevelUp -= uiSystem.UiEventHandler.MainMenu.AccountLevelUp;
+            dataSystem.AccountLevelManager.OnLevelUp -= uiSystem.UiEventHandler.LevelUpMenu.AccountLevelUp;
             //uiSystem.UiEventHandler.MainMenu.GetCurrentAccountLevelXP -= dataSystem.AccountLevelManager.GetExpIncreaseResponse;
         }
 

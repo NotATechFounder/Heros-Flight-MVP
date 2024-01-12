@@ -26,8 +26,8 @@ public class ShopSystem : IShopSystemInterface
     public void Init(Scene scene = default, Action onComplete = null)
     {
         ShopDataHolder = scene.GetComponent<ShopDataHolder>();
+        ShopDataHolder.Init();
     }
-
 
     public void InjectUiConnection()
     {
@@ -37,17 +37,30 @@ public class ShopSystem : IShopSystemInterface
         uISystem.UiEventHandler.ShopMenu.TryPurchaseChest += (chestType) =>
         {
             Chest chest = ShopDataHolder.GetChest(chestType);
-           
+
+            if (chestType == ChestType.Regular)
+            {
+                BuyChest(chestType);
+                return;
+            }
+
             uISystem.UiEventHandler.ConfirmationMenu.Display("Buy Chest"
                 , "Are you sure you want to buy this chest for " +
                 ColoredText(chest.GetGemChestPrice.ToString(), Color.yellow) + " gems?"
                 , chest.GetChestInfo
-                , () => BuyChestWithGem(chestType), null);
+                , () => BuyChest(chestType), null);
         };
 
         uISystem.UiEventHandler.ShopMenu.TryPurchaseGoldPack += (goldPackType) =>
         {
             GoldPackGroup pack = ShopDataHolder.GetGoldPack();
+
+            if (goldPackType == GoldPackType.Small)
+            {
+                BuyGoldPack(goldPackType);
+                return;
+            }
+
             uISystem.UiEventHandler.ConfirmationMenu.Display("Buy Gold Pack"
                 , "Are you sure you want to buy " + ColoredText(pack.GetContent((int)goldPackType).reward.GetAmount().ToString(),Color.yellow) 
                 + " Gold for " +
@@ -58,13 +71,18 @@ public class ShopSystem : IShopSystemInterface
 
         foreach (GoldPackGroup.GoldPack goldPack in ShopDataHolder.GoldPackGroup.GetGoldPacks)
         {
-            uISystem.UiEventHandler.ShopMenu.SetGoldPackInfo(goldPack.goldPackType, goldPack.reward.GetAmount(),  goldPack.cost);
+            int cost = goldPack.goldPackType == GoldPackType.Small ? ShopDataHolder.GetTimeGoldPackRewardHandlerGold.GetRewardCount : goldPack.cost;
+            uISystem.UiEventHandler.ShopMenu.SetGoldPackInfo(goldPack.goldPackType, goldPack.reward.GetAmount(), cost);
         }
 
         foreach (Chest chest in ShopDataHolder.GetChests)
         {
-            uISystem.UiEventHandler.ShopMenu.SetChestInfo(chest.GetChestType, chest.GetChestInfo, chest.GetGemChestPrice);
+            int cost = chest.GetChestType == ChestType.Regular ? ShopDataHolder.GetTimedRegularChestRewardHandler.GetRewardCount : chest.GetGemChestPrice;
+            uISystem.UiEventHandler.ShopMenu.SetChestInfo(chest.GetChestType, chest.GetChestInfo, cost);
         }
+
+        ShopDataHolder.GetTimedRegularChestRewardHandler.OnRewardChanged += uISystem.UiEventHandler.ShopMenu.SetRegularChestAdsCount;
+        ShopDataHolder.GetTimeGoldPackRewardHandlerGold.OnRewardChanged += uISystem.UiEventHandler.ShopMenu.SetSmallGoldPackAdsCount;
     }
 
     private void OnPurchaseSuccess(IAPHelper.ProductType obj)
@@ -97,29 +115,24 @@ public class ShopSystem : IShopSystemInterface
         rewardSystem.ProcessRewards(rewards);
     }
 
-    //public void BuyChestWithGold(ChestType chestType)
-    //{
-    //    Chest chest = ShopDataHolder.GetChest(chestType);
-    //    if (chest == null)
-    //        return;
-
-    //    if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gold) >= chest.GetGemChestPrice)
-    //    {
-    //        Debug.Log("Chest bought");
-    //        dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gold, chest.GetGemChestPrice);
-    //        rewardSystem.ProcessRewards(chest.OpenChest());
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("Not enough gold");
-    //    }
-    //}
-
-    public void BuyChestWithGem(ChestType chestType)
+    public void BuyChest(ChestType chestType)
     {
         Chest chest = ShopDataHolder.GetChest(chestType);
         if (chest == null)
             return;
+
+        if (chestType == ChestType.Regular)
+        {
+            dataSystem.AdManager.ShowRewarededAd(() =>
+            {
+                List<Reward> rewards = chest.OpenChest();
+                rewardSystem.ProcessRewards(rewards);
+                uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(chestType, rewardSystem.GetRewardVisuals(rewards).ToArray());
+
+                ShopDataHolder.GetTimedRegularChestRewardHandler.ReduceRewardCount();
+            });
+            return;
+        }
 
         if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= chest.GetGemChestPrice)
         {
@@ -137,11 +150,25 @@ public class ShopSystem : IShopSystemInterface
     public void BuyGoldPack(GoldPackType goldPack)
     {
         int index = (int)goldPack;
+
         GoldPackGroup pack = ShopDataHolder.GetGoldPack();
         if (pack == null) 
             return;
 
         GoldPackGroup.GoldPack content = pack.GetContent(index);
+
+        if (goldPack == GoldPackType.Small)
+        {
+            dataSystem.AdManager.ShowRewarededAd(() =>
+            {
+                dataSystem.CurrencyManager.AddCurrency(content.reward.GetRewardObject<CurrencySO>(), content.reward.GetAmount());
+                uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(content.reward));
+
+                ShopDataHolder.GetTimeGoldPackRewardHandlerGold.ReduceRewardCount();
+            });
+            return;
+        }
+
         if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= content.cost)
         {
             dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, content.cost);

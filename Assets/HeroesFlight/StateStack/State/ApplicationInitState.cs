@@ -1,5 +1,6 @@
 ﻿using System;
 using HeroesFlight.Core.StateStack.Enum;
+using HeroesFlight.System.Dice;
 using HeroesFlight.System.Environment;
 using HeroesFlight.System.Inventory;
 using HeroesFlight.System.UI;
@@ -44,6 +45,7 @@ namespace HeroesFlight.StateStack.State
                                 GetService<InventorySystemInterface>().InjectUiConnection();
                                 GetService<RewardSystemInterface>().InjectUiConnection();
                                 GetService<IShopSystemInterface>().InjectUiConnection();
+                                GetService<DiceSystemInterface>().InjectUiConnection();
                                 GetService<IAchievementSystemInterface>().InjectUiConnection();
                                 AppStateStack.State.Set(ApplicationState.EnvironmentInitialization);
                             });

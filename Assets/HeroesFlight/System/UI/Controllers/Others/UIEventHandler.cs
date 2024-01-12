@@ -43,6 +43,8 @@ public class UIEventHandler : MonoBehaviour
     public RewardMenu RewardMenu { get; private set; }
     public TutorialMenu TutorialMenu { get; private set; }
 
+    public LevelUpMenu LevelUpMenu { get; private set; }
+
     public void Init(Action OnComplecte = null)
     {
         uIManager = GetComponent<UIManager>();
@@ -71,6 +73,7 @@ public class UIEventHandler : MonoBehaviour
         ShopMenu = uIManager.InitMenu<ShopMenu>();
         RewardMenu = uIManager.InitMenu<RewardMenu>();
         TutorialMenu = uIManager.InitMenu<TutorialMenu>();
+        LevelUpMenu = uIManager.InitMenu<LevelUpMenu>();
         OnComplecte?.Invoke();
     }
 }
