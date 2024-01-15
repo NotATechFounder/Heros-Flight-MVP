@@ -133,7 +133,7 @@ namespace HeroesFlight.System.Gameplay
 
         private int goldModifier;
 
-        private bool hasRevivedWithAds = false;
+        private int reviveAmount;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -278,6 +278,8 @@ namespace HeroesFlight.System.Gameplay
             container.SetStartingIndex(0);
             revivedByFeatThisRun = false;
             goldModifier = 0;
+            reviveAmount = 0;
+            shrine.GetAngelEffectManager.ResetAngelEffects();
         }
 
         private void AbilitySelectMenu_OnMenuClosed()
@@ -1136,8 +1138,8 @@ namespace HeroesFlight.System.Gameplay
                     break;
                 case GameState.Died:
                     //TODO: remove hardcoded values
-                    uiSystem.UiEventHandler.ReviveMenu.OpenWithContext(
-                        dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) > 50);
+                    uiSystem.UiEventHandler.ReviveMenu.OpenWithContext(reviveAmount < 2,
+                    dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) > 50);
                     break;
                 case GameState.Ended:
                     break;
@@ -1414,6 +1416,11 @@ namespace HeroesFlight.System.Gameplay
 
         private void ReviveCharacterWithFullHp(ReviveRequestModel reviveRequestModel)
         {
+            if (reviveAmount >= 2) 
+            { 
+                return; 
+            }
+
             switch (reviveRequestModel.ReviveType)
             {
                 case UiReviveType.Gems:
@@ -1421,17 +1428,16 @@ namespace HeroesFlight.System.Gameplay
                     {
                         dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, reviveRequestModel.Cost);
                         ReviveCharacter(100f);
+
+                        reviveAmount++;
                     }
 
                     break;
                 case UiReviveType.Ads:
-
-                    if (hasRevivedWithAds)
-                        return;
                     dataSystem.AdManager.ShowRewardedAd(() =>
                     {
                         ReviveCharacter(100f);
-                        hasRevivedWithAds = true;
+                        reviveAmount++;
                     });
                     break;
             }
