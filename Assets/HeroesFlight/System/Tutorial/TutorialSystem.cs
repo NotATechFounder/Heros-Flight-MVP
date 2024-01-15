@@ -499,7 +499,7 @@ public class TutorialSystem : ITutorialInterface
 
         environmentSystem.CurrencySpawner.SetPlayer(characterController.CharacterTransform);
 
-        shrine.Initialize(dataSystem.CurrencyManager, characterStatController);
+        shrine.Initialize(dataSystem.CurrencyManager, characterStatController, dataSystem.AdManager);
         godsBenevolence.Initialize(characterStatController);
 
         activeAbilityManager.Initialize(characterStatController);

@@ -45,7 +45,6 @@ namespace UISystem
             {
                 if (OnWatchAdsButtonClicked?.Invoke() == true)
                 {
-                    watchAdsButton.SetVisibility(GameButtonVisiblity.Hidden);
                     startTimer.Stop();
                     Close();
                 }

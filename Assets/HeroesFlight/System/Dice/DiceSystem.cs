@@ -47,19 +47,20 @@ namespace HeroesFlight.System.Dice
                 float gem =  dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem);
                 if (gem < diceHandler.GetGemCost)
                 {
-                    return false;
+                    return;
                 }
 
-                Debug.Log("Gem Roll Pressed");
                 dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, diceHandler.GetGemCost);
-                return true;
+                uiSystem.UiEventHandler.DiceMenu.TriggerRollAction();
             };
 
             uiSystem.UiEventHandler.DiceMenu.OnAdsRollPressed += () =>
             {
-                Debug.Log ("Ads Roll Pressed");
-                diceHandler.GetTimedRewardHandler.ReduceRewardCount();
-                return true;
+                dataSystem.AdManager.ShowRewardedAd(() =>
+                {
+                    diceHandler.GetTimedRewardHandler.ReduceRewardCount();
+                    uiSystem.UiEventHandler.DiceMenu.TriggerRollAction();
+                });
             };
 
             diceHandler.GetTimedRewardHandler.OnRewardChanged += uiSystem.UiEventHandler.DiceMenu.SetAdsCount;

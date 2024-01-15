@@ -239,9 +239,29 @@ namespace HeroesFlight.System.Gameplay
                 }
             }
 
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnGemReRoll += AbilitySelectMenu_OnGemReRoll;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnAdsReRoll += AbilitySelectMenu_OnAdsReRoll;
+
             RegisterShrineNPCUIEvents();
 
             OnComplete?.Invoke();
+        }
+
+        private void AbilitySelectMenu_OnGemReRoll()
+        {
+            if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= 10)
+            {
+                dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, 10);
+                uiSystem.UiEventHandler.AbilitySelectMenu.ReRoll();
+            }
+        }
+
+        private void AbilitySelectMenu_OnAdsReRoll()
+        {
+            dataSystem.AdManager.ShowRewardedAd(() =>
+            {
+                uiSystem.UiEventHandler.AbilitySelectMenu.AdsReRoll();
+            });
         }
 
         public void Reset()
@@ -402,6 +422,9 @@ namespace HeroesFlight.System.Gameplay
                 activeAbilityManager.GetPassiveAbilityLevel;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed -= HeroProgressionCompleted;
 
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnGemReRoll -= AbilitySelectMenu_OnGemReRoll;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnAdsReRoll -= AbilitySelectMenu_OnAdsReRoll;
+
             UnRegisterShrineNPCUIEvents();
         }
 
@@ -534,7 +557,7 @@ namespace HeroesFlight.System.Gameplay
 
             environmentSystem.CurrencySpawner.SetPlayer(characterController.CharacterTransform);
 
-            shrine.Initialize(dataSystem.CurrencyManager, characterStatController);
+            shrine.Initialize(dataSystem.CurrencyManager, characterStatController , dataSystem.AdManager);
             godsBenevolence.Initialize(characterStatController);
 
             activeAbilityManager.Initialize(characterStatController);
@@ -1293,10 +1316,10 @@ namespace HeroesFlight.System.Gameplay
         void ShowLevelPortal()
         {
             CoroutineUtility.WaitForSeconds(1f,
-                () =>
-                {
-                    container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
-                });
+            () =>
+            {
+                container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
+            });
         }
 
         void ShowGodBenevolencePrompt()
@@ -1330,7 +1353,6 @@ namespace HeroesFlight.System.Gameplay
             SetupCharacter();
             StartGameLoop();
         }
-
 
         void MoveToNextLvl()
         {
