@@ -2,7 +2,7 @@
 
 public enum QuestType
 {
-    LevelComplection,
+    LevelCompletion,
     UpgradeEquipment,
     ObtainEquipment,
     DefeatWorldBoss,
@@ -54,7 +54,7 @@ public class LevelComplectionQuest : QuestBase
 
     public LevelComplectionQuest( WorldType worldType, int amount = 1) : base(amount)
     {
-        questType = QuestType.LevelComplection;
+        questType = QuestType.LevelCompletion;
         this.worldType = worldType;
     }
 }

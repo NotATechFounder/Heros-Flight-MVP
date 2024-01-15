@@ -10,31 +10,55 @@ using StansAssets.Foundation.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.System.Achievement_System.ProgressionUnlocks;
+using HeroesFlight.System.Achievement_System.ProgressionUnlocks.UnlockRewards;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class AchievementSystem : IAchievementSystemInterface
 {
     public QuestRewardHandler questRewardHandler { get; private set; }
+    public ProgressionUnlocksHandler UnlocksHandlers { get; }
 
     private RewardSystemInterface rewardSystemInterface;
     private InventorySystemInterface inventorySystemInterface;
-    private GamePlaySystemInterface gamePlaySystemInterface;
     private IUISystem uiSystem;
     private CombatSystemInterface combatSystemInterface;
     private EnvironmentSystemInterface environmentSystemInterface;
     private DataSystemInterface dataSystemInterface;
 
     public AchievementSystem(IUISystem uiSystem, RewardSystemInterface rewardSystemInterface, InventorySystemInterface inventorySystemInterface ,
-        GamePlaySystemInterface gamePlaySystemInterface, CombatSystemInterface combatSystemInterface, EnvironmentSystemInterface environmentSystemInterface, DataSystemInterface dataSystemInterface)
+        CombatSystemInterface combatSystemInterface, EnvironmentSystemInterface environmentSystemInterface, DataSystemInterface dataSystemInterface)
     {
         this.uiSystem = uiSystem;
         this.rewardSystemInterface = rewardSystemInterface;
-        this.gamePlaySystemInterface = gamePlaySystemInterface;
         this.inventorySystemInterface = inventorySystemInterface;
         this.combatSystemInterface = combatSystemInterface;
         this.environmentSystemInterface = environmentSystemInterface;
         this.dataSystemInterface = dataSystemInterface;
+        UnlocksHandlers = new ProgressionUnlocksHandler(dataSystemInterface);
+        UnlocksHandlers.OnRewardUnlocked += HandleRewardUnlocked;
+    }
+
+    private void HandleRewardUnlocked(UnlockReward data)
+    {
+        switch (data.UnlockType)
+        {
+            case ProgressionUnlockType.Character:
+                var characterData = data as CharacterUnlock;
+                dataSystemInterface.CharacterManager.UnlockCharacter(characterData.CharacterCharacterType);
+                Debug.Log($"{characterData.CharacterCharacterType} unlocked");
+                break;
+            case ProgressionUnlockType.NPC:
+                break;
+            case ProgressionUnlockType.World:
+                var worldData = data as WorldUnlock;
+                dataSystemInterface.WorldManger.UnlockWorld(worldData.TargetWorld);
+                Debug.Log($"Unlockign world {worldData.TargetWorld}");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
     public void Init(Scene scene = default, Action onComplete = null)
@@ -71,10 +95,10 @@ public class AchievementSystem : IAchievementSystemInterface
             }
         };
 
-        gamePlaySystemInterface.OnLevelComplected += () =>
-        {
-            AddQuestProgress(new QuestEntry<LevelComplectionQuest>(new LevelComplectionQuest(dataSystemInterface.WorldManger.SelectedWorld)));
-        };
+        // gamePlaySystemInterface.OnLevelComplected += () =>
+        // {
+        //     AddQuestProgress(new QuestEntry<LevelComplectionQuest>(new LevelComplectionQuest(dataSystemInterface.WorldManger.SelectedWorld)));
+        // };
 
         // example
         //AddQuestProgress(new QuestEntry<DefeatMobsQuest>(new DefeatMobsQuest(WorldType.World1)));
@@ -122,7 +146,7 @@ public class AchievementSystem : IAchievementSystemInterface
                     questRewardHandler.CurrentData.qP += questEntry.GetQuestData().amount;
                 }
                 break;
-            case QuestType.LevelComplection:
+            case QuestType.LevelCompletion:
                 LevelComplectionQuest levelComplection = questEntry.GetQuestData() as LevelComplectionQuest;
                 LevelComplectionQuestSO levelComplectionQuestSO = (LevelComplectionQuestSO)questRewardHandler.CurrentQuest;
                 if (levelComplectionQuestSO.worldType == levelComplection.worldType)
@@ -153,6 +177,31 @@ public class AchievementSystem : IAchievementSystemInterface
         questRewardHandler.CurrentData.qP = Mathf.Clamp(questRewardHandler.CurrentData.qP, 0, questRewardHandler.CurrentQuest.GetQuestGoal());
         UpdateQuestVisual();
         questRewardHandler.Save();
+    }
+
+    public void AddProgressionProgress<T>(QuestEntry<T> questEntry) where T : QuestBase
+    {
+        switch (questEntry.GetQuestData().questType)
+        {
+            case QuestType.LevelCompletion:
+                LevelComplectionQuest levelComplection = questEntry.GetQuestData() as LevelComplectionQuest;
+                UnlocksHandlers.ProcessWorldProgression(levelComplection.worldType,levelComplection.amount);
+                break;
+            case QuestType.UpgradeEquipment:
+                break;
+            case QuestType.ObtainEquipment:
+                break;
+            case QuestType.DefeatWorldBoss:
+                DefeatWorldBossQuest bossKill = questEntry.GetQuestData() as DefeatWorldBossQuest;
+                UnlocksHandlers.ProcessBossKilled(bossKill.worldType);
+                break;
+            case QuestType.DefeatMob:
+                break;
+            case QuestType.ReachLevel:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
     public void ClaimQuestReward()

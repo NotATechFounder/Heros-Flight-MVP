@@ -53,7 +53,7 @@ namespace HeroesFlight.System.Gameplay
             NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem,
             CombatSystemInterface combatSystem,
             IUISystem uiSystem, ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystemInterface,
-            InventorySystemInterface inventorySystemInterface)
+            InventorySystemInterface inventorySystemInterface, IAchievementSystemInterface achievementSystemInterface)
         {
             this.dataSystem = dataSystem;
             this.npcSystem = npcSystem;
@@ -64,6 +64,7 @@ namespace HeroesFlight.System.Gameplay
             this.progressionSystem = progressionSystem;
             traitSystem = traitSystemInterface;
             InventorySystem = inventorySystemInterface;
+            achievementSystem = achievementSystemInterface;
         }
 
         CountDownTimer GameTimer;
@@ -83,6 +84,7 @@ namespace HeroesFlight.System.Gameplay
         NpcSystemInterface npcSystem;
 
         CombatSystemInterface combatSystem;
+        private IAchievementSystemInterface achievementSystem;
 
         IUISystem uiSystem;
 
@@ -612,8 +614,15 @@ namespace HeroesFlight.System.Gameplay
             if (enemiesToKill <= 0)
             {
                 GameTimer.Stop();
+                
+                Debug.Log(CurrentLvlIndex);
+                achievementSystem.AddQuestProgress(
+                    new QuestEntry<LevelComplectionQuest>(
+                        new LevelComplectionQuest(dataSystem.WorldManger.SelectedWorld)));
+                achievementSystem.AddProgressionProgress(  new QuestEntry<LevelComplectionQuest>(
+                    new LevelComplectionQuest(dataSystem.WorldManger.SelectedWorld,CurrentLvlIndex)));
                 HandlePlayerWon();
-                OnLevelComplected?.Invoke();
+              
             }
         }
 
