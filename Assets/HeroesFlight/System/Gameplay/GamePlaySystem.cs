@@ -133,6 +133,8 @@ namespace HeroesFlight.System.Gameplay
 
         private int goldModifier;
 
+        private bool hasRevivedWithAds = false;
+
         public void Init(Scene scene = default, Action OnComplete = null)
         {
             dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard, 0);
@@ -1337,7 +1339,6 @@ namespace HeroesFlight.System.Gameplay
                 shrine.OnShrineExit();
             }
 
-
             CoroutineUtility.WaitForSeconds(0.5f, () =>
             {
                 Level newLevel = null;
@@ -1402,7 +1403,14 @@ namespace HeroesFlight.System.Gameplay
 
                     break;
                 case UiReviveType.Ads:
-                    ReviveCharacter(100f);
+
+                    if (hasRevivedWithAds)
+                        return;
+                    dataSystem.AdManager.ShowRewardedAd(() =>
+                    {
+                        ReviveCharacter(100f);
+                        hasRevivedWithAds = true;
+                    });
                     break;
             }
         }
