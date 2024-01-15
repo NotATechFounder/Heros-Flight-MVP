@@ -262,7 +262,6 @@ public class MobDifficultyHolder
 
     public int GetHealth(int level, EnemyType enemyType)
     {
-        Debug.Log(enemyType);
         return mobDifficulties.FirstOrDefault(x => x.EnemyType == enemyType).HealthStat.GetCurrentValueInt(level);
     }
 

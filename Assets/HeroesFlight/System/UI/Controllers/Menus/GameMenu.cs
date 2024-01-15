@@ -344,6 +344,9 @@ namespace UISystem
 
         public void ShowMiniBossWarning(EncounterType encounterType)
         {
+            bosspanel.SetActive(false);
+            minibosspanel.SetActive(false);
+            
             switch (encounterType)
             {
                 case EncounterType.Miniboss:
