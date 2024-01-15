@@ -320,8 +320,8 @@ namespace HeroesFlight.System.Gameplay
                     HandleEnemyDamaged(damageModel.DamageIntentModel);
                     break;
                 case CombatEntityType.MiniBoss:
-                    HandleEnemyDamaged(damageModel.DamageIntentModel);
-                    //   HandleMinibossHealthChange(damageModel.HealthPercentagePercentageLeft);
+                    HandleEnemyDamaged(damageModel.DamageIntentModel); 
+                    HandleSpecialEnemyHealthChange(damageModel.HealthPercentagePercentageLeft);
                     break;
                 case CombatEntityType.Boss:
                     HandleEnemyDamaged(damageModel.DamageIntentModel);
@@ -574,6 +574,7 @@ namespace HeroesFlight.System.Gameplay
             var effectsController = obj.GetComponent<CombatEffectsController>();
             combatSystem.RegisterEntity(new CombatEntityModel(healthController, attackController, effectsController,
                 CombatEntityType.MiniBoss));
+            HandleSpecialEnemyHealthChange(1f);
             uiSystem.ToggleSpecialEnemyHealthBar(true);
             var mobSpawnAbility = obj.transform.GetComponentInChildren<SpawnEnemyAbility>();
             if (mobSpawnAbility != null)
@@ -1186,7 +1187,7 @@ namespace HeroesFlight.System.Gameplay
                 boss.OnBossStateChange += HandleBossStateChange;
                 boss.OnBeingDamaged += HandleBossDamaged;
 
-                boss.OnHealthPercentageChange += HandleBossHealthChange;
+                boss.OnHealthPercentageChange += HandleSpecialEnemyHealthChange;
                 boss.OnCrystalDestroyed += SpawnLootFromBoss;
                 characterSystem.SetCharacterControllerState(true);
                 boss.Init(npcSystem.NpcContainer.MobDifficulties.GetHealth(CurrentLvlIndex, EnemyType.Boss),
@@ -1235,7 +1236,7 @@ namespace HeroesFlight.System.Gameplay
             {
                 boss.OnBossStateChange -= HandleBossStateChange;
                 boss.OnBeingDamaged -= HandleBossDamaged;
-                boss.OnHealthPercentageChange -= HandleBossHealthChange;
+                boss.OnHealthPercentageChange -= HandleSpecialEnemyHealthChange;
                 boss.OnCrystalDestroyed -= SpawnLootFromBoss;
                 HandlePlayerWon();
             }
@@ -1245,8 +1246,9 @@ namespace HeroesFlight.System.Gameplay
         {
         }
 
-        void HandleBossHealthChange(float amount)
+        void HandleSpecialEnemyHealthChange(float amount)
         {
+            Debug.Log($"updating with {amount}");
             uiSystem.UpdateSpecialEnemyHealthBar(amount);
         }
 
