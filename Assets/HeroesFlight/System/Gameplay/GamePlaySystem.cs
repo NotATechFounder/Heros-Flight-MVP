@@ -249,8 +249,6 @@ namespace HeroesFlight.System.Gameplay
             npcSystem.OnEnemySpawned -= HandleEnemySpawned;
             combatSystem.OnEntityReceivedDamage -= HandleEntityReceivedDamage;
             combatSystem.OnEntityDied -= HandleEntityDied;
-            uiSystem.OnSpecialButtonClicked -= UseCharacterSpecial;
-            uiSystem.OnReviveCharacterRequest -= ReviveCharacterWithFullHp;
             ResetLogic();
             ResetConnections();
             container.SetStartingIndex(0);
