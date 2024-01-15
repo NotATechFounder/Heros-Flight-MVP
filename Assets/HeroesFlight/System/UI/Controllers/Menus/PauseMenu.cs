@@ -2,6 +2,7 @@ using Pelumi.Juicer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UISystem;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,10 @@ namespace UISystem
         [SerializeField] private AdvanceButton closeButton;
         [SerializeField] private AdvanceButton resumeButton;
         [SerializeField] private AdvanceButton quitButton;
+
+        [Header("CUrrencies")]
+        [SerializeField] private TextMeshProUGUI runeShardsTMP;
+        [SerializeField] private TextMeshProUGUI keysTMP;
 
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
@@ -49,6 +54,12 @@ namespace UISystem
         public override void ResetMenu()
         {
 
+        }
+
+        public void UpdateCurrencyUi(int runeShards, int keys)
+        {
+            runeShardsTMP.text = runeShards.ToString();
+            keysTMP.text = keys.ToString();
         }
     }
 }

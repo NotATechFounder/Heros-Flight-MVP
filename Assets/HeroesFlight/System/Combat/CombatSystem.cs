@@ -63,6 +63,18 @@ namespace HeroesFlight.System.Combat
         public void Reset()
         {
             CoroutineUtility.Stop(tickRoutine);
+            ClearCacheConnections();
+        }
+
+        private void ClearCacheConnections()
+        {
+            foreach (var data in combatEntities)
+            {
+                data.Key.OnDamageReceiveRequest -= HandleEntityDamaged;
+                data.Key.OnDeath -= HandleEntityDied;
+                OnTick -= data.Value.EffectHandler.ExecuteTick;
+            }
+            combatEntities.Clear();
         }
 
         public void RegisterEntity(CombatEntityModel model)
