@@ -320,7 +320,7 @@ namespace HeroesFlight.System.Gameplay
                     HandleEnemyDamaged(damageModel.DamageIntentModel);
                     break;
                 case CombatEntityType.MiniBoss:
-                    HandleEnemyDamaged(damageModel.DamageIntentModel); 
+                    HandleEnemyDamaged(damageModel.DamageIntentModel);
                     HandleSpecialEnemyHealthChange(damageModel.HealthPercentagePercentageLeft);
                     break;
                 case CombatEntityType.Boss:
@@ -896,7 +896,8 @@ namespace HeroesFlight.System.Gameplay
                         shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune],
                         () =>
                         {
-                            uiSystem.UiEventHandler.HealingNPCMenu.Open(dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.RuneShard),
+                            uiSystem.UiEventHandler.HealingNPCMenu.Open(
+                                dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.RuneShard),
                                 dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem));
                             TogglePlayerMovementState(false);
                         });
@@ -912,23 +913,20 @@ namespace HeroesFlight.System.Gameplay
 
         void RegisterShrineNPCUIEvents()
         {
-            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += () => TogglePlayerMovementState(true);
+            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableCharacterMovement;
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += (angelCard) =>
             {
                 shrine.Purchase(ShrineNPCType.AngelsGambit);
             };
 
 
-            uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed += () => TogglePlayerMovementState(true);
+            uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed += EnableCharacterMovement;
             uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice +=
                 shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
-            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested += (currencyType) =>
-            {
-                return shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType);
-            };
-            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted += () => { shrine.GetHealer.Heal(); };
+            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested += HandleShrineHealerNpcPurchaseRequest;
+            // uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted += () => { shrine.GetHealer.Heal(); };
 
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovementState(true);
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += EnableCharacterMovement;
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
                 shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
@@ -965,27 +963,44 @@ namespace HeroesFlight.System.Gameplay
                 activeAbilityManager.SwapPassiveAbility;
         }
 
+        bool HandleShrineHealerNpcPurchaseRequest(ShrineNPCCurrencyType currencyType)
+        {
+            if (shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType))
+            {
+                var currentAmount = progressionSystem.GetCurrency(CurrencyKeys.RuneShard);
+                int realCurrency = (int)dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.RuneShard);
+                int delta = realCurrency - currentAmount;
+                progressionSystem.AddCurrency(CurrencyKeys.RuneShard, delta);
+                dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard,
+                    progressionSystem.GetCurrency(CurrencyKeys.RuneShard));
+                uiSystem.UpdateRuinShardUi(progressionSystem.GetCurrency(CurrencyKeys.RuneShard));
+                uiSystem.UiEventHandler.PauseMenu.UpdateCurrencyUi(
+                    progressionSystem.GetCurrency(CurrencyKeys.RuneShard), 0);
+                shrine.GetHealer.Heal();
+                return true;
+            }
+
+            return false;
+        }
+
         void UnRegisterShrineNPCUIEvents()
         {
-            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= () => TogglePlayerMovementState(true);
+            uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableCharacterMovement;
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= (angelCard) =>
             {
                 shrine.Purchase(ShrineNPCType.AngelsGambit);
             };
 
-            uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed -= () => TogglePlayerMovementState(true);
+            uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed -= EnableCharacterMovement;
             uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice -=
                 shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
-            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested -= (currencyType) =>
-            {
-                return shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType);
-            };
-            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted -= () => { shrine.GetHealer.Heal(); };
+            uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested -= HandleShrineHealerNpcPurchaseRequest;
+            // uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted -= () => { shrine.GetHealer.Heal(); };
 
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovementState(true);
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed -= EnableCharacterMovement;
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice -=
                 shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
-            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
+            uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested -= (currencyType) =>
             {
                 return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
             };
@@ -1092,6 +1107,7 @@ namespace HeroesFlight.System.Gameplay
                     characterVFXController.TriggerCurrencyEffect(CurrencyKeys.RuneShard);
                     uiSystem.UpdateRuinShardUi(currentAmount);
                     dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard, currentAmount);
+                    uiSystem.UiEventHandler.PauseMenu.UpdateCurrencyUi(currentAmount, 0);
                     break;
                 case CurrencyKeys.Experience:
                     characterVFXController.TriggerCurrencyEffect(CurrencyKeys.Experience);
@@ -1413,6 +1429,11 @@ namespace HeroesFlight.System.Gameplay
         {
             characterAttackController.ToggleControllerState(canAttack);
             characterHealthController.SetInvulnerableState(!canAttack);
+        }
+
+        void EnableCharacterMovement()
+        {
+            TogglePlayerMovementState(true);
         }
     }
 }
