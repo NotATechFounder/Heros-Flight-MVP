@@ -41,8 +41,21 @@ namespace HeroesFlight.System.Achievement_System.ProgressionUnlocks
         {
         }
 
-        public void ProcessBossKilled(WorldType bossWorld)
+        public void ProcessBossKilled(WorldType bossWorld,WorldType world)
         {
+            
+            foreach (var unlock in progressionMap.Values)
+            {
+                if (unlock.ObjectiveType == QuestType.DefeatWorldBoss && unlock.TargetWorld == world)
+                {
+                    Debug.Log($"Should unlock id {unlock.UnlockId}");
+                    unlockData.UnlockedIds.Add(unlock.UnlockId);
+                    Save();
+                    OnRewardUnlocked?.Invoke(unlock.UnlockReward);
+                }
+            }
+            
+            
             switch (bossWorld)
             {
                 case WorldType.World1:

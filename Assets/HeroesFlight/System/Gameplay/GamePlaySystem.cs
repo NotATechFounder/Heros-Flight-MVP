@@ -329,6 +329,9 @@ namespace HeroesFlight.System.Gameplay
                 case CombatEntityType.TempMob:
                     HandleEnemyDamaged(damageModel.DamageIntentModel);
                     break;
+                case CombatEntityType.BossCrystal:
+                    HandleEnemyDamaged(damageModel.DamageIntentModel);
+                    break;
             }
         }
 
@@ -1218,7 +1221,7 @@ namespace HeroesFlight.System.Gameplay
                 foreach (var health in boss.CrystalNodes)
                 {
                     var effectsHandler = health.HealthTransform.GetComponent<CombatEffectsController>();
-                    combatSystem.RegisterEntity(new CombatEntityModel(health, effectsHandler, CombatEntityType.Boss));
+                    combatSystem.RegisterEntity(new CombatEntityModel(health, effectsHandler, CombatEntityType.BossCrystal));
                 }
 
                 var mushroomTriggerAbility = boss.transform.GetComponentInChildren<BossMushroomSummonAbility>();
@@ -1261,6 +1264,7 @@ namespace HeroesFlight.System.Gameplay
                 boss.OnBeingDamaged -= HandleBossDamaged;
                 boss.OnHealthPercentageChange -= HandleSpecialEnemyHealthChange;
                 boss.OnCrystalDestroyed -= SpawnLootFromBoss;
+                combatSystem.ManuallyNotifyEntityDeath(new EntityDeathModel(Vector3.zero, CombatEntityType.Boss));
                 HandlePlayerWon();
             }
         }

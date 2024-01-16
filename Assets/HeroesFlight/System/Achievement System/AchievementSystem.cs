@@ -73,9 +73,9 @@ public class AchievementSystem : IAchievementSystemInterface
         inventorySystemInterface.InventoryHandler.OnEquipmentUpdated
             += (item) => AddQuestProgress(new QuestEntry<UpgradeEquipmentQuest>(new UpgradeEquipmentQuest(item.GetItemData<ItemEquipmentData>().rarity)));
 
-        combatSystemInterface.OnEntityReceivedDamage += (damageModel) =>
+        combatSystemInterface.OnEntityDied += (deathModel) =>
         {
-            switch (damageModel.EntityType)
+            switch (deathModel.EntityType)
             {
                 case CombatEntityType.Player:
            
@@ -88,6 +88,7 @@ public class AchievementSystem : IAchievementSystemInterface
                     break;
                 case CombatEntityType.Boss:
                     AddQuestProgress(new QuestEntry<DefeatWorldBossQuest>(new DefeatWorldBossQuest(dataSystemInterface.WorldManger.SelectedWorld)));
+                    AddProgressionProgress(new QuestEntry<DefeatWorldBossQuest>(new DefeatWorldBossQuest(dataSystemInterface.WorldManger.SelectedWorld)));
                     break;
                 case CombatEntityType.TempMob:
 
@@ -193,7 +194,7 @@ public class AchievementSystem : IAchievementSystemInterface
                 break;
             case QuestType.DefeatWorldBoss:
                 DefeatWorldBossQuest bossKill = questEntry.GetQuestData() as DefeatWorldBossQuest;
-                UnlocksHandlers.ProcessBossKilled(bossKill.worldType);
+                UnlocksHandlers.ProcessBossKilled(bossKill.worldType,bossKill.worldType);
                 break;
             case QuestType.DefeatMob:
                 break;

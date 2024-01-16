@@ -6,6 +6,7 @@
         Mob,
         MiniBoss,
         Boss,
-        TempMob
+        TempMob,
+        BossCrystal
     }
 }

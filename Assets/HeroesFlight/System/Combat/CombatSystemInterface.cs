@@ -15,5 +15,6 @@ namespace HeroesFlight.System.Combat
         void UseCharacterUltimate(Action onBeforeUse=null,Action onComplete = null);
         void StartCharacterComboCheck();
         void SetSpecialBarValue(float value);
+        void ManuallyNotifyEntityDeath(EntityDeathModel model);
     }
 }
