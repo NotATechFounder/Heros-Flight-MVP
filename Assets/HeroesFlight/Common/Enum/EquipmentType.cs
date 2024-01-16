@@ -11,4 +11,14 @@ namespace HeroesFlight.Common.Enum
         Belt,
         Necklace
     }
+
+    [Serializable]
+    public enum EquipmentStar
+    {
+        OneStar,
+        TwoStar,
+        ThreeStar,
+        FourStar,
+        FiveStar
+    }
 }

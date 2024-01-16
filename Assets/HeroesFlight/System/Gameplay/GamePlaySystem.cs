@@ -133,6 +133,8 @@ namespace HeroesFlight.System.Gameplay
 
         private int goldModifier;
 
+        private int reviveAmount;
+
         public void Init(Scene scene = default, Action OnComplete = null)
         {
             dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard, 0);
@@ -237,9 +239,29 @@ namespace HeroesFlight.System.Gameplay
                 }
             }
 
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnGemReRoll += AbilitySelectMenu_OnGemReRoll;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnAdsReRoll += AbilitySelectMenu_OnAdsReRoll;
+
             RegisterShrineNPCUIEvents();
 
             OnComplete?.Invoke();
+        }
+
+        private void AbilitySelectMenu_OnGemReRoll()
+        {
+            if (dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= 10)
+            {
+                dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, 10);
+                uiSystem.UiEventHandler.AbilitySelectMenu.ReRoll();
+            }
+        }
+
+        private void AbilitySelectMenu_OnAdsReRoll()
+        {
+            dataSystem.AdManager.ShowRewardedAd(() =>
+            {
+                uiSystem.UiEventHandler.AbilitySelectMenu.AdsReRoll();
+            });
         }
 
         public void Reset()
@@ -254,6 +276,8 @@ namespace HeroesFlight.System.Gameplay
             container.SetStartingIndex(0);
             revivedByFeatThisRun = false;
             goldModifier = 0;
+            reviveAmount = 0;
+            shrine.GetAngelEffectManager.ResetAngelEffects();
         }
 
         private void AbilitySelectMenu_OnMenuClosed()
@@ -398,6 +422,9 @@ namespace HeroesFlight.System.Gameplay
                 activeAbilityManager.GetPassiveAbilityLevel;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed -= HeroProgressionCompleted;
 
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnGemReRoll -= AbilitySelectMenu_OnGemReRoll;
+            uiSystem.UiEventHandler.AbilitySelectMenu.OnAdsReRoll -= AbilitySelectMenu_OnAdsReRoll;
+
             UnRegisterShrineNPCUIEvents();
         }
 
@@ -530,7 +557,7 @@ namespace HeroesFlight.System.Gameplay
 
             environmentSystem.CurrencySpawner.SetPlayer(characterController.CharacterTransform);
 
-            shrine.Initialize(dataSystem.CurrencyManager, characterStatController);
+            shrine.Initialize(dataSystem.CurrencyManager, characterStatController , dataSystem.AdManager);
             godsBenevolence.Initialize(characterStatController);
 
             activeAbilityManager.Initialize(characterStatController);
@@ -1126,8 +1153,8 @@ namespace HeroesFlight.System.Gameplay
                     break;
                 case GameState.Died:
                     //TODO: remove hardcoded values
-                    uiSystem.UiEventHandler.ReviveMenu.OpenWithContext(
-                        dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) > 50);
+                    uiSystem.UiEventHandler.ReviveMenu.OpenWithContext(reviveAmount < 2,
+                    dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) > 50);
                     break;
                 case GameState.Ended:
                     break;
@@ -1307,10 +1334,10 @@ namespace HeroesFlight.System.Gameplay
         void ShowLevelPortal()
         {
             CoroutineUtility.WaitForSeconds(1f,
-                () =>
-                {
-                    container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
-                });
+            () =>
+            {
+                container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
+            });
         }
 
         void ShowGodBenevolencePrompt()
@@ -1345,14 +1372,12 @@ namespace HeroesFlight.System.Gameplay
             StartGameLoop();
         }
 
-
         void MoveToNextLvl()
         {
             if (currentLevel.LevelType == LevelType.Shrine)
             {
                 shrine.OnShrineExit();
             }
-
 
             CoroutineUtility.WaitForSeconds(0.5f, () =>
             {
@@ -1407,6 +1432,11 @@ namespace HeroesFlight.System.Gameplay
 
         private void ReviveCharacterWithFullHp(ReviveRequestModel reviveRequestModel)
         {
+            if (reviveAmount >= 2) 
+            { 
+                return; 
+            }
+
             switch (reviveRequestModel.ReviveType)
             {
                 case UiReviveType.Gems:
@@ -1414,11 +1444,17 @@ namespace HeroesFlight.System.Gameplay
                     {
                         dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, reviveRequestModel.Cost);
                         ReviveCharacter(100f);
+
+                        reviveAmount++;
                     }
 
                     break;
                 case UiReviveType.Ads:
-                    ReviveCharacter(100f);
+                    dataSystem.AdManager.ShowRewardedAd(() =>
+                    {
+                        ReviveCharacter(100f);
+                        reviveAmount++;
+                    });
                     break;
             }
         }

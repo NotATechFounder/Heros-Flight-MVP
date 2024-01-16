@@ -11,8 +11,11 @@ namespace HeroesFlight.System.UI.DIce
 {
     public class DiceMenu : BaseMenu<DiceMenu>
     {
-        public event Func<bool> OnAdsRollPressed;
-        public event Func<bool> OnGemRollPressed;
+        public event Action OnAdsRollPressed;
+        public event Action OnGemRollPressed;
+
+        [Header("Ads")]
+        [SerializeField] private TextMeshProUGUI adsRollText;
 
         [Header("Canvas groups")] 
         [SerializeField] private CanvasGroup mainCG;
@@ -77,14 +80,12 @@ namespace HeroesFlight.System.UI.DIce
         {
             adsRollButton.onClick.AddListener(() => 
             {
-                if(OnAdsRollPressed?.Invoke() ?? false)
-                onRollAction?.Invoke(); 
+                OnAdsRollPressed?.Invoke();
             });
 
             gemROllButton.onClick.AddListener(() =>
-            { 
-                if(OnGemRollPressed?.Invoke() ?? false)
-                onRollAction?.Invoke();
+            {
+                OnGemRollPressed?.Invoke();
             });
 
             infoButton.onClick.AddListener(()=>{ShowDiceInfo(string.Empty);});
@@ -169,6 +170,7 @@ namespace HeroesFlight.System.UI.DIce
 
         public void SetAdsCount(int index)
         {
+            adsRollText.text = index.ToString();
             adsRollButton.SetVisibility( index > 0 ? GameButtonVisiblity.Visible : GameButtonVisiblity.Hidden);
         }
     }

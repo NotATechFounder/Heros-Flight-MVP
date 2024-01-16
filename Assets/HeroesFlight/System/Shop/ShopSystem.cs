@@ -123,7 +123,7 @@ public class ShopSystem : IShopSystemInterface
 
         if (chestType == ChestType.Regular)
         {
-            dataSystem.AdManager.ShowRewarededAd(() =>
+            dataSystem.AdManager.ShowRewardedAd(() =>
             {
                 List<Reward> rewards = chest.OpenChest();
                 rewardSystem.ProcessRewards(rewards);
@@ -159,7 +159,7 @@ public class ShopSystem : IShopSystemInterface
 
         if (goldPack == GoldPackType.Small)
         {
-            dataSystem.AdManager.ShowRewarededAd(() =>
+            dataSystem.AdManager.ShowRewardedAd(() =>
             {
                 dataSystem.CurrencyManager.AddCurrency(content.reward.GetRewardObject<CurrencySO>(), content.reward.GetAmount());
                 uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(content.reward));

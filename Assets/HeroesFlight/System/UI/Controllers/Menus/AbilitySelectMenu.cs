@@ -8,6 +8,9 @@ namespace UISystem
 {
     public class AbilitySelectMenu : BaseMenu<AbilitySelectMenu>
     {
+        public event Action OnGemReRoll;
+        public event Action OnAdsReRoll;
+
         public event Func<int, List<ActiveAbilityType>, List<ActiveAbilityType>> GetRandomActiveAbility;
         public event Func<int, List<PassiveAbilityType>, List<PassiveAbilityType>> GetRandomPassiveAbility;
         public event Func<PassiveAbilityType, int> GetPassiveAbilityLevel;
@@ -21,7 +24,8 @@ namespace UISystem
         public event Action<ActiveAbilityType, ActiveAbilityType> OnActiveAbilitySwapped;
 
         [SerializeField] private AbilityButtonUI[] abilityButtonUIs;
-        [SerializeField] private AdvanceButton reRollButton;
+        [SerializeField] private AdvanceButton gemReRollButton;
+        [SerializeField] private AdvanceButton adsReRollButton;
 
         List<PassiveAbilityType> currentPassiveDisplayed = new List<PassiveAbilityType>();
         ActiveAbilityType currentActiveDisplayed = ActiveAbilityType.None;
@@ -36,14 +40,15 @@ namespace UISystem
             closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
             closeEffectBG.SetOnCompleted(CloseMenu);
 
-            reRollButton.onClick.AddListener(ReRoll);
+            gemReRollButton.onClick.AddListener(() => OnGemReRoll?.Invoke());
+            adsReRollButton.onClick.AddListener(() => OnAdsReRoll?.Invoke());
         }
 
         public override void OnOpened()
         {
+            adsReRollButton.SetVisibility(GameButtonVisiblity.Visible);
             canvasGroup.alpha = 0;
             openEffectBG.Start();
-
             GenerateAbilities();
         }
 
@@ -106,6 +111,12 @@ namespace UISystem
         public void AbilitySelected()
         {
             Close();
+        }
+
+        public void AdsReRoll()
+        {
+            ReRoll();
+            adsReRollButton.SetVisibility(GameButtonVisiblity.Hidden);
         }
     }
 }

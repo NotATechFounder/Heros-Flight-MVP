@@ -9,13 +9,13 @@ public class QuestSO : ScriptableObject, IHasID
     [SerializeField] protected string questInfo;
     [SerializeField] protected QuestType questType;
     [SerializeField] protected int questGoal;
-    [SerializeField] protected RewardPackSO questRewardPack;
+    [SerializeField] protected GenericRewardPackSO questRewardPack;
 
     public string GetQuestInfo() => questInfo;
     public void SetQuestInfo (string questInfo) => this.questInfo = questInfo;  
     public QuestType GetQuestType() => questType;
     public int GetQuestGoal() => questGoal;
-    public RewardPackSO GetQuestRewardPack() => questRewardPack;
+    public GenericRewardPackSO GetQuestRewardPack() => questRewardPack;
     public bool IsQuestCompleted(int progress) => progress >= questGoal;
 
     public float GetNormalizedProgress(int progress)

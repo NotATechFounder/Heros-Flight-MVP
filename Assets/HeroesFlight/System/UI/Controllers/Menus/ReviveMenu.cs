@@ -105,10 +105,11 @@ namespace UISystem
             Close();
         }
 
-        public void OpenWithContext(bool hasEnoughGems)
+        public void OpenWithContext(bool canRevive, bool hasEnoughGems)
         {
-            gemButton.interactable = hasEnoughGems;
-            gamesReviveBlocker.SetActive(!hasEnoughGems);
+            gemButton.interactable = hasEnoughGems && canRevive;
+            gamesReviveBlocker.SetActive(!gemButton.interactable);
+            watchAdsButton.SetVisibility(canRevive ? GameButtonVisiblity.Visible : GameButtonVisiblity.Hidden);
             Open();
         }
     }

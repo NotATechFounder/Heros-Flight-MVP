@@ -10,6 +10,7 @@ public class Shrine : MonoBehaviour
 
     private CurrencyManager currencyManager;
     private CharacterStatController characterStatController;
+    private AdManager adManager;
 
     public AngelEffectManager GetAngelEffectManager => angelEffectManager;
     public Healer GetHealer => healer;
@@ -24,10 +25,11 @@ public class Shrine : MonoBehaviour
         }
     }
 
-    public void Initialize(CurrencyManager currencyManager, CharacterStatController characterStatController)
+    public void Initialize(CurrencyManager currencyManager, CharacterStatController characterStatController, AdManager adManager)
     {
         this.currencyManager = currencyManager;
         this.characterStatController = characterStatController;
+        this.adManager = adManager;
 
         angelEffectManager.Initialize(characterStatController);
         healer.Initialize(characterStatController);
@@ -52,31 +54,32 @@ public class Shrine : MonoBehaviour
         switch (shrineNPCFeeTypeFeeType)
         {
             case ShrineNPCCurrencyType.RuneShard:
-
                 if (currencyManager.GetCurrencyAmount(CurrencyKeys.RuneShard) >= shrineNPCFee.CurrentRuneShards)
                 {
                     currencyManager.ReduceCurency(CurrencyKeys.RuneShard, shrineNPCFee.CurrentRuneShards);
                     shrineNPCFee.PurchaseSuccessful();
                     return true;
                 }
+            break;
 
-                break;
             case ShrineNPCCurrencyType.Gem:
-
                 if (currencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= shrineNPCFee.CurrentGems)
                 {
                     currencyManager.ReduceCurency(CurrencyKeys.Gem, shrineNPCFee.CurrentGems);
                     shrineNPCFee.PurchaseSuccessful();
                     return true;
                 } 
-                break;
+            break;
 
-                      case ShrineNPCCurrencyType.Ad:
+            case ShrineNPCCurrencyType.Ad:
 
                 if (shrineNPCFee.CurrentMaxAdsCount > 0)
                 {
-                    shrineNPCFee.AdsWatched();
-                    shrineNPCFee.PurchaseSuccessful();
+                    adManager.ShowRewardedAd(() =>
+                    {
+                        shrineNPCFee.AdsWatched();
+                        shrineNPCFee.PurchaseSuccessful();
+                    });
                     return true;
                 }
 

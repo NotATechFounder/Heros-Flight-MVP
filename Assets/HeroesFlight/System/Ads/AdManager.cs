@@ -69,7 +69,7 @@ public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityA
         Advertisement.Show(videoID, this);
     }
 
-    public void ShowRewarededAd(Action success, Action skipped = null, Action failed = null)
+    public void ShowRewardedAd(Action success, Action skipped = null, Action failed = null)
     {
         adSuccess = success;
         adSkipped = skipped;

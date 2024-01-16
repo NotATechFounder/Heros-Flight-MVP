@@ -16,6 +16,9 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
     [Header("Rarities Information")]
     [SerializeField] RarityInfo[] rarityInfos;
 
+    [Header("Base Stats")]
+    [SerializeField] EquipmentStatIncrease[] baseStatIncrease;
+
     [Header("ItemEffect")]
     [SerializeField] ItemEffectSO[] itemEffects;
 
@@ -76,26 +79,18 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         return null;
     }
 
-    public void SetItemBuffStat(Item currentItem)
+    public ItemSO GetRandomItem()
     {
-        ItemSO itemBase = currentItem.itemSO;
+        return Items[Random.Range(0, Items.Length)];
+    }
 
-        //for (int i = 0; i < currentItem.ItemBuffs().Length; i++)
-        //{
-        //    for (int j = 0; j < itemEffects.Length; j++)
-        //    {
-        //        if (currentItem.ItemBuffs()[i].itemEffectType != itemEffects[j].itemEffectType) continue;
-
-        //        for (int k = 0; k < itemEffects[j].effectRarityStats.Length; k++)
-        //        {
-        //            if (itemEffects[j].effectRarityStats[k].rarity == currentItem.GetItemData<ItemEquipmentData>().rarity)
-        //            {
-        //                currentItem.ItemBuffs()[i].value = itemEffects[j].effectRarityStats[k].statCurve.GetCurrentValueInt(currentItem.GetItemData<ItemEquipmentData>().GetValue());
-        //                break;
-        //            }
-        //        }
-        //    }
-        //}
+    public ItemSO GetRandomItem(ItemType itemType)
+    {
+        do
+        {
+            ItemSO item = Items[Random.Range(0, Items.Length)];
+            if (item.itemType == itemType) return item;
+        } while (true);
     }
 
     public int GetBuffValue(ItemEffectType buff, Rarity currentRarity, int level)
