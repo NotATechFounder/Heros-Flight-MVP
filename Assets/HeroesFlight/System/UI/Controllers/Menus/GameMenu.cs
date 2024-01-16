@@ -75,8 +75,7 @@ namespace UISystem
 
         [Header("Special Attack")]
         [SerializeField] private AdvanceButton specialAttackButton;
-        [SerializeField] private Image specialAttackButtonFill;
-        [SerializeField] private Image specialAttackIcon;
+        [SerializeField] private Image specialAttackButtonBG;
 
         [Header("Abilities")]
         [SerializeField] private AbilityTriggerButton[] activeAbilityButtons;
@@ -110,7 +109,6 @@ namespace UISystem
         JuicerRuntime comboCounterEffect;
         JuicerRuntime comboFeedbackEffect;
         JuicerRuntime specialEffect;
-        JuicerRuntime specialIconEffect;
         JuicerRuntimeCore<float> levelProgressEffect;
         JuicerRuntime transitionEffect;
 
@@ -129,12 +127,10 @@ namespace UISystem
 
             comboFeedbackEffect = comboFeedbackText.transform.JuicyScale(1, 0.15f);
 
-            specialEffect = specialAttackButtonFill.JuicyAlpha(0, 0.25f);
+            specialEffect = specialAttackButtonBG.JuicyAlpha(0, 0.25f);
             specialEffect.SetEase(Ease.EaseInBounce);
             specialEffect.SetLoop(-1);
 
-            specialIconEffect = specialAttackIcon.transform.JuicyScale(5f, 0.25f);
-            specialIconEffect.SetOnCompleted(() => ToggleSpecialAttackButton(false));
 
             pauseButton.onClick.AddListener(() => OnPauseButtonClicked?.Invoke());
 
@@ -386,29 +382,21 @@ namespace UISystem
         public void ToggleSpecialAttackButton(bool value)
         {
             specialAttackButton.gameObject.SetActive(value);
+            specialAttackButtonBG.color = new Color(specialAttackButtonBG.color.r,specialAttackButtonBG.color.g, specialAttackButtonBG.color.b, 1);
             switch (value)
             {
                 case true:
-                    specialAttackButtonFill.fillAmount = 1;
-                    specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r, specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
+                    specialAttackButtonBG.color = new Color(specialAttackButtonBG.color.r, specialAttackButtonBG.color.g, specialAttackButtonBG.color.b, 1);
                     specialEffect.Start();
                     break;
-                case false:
-                    specialEffect.Pause();
-                    specialAttackButtonFill.color = new Color(specialAttackButtonFill.color.r,
-                        specialAttackButtonFill.color.g, specialAttackButtonFill.color.b, 1);
-                    specialAttackIcon.transform.localScale = Vector3.one;
-                    break;
-            }
-            
+                case false:  break;
+            }       
         }
 
         private void SpecialAttackButtonClicked()
         {
-            if (specialAttackButtonFill.fillAmount < 1) return;
+            specialEffect.Pause();
             specialAttackButton.gameObject.SetActive(false);
-            specialAttackButtonFill.fillAmount = 0;
-            specialIconEffect.Start();
             OnSpecialAttackButtonClicked?.Invoke();
         }
 

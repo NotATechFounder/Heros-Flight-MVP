@@ -14,6 +14,13 @@ public class Reward
     public int GetAmount()=> amount;
     public Rarity GetRarity() => rarity;
 
+    public Reward(RewardBaseSO rewardObject, int amount, Rarity rarity)
+    {
+        this.rewardObject = rewardObject;
+        this.amount = amount;
+        this.rarity = rarity;
+    }
+
     public T GetRewardObject<T>() where T : RewardBaseSO
     {
         if (rewardObject is T)

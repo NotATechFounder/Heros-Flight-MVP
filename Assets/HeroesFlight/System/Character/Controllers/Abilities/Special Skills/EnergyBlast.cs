@@ -21,7 +21,6 @@ public class EnergyBlast : RegularActiveAbility
     private int currentlinesOfDamage;
     private int baseDamage;
     private int currentDamage;
-    CharacterSimpleController characterControllerInterface;
 
     private void Update()
     {
@@ -49,19 +48,11 @@ public class EnergyBlast : RegularActiveAbility
     {
     }
 
-    public void Initialize(int level, int baseDamage, CharacterSimpleController characterControllerInterface)
+    public void Initialize(int level, int baseDamage)
     {
         this.currentLevel = level;
         this.baseDamage = baseDamage;
         overlapChecker.OnDetect += OnOverlap;
-        this.characterControllerInterface = characterControllerInterface;
-        characterControllerInterface.OnFaceDirectionChange += Flip;
-    }
-
-    private void Flip(bool facingLeft)
-    {
-        transform.localScale = new Vector3(facingLeft ? 1 : -1, 1, 1);
-        overlapChecker.SetDirection(facingLeft ? OverlapChecker.Direction.Left : OverlapChecker.Direction.Right);
     }
 
     private void OnOverlap(int count, Collider2D[] collider2D)

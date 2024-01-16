@@ -111,8 +111,6 @@ public class ChainRotate : RegularActiveAbility
                 healthController.TryDealDamage(new HealthModificationIntentModel(currentDamage,
                     DamageCritType.Critical, AttackType.Regular, CalculationType.Flat, null));
             }
-
-            Debug.Log("Hit");
         }
     }
 

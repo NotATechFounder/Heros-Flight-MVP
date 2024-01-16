@@ -1,24 +1,23 @@
 using System;
 using System.Collections.Generic;
+using HeroesFlight.System.ShrineSystem;
 using UnityEngine;
 
-namespace HeroesFlight.System.ShrineSystem
+public class Shrine : MonoBehaviour
 {
-    public class Shrine : MonoBehaviour
-    {
-        [SerializeField] AngelEffectManager angelEffectManager;
-        [SerializeField] Healer healer;
-        [SerializeField] private ShrineNPCFee[] shrineNPCFees;
+    [SerializeField] AngelEffectManager angelEffectManager;
+    [SerializeField] Healer healer;
+    [SerializeField] private ShrineNPCFee[] shrineNPCFees;
 
-        private CurrencyManager currencyManager;
-        private CharacterStatController characterStatController;
+    private CurrencyManager currencyManager;
+    private CharacterStatController characterStatController;
+    private AdManager adManager;
 
-        public AngelEffectManager GetAngelEffectManager => angelEffectManager;
-        public Healer GetHealer => healer;
-        public Dictionary<ShrineNPCType, ShrineNPCFee> ShrineNPCFeeCache = new();
+    public AngelEffectManager GetAngelEffectManager => angelEffectManager;
+    public Healer GetHealer => healer;
+    public Dictionary<ShrineNPCType, ShrineNPCFee> ShrineNPCFeeCache  = new();
 
-
-        public void InitNpcStates(ShrineSaveData data)
+    public void InitNpcStates(ShrineSaveData data)
         {
             foreach (ShrineNPCFee shrineNPCFee in shrineNPCFees)
             {
@@ -33,72 +32,71 @@ namespace HeroesFlight.System.ShrineSystem
         }
 
 
-        public void InjectData(CurrencyManager currencyManager, CharacterStatController characterStatController)
-        {
-            this.currencyManager = currencyManager;
-            this.characterStatController = characterStatController;
+    public void Initialize(CurrencyManager currencyManager, CharacterStatController characterStatController, AdManager adManager)
+    {
+        this.currencyManager = currencyManager;
+        this.characterStatController = characterStatController;
+        this.adManager = adManager;
 
-            angelEffectManager.Initialize(characterStatController);
-            healer.Initialize(characterStatController);
+        angelEffectManager.Initialize(characterStatController);
+        healer.Initialize(characterStatController);
+    }
+    public void UnlockNpc(ShrineNPCType shrineNPCFeeType)
+    {
+        ShrineNPCFee shrineNPCFee = GetShrineNPCFee(shrineNPCFeeType);
+        shrineNPCFee.Unlock();
+    }
+
+    public bool Purchase(ShrineNPCType shrineNPCFeeType, ShrineNPCCurrencyType shrineNPCFeeTypeFeeType = ShrineNPCCurrencyType.RuneShard)
+    {
+        ShrineNPCFee shrineNPCFee = GetShrineNPCFee(shrineNPCFeeType);
+
+        if (shrineNPCFee.IsFree)
+        {
+            shrineNPCFee.PurchaseSuccessful();
+            return true;
         }
 
-        public void UnlockNpc(ShrineNPCType shrineNPCFeeType)
+        switch (shrineNPCFeeTypeFeeType)
         {
-            ShrineNPCFee shrineNPCFee = GetShrineNPCFee(shrineNPCFeeType);
-            shrineNPCFee.Unlock();
-        }
+            case ShrineNPCCurrencyType.RuneShard:
+                if (currencyManager.GetCurrencyAmount(CurrencyKeys.RuneShard) >= shrineNPCFee.CurrentRuneShards)
+                {
+                    currencyManager.ReduceCurency(CurrencyKeys.RuneShard, shrineNPCFee.CurrentRuneShards);
+                    shrineNPCFee.PurchaseSuccessful();
+                    return true;
+                }
+            break;
 
-        public bool Purchase(ShrineNPCType shrineNPCFeeType,
-            ShrineNPCCurrencyType shrineNPCFeeTypeFeeType = ShrineNPCCurrencyType.RuneShard)
-        {
-            ShrineNPCFee shrineNPCFee = GetShrineNPCFee(shrineNPCFeeType);
+            case ShrineNPCCurrencyType.Gem:
+                if (currencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= shrineNPCFee.CurrentGems)
+                {
+                    currencyManager.ReduceCurency(CurrencyKeys.Gem, shrineNPCFee.CurrentGems);
+                    shrineNPCFee.PurchaseSuccessful();
+                    return true;
+                } 
+            break;
 
-            if (shrineNPCFee.IsFree)
-            {
-                shrineNPCFee.PurchaseSuccessful();
-                return true;
-            }
+            case ShrineNPCCurrencyType.Ad:
 
-            switch (shrineNPCFeeTypeFeeType)
-            {
-                case ShrineNPCCurrencyType.RuneShard:
-
-                    if (currencyManager.GetCurrencyAmount(CurrencyKeys.RuneShard) >= shrineNPCFee.CurrentRuneShards)
-                    {
-                        currencyManager.ReduceCurency(CurrencyKeys.RuneShard, shrineNPCFee.CurrentRuneShards);
-                        shrineNPCFee.PurchaseSuccessful();
-                        return true;
-                    }
-
-                    break;
-                case ShrineNPCCurrencyType.Gem:
-
-                    if (currencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= shrineNPCFee.CurrentGems)
-                    {
-                        currencyManager.ReduceCurency(CurrencyKeys.Gem, shrineNPCFee.CurrentGems);
-                        shrineNPCFee.PurchaseSuccessful();
-                        return true;
-                    }
-
-                    break;
-
-                case ShrineNPCCurrencyType.Ad:
-
-                    if (shrineNPCFee.CurrentMaxAdsCount > 0)
+                if (shrineNPCFee.CurrentMaxAdsCount > 0)
+                {
+                    adManager.ShowRewardedAd(() =>
                     {
                         shrineNPCFee.AdsWatched();
                         shrineNPCFee.PurchaseSuccessful();
-                        return true;
-                    }
+                    });
+                    return true;
+                }
 
-                    break;
-                default: break;
-            }
-
-            shrineNPCFee.PurchaseFailed();
-            return false;
+                break;
+            default: break;
         }
 
+        shrineNPCFee.PurchaseFailed();
+        return false;
+    }
+    
         public void OnShrineExit()
         {
             foreach (ShrineNPCFee shrineNPCFee in shrineNPCFees)
@@ -232,4 +230,3 @@ namespace HeroesFlight.System.ShrineSystem
             currentAdsCount--;
         }
     }
-}
