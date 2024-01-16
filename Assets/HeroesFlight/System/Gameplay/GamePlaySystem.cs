@@ -54,7 +54,8 @@ namespace HeroesFlight.System.Gameplay
             NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem,
             CombatSystemInterface combatSystem,
             IUISystem uiSystem, ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystemInterface,
-            InventorySystemInterface inventorySystemInterface, IAchievementSystemInterface achievementSystemInterface)
+            InventorySystemInterface inventorySystemInterface, IAchievementSystemInterface achievementSystemInterface,
+            ShrineSystemInterface shrineSystem)
         {
             this.dataSystem = dataSystem;
             this.npcSystem = npcSystem;
@@ -66,6 +67,7 @@ namespace HeroesFlight.System.Gameplay
             traitSystem = traitSystemInterface;
             InventorySystem = inventorySystemInterface;
             achievementSystem = achievementSystemInterface;
+            this.shrineSystem = shrineSystem;
         }
 
         CountDownTimer GameTimer;
@@ -74,8 +76,7 @@ namespace HeroesFlight.System.Gameplay
 
         GodsBenevolence godsBenevolence;
 
-        Shrine shrine;
-
+       
         ActiveAbilityManager activeAbilityManager;
 
         DataSystemInterface dataSystem;
@@ -85,8 +86,8 @@ namespace HeroesFlight.System.Gameplay
         NpcSystemInterface npcSystem;
 
         CombatSystemInterface combatSystem;
-        private IAchievementSystemInterface achievementSystem;
-
+         IAchievementSystemInterface achievementSystem;
+         private ShrineSystemInterface shrineSystem;
         IUISystem uiSystem;
 
         ProgressionSystemInterface progressionSystem;
@@ -146,7 +147,6 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.OnReviveCharacterRequest += ReviveCharacterWithFullHp;
             cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
 
-            shrine = scene.GetComponentInChildren<Shrine>();
             activeAbilityManager = scene.GetComponentInChildren<ActiveAbilityManager>();
             godsBenevolence = scene.GetComponentInChildren<GodsBenevolence>();
 
@@ -172,10 +172,10 @@ namespace HeroesFlight.System.Gameplay
 
             uiSystem.AssignGameEvents();
 
-            shrine.GetAngelEffectManager.OnPermanetCard +=
+            shrineSystem.Shrine.GetAngelEffectManager.OnPermanetCard +=
                 uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
-            uiSystem.UiEventHandler.AngelGambitMenu.CardExit += shrine.GetAngelEffectManager.Exists;
-            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += shrine.GetAngelEffectManager.AddAngelCardSO;
+            uiSystem.UiEventHandler.AngelGambitMenu.CardExit += shrineSystem.Shrine.GetAngelEffectManager.Exists;
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += shrineSystem.Shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
 
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =
@@ -347,10 +347,10 @@ namespace HeroesFlight.System.Gameplay
             this.uiSystem.OnSpecialButtonClicked -= UseCharacterSpecial;
             this.uiSystem.OnReviveCharacterRequest -= ReviveCharacterWithFullHp;
 
-            shrine.GetAngelEffectManager.OnPermanetCard -=
+            shrineSystem.Shrine.GetAngelEffectManager.OnPermanetCard -=
                 uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
-            uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= shrine.GetAngelEffectManager.Exists;
-            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= shrine.GetAngelEffectManager.AddAngelCardSO;
+            uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= shrineSystem.Shrine.GetAngelEffectManager.Exists;
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= shrineSystem.Shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
 
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -= godsBenevolence.ActivateGodsBenevolence;
@@ -536,7 +536,7 @@ namespace HeroesFlight.System.Gameplay
 
             environmentSystem.CurrencySpawner.SetPlayer(characterController.CharacterTransform);
 
-            shrine.Initialize(dataSystem.CurrencyManager, characterStatController);
+            shrineSystem.Shrine.InjectData(dataSystem.CurrencyManager, characterStatController);
             godsBenevolence.Initialize(characterStatController);
 
             activeAbilityManager.Initialize(characterStatController);
@@ -880,7 +880,7 @@ namespace HeroesFlight.System.Gameplay
                     ShrineNPCHolder shrineNPCHolder = currentLevelEnvironment.GetComponent<ShrineNPCHolder>();
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.AngelsGambit].Initialize(
-                        shrine.ShrineNPCFeeCache[ShrineNPCType.AngelsGambit],
+                        shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.AngelsGambit],
                         () =>
                         {
                             uiSystem.UiEventHandler.AngelGambitMenu.Open();
@@ -888,7 +888,7 @@ namespace HeroesFlight.System.Gameplay
                         });
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.ActiveAbilityReRoller].Initialize(
-                        shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller],
+                        shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller],
                         () =>
                         {
                             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.Open();
@@ -896,7 +896,7 @@ namespace HeroesFlight.System.Gameplay
                         });
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.PassiveAbilityReRoller].Initialize(
-                        shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller],
+                        shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller],
                         () =>
                         {
                             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.Open();
@@ -904,7 +904,7 @@ namespace HeroesFlight.System.Gameplay
                         });
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.HealingMagicRune].Initialize(
-                        shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune],
+                        shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune],
                         () =>
                         {
                             uiSystem.UiEventHandler.HealingNPCMenu.Open(
@@ -914,7 +914,7 @@ namespace HeroesFlight.System.Gameplay
                         });
 
                     shrineNPCHolder.shrineNPCsCache[ShrineNPCType.Blacksmith].Initialize(
-                        shrine.ShrineNPCFeeCache[ShrineNPCType.Blacksmith],
+                        shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.Blacksmith],
                         () => { });
 
                     container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
@@ -927,22 +927,22 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableCharacterMovement;
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += (angelCard) =>
             {
-                shrine.Purchase(ShrineNPCType.AngelsGambit);
+                shrineSystem.Shrine.Purchase(ShrineNPCType.AngelsGambit);
             };
 
 
             uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed += EnableCharacterMovement;
             uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice +=
-                shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
+                shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
             uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested += HandleShrineHealerNpcPurchaseRequest;
             // uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted += () => { shrine.GetHealer.Heal(); };
 
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += EnableCharacterMovement;
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
-                shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
+                shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
             {
-                return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
+                return shrineSystem.Shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
             };
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes +=
                 activeAbilityManager.GetEqqipedActiveAbilities;
@@ -957,10 +957,10 @@ namespace HeroesFlight.System.Gameplay
 
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovementState(true);
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
-                shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
+                shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
             {
-                return shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
+                return shrineSystem.Shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
             };
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes +=
                 activeAbilityManager.GetEqquipedPassiveAbilities;
@@ -976,7 +976,7 @@ namespace HeroesFlight.System.Gameplay
 
         bool HandleShrineHealerNpcPurchaseRequest(ShrineNPCCurrencyType currencyType)
         {
-            if (shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType))
+            if (shrineSystem.Shrine.Purchase(ShrineNPCType.HealingMagicRune, currencyType))
             {
                 var currentAmount = progressionSystem.GetCurrency(CurrencyKeys.RuneShard);
                 int realCurrency = (int)dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.RuneShard);
@@ -987,7 +987,7 @@ namespace HeroesFlight.System.Gameplay
                 uiSystem.UpdateRuinShardUi(progressionSystem.GetCurrency(CurrencyKeys.RuneShard));
                 uiSystem.UiEventHandler.PauseMenu.UpdateCurrencyUi(
                     progressionSystem.GetCurrency(CurrencyKeys.RuneShard), 0);
-                shrine.GetHealer.Heal();
+                shrineSystem.Shrine.GetHealer.Heal();
                 return true;
             }
 
@@ -999,21 +999,21 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableCharacterMovement;
             uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= (angelCard) =>
             {
-                shrine.Purchase(ShrineNPCType.AngelsGambit);
+                shrineSystem.Shrine.Purchase(ShrineNPCType.AngelsGambit);
             };
 
             uiSystem.UiEventHandler.HealingNPCMenu.OnMenuClosed -= EnableCharacterMovement;
             uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice -=
-                shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
+                shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
             uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested -= HandleShrineHealerNpcPurchaseRequest;
             // uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted -= () => { shrine.GetHealer.Heal(); };
 
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed -= EnableCharacterMovement;
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice -=
-                shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
+                shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnPurchaseRequested -= (currencyType) =>
             {
-                return shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
+                return shrineSystem.Shrine.Purchase(ShrineNPCType.ActiveAbilityReRoller, currencyType);
             };
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetEqquipedActiveAbilityTypes -=
                 activeAbilityManager.GetEqqipedActiveAbilities;
@@ -1028,10 +1028,10 @@ namespace HeroesFlight.System.Gameplay
 
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnMenuClosed += () => TogglePlayerMovementState(true);
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
-                shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
+                shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.PassiveAbilityReRoller].GetPrice;
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.OnPurchaseRequested += (currencyType) =>
             {
-                return shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
+                return shrineSystem.Shrine.Purchase(ShrineNPCType.PassiveAbilityReRoller, currencyType);
             };
             uiSystem.UiEventHandler.PassiveAbilityRerollerNPCMenu.GetEqquipedPassiveAbilityTypes -=
                 activeAbilityManager.GetEqquipedPassiveAbilities;
@@ -1308,7 +1308,7 @@ namespace HeroesFlight.System.Gameplay
             yield return new WaitUntil(() =>
                 uiSystem.UiEventHandler.AbilitySelectMenu.MenuStatus == UISystem.Menu.Status.Closed);
             yield return new WaitForSeconds(1f);
-            if (shrine.GetAngelEffectManager.CompletedLevel())
+            if (shrineSystem.Shrine.GetAngelEffectManager.CompletedLevel())
             {
                 yield return new WaitUntil(() =>
                     uiSystem.UiEventHandler.AngelPermanetCardMenu.MenuStatus ==
@@ -1364,7 +1364,7 @@ namespace HeroesFlight.System.Gameplay
         {
             if (currentLevel.LevelType == LevelType.Shrine)
             {
-                shrine.OnShrineExit();
+                shrineSystem.Shrine.OnShrineExit();
             }
 
 

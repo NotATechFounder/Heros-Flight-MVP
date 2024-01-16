@@ -500,7 +500,7 @@ public class TutorialSystem : ITutorialInterface
 
         environmentSystem.CurrencySpawner.SetPlayer(characterController.CharacterTransform);
 
-        shrine.Initialize(dataSystem.CurrencyManager, characterStatController);
+        shrine.InjectData(dataSystem.CurrencyManager, characterStatController);
         godsBenevolence.Initialize(characterStatController);
 
         activeAbilityManager.Initialize(characterStatController);

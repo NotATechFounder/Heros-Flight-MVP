@@ -16,43 +16,24 @@ namespace HeroesFlight.System.ShrineSystem
         public AngelEffectManager GetAngelEffectManager => angelEffectManager;
         public Healer GetHealer => healer;
         public Dictionary<ShrineNPCType, ShrineNPCFee> ShrineNPCFeeCache = new();
-        private ShrineSaveData saveData;
-        private const string NPC = "NPC";
 
-        private void Awake()
+
+        public void InitNpcStates(ShrineSaveData data)
         {
-            Load();
             foreach (ShrineNPCFee shrineNPCFee in shrineNPCFees)
             {
+                bool npcState = data.GetNpcState(shrineNPCFee.GetShrineNPCType);
+
+                shrineNPCFee.SetUnlockState(npcState);
+
+
                 shrineNPCFee.Init();
                 ShrineNPCFeeCache.Add(shrineNPCFee.GetShrineNPCType, shrineNPCFee);
             }
         }
 
-        private void Load()
-        {
-            var data = FileManager.FileManager.Load<ShrineSaveData>(NPC);
-            saveData = data == null ? new ShrineSaveData() : data;
-            foreach (var fee in shrineNPCFees)
-            {
-                if(saveData.UnlockData.TryGetValue(fee.GetShrineNPCType,out var unlockState))
-                {
-                    fee.SetUnlockState(unlockState);
-                }
-            }
-        }
 
-        void Save()
-        {
-            foreach (var fees in shrineNPCFees)
-            {
-                saveData.UnlockData[fees.GetShrineNPCType] = fees.Unlocked;
-            }
-            
-            FileManager.FileManager.Save(NPC,saveData);
-        }
-
-        public void Initialize(CurrencyManager currencyManager, CharacterStatController characterStatController)
+        public void InjectData(CurrencyManager currencyManager, CharacterStatController characterStatController)
         {
             this.currencyManager = currencyManager;
             this.characterStatController = characterStatController;
@@ -65,7 +46,6 @@ namespace HeroesFlight.System.ShrineSystem
         {
             ShrineNPCFee shrineNPCFee = GetShrineNPCFee(shrineNPCFeeType);
             shrineNPCFee.Unlock();
-            Save();
         }
 
         public bool Purchase(ShrineNPCType shrineNPCFeeType,
@@ -141,6 +121,7 @@ namespace HeroesFlight.System.ShrineSystem
         }
     }
 
+    [Serializable]
     public enum ShrineNPCType
     {
         AngelsGambit,
@@ -240,6 +221,7 @@ namespace HeroesFlight.System.ShrineSystem
         {
             unlocked = isUnlocked;
         }
+
         public void Unlock()
         {
             unlocked = true;

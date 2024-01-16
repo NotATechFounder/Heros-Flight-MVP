@@ -8,6 +8,7 @@ using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Input;
 using HeroesFlight.System.Inventory;
 using HeroesFlight.System.NPC;
+using HeroesFlight.System.ShrineSystem;
 using HeroesFlight.System.Stats;
 using HeroesFlight.System.Stats.Handlers;
 using HeroesFlight.System.Tutorial;
@@ -48,9 +49,10 @@ namespace HeroesFlight.Core.Bootstrapper
             InventorySystemInterface inventorySystem = new InventorySystem(dataSystem,uiSystem);
             RewardSystemInterface rewardSystem = new RewardSystem(dataSystem, inventorySystem, uiSystem);
             IShopSystemInterface shopSystem = new ShopSystem (uiSystem, rewardSystem, inventorySystem, dataSystem);
-            IAchievementSystemInterface achievementSystem = new AchievementSystem(uiSystem,rewardSystem, inventorySystem, combatSystem, environmentSystem, dataSystem);
+            ShrineSystemInterface shrineSystem = new ShrineSystem();
+            IAchievementSystemInterface achievementSystem = new AchievementSystem(uiSystem,rewardSystem, inventorySystem, combatSystem, environmentSystem, dataSystem,shrineSystem);
             GamePlaySystemInterface gamePlaySystem =
-                new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem,traitSystem, inventorySystem,achievementSystem);
+                new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem,traitSystem, inventorySystem,achievementSystem,shrineSystem);
             ITutorialInterface tutorialInterface = 
                 new TutorialSystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem, uiSystem, progressionSystem, traitSystem, inventorySystem, rewardSystem);
 
@@ -72,6 +74,7 @@ namespace HeroesFlight.Core.Bootstrapper
             m_ServiceLocator.Register(rewardSystem);
             m_ServiceLocator.Register(shopSystem);
             m_ServiceLocator.Register(tutorialInterface);
+            m_ServiceLocator.Register(shrineSystem);
             return m_ServiceLocator;
         }
 

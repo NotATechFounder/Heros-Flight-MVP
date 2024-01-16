@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HeroesFlight.System.ShrineSystem.Angel;
 
 namespace HeroesFlight.System.ShrineSystem
 {
@@ -8,12 +9,49 @@ namespace HeroesFlight.System.ShrineSystem
     {
         public ShrineSaveData()
         {
-            UnlockData.Add(ShrineNPCType.Blacksmith,false);
-            UnlockData.Add(ShrineNPCType.AngelsGambit, false);
-            UnlockData.Add(ShrineNPCType.ActiveAbilityReRoller, false);
-            UnlockData.Add(ShrineNPCType.PassiveAbilityReRoller, false);
-            UnlockData.Add(ShrineNPCType.HealingMagicRune, true);
+            UnlockData.Add(new ShrineSaveDataEntry(ShrineNPCType.Blacksmith, false));
+            UnlockData.Add(new ShrineSaveDataEntry(ShrineNPCType.AngelsGambit, false));
+            UnlockData.Add(new ShrineSaveDataEntry(ShrineNPCType.ActiveAbilityReRoller, false));
+            UnlockData.Add(new ShrineSaveDataEntry(ShrineNPCType.PassiveAbilityReRoller, false));
+            UnlockData.Add(new ShrineSaveDataEntry(ShrineNPCType.HealingMagicRune, true));
         }
-        public Dictionary<ShrineNPCType, bool> UnlockData = new Dictionary<ShrineNPCType, bool>();
+
+        public List<ShrineSaveDataEntry> UnlockData = new();
+
+        public bool HasEntry(ShrineNPCType type)
+        {
+            foreach (var data in UnlockData)
+            {
+                if (data.NpcType == type)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool GetNpcState(ShrineNPCType type)
+        {
+            foreach (var data in UnlockData)
+            {
+                if (data.NpcType == type)
+                {
+                    return data.isUnlocked;
+                }
+            }
+            return false;
+        }
+
+        public void UnlockNpc(ShrineNPCType type)
+        {
+            foreach (var data in UnlockData)
+            {
+                if (data.NpcType == type)
+                {
+                    data.isUnlocked=true;
+                }
+            }
+        }
     }
 }

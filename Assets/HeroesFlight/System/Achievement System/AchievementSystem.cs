@@ -12,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 using HeroesFlight.System.Achievement_System.ProgressionUnlocks;
 using HeroesFlight.System.Achievement_System.ProgressionUnlocks.UnlockRewards;
+using HeroesFlight.System.ShrineSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -26,9 +27,12 @@ public class AchievementSystem : IAchievementSystemInterface
     private CombatSystemInterface combatSystemInterface;
     private EnvironmentSystemInterface environmentSystemInterface;
     private DataSystemInterface dataSystemInterface;
+    private ShrineSystemInterface shrineSystem;
 
-    public AchievementSystem(IUISystem uiSystem, RewardSystemInterface rewardSystemInterface, InventorySystemInterface inventorySystemInterface ,
-        CombatSystemInterface combatSystemInterface, EnvironmentSystemInterface environmentSystemInterface, DataSystemInterface dataSystemInterface)
+    public AchievementSystem(IUISystem uiSystem, RewardSystemInterface rewardSystemInterface,
+        InventorySystemInterface inventorySystemInterface,
+        CombatSystemInterface combatSystemInterface, EnvironmentSystemInterface environmentSystemInterface,
+        DataSystemInterface dataSystemInterface, ShrineSystemInterface shrineSystem)
     {
         this.uiSystem = uiSystem;
         this.rewardSystemInterface = rewardSystemInterface;
@@ -36,6 +40,7 @@ public class AchievementSystem : IAchievementSystemInterface
         this.combatSystemInterface = combatSystemInterface;
         this.environmentSystemInterface = environmentSystemInterface;
         this.dataSystemInterface = dataSystemInterface;
+        this.shrineSystem = shrineSystem;
         UnlocksHandlers = new ProgressionUnlocksHandler(dataSystemInterface);
         UnlocksHandlers.OnRewardUnlocked += HandleRewardUnlocked;
     }
@@ -50,6 +55,8 @@ public class AchievementSystem : IAchievementSystemInterface
                 Debug.Log($"{characterData.CharacterCharacterType} unlocked");
                 break;
             case ProgressionUnlockType.NPC:
+                var npcData = data as NPCUnlock;
+                shrineSystem.UnlockNpc(npcData.NPCType);
                 break;
             case ProgressionUnlockType.World:
                 var worldData = data as WorldUnlock;
