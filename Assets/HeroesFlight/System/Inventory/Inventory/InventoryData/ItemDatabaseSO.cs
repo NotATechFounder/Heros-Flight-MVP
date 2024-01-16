@@ -5,10 +5,34 @@ using HeroesFlight.Common;
 using HeroesFlight.Common.Enum;
 using UnityEditor;
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
 
 [CreateAssetMenu(fileName = "Item Database", menuName = "Inventory System/Item Database")]
 public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
 {
+
+    [Serializable]
+    public class StarStat
+    {
+        public EquipmentStar equipmentStar;
+        public RarityValue[] rarityValues;
+    }
+
+    [Serializable]
+    public class RarityValue
+    {
+        public Rarity rarity;
+        public int value;
+    }
+
+    [Serializable]
+    public class EquipmentStat
+    {
+        public EquipmentType equipmentType;
+        public StarStat[] starStats;
+    }
+
     [Header("Item Cost Stats")]
     [SerializeField] CustomAnimationCurve itemUpgradeGoldCost;
     [SerializeField] CustomAnimationCurve itemUpgradeMaterialCost;
@@ -17,10 +41,13 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
     [SerializeField] RarityInfo[] rarityInfos;
 
     [Header("Base Stats")]
+    [SerializeField] EquipmentStat[] baseStats;
     [SerializeField] EquipmentStatIncrease[] baseStatIncrease;
 
     [Header("ItemEffect")]
     [SerializeField] ItemEffectSO[] itemEffects;
+
+    public EquipmentStat[] equipmentBaseStat => baseStats;
 
     private void OnValidate()
     {
@@ -135,6 +162,55 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         itemEffects = scriptableObjectBases.ToArray();
         EditorUtility.SetDirty(this);
         AssetDatabase.SaveAssets();
+    }
+
+    public int GetBaseStatValue(EquipmentSO equipmentSO, Rarity rarity)
+    {
+        for (int i = 0; i < baseStats.Length; i++)
+        {
+            if (baseStats[i].equipmentType == equipmentSO.equipmentType)
+            {
+                for (int j = 0; j < baseStats[i].starStats.Length; j++)
+                {
+                    if (baseStats[i].starStats[j].equipmentStar == equipmentSO.equipmentStar)
+                    {
+                        for (int k = 0; k < baseStats[i].starStats[j].rarityValues.Length; k++)
+                        {
+                            if (baseStats[i].starStats[j].rarityValues[k].rarity == rarity)
+                            {
+                                return baseStats[i].starStats[j].rarityValues[k].value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int GetBaseStatIncrease(EquipmentSO equipmentSO)
+    {
+        for (int i = 0; i < baseStatIncrease.Length; i++)
+        {
+            if (baseStatIncrease[i].equipmentType == equipmentSO.equipmentType)
+            {
+                for (int j = 0; j < baseStatIncrease[i].starIncreases.Length; j++)
+                {
+                    if (baseStatIncrease[i].starIncreases[j].equipmentStar == equipmentSO.equipmentStar)
+                    {
+                        return baseStatIncrease[i].starIncreases[j].incrementPerLevel;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int GetCurrentStatValue(EquipmentSO equipmentSO, Rarity rarity, int level)
+    {
+        int baseStatValue = GetBaseStatValue(equipmentSO, rarity);
+        int incrementPerLevel = GetBaseStatIncrease(equipmentSO);
+        return baseStatValue + incrementPerLevel * (level - 1);
     }
 
 #endif
