@@ -11,6 +11,7 @@ using UnityEngine;
 
 public class EquipmentSO : ItemSO
 {
+    public EquipmentStar equipmentStar;
     public EquipmentType equipmentType;
     public StatType statType;
     public HeroType heroType;
@@ -98,5 +99,17 @@ public class RarityInfo
     }
 }
 
+[Serializable]
+public class StarIncrease
+{
+    public EquipmentStar equipmentStar;
+    public int incrementPerLevel;
+}
 
+[Serializable]
+public class EquipmentStatIncrease
+{
+    public EquipmentType equipmentType;
+    public StarIncrease[] starIncreases;
+}
 

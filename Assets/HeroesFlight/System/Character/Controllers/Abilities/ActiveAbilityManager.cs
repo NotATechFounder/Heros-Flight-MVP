@@ -224,8 +224,7 @@ public class ActiveAbilityManager : MonoBehaviour
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.EnergyBlast:
-                    (passiveActiveAbility as EnergyBlast).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage), characterSystem);
-                passiveActiveAbility.transform.SetParent(characterStatController.transform);
+                    (passiveActiveAbility as EnergyBlast).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage));
                 break;
             case ActiveAbilityType.HeavenHammer:
                 (passiveActiveAbility as HeavenHammer).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage), characterSystem);

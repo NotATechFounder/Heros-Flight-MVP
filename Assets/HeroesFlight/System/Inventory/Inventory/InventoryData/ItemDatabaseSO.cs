@@ -16,6 +16,9 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
     [Header("Rarities Information")]
     [SerializeField] RarityInfo[] rarityInfos;
 
+    [Header("Base Stats")]
+    [SerializeField] EquipmentStatIncrease[] baseStatIncrease;
+
     [Header("ItemEffect")]
     [SerializeField] ItemEffectSO[] itemEffects;
 
