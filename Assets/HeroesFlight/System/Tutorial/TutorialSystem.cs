@@ -35,6 +35,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UISystem;
 using System.ComponentModel;
+using HeroesFlight.System.ShrineSystem;
 using HeroesFlight.System.UI.Model;
 
 public class TutorialSystem : ITutorialInterface

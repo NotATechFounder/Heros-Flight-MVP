@@ -23,6 +23,7 @@ using HeroesFlight.System.NPC;
 using HeroesFlight.System.NPC.Controllers.Ability;
 using HeroesFlight.System.NPC.Controllers.Control;
 using HeroesFlight.System.NPC.Model;
+using HeroesFlight.System.ShrineSystem;
 using HeroesFlight.System.Stats;
 using HeroesFlight.System.Stats.Handlers;
 using HeroesFlight.System.Stats.Traits.Effects;
