@@ -36,7 +36,7 @@ public class AccountLevelManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            AddExp(500);
+            AddExp(1500);
         }
     }
 
@@ -78,9 +78,9 @@ public class AccountLevelManager : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (levelSystem.LevelCurve != null)
+        if (levelCurve != null)
         {
-            levelSystem.LevelCurve.UpdateCurve();
+            levelCurve.UpdateCurve();
             Gizmos.color = Color.red;
             for (int i = 0; i < levelSystem.LevelCurve.maxLevel; i++)
             {
