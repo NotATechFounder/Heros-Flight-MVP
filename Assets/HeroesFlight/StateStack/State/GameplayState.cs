@@ -5,6 +5,7 @@ using HeroesFlight.System.Combat;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Input;
 using HeroesFlight.System.NPC;
+using HeroesFlight.System.ShrineSystem;
 using HeroesFlight.System.Stats;
 using HeroesFlight.System.UI;
 using JetBrains.Annotations;
@@ -43,6 +44,7 @@ namespace HeroesFlight.StateStack.State
                     var progressionSystem = GetService<ProgressionSystemInterface>();
                     var inputSystem = GetService<InputSystemInterface>();
                     var combatSystem = GetService<CombatSystemInterface>();
+                    var shrineSystem = GetService<ShrineSystemInterface>();
                     uiSystem.OnReturnToMainMenuRequest += HandleReturnToMainMenu;
 
 
@@ -54,6 +56,7 @@ namespace HeroesFlight.StateStack.State
                         uiSystem.UiEventHandler.LoadingMenu.Open();
                         uiSystem.UiEventHandler.GameMenu.Close();
                         m_SceneActionsQueue.AddAction(SceneActionType.Unload, gameScene);
+                        shrineSystem.Reset();
                         gamePlaySystem.Reset();
                         progressionSystem.Reset();
                         combatSystem.Reset();
@@ -84,6 +87,7 @@ namespace HeroesFlight.StateStack.State
                         npcSystem.Init(loadedScene);
                         inputSystem.Init(loadedScene);
                         combatSystem.Init(loadedScene);
+                        shrineSystem.Init(loadedScene);
                         gamePlaySystem.Init(loadedScene);
                         gamePlaySystem.StartGameSession();
                     });

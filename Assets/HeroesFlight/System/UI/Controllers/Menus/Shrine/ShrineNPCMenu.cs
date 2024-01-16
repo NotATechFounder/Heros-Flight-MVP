@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using HeroesFlight.System.ShrineSystem;
 using TMPro;
 using UISystem;
 using UnityEngine;

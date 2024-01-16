@@ -108,6 +108,7 @@ public class CharacterUiData
     public string Description => description;
     public string PlaystyleDescription => playstyleDescription;
     public string UltimateDescription => ultimateDescription;
+    public string UnlockDescription => unlockDescription;
 
     public Sprite CharacterUnlockedImage => characterUnlockedImage;
     public Sprite CharacterClassIcon => characterClassIcon;
