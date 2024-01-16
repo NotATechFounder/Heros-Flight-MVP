@@ -83,7 +83,7 @@ public class HealingNPCMenu : BaseMenu<HealingNPCMenu>
     {
         if(OnPurchaseRequested?.Invoke(curencyType) == true)
         {
-            OnPurchaseCompleted?.Invoke();
+          //  OnPurchaseCompleted?.Invoke();
             Close();
         }
     }
