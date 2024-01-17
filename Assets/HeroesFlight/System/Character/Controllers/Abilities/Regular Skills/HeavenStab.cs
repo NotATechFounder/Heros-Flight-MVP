@@ -82,14 +82,14 @@ public class HeavenStab : RegularActiveAbility
     private void FireProjectile()
     {
         ProjectileControllerBase bullet = ObjectPoolManager.SpawnObject(projectileController, transform.position, Quaternion.identity);
-        bullet.transform.localScale = new Vector3(visual.localScale.x * bullet.transform.localScale.y, bullet.transform.localScale.y, 1);
+        bullet.transform.localScale = new Vector3(transform.localScale.x * bullet.transform.localScale.y, bullet.transform.localScale.y, 1);
         OverlapChecker overlapChecker = bullet.GetComponent<OverlapChecker>();
         hitEffect = bullet.GetComponentInChildren<ParticleSystem>();
 
         overlapChecker.OnDetect = OnDetect;
         this.overlapChecker = overlapChecker;
 
-        bullet.SetupProjectile(currentDamage, -visual.localScale.x * Vector2.right);
+        bullet.SetupProjectile(currentDamage, -transform.localScale.x * Vector2.right);
         bullet.OnDeactivate += HandleArrowDisable;
     }
 
