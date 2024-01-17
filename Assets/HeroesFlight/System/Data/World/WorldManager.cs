@@ -10,7 +10,7 @@ public class WorldManager : MonoBehaviour
     [SerializeField] private WorldVisualSO[] worlds;
     [SerializeField] private WorldType selectedWorld;
 
-   [SerializeField] private Data data;
+    [SerializeField] private Data data;
     public WorldVisualSO[] Worlds => worlds;
     public WorldType SelectedWorld => selectedWorld;
 
@@ -112,7 +112,6 @@ public class WorldManager : MonoBehaviour
         else
         {
             data = new Data();
-           
         }
     }
 
@@ -124,11 +123,11 @@ public class WorldManager : MonoBehaviour
             worldInfoData = new List<WorldInfoData>();
             foreach (WorldType world in Enum.GetValues(typeof(WorldType)))
             {
-                var infoEntry = new WorldInfoData 
+                var infoEntry = new WorldInfoData
                 {
                     worldType = world,
                     maxLevelReached = 0,
-                    isUnlocked = world != WorldType.World3
+                    isUnlocked = world == WorldType.World1
                 };
 
                 worldInfoData.Add(infoEntry);

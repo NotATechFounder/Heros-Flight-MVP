@@ -2,6 +2,7 @@ using Pelumi.Juicer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.System.ShrineSystem;
 using TMPro;
 using UISystem;
 using UnityEngine;

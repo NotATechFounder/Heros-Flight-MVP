@@ -23,6 +23,8 @@ namespace UISystem
     {
         public MenuNavigationButtonType navigationButtonType;
         public AdvanceButton advanceButton;
+        public GameObject LockIcon;
+        public int requiredLvl = 0;
     }
 
     public struct QuestStatusRequest
@@ -52,44 +54,43 @@ namespace UISystem
 
         public event Func<WorldType, bool> IsWorldUnlocked;
         public event Action<WorldType> OnWorldChanged;
-        public event Func<WorldType, int> GetMaxLevelReached;   
+        public event Func<WorldType, int> GetMaxLevelReached;
 
         public event Action AddGold;
         public event Action AddGem;
 
         public event Action OnQuestClaimButtonPressed;
-        public event Func <QuestStatusRequest> questStatusRequest;
+        public event Func<QuestStatusRequest> questStatusRequest;
 
         public event Func<LevelSystem.ExpIncreaseResponse> GetCurrentAccountLevelXP;
 
-        [Header("Top UI")]
-        [SerializeField] private TextMeshProUGUI goldText;
+        [Header("Top UI")] [SerializeField] private TextMeshProUGUI goldText;
         [SerializeField] private TextMeshProUGUI gemText;
         [SerializeField] private TextMeshProUGUI energyText;
         [SerializeField] private TextMeshProUGUI energyTimeText;
 
-        [Header("Account UI")]
-        [SerializeField] private TextMeshProUGUI acctLevelText;
+        [Header("Account UI")] [SerializeField]
+        private TextMeshProUGUI acctLevelText;
+
         [SerializeField] private Image acctLevelBar;
 
-        [Header("Quest")]
-        [SerializeField] private TextMeshProUGUI questText;
+        [Header("Quest")] [SerializeField] private TextMeshProUGUI questText;
         [SerializeField] private TextMeshProUGUI questProgressText;
         [SerializeField] private Image questProgressBar;
         [SerializeField] private AdvanceButton questClaimButton;
 
-        [Header("Main Buttons")]
-        [SerializeField] private AdvanceButton addGoldButton;
+        [Header("Main Buttons")] [SerializeField]
+        private AdvanceButton addGoldButton;
+
         [SerializeField] private AdvanceButton addGemButton;
         [SerializeField] private AdvanceButton playButton;
         [SerializeField] private AdvanceButton settingsButton;
         [SerializeField] private AdvanceButton dailyRewardButton;
 
-        [Header("Nav Buttons")]
-        [SerializeField] private NavigationButton[] navigationButtons;
+        [Header("Nav Buttons")] [SerializeField]
+        private NavigationButton[] navigationButtons;
 
-        [Header("World")]
-        [SerializeField] private Image worldImage;
+        [Header("World")] [SerializeField] private Image worldImage;
         [SerializeField] private Image worldLock;
         [SerializeField] private TextMeshProUGUI worldNameText;
         [SerializeField] private TextMeshProUGUI worldLevelText;
@@ -106,48 +107,26 @@ namespace UISystem
 
         JuicerRuntime questComplectedEffect;
 
-        [Header("Debug")]
-        [SerializeField] private WorldType worldInView;
+        [Header("Debug")] [SerializeField] private WorldType worldInView;
 
         public override void OnCreated()
         {
             questComplectedEffect = questProgressBar.JuicyColour(Color.red, 0.5f);
             questComplectedEffect.SetLoop(-1).SetOnCompleted(() => questProgressBar.color = Color.yellow);
 
-            addGoldButton.onClick.AddListener(() =>
-            {
-                AddGold?.Invoke();
-            });
+            addGoldButton.onClick.AddListener(() => { AddGold?.Invoke(); });
 
-            addGemButton.onClick.AddListener(() =>
-            {
-                AddGem?.Invoke();
-            });
+            addGemButton.onClick.AddListener(() => { AddGem?.Invoke(); });
 
-            playButton.onClick.AddListener(()=>
-            {
-                OnPlayButtonPressed?.Invoke();
-            });
+            playButton.onClick.AddListener(() => { OnPlayButtonPressed?.Invoke(); });
 
-            settingsButton.onClick.AddListener(() =>
-            {
-                OnSettingsButtonPressed?.Invoke();
-            });
-            
-            worldLeftButton.onClick.AddListener(() =>
-            {
-                NavigateWorld(-1);
-            }); 
+            settingsButton.onClick.AddListener(() => { OnSettingsButtonPressed?.Invoke(); });
 
-            worldRightButton.onClick.AddListener(() =>
-            {
-                NavigateWorld(1);
-            });
+            worldLeftButton.onClick.AddListener(() => { NavigateWorld(-1); });
 
-            dailyRewardButton.onClick.AddListener(() =>
-            {
-                OnDailyRewardButtonPressed?.Invoke();
-            });
+            worldRightButton.onClick.AddListener(() => { NavigateWorld(1); });
+
+            dailyRewardButton.onClick.AddListener(() => { OnDailyRewardButtonPressed?.Invoke(); });
 
             foreach (NavigationButton navigationButton in navigationButtons)
             {
@@ -171,7 +150,6 @@ namespace UISystem
 
         public override void OnOpened()
         {
-
         }
 
         public override void OnClosed()
@@ -181,7 +159,23 @@ namespace UISystem
 
         public override void ResetMenu()
         {
+        }
 
+        public void Open(int playerLVl)
+        {
+            ProcessButtonStates(playerLVl);
+            Open();
+        }
+
+        public void ProcessButtonStates(int playerLVl)
+        {
+            foreach (var buttonEntry in navigationButtons)
+            {
+                var shouldBeUnlocked = playerLVl >= buttonEntry.requiredLvl;
+
+                buttonEntry.advanceButton.interactable = shouldBeUnlocked;
+                buttonEntry.LockIcon.SetActive(!shouldBeUnlocked);
+            }
         }
 
         public void UpdateGoldText(float gold)
@@ -199,7 +193,7 @@ namespace UISystem
             energyText.text = energy.ToString();
         }
 
-        public void UpdateEnergyTime (string time)
+        public void UpdateEnergyTime(string time)
         {
             energyTimeText.text = time;
         }
@@ -219,7 +213,7 @@ namespace UISystem
                     break;
             }
         }
-         
+
         public void LoadWorlds(WorldVisualSO[] worldVisualSOs)
         {
             worldVisualSOList = worldVisualSOs;
@@ -228,6 +222,7 @@ namespace UISystem
             {
                 worldVisualDic.Add(worldVisualSO.worldType, worldVisualSO);
             }
+
             worldInView = WorldType.World1;
             DisplayWorldInfo(worldInView, true);
         }
@@ -239,6 +234,7 @@ namespace UISystem
             {
                 worldInView = (WorldType)worldVisualSOList.Length - 1;
             }
+
             bool isUnlocked = IsWorldUnlocked?.Invoke(worldInView) ?? false;
 
             if (isUnlocked)
@@ -246,7 +242,7 @@ namespace UISystem
                 OnWorldChanged?.Invoke(worldInView);
             }
 
-            DisplayWorldInfo (worldInView, isUnlocked);
+            DisplayWorldInfo(worldInView, isUnlocked);
         }
 
         private void DisplayWorldInfo(WorldType worldType, bool isUnlocked)
@@ -262,8 +258,9 @@ namespace UISystem
         public void UpdateQuestInfo(QuestStatusRequest questStatusRequest)
         {
             questText.text = questStatusRequest.questName;
-            questProgressText.text = questStatusRequest.isCompleted ? "Claim Reward" :
-                questStatusRequest.questProgress.ToString() + " / " + questStatusRequest.questGoal.ToString();
+            questProgressText.text = questStatusRequest.isCompleted
+                ? "Claim Reward"
+                : questStatusRequest.questProgress.ToString() + " / " + questStatusRequest.questGoal.ToString();
             questProgressBar.fillAmount = questStatusRequest.normalizedProgress;
             questClaimButton.interactable = questStatusRequest.isCompleted;
 
@@ -275,7 +272,8 @@ namespace UISystem
 
         public void ClickNavigationButton(MenuNavigationButtonType menuNavigationButtonType)
         {
-            NavigationButton navigationButton = navigationButtons.FirstOrDefault(x => x.navigationButtonType == menuNavigationButtonType);
+            NavigationButton navigationButton =
+                navigationButtons.FirstOrDefault(x => x.navigationButtonType == menuNavigationButtonType);
             if (navigationButton != null)
             {
                 navigationButton.advanceButton.onClick.Invoke();
@@ -289,4 +287,3 @@ namespace UISystem
         }
     }
 }
-

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.System.ShrineSystem;
 using UnityEngine;
 
 public class ShrineNPCHolder : MonoBehaviour

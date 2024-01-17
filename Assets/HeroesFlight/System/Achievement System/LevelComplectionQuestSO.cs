@@ -9,6 +9,6 @@ public class LevelComplectionQuestSO : QuestSO
 
     public override void Awake()
     {
-        questType = QuestType.LevelComplection;
+        questType = QuestType.LevelCompletion;
     }
 }

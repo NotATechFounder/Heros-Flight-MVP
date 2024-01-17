@@ -38,11 +38,11 @@ namespace HeroesFlight.StateStack.State
                     var dataSystem = GetService<DataSystemInterface>();
                     var traitSystem = GetService<TraitSystemInterface>();
                     var diceSystem = GetService<DiceSystemInterface>();
-
+                    
                     SubscribeEvents();
 
                     traitSystem.Init();
-                    uiSystem.UiEventHandler.MainMenu.Open();
+                    uiSystem.UiEventHandler.MainMenu.Open(dataSystem.AccountLevelManager.CurrentPlayerLvl);
                     dataSystem.CurrencyManager.TriggerAllCurrencyChange();
                     dataSystem.StatManager.ProcessTraitsStatsModifiers(traitSystem.GetUnlockedEffects());
                     uiSystem.UiEventHandler.MainMenu.LoadWorlds(dataSystem.WorldManger.Worlds);
@@ -106,7 +106,14 @@ namespace HeroesFlight.StateStack.State
             //uiSystem.UiEventHandler.MainMenu.GetCurrentAccountLevelXP += dataSystem.AccountLevelManager.GetExpIncreaseResponse;
             dataSystem.AccountLevelManager.OnLevelUp += uiSystem.UiEventHandler.MainMenu.AccountLevelUp;
             dataSystem.AccountLevelManager.OnLevelUp += uiSystem.UiEventHandler.LevelUpMenu.AccountLevelUp;
+            dataSystem.AccountLevelManager.OnLevelUp += UpdateMainButtonStates;
         }
+
+        private void UpdateMainButtonStates(LevelSystem.ExpIncreaseResponse obj)
+        {
+            GetService<IUISystem>().UiEventHandler.MainMenu.ProcessButtonStates(obj.currentLevel);
+        }
+
         public void UnSubscribeEvents()
         {
             var uiSystem = GetService<IUISystem>();
@@ -157,6 +164,7 @@ namespace HeroesFlight.StateStack.State
 
             dataSystem.AccountLevelManager.OnLevelUp -= uiSystem.UiEventHandler.MainMenu.AccountLevelUp;
             dataSystem.AccountLevelManager.OnLevelUp -= uiSystem.UiEventHandler.LevelUpMenu.AccountLevelUp;
+            dataSystem.AccountLevelManager.OnLevelUp -= UpdateMainButtonStates;
             //uiSystem.UiEventHandler.MainMenu.GetCurrentAccountLevelXP -= dataSystem.AccountLevelManager.GetExpIncreaseResponse;
         }
 

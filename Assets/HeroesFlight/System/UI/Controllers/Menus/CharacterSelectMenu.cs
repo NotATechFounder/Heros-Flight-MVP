@@ -53,7 +53,7 @@ namespace UISystem
             closeEffectBG.SetOnCompleted(CloseMenu);
 
             quitButton.onClick.AddListener(Close);
-
+            
             unlockButton.onClick.AddListener(() =>
             {
                 if (OnTryBuyCharacter?.Invoke(currentCharacterInView.GetCharacterSO.CharacterType) == true)
@@ -74,6 +74,7 @@ namespace UISystem
                     Debug.Log("Not enough money");
                 }
             });
+            
         }
 
         public override void OnOpened()
@@ -81,23 +82,41 @@ namespace UISystem
             canvasGroup.alpha = 0;
             openEffectBG.Start();
 
-            if (!isCharacterLoaded)
+            // if (!isCharacterLoaded)
+            // {
+                // SetupCharacterCards();
+                // }
+            // isCharacterLoaded = true;
+            
+            SetupCharacterCards();
+        }
+
+        private void SetupCharacterCards()
+        {
+            CharacterSO[] allCharacterSO = GetAllCharacterSO.Invoke();
+            for (int i = 0; i < allCharacterSO.Length; i++)
             {
-                CharacterSO[] allCharacterSO = GetAllCharacterSO.Invoke();
-                for (int i = 0; i < allCharacterSO.Length; i++)
-                {
-                    CharacterSelectUI characterSelectUI = Instantiate(characterSelectUIPrefab, characterSelectUIParent);
-                    characterSelectUI.OnSelected += OnCharacterSelectedSO;
-                    characterSelectUI.Init(allCharacterSO[i]);
-                    characterSelectUIs.Add(characterSelectUI);
-                }
+                CharacterSelectUI characterSelectUI = Instantiate(characterSelectUIPrefab, characterSelectUIParent);
+                characterSelectUI.OnSelected += OnCharacterSelectedSO;
+                characterSelectUI.Init(allCharacterSO[i]);
+                characterSelectUIs.Add(characterSelectUI);
             }
-            isCharacterLoaded = true;
         }
 
         public override void OnClosed()
         {
             closeEffectBG.Start();
+            CleanUpUi();
+        }
+
+        private void CleanUpUi()
+        {
+            foreach (var entry in characterSelectUIs)
+            {
+                Destroy(entry.gameObject);
+            }
+
+            characterSelectUIs.Clear();
         }
 
         public override void ResetMenu()
@@ -135,7 +154,7 @@ namespace UISystem
             else
             {
                 unlockPrice.text = currentCharacterInView.GetCharacterSO.UnlockPrice.ToString("F0");
-                unlockDescription.text = "Unlock by bla bla";
+                unlockDescription.text =characterSelectUI.GetCharacterSO.CharacterUiData.UnlockDescription;
             }
 
             uiSpineViewController.SetupView(currentCharacterInView.GetCharacterSO);

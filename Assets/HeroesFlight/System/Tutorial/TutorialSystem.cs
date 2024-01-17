@@ -35,6 +35,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UISystem;
 using System.ComponentModel;
+using HeroesFlight.System.ShrineSystem;
 using HeroesFlight.System.UI.Model;
 
 public class TutorialSystem : ITutorialInterface
@@ -499,7 +500,7 @@ public class TutorialSystem : ITutorialInterface
 
         environmentSystem.CurrencySpawner.SetPlayer(characterController.CharacterTransform);
 
-        shrine.Initialize(dataSystem.CurrencyManager, characterStatController, dataSystem.AdManager);
+        shrine.Initialize(dataSystem.CurrencyManager, characterStatController,dataSystem.AdManager);
         godsBenevolence.Initialize(characterStatController);
 
         activeAbilityManager.Initialize(characterStatController);
