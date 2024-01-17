@@ -75,8 +75,8 @@ public class LevelUpMenu : BaseMenu <LevelUpMenu>
     {
         if (response.numberOfLevelsGained == 0) return;
         levelText.text = response.currentLevel.ToString();
-        DisplayRewards(GetRewardVisuals?.Invoke());
         Open();
+        DisplayRewards(GetRewardVisuals?.Invoke());
     }
 
     public void DisplayRewards(params RewardVisual[] rewardVisual)

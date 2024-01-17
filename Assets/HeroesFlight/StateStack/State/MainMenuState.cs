@@ -103,20 +103,22 @@ namespace HeroesFlight.StateStack.State
 
             dataSystem.EnergyManager.OnEnergyTimerUpdated += uiSystem.UiEventHandler.MainMenu.UpdateEnergyTime;
 
+            uiSystem.UiEventHandler.LevelUpMenu.GetRewardVisuals += LevelUpMenu_GetRewardVisuals;
             dataSystem.AccountLevelManager.OnLevelUp += AccountLevelManager_OnLevelUp;
+        }
+
+        private System.UI.Reward.RewardVisual[] LevelUpMenu_GetRewardVisuals()
+        {
+            var dataSystem = GetService<DataSystemInterface>();
+            return GetService<RewardSystemInterface>().GiveLevelUpReward(dataSystem.AccountLevelManager.GetGemReward(),
+            dataSystem.AccountLevelManager.GetGoldReward());
         }
 
         private void AccountLevelManager_OnLevelUp(LevelSystem.ExpIncreaseResponse obj)
         {
             var uiSystem = GetService<IUISystem>();
-            var dataSystem = GetService<DataSystemInterface>();
-
             uiSystem.UiEventHandler.MainMenu.AccountLevelUp (obj);
-
             uiSystem.UiEventHandler.LevelUpMenu.AccountLevelUp (obj);
-            uiSystem.UiEventHandler.LevelUpMenu.GetRewardVisuals += () => GetService<RewardSystemInterface>().GiveLevelUpReward(dataSystem.AccountLevelManager.GetGemReward(),
-                dataSystem.AccountLevelManager.GetGoldReward());
-
             uiSystem.UiEventHandler.MainMenu.ProcessButtonStates(obj.currentLevel);
         }
 
@@ -168,6 +170,7 @@ namespace HeroesFlight.StateStack.State
             uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;
             traitSystem.OnTraitsStateChange -= HandleTraitStateChange;
 
+            uiSystem.UiEventHandler.LevelUpMenu.GetRewardVisuals -= LevelUpMenu_GetRewardVisuals;
             dataSystem.AccountLevelManager.OnLevelUp -= AccountLevelManager_OnLevelUp;
         }
 
