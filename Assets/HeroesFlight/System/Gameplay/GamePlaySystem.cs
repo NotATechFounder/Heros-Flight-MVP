@@ -631,7 +631,6 @@ namespace HeroesFlight.System.Gameplay
             enemiesToKill--;
 
             environmentSystem.ParticleManager.Spawn("Loot_Spawn", position, Quaternion.Euler(new Vector3(-90, 0, 0)));
-
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RuneShard,
                 container.CurrentModel.RuneShardsPerEnemy + goldModifier, position);
 
