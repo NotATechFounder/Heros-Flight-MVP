@@ -140,6 +140,9 @@ namespace HeroesFlight.System.Combat
                     case CombatEntityType.TempMob:
                         HandleAiDamaged(requestModel);
                         break;
+                    case CombatEntityType.BossCrystal :
+                        HandleAiDamaged(requestModel);
+                        break;
                 }
 
 
@@ -219,6 +222,12 @@ namespace HeroesFlight.System.Combat
         {
             specialBar.ChangeValue(value);
             uiSystem.UpdateUltimateButton(value);
+        }
+
+        public void ManuallyNotifyEntityDeath(EntityDeathModel model)
+        {
+            Debug.Log($"entity died {model.EntityType}");
+            OnEntityDied?.Invoke(model);
         }
 
         public void StartCharacterComboCheck()
