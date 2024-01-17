@@ -17,7 +17,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected List<AnimationReferenceAsset>  targetAnimations = new ();
         protected  CharacterAnimationControllerInterface animator;
         int targetCharges = 0;
-        protected int currentCharges = 0;
+        protected float currentCharges = 0;
 
         protected virtual void Awake()
         {
@@ -49,7 +49,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             currentCharges = 0;
         }
 
-        public virtual void UpdateAbilityCharges(int value)
+        public virtual void UpdateAbilityCharges(float value)
         {
             currentCharges += value;
         }

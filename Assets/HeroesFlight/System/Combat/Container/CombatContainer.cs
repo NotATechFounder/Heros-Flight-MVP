@@ -4,7 +4,7 @@ namespace HeroesFlight.System.Combat.Container
 {
     public class CombatContainer : MonoBehaviour
     {
-        [SerializeField] private int ultCHargesPerHit = 2;
-        public int UltChargePerHit => ultCHargesPerHit;
+        [SerializeField] private float ultChargesPerHit = 2;
+        public float UltChargePerHit => ultChargesPerHit;
     }
 }
