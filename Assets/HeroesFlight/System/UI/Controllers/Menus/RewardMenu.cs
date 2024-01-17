@@ -97,7 +97,6 @@ namespace UISystem
             foreach (ChestEffect chestEffect in chestEffects)
             {
                 chestEffect.skeletonAnimation.AnimationState.Event += AnimationState_Event;
-                chestEffect.skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
             }
         }
 
@@ -150,25 +149,6 @@ namespace UISystem
             {
                 DisplayRewards(rewardVisualArray);
             }
-        }
-
-        private void AnimationState_Complete(TrackEntry trackEntry)
-        {
-            switch (trackEntry.Animation.Name)
-            {
-                case IdleAnimation:
-
-
-                    break;
-                case OpenAnimation:
-
-                    break;
-            }
-        }
-
-        private void OnChestRewardFinish()
-        {
-            selectedChestEffect.SetActive(true);
         }
     }
 }

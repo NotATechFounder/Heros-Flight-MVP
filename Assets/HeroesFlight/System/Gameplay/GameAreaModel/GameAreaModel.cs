@@ -21,7 +21,6 @@ namespace HeroesFlight.System.Gameplay.Model
 
         [SerializeField] private CustomAnimationCurve levelComplectionExpCurve;
         [SerializeField] private CustomAnimationCurve runComplectionExpCurve;
-        [SerializeField] private CustomAnimationCurve reRunComplectionExpCurve;
 
         [Header("Time Stop Testing")]
         [SerializeField] float timeStopRestoreSpeed;

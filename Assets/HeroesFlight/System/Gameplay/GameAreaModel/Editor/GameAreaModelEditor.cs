@@ -23,7 +23,6 @@ public class GameAreaModelEditor : Editor
 
     SerializedProperty levelComplectionExpCurveProperty;
     SerializedProperty inRunLevelComplectionExpCurveProperty;
-    SerializedProperty reRunComplectionExpCurveProperty;
 
     SerializedProperty bossDropProperty;
     SerializedProperty timeStopRestoreSpeedProperty;
@@ -48,7 +47,6 @@ public class GameAreaModelEditor : Editor
 
         levelComplectionExpCurveProperty = serializedObject.FindProperty("levelComplectionExpCurve");
         inRunLevelComplectionExpCurveProperty = serializedObject.FindProperty("runComplectionExpCurve");
-        reRunComplectionExpCurveProperty = serializedObject.FindProperty("reRunComplectionExpCurve");
 
         timeStopRestoreSpeedProperty = serializedObject.FindProperty("timeStopRestoreSpeed");
         timeStopDurationProperty = serializedObject.FindProperty("timeStopDuration");
@@ -159,9 +157,6 @@ public class GameAreaModelEditor : Editor
         EditorGUILayout.Space(10);
         EditorGUILayout.LabelField("Level Complection ExpCurve", EditorStyles.boldLabel);
         DrawData(levelComplectionExpCurveProperty);
-        EditorGUILayout.Space(10);
-        EditorGUILayout.LabelField("Re Run Complection ExpCurve", EditorStyles.boldLabel);
-        DrawData(reRunComplectionExpCurveProperty);
         EditorGUILayout.Space(20);
     }
 
