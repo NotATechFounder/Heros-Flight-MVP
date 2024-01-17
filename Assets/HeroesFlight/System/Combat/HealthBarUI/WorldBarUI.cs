@@ -37,7 +37,7 @@ public class WorldBarUI : MonoBehaviour
     {
         if (valueDisplay != null)
         {
-            valueDisplay.text = currentValue.ToString();
+            valueDisplay.text = (int)currentValue + "/" + Mathf.FloorToInt (currentValue / normalisedValue);
         }
 
         if (healthBarType == BarType.ToggleVisibilityOnHit && !healthBar.gameObject.activeInHierarchy)
