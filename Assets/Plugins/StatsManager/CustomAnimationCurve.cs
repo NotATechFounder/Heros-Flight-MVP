@@ -6,17 +6,36 @@ public enum CurveType
     Custom,
     Linear,
     EaseInOut,
+    CustomKeys
+}
+
+[Serializable]
+public class CustomCurveKeys
+{
+    public CustomCurveKey[] keys;
+}
+
+[Serializable]
+public class CustomCurveKey
+{
+    public float time;
+    public float value;
 }
 
 [Serializable]
 public class CustomAnimationCurve
 {
     public AnimationCurve animationCurve;
+
+    [Header("Properties")]
     public CurveType curveType;
     public float minLevel;
     public float minValue;
     public float maxLevel;
     public float maxValue;
+
+    [Header("Debug")]
+    public CustomCurveKeys customCurveKeys;
 
     public void UpdateCurveValues()
     {
@@ -43,6 +62,36 @@ public class CustomAnimationCurve
             case CurveType.EaseInOut:
                 animationCurve = AnimationCurve.EaseInOut(minLevel, minValue, maxLevel, maxValue);
                 break;
+            case CurveType.CustomKeys:
+            UpdateCurveFromCustomKeys();
+            break;
+        }
+    }
+
+    public void UpdateCustomKeys()
+    {
+        customCurveKeys = new CustomCurveKeys();
+        customCurveKeys.keys = new CustomCurveKey[animationCurve.keys.Length];
+        for (int i = 0; i < animationCurve.keys.Length; i++)
+        {
+            customCurveKeys.keys[i] = new CustomCurveKey();
+            customCurveKeys.keys[i].time = animationCurve.keys[i].time;
+            customCurveKeys.keys[i].value = animationCurve.keys[i].value;
+        }      
+    }
+
+    public void UpdateCurveFromCustomKeys()
+    {
+        animationCurve.ClearKeys();
+        for (int i = 0; i < customCurveKeys.keys.Length; i++)
+        {
+            animationCurve.AddKey(customCurveKeys.keys[i].time, customCurveKeys.keys[i].value);
+        }
+
+        for (int i = 0; i < animationCurve.keys.Length; i++)
+        {
+            if (i == 0 || i == animationCurve.keys.Length - 1) continue;
+            animationCurve.SmoothTangents(i, 0);
         }
     }
 

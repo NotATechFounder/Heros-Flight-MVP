@@ -71,6 +71,16 @@ public class RewardSystem : RewardSystemInterface
         return rewardVisuals;
     }
 
+    public RewardVisual[] GiveLevelUpReward(int gems, int gold)
+    {
+        List<RewardVisual> rewardVisuals = new List<RewardVisual>
+        {
+            CreateCurrencyRewardVisual(CurrencyKeys.Gem, gems),
+            CreateCurrencyRewardVisual(CurrencyKeys.Gold, gold)
+        };
+        return rewardVisuals.ToArray();
+    }
+
     public void ProcessReward(Reward reward)
     {
         switch (reward.GetRewardObject<RewardBaseSO>())
@@ -127,6 +137,17 @@ public class RewardSystem : RewardSystemInterface
         }
 
         rewardVisual.amount = reward.GetAmount();
+        return rewardVisual;
+    }
+
+    public RewardVisual CreateCurrencyRewardVisual(string id, int amount)
+    {
+        CurrencySO currencySO = dataSystem.CurrencyManager.GetCurrecy(id);
+        RewardVisual rewardVisual = new RewardVisual();
+        rewardVisual.icon = currencySO.GetSprite;
+        rewardVisual.color = currencySO.GetColor;
+        rewardVisual.name = currencySO.GetCurrencyName;
+        rewardVisual.amount = amount;
         return rewardVisual;
     }
 

@@ -9,4 +9,5 @@ public interface RewardSystemInterface : StateDependantSystemInterface
     void ProcessRewards(List<Reward> rewards);
     RewardVisual GetRewardVisual(Reward reward);
     List<RewardVisual> GetRewardVisuals(List<Reward> rewards);
+    RewardVisual[] GiveLevelUpReward(int gems, int gold);
 }

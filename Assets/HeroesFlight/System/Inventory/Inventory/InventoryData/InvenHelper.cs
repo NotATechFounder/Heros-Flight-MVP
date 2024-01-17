@@ -24,6 +24,9 @@ public class InvenHelper : ScriptableObject
     [SerializeField] private TextAsset itemInfo;
     [SerializeField] private ItemInfoList itemInfoList = new ItemInfoList();
 
+    [Header("Item Base stats")]
+    [SerializeField] EquipmentStat[] baseStatIncrease;
+
     [Serializable]
     public class ItemInfoCSV
     {
@@ -41,6 +44,28 @@ public class InvenHelper : ScriptableObject
     public class ItemInfoList
     {
         public ItemInfoCSV[] itemInfoCSVs;
+    }
+
+    [Serializable]
+    public class StarStat
+    {
+        public EquipmentStar equipmentStar;
+        public RarityIncrease[] rarityIncreases;
+    }
+
+    [Serializable]
+    public class RarityIncrease
+    {
+        public Rarity rarity;
+        public int incrementPerLevel;
+    }
+
+
+    [Serializable]
+    public class EquipmentStat
+    {
+        public EquipmentType equipmentType;
+        public StarStat[] starIncreases;
     }
 
 #if UNITY_EDITOR
@@ -66,42 +91,42 @@ public class InvenHelper : ScriptableObject
     }
 
 
-    [ContextMenu("UpdateItemInfo")]
-    public void UpdateItemInfo()
-    {
-        for (int i = 0; i < itemInfoList.itemInfoCSVs.Length; i++)
-        {
-            for (int j = 0; j < equipmentSOs.Length; j++)
-            {
-                if (itemInfoList.itemInfoCSVs[i].Name == equipmentSOs[j].Name)
-                {
-                    equipmentSOs[j].ID = itemInfoList.itemInfoCSVs[i].Id;
-                    equipmentSOs[j].description = itemInfoList.itemInfoCSVs[i].Description;
-                    for (int k = 0; k < equipmentSOs[j].itemBaseStats.Length; k++)
-                    {
-                        switch (equipmentSOs[j].itemBaseStats[k].rarity)
-                        {
-                            case Rarity.Common:
-                                equipmentSOs[j].itemBaseStats[k].value = (int)itemInfoList.itemInfoCSVs[i].Common;
-                                break;
-                            case Rarity.UnCommon:
-                                equipmentSOs[j].itemBaseStats[k].value = (int)itemInfoList.itemInfoCSVs[i].Uncommon;
-                                break;
-                            case Rarity.Rare:
-                                equipmentSOs[j].itemBaseStats[k].value = (int)itemInfoList.itemInfoCSVs[i].Rare;
-                                break;
-                            case Rarity.Epic:
-                                equipmentSOs[j].itemBaseStats[k].value = (int)itemInfoList.itemInfoCSVs[i].Epic;
-                                break;
-                            default:break;
-                        }
-                    }
-                }
-                EditorUtility.SetDirty(equipmentSOs[j]);
-            }
-        }
-        AssetDatabase.SaveAssets();
-    }
+    //[ContextMenu("UpdateItemInfo")]
+    //public void UpdateItemInfo()
+    //{
+    //    for (int i = 0; i < itemInfoList.itemInfoCSVs.Length; i++)
+    //    {
+    //        for (int j = 0; j < equipmentSOs.Length; j++)
+    //        {
+    //            if (itemInfoList.itemInfoCSVs[i].Name == equipmentSOs[j].Name)
+    //            {
+    //                equipmentSOs[j].ID = itemInfoList.itemInfoCSVs[i].Id;
+    //                equipmentSOs[j].description = itemInfoList.itemInfoCSVs[i].Description;
+    //                for (int k = 0; k < equipmentSOs[j].itemBaseStats.Length; k++)
+    //                {
+    //                    switch (equipmentSOs[j].itemBaseStats[k].rarity)
+    //                    {
+    //                        case Rarity.Common:
+    //                            equipmentSOs[j].itemBaseStats[k].value = (int)itemInfoList.itemInfoCSVs[i].Common;
+    //                            break;
+    //                        case Rarity.UnCommon:
+    //                            equipmentSOs[j].itemBaseStats[k].value = (int)itemInfoList.itemInfoCSVs[i].Uncommon;
+    //                            break;
+    //                        case Rarity.Rare:
+    //                            equipmentSOs[j].itemBaseStats[k].value = (int)itemInfoList.itemInfoCSVs[i].Rare;
+    //                            break;
+    //                        case Rarity.Epic:
+    //                            equipmentSOs[j].itemBaseStats[k].value = (int)itemInfoList.itemInfoCSVs[i].Epic;
+    //                            break;
+    //                        default:break;
+    //                    }
+    //                }
+    //            }
+    //            EditorUtility.SetDirty(equipmentSOs[j]);
+    //        }
+    //    }
+    //    AssetDatabase.SaveAssets();
+    //}
 
 
     [ContextMenu("InsertItemIcon")]
@@ -334,6 +359,50 @@ public class InvenHelper : ScriptableObject
 
             EditorUtility.SetDirty(equipmentSOs[i]);
         }
+        AssetDatabase.SaveAssets();
+    }
+
+
+    [ContextMenu("UpdateItemInfo")]
+    public void UpdateItemInfo()
+    {
+        for (int i = 0; i < baseStatIncrease.Length; i++)
+        {
+            itemDatabaseSO.equipmentBaseStat[i].starStats = new ItemDatabaseSO.StarStat[baseStatIncrease[i].starIncreases.Length];
+
+            for (int j = 0; j < baseStatIncrease[i].starIncreases.Length; j++)
+            {
+                itemDatabaseSO.equipmentBaseStat[i].starStats[j] = new ItemDatabaseSO.StarStat();
+                itemDatabaseSO.equipmentBaseStat[i].starStats[j].equipmentStar = baseStatIncrease[i].starIncreases[j].equipmentStar;
+                itemDatabaseSO.equipmentBaseStat[i].starStats[j].rarityValues = new ItemDatabaseSO.RarityValue[baseStatIncrease[i].starIncreases[j].rarityIncreases.Length];
+
+                for (int k = 0; k < baseStatIncrease[i].starIncreases[j].rarityIncreases.Length; k++)
+                {
+                    itemDatabaseSO.equipmentBaseStat[i].starStats[j].rarityValues[k] = new ItemDatabaseSO.RarityValue();
+                    switch (baseStatIncrease[i].starIncreases[j].rarityIncreases[k].rarity)
+                    {
+                        case Rarity.Common:
+                            itemDatabaseSO.equipmentBaseStat[i].starStats[j].rarityValues[k].rarity = Rarity.Common;
+                            itemDatabaseSO.equipmentBaseStat[i].starStats[j].rarityValues[k].value = baseStatIncrease[i].starIncreases[j].rarityIncreases[k].incrementPerLevel;
+                            break;
+                        case Rarity.UnCommon:
+                            itemDatabaseSO.equipmentBaseStat[i].starStats[j].rarityValues[k].rarity = Rarity.UnCommon;
+                            itemDatabaseSO.equipmentBaseStat[i].starStats[j].rarityValues[k].value = baseStatIncrease[i].starIncreases[j].rarityIncreases[k].incrementPerLevel;
+                            break;
+                        case Rarity.Rare:
+                            itemDatabaseSO.equipmentBaseStat[i].starStats[j].rarityValues[k].rarity = Rarity.Rare;
+                            itemDatabaseSO.equipmentBaseStat[i].starStats[j].rarityValues[k].value = baseStatIncrease[i].starIncreases[j].rarityIncreases[k].incrementPerLevel;
+                            break;
+                        case Rarity.Epic:
+                            itemDatabaseSO.equipmentBaseStat[i].starStats[j].rarityValues[k].rarity = Rarity.Epic;
+                            itemDatabaseSO.equipmentBaseStat[i].starStats[j].rarityValues[k].value = baseStatIncrease[i].starIncreases[j].rarityIncreases[k].incrementPerLevel;
+                            break;
+                        default: break;
+                    }
+                }
+            }
+        }
+        EditorUtility.SetDirty(itemDatabaseSO);
         AssetDatabase.SaveAssets();
     }
 #endif
