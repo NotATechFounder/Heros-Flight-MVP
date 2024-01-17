@@ -292,8 +292,10 @@ public class InventoryHandler : MonoBehaviour, IInventoryChangeSignal
         foreach (Item item in equippedItemDic.Values)
         {
             // Apply base stat value
-            int baseValue = item.GetItemSO<EquipmentSO>().GetBaseStatValue(item.GetItemData<ItemEquipmentData>().rarity);
-            int actualValue = itemDatabaseSO.GetRarityInfo(item.GetItemData<ItemEquipmentData>().rarity).GetValue(baseValue, item.GetItemData<ItemEquipmentData>().value);
+
+            int actualValue = itemDatabaseSO.GetCurrentStatValue(item.GetItemSO<EquipmentSO>(), item.GetItemData<ItemEquipmentData>().rarity,
+                item.GetItemData<ItemEquipmentData>().value);
+
             StatType statType = item.GetItemSO<EquipmentSO>().statType;
             equippedItemsStatDic.Add(new StatTypeWithValue(statType, actualValue, StatModel.StatCalculationType.Flat));
             //Debug.Log($"Adding stat {statType} with value {actualValue}");
@@ -318,8 +320,7 @@ public class InventoryHandler : MonoBehaviour, IInventoryChangeSignal
 
     public int GetItemCurrentStat(Item item, int level)
     {
-        int baseValue = item.GetItemSO<EquipmentSO>().GetBaseStatValue(item.GetItemData<ItemEquipmentData>().rarity);
-        int actualValue = itemDatabaseSO.GetRarityInfo(item.GetItemData<ItemEquipmentData>().rarity).GetValue(baseValue, level);
+        int actualValue = itemDatabaseSO.GetCurrentStatValue(item.GetItemSO<EquipmentSO>(), item.GetItemData<ItemEquipmentData>().rarity, level);
         return actualValue;
     }
 

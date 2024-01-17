@@ -92,7 +92,7 @@ namespace HeroesFlight.System.Combat
                 characterSkillHandler =
                     new CharacterSkillHandler(model.HealthController.HealthTransform.GetComponent<CharacterAbilityInterface>());
                 specialBar = model.AttackController.specialBar;
-                specialBar.ChangeValue(characterSkillHandler.CharacterUltimate.CurrentCharge);
+                specialBar.SetValue(characterSkillHandler.CharacterUltimate.CurrentCharge, characterSkillHandler.CharacterUltimate.CurrentCharge);
             }
         }
 
@@ -173,7 +173,7 @@ namespace HeroesFlight.System.Combat
                 case AttackType.Regular:
 
                     characterSkillHandler.CharacterUltimate.UpdateAbilityCharges(5);
-                    specialBar.ChangeValue(characterSkillHandler.CharacterUltimate.CurrentCharge);
+                    specialBar.SetValue(characterSkillHandler.CharacterUltimate.CurrentCharge, characterSkillHandler.CharacterUltimate.CurrentCharge);
                     uiSystem.UpdateUltimateButton(characterSkillHandler.CharacterUltimate.CurrentCharge);
                     break;
             }
@@ -215,12 +215,12 @@ namespace HeroesFlight.System.Combat
         {
             onBeforeUse?.Invoke();
             characterSkillHandler.CharacterUltimate.UseAbility(onComplete);
-            specialBar.ChangeValue(0);
+            specialBar.SetValue(0,0);
         }
 
         public void SetSpecialBarValue(float value)
         {
-            specialBar.ChangeValue(value);
+            specialBar.SetValue(value ,value);
             uiSystem.UpdateUltimateButton(value);
         }
 

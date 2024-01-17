@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Pelumi.Juicer;
+using TMPro;
 
 public class WorldBarUI : MonoBehaviour
 {
@@ -17,8 +18,9 @@ public class WorldBarUI : MonoBehaviour
     [SerializeField] private Image innerFill;
     [SerializeField] private BarType healthBarType;
     [SerializeField] private float visibilityTime = 2f;
-
-    private Coroutine visibilityCoroutine;  
+    [SerializeField] private TextMeshProUGUI valueDisplay;
+    private Coroutine visibilityCoroutine; 
+    
 
     private void Start()
     {
@@ -31,8 +33,13 @@ public class WorldBarUI : MonoBehaviour
         healthBar.gameObject.SetActive(healthBarType == BarType.AlwaysVisible);
     }
 
-    public void ChangeValue(float normalisedValue)
+    public void SetValue(float currentValue, float normalisedValue)
     {
+        if (valueDisplay != null)
+        {
+            valueDisplay.text = currentValue.ToString();
+        }
+
         if (healthBarType == BarType.ToggleVisibilityOnHit && !healthBar.gameObject.activeInHierarchy)
         {
             healthBar.gameObject.SetActive(true);
