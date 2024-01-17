@@ -15,7 +15,6 @@ public class EquipmentSO : ItemSO
     public EquipmentType equipmentType;
     public StatType statType;
     public HeroType heroType;
-    public ItemStatByRarity[] itemBaseStats;
     public StatTypeWithValue specialHeroEffect;
     public UniqueStatModificationEffect[] uniqueStatModificationEffects;
     public UniqueCombatEffect[] uniqueCombatEffects;
@@ -34,23 +33,6 @@ public class EquipmentSO : ItemSO
             uniqueCombatEffects[i].curve.UpdateCurve();
         }
     }
-
-    public int GetBaseStatValue(Rarity rarity)
-    {
-        foreach (ItemStatByRarity itemBaseStat in itemBaseStats)
-        {
-            if (itemBaseStat.rarity == rarity) return itemBaseStat.value;
-        }
-        return 0;
-    }
-}
-
-
-[Serializable]
-public class ItemStatByRarity
-{
-    public Rarity rarity;
-    public int value;
 }
 
 [Serializable]
@@ -89,14 +71,6 @@ public class RarityInfo
     [Header("Default Prices")]
     public int defaultDisamatlePrice;
     public int defaultMaterial;
-
-    [Header("Stat")]
-    public int incrementPerLevel;
-
-    public int GetValue(int baseValue, int level)
-    {
-        return baseValue + incrementPerLevel * (level - 1);
-    }
 }
 
 [Serializable]

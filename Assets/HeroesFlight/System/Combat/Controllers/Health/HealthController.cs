@@ -67,7 +67,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public virtual void Init()
         {
             currentHealth = maxHealth;
-            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+            heathBarUI?.SetValue(currentHealth, currentHealth / maxHealth);
             currentHit = maxHit;
         }
 
@@ -221,7 +221,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                     currentHealth = maxHealth;
             }
 
-            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+            heathBarUI?.SetValue(currentHealth, currentHealth / maxHealth);
 
             if (IsDead())
             {
@@ -250,7 +250,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 currentHealth += amount;
                 if (currentHealth > maxHealth)
                     currentHealth = maxHealth;
-                heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+                heathBarUI?.SetValue(currentHealth, currentHealth / maxHealth);
             }
         }
 
@@ -263,7 +263,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         public virtual void Revive(float healthPercentage)
         {
             currentHealth = maxHealth / 100 * healthPercentage;
-            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+            heathBarUI?.SetValue(currentHealth, currentHealth / maxHealth);
             currentHit = maxHit;
         }
 
@@ -287,7 +287,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
         protected void SetMaxHealth(float health)
         {
             maxHealth = health;
-            heathBarUI?.ChangeValue((float)currentHealth / maxHealth);
+            heathBarUI?.SetValue(currentHealth, currentHealth / maxHealth);
         }
 
         protected bool DodgeAttack()
