@@ -172,7 +172,7 @@ namespace HeroesFlight.System.Combat
             {
                 case AttackType.Regular:
 
-                    characterSkillHandler.CharacterUltimate.UpdateAbilityCharges(5);
+                    characterSkillHandler.CharacterUltimate.UpdateAbilityCharges(container.UltChargePerHit);
                     specialBar.ChangeValue(characterSkillHandler.CharacterUltimate.CurrentCharge);
                     uiSystem.UpdateUltimateButton(characterSkillHandler.CharacterUltimate.CurrentCharge);
                     break;
