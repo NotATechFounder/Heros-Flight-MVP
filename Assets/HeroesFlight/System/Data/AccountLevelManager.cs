@@ -15,8 +15,13 @@ public class AccountLevelManager : MonoBehaviour
 
     public const string SAVE_ID = "AccountLevelData";
 
+    [Header("Curves")]
     [SerializeField] private CustomAnimationCurve levelCurve;
-    [SerializeField] private LevelSystem levelSystem;
+    [SerializeField] private CustomAnimationCurve gemCurve;
+    [SerializeField] private CustomAnimationCurve goldCurve;
+
+    private LevelSystem levelSystem;
+
     [Header("Debug")]
     [SerializeField] private Data data;
 
@@ -31,13 +36,24 @@ public class AccountLevelManager : MonoBehaviour
             OnLevelUp?.Invoke(response);
         };
     }
+
     //FOR DEBUG
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            AddExp(500);
+            AddExp(1500);
         }
+    }
+
+    public int GetGemReward()
+    {
+        return gemCurve.GetCurrentValueInt(levelSystem.CurrentLevel);
+    }
+
+    public int GetGoldReward()
+    {
+        return goldCurve.GetCurrentValueInt(levelSystem.CurrentLevel);
     }
 
     public LevelSystem.ExpIncreaseResponse GetExpIncreaseResponse()
@@ -78,14 +94,19 @@ public class AccountLevelManager : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (levelSystem.LevelCurve != null)
+        if (levelCurve != null)
         {
-            levelSystem.LevelCurve.UpdateCurve();
-            Gizmos.color = Color.red;
-            for (int i = 0; i < levelSystem.LevelCurve.maxLevel; i++)
-            {
-                Gizmos.DrawSphere(new Vector3(i, levelSystem.LevelCurve.GetCurrentValueInt(i) / 10) + transform.position, 1f);
-            }
+            levelCurve.UpdateCurve();
+        }
+
+        if (gemCurve != null)
+        {
+            gemCurve.UpdateCurve();
+        }
+
+        if (goldCurve != null)
+        {
+            goldCurve.UpdateCurve();
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using HeroesFlight.System.Shrine;
 using HeroesFlight.System.ShrineSystem;
 using UnityEngine;
 
@@ -8,6 +9,12 @@ public class ShrineNPC : InteractiveNPC
 {
     [SerializeField] private ShrineNPCType shrineNPCType;
     [SerializeField] private GameObject lockIcon;
+
+    [Header("Chat region")] [SerializeField]
+    private Trigger2DObserver chatObserver;
+
+    [SerializeField] private Canvas chatCanvas;
+    [SerializeField] private float conversationDuration = 3f;
 
     [Header("Do not modify")] [SerializeField]
     string fillPhaseProperty = "_FillPhase";
@@ -18,12 +25,15 @@ public class ShrineNPC : InteractiveNPC
     private SpriteRenderer spriteRenderer;
     private ShrineNPCFee shrineNPCFee;
     public ShrineNPCType GetShrineNPCType() => shrineNPCType;
+    private DialogueHandler dialogueHandler;
 
     private void Awake()
     {
         mpb = new MaterialPropertyBlock();
         meshRenderer = GetComponentInChildren<MeshRenderer>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        dialogueHandler = new DialogueHandler(chatCanvas, this, conversationDuration);
+        chatCanvas.enabled = false;
     }
 
     public void Initialize(ShrineNPCFee shrineNPCFee, Action OnInteract)
@@ -31,7 +41,15 @@ public class ShrineNPC : InteractiveNPC
         this.shrineNPCFee = shrineNPCFee;
         this.OnInteract += OnInteract;
         shrineNPCFee.OnInteracted = InteractionComplected;
+        chatObserver.OnEnter += TryTriggerConversation;
         SetupView();
+    }
+
+    private void TryTriggerConversation(Collider2D obj)
+    {
+        if (!shrineNPCFee.Unlocked) return;
+        
+        dialogueHandler.TryTriggerConversation();
     }
 
     private void SetupView()

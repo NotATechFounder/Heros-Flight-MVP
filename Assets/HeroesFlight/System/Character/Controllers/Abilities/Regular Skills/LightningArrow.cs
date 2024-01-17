@@ -103,7 +103,7 @@ public class LightningArrow : RegularActiveAbility
 
     private void Flip(bool facingLeft)
     {
-        visual.localScale = new Vector3(facingLeft ? 1 : -1, 1, 1);
+        transform.localScale = new Vector3(facingLeft ? 1 : -1, 1, 1);
     }
 
     private void FireProjectile()
