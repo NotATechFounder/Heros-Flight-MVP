@@ -8,7 +8,7 @@ public class DefeatMobQuestSO : QuestSO
 {
     public WorldType worldType;
 
-    public override void Awake()
+    public void Awake()
     {
         questType = QuestType.DefeatMob;
     }

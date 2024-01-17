@@ -6,7 +6,7 @@ public class ObtainEquipmentQuestSO : QuestSO
 {
     public Rarity rarity;
 
-    public override void Awake()
+    public void Awake()
     {
         questType = QuestType.ObtainEquipment;
     }

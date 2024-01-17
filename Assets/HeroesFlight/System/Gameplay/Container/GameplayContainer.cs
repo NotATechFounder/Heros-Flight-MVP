@@ -53,7 +53,7 @@ namespace HeroesFlight.System.Gameplay.Container
             if (CurrentLvlIndex >= currentModel.SpawnModel.Levels.Length)
                 return null;
 
-            if(currentLevel != null && currentLevel.LevelType != LevelType.Shrine && CurrentLvlIndex % 3 != 0)
+            if(currentLevel != null && currentLevel.LevelType != LevelType.Shrine && CurrentLvlIndex % 3 == 0)
             {
                 return currentLevel = currentModel.ShrineLevel;
             }
@@ -62,11 +62,6 @@ namespace HeroesFlight.System.Gameplay.Container
             CurrentLvlIndex++;
 
             return currentLevel;
-        }
-
-        public Level GetAngelGambitLevel()
-        {
-            return currentModel.ShrineLevel;
         }
 
         public void EnablePortal(Vector2 position)
