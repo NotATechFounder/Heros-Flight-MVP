@@ -26,6 +26,9 @@ namespace HeroesFlight.System.Gameplay.Model
         [Header("Time Stop Testing")]
         [SerializeField] float timeStopRestoreSpeed;
         [SerializeField] float timeStopDuration;
+
+        [Header("Drop values")] 
+        [SerializeField] private int runeShardsPerEnemy = 5;
        
         public WorldType WorldType => worldType;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
@@ -44,5 +47,7 @@ namespace HeroesFlight.System.Gameplay.Model
 
         public float TimeStopRestoreSpeed => timeStopRestoreSpeed;
         public float TimeStopDuration => timeStopDuration;
+
+        public int RuneShardsPerEnemy => runeShardsPerEnemy;
     }
 }

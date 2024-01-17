@@ -76,7 +76,7 @@ namespace HeroesFlight.System.Gameplay
 
         GodsBenevolence godsBenevolence;
 
-       
+
         ActiveAbilityManager activeAbilityManager;
 
         DataSystemInterface dataSystem;
@@ -86,8 +86,8 @@ namespace HeroesFlight.System.Gameplay
         NpcSystemInterface npcSystem;
 
         CombatSystemInterface combatSystem;
-         IAchievementSystemInterface achievementSystem;
-         private ShrineSystemInterface shrineSystem;
+        IAchievementSystemInterface achievementSystem;
+        private ShrineSystemInterface shrineSystem;
         IUISystem uiSystem;
 
         ProgressionSystemInterface progressionSystem;
@@ -177,7 +177,8 @@ namespace HeroesFlight.System.Gameplay
             shrineSystem.Shrine.GetAngelEffectManager.OnPermanetCard +=
                 uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
             uiSystem.UiEventHandler.AngelGambitMenu.CardExit += shrineSystem.Shrine.GetAngelEffectManager.Exists;
-            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected += shrineSystem.Shrine.GetAngelEffectManager.AddAngelCardSO;
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected +=
+                shrineSystem.Shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed += EnableMovement;
 
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.GetRandomBenevolenceVisualSO =
@@ -261,10 +262,7 @@ namespace HeroesFlight.System.Gameplay
 
         private void AbilitySelectMenu_OnAdsReRoll()
         {
-            dataSystem.AdManager.ShowRewardedAd(() =>
-            {
-                uiSystem.UiEventHandler.AbilitySelectMenu.AdsReRoll();
-            });
+            dataSystem.AdManager.ShowRewardedAd(() => { uiSystem.UiEventHandler.AbilitySelectMenu.AdsReRoll(); });
         }
 
         public void Reset()
@@ -374,7 +372,8 @@ namespace HeroesFlight.System.Gameplay
             shrineSystem.Shrine.GetAngelEffectManager.OnPermanetCard -=
                 uiSystem.UiEventHandler.AngelPermanetCardMenu.AcivateCardPermanetEffect;
             uiSystem.UiEventHandler.AngelGambitMenu.CardExit -= shrineSystem.Shrine.GetAngelEffectManager.Exists;
-            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -= shrineSystem.Shrine.GetAngelEffectManager.AddAngelCardSO;
+            uiSystem.UiEventHandler.AngelGambitMenu.OnCardSelected -=
+                shrineSystem.Shrine.GetAngelEffectManager.AddAngelCardSO;
             uiSystem.UiEventHandler.AngelGambitMenu.OnMenuClosed -= EnableMovement;
 
             uiSystem.UiEventHandler.GodsBenevolencePuzzleMenu.OnPuzzleSolved -= godsBenevolence.ActivateGodsBenevolence;
@@ -563,7 +562,7 @@ namespace HeroesFlight.System.Gameplay
 
             environmentSystem.CurrencySpawner.SetPlayer(characterController.CharacterTransform);
 
-            shrineSystem.Shrine.Initialize(dataSystem.CurrencyManager, characterStatController,dataSystem.AdManager);
+            shrineSystem.Shrine.Initialize(dataSystem.CurrencyManager, characterStatController, dataSystem.AdManager);
             godsBenevolence.Initialize(characterStatController);
 
             activeAbilityManager.Initialize(characterStatController);
@@ -633,7 +632,8 @@ namespace HeroesFlight.System.Gameplay
 
             environmentSystem.ParticleManager.Spawn("Loot_Spawn", position, Quaternion.Euler(new Vector3(-90, 0, 0)));
 
-            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RuneShard, 10 + goldModifier, position);
+            environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RuneShard,
+                container.CurrentModel.RuneShardsPerEnemy + goldModifier, position);
 
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RunExperience, 0, position);
 
@@ -645,15 +645,14 @@ namespace HeroesFlight.System.Gameplay
             if (enemiesToKill <= 0)
             {
                 GameTimer.Stop();
-                
+
                 Debug.Log(CurrentLvlIndex);
                 achievementSystem.AddQuestProgress(
                     new QuestEntry<LevelComplectionQuest>(
                         new LevelComplectionQuest(dataSystem.WorldManger.SelectedWorld)));
-                achievementSystem.AddProgressionProgress(  new QuestEntry<LevelComplectionQuest>(
-                    new LevelComplectionQuest(dataSystem.WorldManger.SelectedWorld,CurrentLvlIndex)));
+                achievementSystem.AddProgressionProgress(new QuestEntry<LevelComplectionQuest>(
+                    new LevelComplectionQuest(dataSystem.WorldManger.SelectedWorld, CurrentLvlIndex)));
                 HandlePlayerWon();
-              
             }
         }
 
@@ -1167,7 +1166,7 @@ namespace HeroesFlight.System.Gameplay
                 case GameState.Died:
                     //TODO: remove hardcoded values
                     uiSystem.UiEventHandler.ReviveMenu.OpenWithContext(reviveAmount < 2,
-                    dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) > 50);
+                        dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) > 50);
                     break;
                 case GameState.Ended:
                     break;
@@ -1249,7 +1248,8 @@ namespace HeroesFlight.System.Gameplay
                 foreach (var health in boss.CrystalNodes)
                 {
                     var effectsHandler = health.HealthTransform.GetComponent<CombatEffectsController>();
-                    combatSystem.RegisterEntity(new CombatEntityModel(health, effectsHandler, CombatEntityType.BossCrystal));
+                    combatSystem.RegisterEntity(new CombatEntityModel(health, effectsHandler,
+                        CombatEntityType.BossCrystal));
                 }
 
                 var mushroomTriggerAbility = boss.transform.GetComponentInChildren<BossMushroomSummonAbility>();
@@ -1348,10 +1348,10 @@ namespace HeroesFlight.System.Gameplay
         void ShowLevelPortal()
         {
             CoroutineUtility.WaitForSeconds(1f,
-            () =>
-            {
-                container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
-            });
+                () =>
+                {
+                    container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
+                });
         }
 
         void ShowGodBenevolencePrompt()
@@ -1446,9 +1446,9 @@ namespace HeroesFlight.System.Gameplay
 
         private void ReviveCharacterWithFullHp(ReviveRequestModel reviveRequestModel)
         {
-            if (reviveAmount >= 2) 
-            { 
-                return; 
+            if (reviveAmount >= 2)
+            {
+                return;
             }
 
             switch (reviveRequestModel.ReviveType)
