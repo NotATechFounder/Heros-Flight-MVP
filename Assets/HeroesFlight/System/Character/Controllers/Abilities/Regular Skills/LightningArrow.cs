@@ -16,6 +16,10 @@ public class LightningArrow : RegularActiveAbility
     [SerializeField] private int linesOfDamage = 2;
     [SerializeField] private int linesOfDamagePerIncrease = 1;
 
+    [Header("Projectile")]
+    [SerializeField] private int numberOfProjectile = 10;
+    [SerializeField] private int spacing = 2;
+
     [Header("Damage")]
     [SerializeField] private CustomAnimationCurve damagePercentageCurve;
     [SerializeField] private ProjectileControllerBase projectileController;
@@ -31,6 +35,8 @@ public class LightningArrow : RegularActiveAbility
     private int currentDamage;
     private int currentlinesOfDamage;
     private CharacterSimpleController characterControllerInterface;
+
+    private ProjectileControllerBase currentProjectile;
 
     private void Update()
     {
@@ -51,7 +57,6 @@ public class LightningArrow : RegularActiveAbility
         currentlinesOfDamage = GetMajorValueByLevel(linesOfDamage, linesOfDamagePerIncrease);
 
         skeletonAnimation.AnimationState. SetAnimation(0, attackAnimation1Name, false);
-        FireProjectile();
     }
 
     public override void OnDeactivated()
@@ -68,7 +73,7 @@ public class LightningArrow : RegularActiveAbility
     {
         if (e.Data.Name == "Attack")
         {
-
+            FireUpProjectile();
         }
     }
 
@@ -85,7 +90,6 @@ public class LightningArrow : RegularActiveAbility
         }
     }
 
-
     public override void LevelUp()
     {
         base.LevelUp();
@@ -98,6 +102,7 @@ public class LightningArrow : RegularActiveAbility
         this.characterControllerInterface = characterControllerInterface;
         characterControllerInterface.OnFaceDirectionChange += Flip;
         skeletonAnimation.AnimationState.Complete += AnimationState_Complete;
+        skeletonAnimation.AnimationState.Event += AnimationState_Event;
         skeletonAnimation.gameObject.SetActive(false);
     }
 
@@ -106,15 +111,29 @@ public class LightningArrow : RegularActiveAbility
         transform.localScale = new Vector3(facingLeft ? 1 : -1, 1, 1);
     }
 
-    private void FireProjectile()
+    private void FireUpProjectile()
     {
-        ProjectileControllerBase bullet = Instantiate(projectileController, projectileSpawnPoint.position, Quaternion.identity);
-        bullet.transform.localScale = new Vector3(visual.localScale.x * bullet.transform.localScale.y, bullet.transform.localScale.y, 1);
+        currentProjectile = Instantiate(projectileController, projectileSpawnPoint.position, Quaternion.identity);
+        currentProjectile.SetupProjectile(currentDamage,Vector2.up);
+        currentProjectile.OnHit += HandleOnHit;
+        currentProjectile.OnDeactivate += HandleArrowDisable;
 
-        bullet.SetupProjectile(currentDamage, -visual.localScale.x * Vector2.right);
-        bullet.SetLine(currentlinesOfDamage, 0.25f);
-        bullet.OnHit += HandleOnHit;
-        bullet.OnDeactivate += HandleArrowDisable;
+        StartCoroutine(FireRainProjectile());
+    }
+
+    private IEnumerator FireRainProjectile()
+    {
+        yield return new WaitForSeconds(1.5f);
+        Transform centre = currentProjectile.transform;
+        for (int i = 0; i < numberOfProjectile; i++)
+        {
+            Vector2 spawnPos = i % 2 == 0 ? centre.position + Vector3.left * spacing * (i / 2) : centre.position + Vector3.right * spacing * (i / 2);
+            ProjectileControllerBase  Projectile = Instantiate(projectileController, spawnPos, Quaternion.identity);
+            Projectile.SetupProjectile(currentDamage, Vector2.down);
+            Projectile.OnHit += HandleOnHit;
+            Projectile.OnDeactivate += HandleArrowDisable;
+            yield return new WaitForSeconds(Random.Range(0.05f, 0.1f));
+        }
     }
 
     void HandleOnHit(ProjectileControllerInterface obj)
@@ -125,7 +144,7 @@ public class LightningArrow : RegularActiveAbility
     void HandleArrowDisable(ProjectileControllerInterface obj)
     {
         AudioManager.PlaySoundEffect("LightningExplosion", SoundEffectCategory.Hero);
-        obj.OnHit -= HandleArrowDisable;
+        obj.OnHit -= HandleOnHit;
         obj.OnDeactivate -= HandleArrowDisable;
         var arrow = obj as ProjectileControllerBase;
         Destroy(arrow.gameObject);

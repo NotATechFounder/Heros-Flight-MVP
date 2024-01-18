@@ -1,4 +1,6 @@
+using HeroesFlight.System.UI.Reward;
 using Pelumi.Juicer;
+using Pelumi.ObjectPool;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +10,9 @@ using UnityEngine;
 
 public class LevelUpMenu : BaseMenu <LevelUpMenu>
 {
+    public event Func<RewardVisual[]> GetRewardVisuals;
+
+
     [SerializeField] private Transform container;
 
     [Header("Buttons")]
@@ -15,6 +20,12 @@ public class LevelUpMenu : BaseMenu <LevelUpMenu>
 
     [Header("Texts")]
     [SerializeField] private TextMeshProUGUI levelText;
+
+    [Header ("Rewards")]
+    [SerializeField] private GameObject rewardViewParent;
+    [SerializeField] private RewardView rewardViewPrefab;
+
+    private List<RewardView> rewardViews = new List<RewardView>();
 
     JuicerRuntime openEffectBG;
     JuicerRuntime openEffectContainer;
@@ -40,6 +51,13 @@ public class LevelUpMenu : BaseMenu <LevelUpMenu>
     {
         openEffectBG.Start(() => canvasGroup.alpha = 0);
         openEffectContainer.Start(() => container.localScale = Vector3.zero);
+
+        foreach (RewardView rewardView in rewardViews)
+        {
+            ObjectPoolManager.ReleaseObject(rewardView.gameObject);
+        }
+
+        rewardViews.Clear();
     }
 
     public override void OnClosed()
@@ -58,5 +76,17 @@ public class LevelUpMenu : BaseMenu <LevelUpMenu>
         if (response.numberOfLevelsGained == 0) return;
         levelText.text = response.currentLevel.ToString();
         Open();
+        DisplayRewards(GetRewardVisuals?.Invoke());
     }
+
+    public void DisplayRewards(params RewardVisual[] rewardVisual)
+    {
+        for (int i = 0; i < rewardVisual.Length; i++)
+        {
+            RewardView rewardView = ObjectPoolManager.SpawnObject(rewardViewPrefab, rewardViewParent.transform, PoolType.UI);
+            rewardView.SetVisual(rewardVisual[i]);
+            rewardViews.Add(rewardView);
+        }
+    }
+
 }

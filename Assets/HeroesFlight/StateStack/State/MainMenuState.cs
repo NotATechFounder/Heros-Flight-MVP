@@ -103,15 +103,23 @@ namespace HeroesFlight.StateStack.State
 
             dataSystem.EnergyManager.OnEnergyTimerUpdated += uiSystem.UiEventHandler.MainMenu.UpdateEnergyTime;
 
-            //uiSystem.UiEventHandler.MainMenu.GetCurrentAccountLevelXP += dataSystem.AccountLevelManager.GetExpIncreaseResponse;
-            dataSystem.AccountLevelManager.OnLevelUp += uiSystem.UiEventHandler.MainMenu.AccountLevelUp;
-            dataSystem.AccountLevelManager.OnLevelUp += uiSystem.UiEventHandler.LevelUpMenu.AccountLevelUp;
-            dataSystem.AccountLevelManager.OnLevelUp += UpdateMainButtonStates;
+            uiSystem.UiEventHandler.LevelUpMenu.GetRewardVisuals += LevelUpMenu_GetRewardVisuals;
+            dataSystem.AccountLevelManager.OnLevelUp += AccountLevelManager_OnLevelUp;
         }
 
-        private void UpdateMainButtonStates(LevelSystem.ExpIncreaseResponse obj)
+        private System.UI.Reward.RewardVisual[] LevelUpMenu_GetRewardVisuals()
         {
-            GetService<IUISystem>().UiEventHandler.MainMenu.ProcessButtonStates(obj.currentLevel);
+            var dataSystem = GetService<DataSystemInterface>();
+            return GetService<RewardSystemInterface>().GiveLevelUpReward(dataSystem.AccountLevelManager.GetGemReward(),
+            dataSystem.AccountLevelManager.GetGoldReward());
+        }
+
+        private void AccountLevelManager_OnLevelUp(LevelSystem.ExpIncreaseResponse obj)
+        {
+            var uiSystem = GetService<IUISystem>();
+            uiSystem.UiEventHandler.MainMenu.AccountLevelUp (obj);
+            uiSystem.UiEventHandler.LevelUpMenu.AccountLevelUp (obj);
+            uiSystem.UiEventHandler.MainMenu.ProcessButtonStates(obj.currentLevel);
         }
 
         public void UnSubscribeEvents()
@@ -162,10 +170,8 @@ namespace HeroesFlight.StateStack.State
             uiSystem.UiEventHandler.MainMenu.OnPlayButtonPressed -= HandleGameStartRequest;
             traitSystem.OnTraitsStateChange -= HandleTraitStateChange;
 
-            dataSystem.AccountLevelManager.OnLevelUp -= uiSystem.UiEventHandler.MainMenu.AccountLevelUp;
-            dataSystem.AccountLevelManager.OnLevelUp -= uiSystem.UiEventHandler.LevelUpMenu.AccountLevelUp;
-            dataSystem.AccountLevelManager.OnLevelUp -= UpdateMainButtonStates;
-            //uiSystem.UiEventHandler.MainMenu.GetCurrentAccountLevelXP -= dataSystem.AccountLevelManager.GetExpIncreaseResponse;
+            uiSystem.UiEventHandler.LevelUpMenu.GetRewardVisuals -= LevelUpMenu_GetRewardVisuals;
+            dataSystem.AccountLevelManager.OnLevelUp -= AccountLevelManager_OnLevelUp;
         }
 
         void HandleGameStartRequest()

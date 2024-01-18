@@ -24,7 +24,6 @@ public class ActiveAbilityManager : MonoBehaviour
     public Action<ActiveAbilityType, int> OnRegularActiveAbilityUpgraded;
 
     [SerializeField] private CustomAnimationCurve levelCurve;
-    [SerializeField] LevelSystem levelSystem;
     [SerializeField] private ActiveAbilityDatabase allActiveAbilities;
     [SerializeField] private PassiveAbilityDatabase allPassiveAbilities;
 
@@ -64,6 +63,7 @@ public class ActiveAbilityManager : MonoBehaviour
     private HealthController characterHealthController;
     private BaseCharacterAttackController characterAttackController;
     private CombatEffectsController characterEffectsController;
+    private LevelSystem levelSystem;
 
     bool AllAbilitySlotsFull => eqquipedActiveActivities.Count >= 3 && eqquipedPassiveAbilities.Count >= 3;
 
@@ -88,7 +88,7 @@ public class ActiveAbilityManager : MonoBehaviour
 
             EquippedAbility(ActiveAbilityType.EnergyBlast);
             EquippedAbility(ActiveAbilityType.IlluminatedArrows);
-            EquippedAbility(ActiveAbilityType.HeavenStab);
+            EquippedAbility(ActiveAbilityType.LightningArrow);
             // EquippedAbility(ActiveAbilityType.HeavenHammer);
         }
 
@@ -224,7 +224,7 @@ public class ActiveAbilityManager : MonoBehaviour
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.EnergyBlast:
-                    (passiveActiveAbility as EnergyBlast).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage));
+                (passiveActiveAbility as EnergyBlast).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage), characterSystem);
                 break;
             case ActiveAbilityType.HeavenHammer:
                 (passiveActiveAbility as HeavenHammer).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage), characterSystem);
@@ -234,7 +234,7 @@ public class ActiveAbilityManager : MonoBehaviour
                 (passiveActiveAbility as IlluminatedArrows).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage), characterSystem);
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
-            default:  break;
+            default: break;
         }
 
         int index = timedAbilitySlots.IndexOf(timedAbilityController);
@@ -270,7 +270,7 @@ public class ActiveAbilityManager : MonoBehaviour
         int levelOfCurrentAbility = eqquipedActiveActivities[currentAbility].Level;
         TimedAbilityController timedAbilityController = activeAbiltyAndControllerDic[currentAbility];
         DetachAbility(activeAbiltyAndControllerDic[currentAbility], eqquipedActiveActivities[currentAbility]);
-        InitialiseAbility (newAbility, timedAbilityController, levelOfCurrentAbility);
+        InitialiseAbility(newAbility, timedAbilityController, levelOfCurrentAbility);
         OnRegularActiveAbilitySwapped?.Invoke(currentAbility, newAbility);
     }
 
@@ -531,7 +531,7 @@ public class ActiveAbilityManager : MonoBehaviour
         foreach (CombatEffect combatEffect in allPassiveAbilitiesDic[passiveAbilityType].GetCombatEffects)
         {
             characterEffectsController.AddCombatEffect(combatEffect, eqquipedPassiveAbilities[passiveAbilityType] - 1);
-        } 
+        }
     }
 
     public void RemovePassiveAbility(PassiveAbilityType passiveAbilityType)
@@ -560,21 +560,13 @@ public class ActiveAbilityManager : MonoBehaviour
 
     public void ResetAbility()
     {
-       // eqquipedPassiveAbilities.Clear();
-       // eqquipedActiveActivities.Clear();
+        eqquipedPassiveAbilities.Clear();
+        eqquipedActiveActivities.Clear();
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnValidate()
     {
-        if (levelCurve != null)
-        {
-            levelCurve.UpdateCurve();
-            Gizmos.color = Color.red;
-            for (int i = 0; i < levelCurve.maxLevel; i++)
-            {
-                Gizmos.DrawSphere(new Vector3(i, levelCurve.GetCurrentValueInt(i) / 10) + transform.position, 1f);
-            }
-        }
+        levelCurve.UpdateCurve();
     }
 }
 

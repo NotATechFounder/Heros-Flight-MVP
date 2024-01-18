@@ -92,21 +92,11 @@ public class AccountLevelManager : MonoBehaviour
         FileManager.Save(SAVE_ID, data);
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnValidate()
     {
-        if (levelCurve != null)
-        {
-            levelCurve.UpdateCurve();
-        }
-
-        if (gemCurve != null)
-        {
-            gemCurve.UpdateCurve();
-        }
-
-        if (goldCurve != null)
-        {
-            goldCurve.UpdateCurve();
-        }
+        levelCurve.UpdateCurve();
+        gemCurve.UpdateCurve();
+        goldCurve.UpdateCurve();
+    
     }
 }

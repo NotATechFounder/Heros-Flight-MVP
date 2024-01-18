@@ -77,7 +77,7 @@ public class CustomAnimationCurve
             customCurveKeys.keys[i] = new CustomCurveKey();
             customCurveKeys.keys[i].time = animationCurve.keys[i].time;
             customCurveKeys.keys[i].value = animationCurve.keys[i].value;
-        }
+        }      
     }
 
     public void UpdateCurveFromCustomKeys()
@@ -86,6 +86,12 @@ public class CustomAnimationCurve
         for (int i = 0; i < customCurveKeys.keys.Length; i++)
         {
             animationCurve.AddKey(customCurveKeys.keys[i].time, customCurveKeys.keys[i].value);
+        }
+
+        for (int i = 0; i < animationCurve.keys.Length; i++)
+        {
+            if (i == 0 || i == animationCurve.keys.Length - 1) continue;
+            animationCurve.SmoothTangents(i, 0);
         }
     }
 

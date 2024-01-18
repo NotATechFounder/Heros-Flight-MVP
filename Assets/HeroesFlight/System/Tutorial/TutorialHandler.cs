@@ -15,6 +15,10 @@ public class TutorialHandler : MonoBehaviour
     [SerializeField] TutorialTrigger tutorialTrigger;
     [SerializeField] Reward firstItemReward;
 
+    [Header("Settings")]
+    [SerializeField] float timeStopRestoreSpeed = 10f;
+    [SerializeField] float timeStopDuration = 0.02f;
+
     private LevelPortal portal;
     private Level currentLevel;
 
@@ -25,8 +29,9 @@ public class TutorialHandler : MonoBehaviour
     public BoosterDropSO GetMobDrop => mobDrop;
     public TutorialTrigger GetTutorialTrigger => tutorialTrigger;
     public Level GetCurrentLevel => currentLevel;
-
     public Reward FirstItemReward => firstItemReward;
+    public float TimeStopRestoreSpeed => timeStopRestoreSpeed;
+    public float TimeStopDuration => timeStopDuration;
 
 
     public void Init()

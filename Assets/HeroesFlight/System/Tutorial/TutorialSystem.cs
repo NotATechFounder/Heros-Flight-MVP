@@ -508,8 +508,7 @@ public class TutorialSystem : ITutorialInterface
 
     void OnEnemyHitSuccess()
     {
-        GameEffectController.StopTime(0.1f, tutorialHandler.GetTutorialModel.TimeStopRestoreSpeed,
-            tutorialHandler.GetTutorialModel.TimeStopDuration);
+        GameEffectController.StopTime(0.1f, tutorialHandler.TimeStopRestoreSpeed, tutorialHandler.TimeStopDuration);
     }
 
     void HandleEnemySpawned(AiControllerBase obj)
