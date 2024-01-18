@@ -8,6 +8,6 @@ namespace HeroesFlightProject.System.Combat.Controllers
     {
         float CurrentCharge { get; }
         void Init(List<AnimationData> animations, int charges);
-        void UpdateAbilityCharges(int value);
+        void UpdateAbilityCharges(float value);
     }
 }
