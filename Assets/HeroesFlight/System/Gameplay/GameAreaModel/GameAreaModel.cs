@@ -40,6 +40,7 @@ namespace HeroesFlight.System.Gameplay.Model
         public CustomAnimationCurve RunShardCurve => runShardCurve;
 
         public int PermanentXpPerRoom => permanentXpPerRoom;
+      
     }
 }
 
