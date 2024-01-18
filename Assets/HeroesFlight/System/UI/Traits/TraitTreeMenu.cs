@@ -30,7 +30,8 @@ namespace HeroesFlight.System.UI.Traits
         [SerializeField] private GameObject TierSlotPrefab;
         [SerializeField] private Transform TierSlotsParent;
         [SerializeField] private GameObject TreeNodeLinePrefab;
-        [Header("Hooks")] [SerializeField] private Button exitButton;
+        [Header("Hooks")] 
+        [SerializeField] private Button exitButton;
         [SerializeField] private Button errorButton;
         [SerializeField] private TraitPopup popup;
         [SerializeField] private ScrollRect scroll;
@@ -68,7 +69,10 @@ namespace HeroesFlight.System.UI.Traits
             {
                 selectedModel = null;
             };
-            errorButton.onClick.AddListener(() => { ToggleCanvasGroup(errorMessageCG, false); });
+            errorButton.onClick.AddListener(() =>
+            {
+              ToggleCanvasGroup(errorMessageCG, false);
+            });
         }
 
         private void TransferTraitModificationRequest(TraitModificationEventModel request)
@@ -406,20 +410,19 @@ namespace HeroesFlight.System.UI.Traits
         void Show()
         {
             ToggleCanvasGroup(thisCG, true);
-         //   transform.SetAsLastSibling();
         }
 
         void Hide()
         {
             scroll.normalizedPosition = new Vector2(0, -1);
-          //  transform.SetAsFirstSibling();
             popup.HidePopup();
             ToggleCanvasGroup(thisCG, false);
+            ToggleCanvasGroup(errorMessageCG,false);
         }
 
         void ToggleCanvasGroup(CanvasGroup cg, bool isEnabled)
         {
-            gameObject.SetActive(isEnabled);
+            cg.gameObject.SetActive(isEnabled);
             if (isEnabled)
             {
                 cg.alpha = 1;

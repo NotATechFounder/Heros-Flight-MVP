@@ -3,17 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using HeroesFlight.Common.Enum;
-using HeroesFlight.Common.Progression;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Combat;
 using HeroesFlight.System.Combat.Effects.Effects;
 using HeroesFlight.System.Combat.Enum;
-using HeroesFlight.System.Combat.Handlers;
 using HeroesFlight.System.Combat.Model;
-using HeroesFlight.System.Combat.StatusEffects;
 using HeroesFlight.System.Environment;
-using HeroesFlight.System.FileManager.Enum;
-using HeroesFlight.System.FileManager.Model;
 using HeroesFlight.System.Gameplay.Container;
 using HeroesFlight.System.Gameplay.Controllers.Sound;
 using HeroesFlight.System.Gameplay.Enum;
@@ -26,12 +21,10 @@ using HeroesFlight.System.NPC.Model;
 using HeroesFlight.System.ShrineSystem;
 using HeroesFlight.System.Stats;
 using HeroesFlight.System.Stats.Handlers;
-using HeroesFlight.System.Stats.Traits.Effects;
 using HeroesFlight.System.Stats.Traits.Enum;
 using HeroesFlight.System.UI;
 using HeroesFlight.System.UI.Enum;
 using HeroesFlight.System.UI.Model;
-using HeroesFlightProject.System.Combat.Controllers;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
@@ -135,7 +128,7 @@ namespace HeroesFlight.System.Gameplay
 
         private bool revivedByFeatThisRun = false;
 
-        private int goldModifier;
+        private int goldReceiveModifier;
 
         private int reviveAmount;
 
@@ -233,15 +226,7 @@ namespace HeroesFlight.System.Gameplay
                 activeAbilityManager.GetPassiveAbilityLevel;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnMenuClosed += HeroProgressionCompleted;
 
-            goldModifier = 0;
-            if (traitSystem.HasTraitOfType(TraitType.CurrencyBoost, out var traits))
-            {
-                foreach (var data in traits)
-                {
-                    var traitValue = traitSystem.GetTraitEffect(data.TargetTrait.Id);
-                    goldModifier += traitValue.Value + data.Value.Value;
-                }
-            }
+            CalculateRuneshardBoostModifier();
 
             uiSystem.UiEventHandler.AbilitySelectMenu.OnGemReRoll += AbilitySelectMenu_OnGemReRoll;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnAdsReRoll += AbilitySelectMenu_OnAdsReRoll;
@@ -249,6 +234,19 @@ namespace HeroesFlight.System.Gameplay
             RegisterShrineNPCUIEvents();
 
             OnComplete?.Invoke();
+        }
+
+        private void CalculateRuneshardBoostModifier()
+        {
+            goldReceiveModifier = 0;
+            if (traitSystem.HasTraitOfType(TraitType.CurrencyBoost, out var traits))
+            {
+                foreach (var data in traits)
+                {
+                    var traitValue = traitSystem.GetTraitEffect(data.TargetTrait.Id);
+                    goldReceiveModifier += traitValue.Value + data.Value.Value;
+                }
+            }
         }
 
         private void AbilitySelectMenu_OnGemReRoll()
@@ -276,7 +274,7 @@ namespace HeroesFlight.System.Gameplay
             ResetConnections();
             container.SetStartingIndex(0);
             revivedByFeatThisRun = false;
-            goldModifier = 0;
+            goldReceiveModifier = 0;
             reviveAmount = 0;
             shrineSystem.Shrine.GetAngelEffectManager.ResetAngelEffects();
         }
@@ -629,10 +627,9 @@ namespace HeroesFlight.System.Gameplay
         void HandleEnemyDeath(Vector3 position)
         {
             enemiesToKill--;
-
             environmentSystem.ParticleManager.Spawn("Loot_Spawn", position, Quaternion.Euler(new Vector3(-90, 0, 0)));
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RuneShard,
-                container.CurrentModel.RuneShardsPerEnemy + goldModifier, position);
+                container.CurrentModel.RuneShardsPerEnemy , position);
 
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RunExperience, 0, position);
 
