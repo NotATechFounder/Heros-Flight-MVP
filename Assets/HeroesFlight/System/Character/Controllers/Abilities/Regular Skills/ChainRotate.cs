@@ -114,11 +114,8 @@ public class ChainRotate : RegularActiveAbility
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnValidate()
     {
-        if (damagePercentageCurve.curveType != CurveType.Custom)
-        {
-            damagePercentageCurve.UpdateCurve();
-        }
+        damagePercentageCurve.UpdateCurve();
     }
 }
