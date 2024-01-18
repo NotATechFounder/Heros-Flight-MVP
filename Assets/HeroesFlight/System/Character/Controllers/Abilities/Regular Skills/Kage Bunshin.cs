@@ -66,12 +66,12 @@ public class KageBunshin : RegularActiveAbility
         int normalisedLevel = GetNormalisedLevel();
         switch (normalisedLevel)
         {
-            case 0: return Lvl_1;
-            case 1: return Lvl_2;
+            case 0: return Lvl_2;
+            case 1: return Lvl_3;
             case 2: return Lvl_3;
             default: break;
         }
-        return Lvl_1;
+        return Lvl_2;
     }
 
     private void OnValidate()
