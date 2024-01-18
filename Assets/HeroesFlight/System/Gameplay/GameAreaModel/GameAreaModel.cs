@@ -24,7 +24,11 @@ namespace HeroesFlight.System.Gameplay.Model
 
         [Header("Rewards")]
         [SerializeField] private CustomAnimationCurve runShardCurve;
-       
+
+        [Header("Music")]
+        [SerializeField] private string musicKey;
+        [SerializeField] private string musicLoopKey;
+
         public WorldType WorldType => worldType;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
         public Level ShrineLevel => angelsGambitLevel;
@@ -34,10 +38,10 @@ namespace HeroesFlight.System.Gameplay.Model
         public LevelPortal PortalPrefab => portalPrefab;
         public Environment.Objects.Crystal CrystalPrefab => crystalPrefab;
         public MobDifficultyHolder MobDifficulty => mobDifficulty;
-
         public InRunXp InRunXp => inRunXp;
-
         public CustomAnimationCurve RunShardCurve => runShardCurve;
+        public string MusicKey => musicKey;
+        public string MusicLoopKey => musicLoopKey;
 
         public int PermanentXpPerRoom => permanentXpPerRoom;
       
