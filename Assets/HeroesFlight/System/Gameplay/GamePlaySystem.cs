@@ -629,7 +629,7 @@ namespace HeroesFlight.System.Gameplay
             enemiesToKill--;
             environmentSystem.ParticleManager.Spawn("Loot_Spawn", position, Quaternion.Euler(new Vector3(-90, 0, 0)));
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RuneShard,
-                container.CurrentModel.RuneShardsPerEnemy , position);
+               0, position);
 
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RunExperience, 0, position);
 
@@ -1155,8 +1155,6 @@ namespace HeroesFlight.System.Gameplay
                 case GameState.Ongoing:
                     break;
                 case GameState.Won:
-                    dataSystem.CharacterManager.UnlockCharacter(CharacterType.Storm);
-
                     HandleGameLoopFinish();
                     break;
                 case GameState.Died:
@@ -1167,12 +1165,6 @@ namespace HeroesFlight.System.Gameplay
                 case GameState.Ended:
                     break;
                 case GameState.WaitingPortal:
-
-                    if (CurrentLvlIndex == 3)
-                    {
-                        dataSystem.CharacterManager.UnlockCharacter(CharacterType.Lancer);
-                    }
-
                     CoroutineUtility.Start(WaitingPortalRoutine());
                     break;
 
