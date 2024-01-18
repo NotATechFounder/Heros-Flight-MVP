@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Achievement_System.ProgressionUnlocks.UnlockRewards;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Combat;
 using HeroesFlight.System.Combat.Effects.Effects;
@@ -10,6 +11,7 @@ using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.Model;
 using HeroesFlight.System.Environment;
 using HeroesFlight.System.Gameplay.Container;
+using HeroesFlight.System.Gameplay.Controllers;
 using HeroesFlight.System.Gameplay.Controllers.Sound;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
@@ -61,6 +63,7 @@ namespace HeroesFlight.System.Gameplay
             InventorySystem = inventorySystemInterface;
             achievementSystem = achievementSystemInterface;
             this.shrineSystem = shrineSystem;
+            runTracker = new RunTracker();
         }
 
         CountDownTimer GameTimer;
@@ -131,6 +134,8 @@ namespace HeroesFlight.System.Gameplay
         private int goldReceiveModifier;
 
         private int reviveAmount;
+
+        private RunTracker runTracker;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -233,6 +238,7 @@ namespace HeroesFlight.System.Gameplay
 
             RegisterShrineNPCUIEvents();
 
+            achievementSystem.UnlocksHandlers.OnRewardUnlocked += HandleRewardUnlockDuringRun;
             OnComplete?.Invoke();
         }
 
@@ -277,6 +283,7 @@ namespace HeroesFlight.System.Gameplay
             goldReceiveModifier = 0;
             reviveAmount = 0;
             shrineSystem.Shrine.GetAngelEffectManager.ResetAngelEffects();
+            runTracker.Reset();
         }
 
         private void AbilitySelectMenu_OnMenuClosed()
@@ -299,7 +306,11 @@ namespace HeroesFlight.System.Gameplay
                         PreloadLvl();
                         SetupCharacter();
                     }
-                    , ContinueGameLoop);
+                    , ()=>
+                    {
+                        runTracker.RegisterRunStart();
+                        ContinueGameLoop();
+                    });
             });
         }
 
@@ -1465,6 +1476,11 @@ namespace HeroesFlight.System.Gameplay
         void EnableCharacterMovement()
         {
             TogglePlayerMovementState(true);
+        }
+
+        private void HandleRewardUnlockDuringRun(UnlockReward reward)
+        {
+            runTracker.AddReward(reward);
         }
     }
 }
