@@ -86,7 +86,7 @@ public class ActiveAbilityManager : MonoBehaviour
             AddPassiveAbility(PassiveAbilityType.DuckDodgeDip);
             AddPassiveAbility(PassiveAbilityType.LuckyHit);
 
-            EquippedAbility(ActiveAbilityType.EnergyBlast);
+            EquippedAbility(ActiveAbilityType.Immolation);
             EquippedAbility(ActiveAbilityType.IlluminatedArrows);
             EquippedAbility(ActiveAbilityType.LightningArrow);
             // EquippedAbility(ActiveAbilityType.HeavenHammer);
@@ -195,7 +195,7 @@ public class ActiveAbilityManager : MonoBehaviour
                 break;
             case ActiveAbilityType.Immolation:
                 (passiveActiveAbility as Immolation).Initialize(level,
-                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage));
+                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage));
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.LightNova:
@@ -210,7 +210,7 @@ public class ActiveAbilityManager : MonoBehaviour
                 break;
             case ActiveAbilityType.LightningArrow:
                 (passiveActiveAbility as LightningArrow).Initialize(level,
-                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage),
+                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage),
                     characterSystem);
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
@@ -224,14 +224,14 @@ public class ActiveAbilityManager : MonoBehaviour
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.EnergyBlast:
-                (passiveActiveAbility as EnergyBlast).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage), characterSystem);
+                (passiveActiveAbility as EnergyBlast).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage), characterSystem);
                 break;
             case ActiveAbilityType.HeavenHammer:
-                (passiveActiveAbility as HeavenHammer).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage), characterSystem);
+                (passiveActiveAbility as HeavenHammer).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage), characterSystem);
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.IlluminatedArrows:
-                (passiveActiveAbility as IlluminatedArrows).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.MagicDamage), characterSystem);
+                (passiveActiveAbility as IlluminatedArrows).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage), characterSystem);
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             default: break;

@@ -22,22 +22,9 @@ public class KageBunshin : RegularActiveAbility
     private int baseDamage;
     private int currentDamage;
 
-    private void Start()
-    {
-        Initialize(1, 10);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            OnActivated();
-        }
-    }
-
     public override void OnActivated()
     {
-        currentDamage = (int)StatCalc.GetPercentage(baseDamage, damagePercentageCurve.GetCurrentValueFloat(currentLevel));
+        currentDamage = (int)StatCalc.GetPercentage(baseDamage, damagePercentageCurve.GetCurrentValueFloat(currentLevel));  
         overlapChecker.DetectOverlap();
     }
 
@@ -87,11 +74,8 @@ public class KageBunshin : RegularActiveAbility
         return Lvl_1;
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnValidate()
     {
-        if (damagePercentageCurve.curveType != CurveType.Custom)
-        {
-            damagePercentageCurve.UpdateCurve();
-        }
+        damagePercentageCurve.UpdateCurve();
     }
 }
