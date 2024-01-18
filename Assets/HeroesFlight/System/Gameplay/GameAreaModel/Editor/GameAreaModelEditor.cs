@@ -19,14 +19,12 @@ public class GameAreaModelEditor : Editor
     SerializedProperty spawnModelProperty;
     SerializedProperty mobDifficultyProperty;
     SerializedProperty mobDifficultyArray;
-    SerializedProperty mobDropTableArray;
 
-    SerializedProperty levelComplectionExpCurveProperty;
-    SerializedProperty inRunLevelComplectionExpCurveProperty;
+    SerializedProperty inRunXpProperty;
+    SerializedProperty permanetXpPerRoom;
+    SerializedProperty runShardCurveProperty;
 
     SerializedProperty bossDropProperty;
-    SerializedProperty timeStopRestoreSpeedProperty;
-    SerializedProperty timeStopDurationProperty;
 
     bool difficultyFoldout = false;
     Dictionary<int, bool> foldoutDictionary = new Dictionary<int, bool>();
@@ -42,14 +40,12 @@ public class GameAreaModelEditor : Editor
         spawnModelProperty = serializedObject.FindProperty("spawnModel");
         mobDifficultyProperty = serializedObject.FindProperty("mobDifficulty");
         mobDifficultyArray = mobDifficultyProperty.FindPropertyRelative("mobDifficulties");
-        mobDropTableArray = serializedObject.FindProperty("mobDropTable");
         bossDropProperty = serializedObject.FindProperty("bossDrop");
 
-        levelComplectionExpCurveProperty = serializedObject.FindProperty("levelComplectionExpCurve");
-        inRunLevelComplectionExpCurveProperty = serializedObject.FindProperty("runComplectionExpCurve");
+        inRunXpProperty = serializedObject.FindProperty("inRunXp");
+        permanetXpPerRoom = serializedObject.FindProperty("permanentXpPerRoom");
 
-        timeStopRestoreSpeedProperty = serializedObject.FindProperty("timeStopRestoreSpeed");
-        timeStopDurationProperty = serializedObject.FindProperty("timeStopDuration");
+        runShardCurveProperty = serializedObject.FindProperty("runShardCurve");
 
         for (int i = 0; i < mobDifficultyArray.arraySize; i++)
         {
@@ -72,12 +68,7 @@ public class GameAreaModelEditor : Editor
 
         DisplayDiffiulties();
 
-        EditorGUILayout.PropertyField(mobDropTableArray);
-
         DisplayExpCurves();
-
-        EditorGUILayout.PropertyField(timeStopRestoreSpeedProperty);
-        EditorGUILayout.PropertyField(timeStopDurationProperty);
 
         serializedObject.ApplyModifiedProperties();
     }
@@ -152,11 +143,17 @@ public class GameAreaModelEditor : Editor
     void DisplayExpCurves()
     {
         EditorGUILayout.Space(20);
+
         EditorGUILayout.LabelField("In Run Level Complection ExpCurve", EditorStyles.boldLabel);
-        DrawData(inRunLevelComplectionExpCurveProperty);
+        EditorGUILayout.PropertyField(inRunXpProperty);
         EditorGUILayout.Space(10);
-        EditorGUILayout.LabelField("Level Complection ExpCurve", EditorStyles.boldLabel);
-        DrawData(levelComplectionExpCurveProperty);
+        EditorGUILayout.LabelField("Permanet Xp Per Room", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(permanetXpPerRoom);
+        EditorGUILayout.Space(20);
+
+        EditorGUILayout.LabelField("Run Shard Curve", EditorStyles.boldLabel);
+        DrawData(runShardCurveProperty);
+
         EditorGUILayout.Space(20);
     }
 

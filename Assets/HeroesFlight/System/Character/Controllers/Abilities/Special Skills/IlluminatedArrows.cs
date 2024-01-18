@@ -65,6 +65,7 @@ public class IlluminatedArrows : RegularActiveAbility
         this.baseDamage = baseDamage;
         overlapChecker.OnDetect += OnOverlap;
         this.characterControllerInterface = characterControllerInterface;
+        Flip (characterControllerInterface.IsFacingLeft);
         characterControllerInterface.OnFaceDirectionChange += Flip;
     }
 

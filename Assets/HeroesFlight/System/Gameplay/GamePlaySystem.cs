@@ -571,10 +571,8 @@ namespace HeroesFlight.System.Gameplay
 
         void OnEnemyHitSuccess()
         {
-            GameEffectController.StopTime(0.1f, container.CurrentModel.TimeStopRestoreSpeed,
-                container.CurrentModel.TimeStopDuration);
+            GameEffectController.StopTime(0.1f, container.TimeStopRestoreSpeed,container.TimeStopDuration);
         }
-
 
         void HandleEnemySpawned(AiControllerBase obj)
         {
@@ -1117,9 +1115,7 @@ namespace HeroesFlight.System.Gameplay
             godsBenevolence.DeactivateGodsBenevolence();
             environmentSystem.CurrencySpawner.ActivateExpEffectItems(() =>
             {
-                activeAbilityManager.AddExp(
-                    container.CurrentModel.InRunComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
-
+                activeAbilityManager.AddExp(container.GetRunXpForLevel(currentLevel.LevelType));
                 progressionSystem.CollectRunCurrency();
             });
         }
@@ -1370,8 +1366,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleGameLoopFinish()
         {
-            dataSystem.AccountLevelManager.AddExp(
-                container.CurrentModel.LevelComplectionExpCurve.GetCurrentValueInt(CurrentLvlIndex));
+            dataSystem.AccountLevelManager.AddExp(container.CurrentModel.PermanentXpPerRoom * CurrentLvlIndex);
             uiSystem.UiEventHandler.SummaryMenu.Open();
         }
 
