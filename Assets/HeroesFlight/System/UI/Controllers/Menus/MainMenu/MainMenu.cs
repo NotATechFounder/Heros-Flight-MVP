@@ -24,6 +24,7 @@ namespace UISystem
         public MenuNavigationButtonType navigationButtonType;
         public AdvanceButton advanceButton;
         public GameObject LockIcon;
+        public GameObject UpdatePin;
         public int requiredLvl = 0;
     }
 
@@ -136,6 +137,8 @@ namespace UISystem
                     // {
                     //     return;
                     // }
+                    UpdateButtonPinState(navigationButton.navigationButtonType, false);
+
                     currentNavigationButton = navigationButton;
                     OnNavigationButtonClicked?.Invoke(navigationButton.navigationButtonType);
                 });
@@ -284,6 +287,28 @@ namespace UISystem
         {
             acctLevelText.text = response.currentLevel.ToString();
             acctLevelBar.fillAmount = response.normalizedExp;
+        }
+
+        public void UpdateButtonPinState(MenuNavigationButtonType buttonType, bool isEnabled)
+        {
+            Debug.Log($"should disable pin for button {buttonType}");
+            foreach (var button in navigationButtons)
+            {
+                if (button.navigationButtonType == buttonType)
+                {
+                    if (button.UpdatePin != null)
+                    {
+                        Debug.Log($" disable pin for button {buttonType} with state {isEnabled}");
+                        button.UpdatePin.SetActive(isEnabled);
+                    }
+                    else
+                    {
+                        Debug.LogError($"{buttonType} do not have pin object on it ");
+                    }
+
+                    break;
+                }
+            }
         }
     }
 }
