@@ -23,6 +23,12 @@ public class Immolation : RegularActiveAbility
         GetEffectParticleByLevel().gameObject.SetActive(true);
         currentDamage = (int)StatCalc.GetPercentage (baseDamage, damagePercentageCurve.GetCurrentValueFloat(currentLevel));
         isOn = true;
+
+
+        Debug.Log("Immolation baseDamage : " + baseDamage);
+        Debug.Log("Immolation currentLevel : " + currentLevel);
+        Debug.Log("Immolation damagePercentageCurve : " + damagePercentageCurve.GetCurrentValueFloat(currentLevel));
+        Debug.Log("Immolation currentDamage : " + (int)StatCalc.GetPercentage(baseDamage, damagePercentageCurve.GetCurrentValueFloat(currentLevel)));
     }
 
     public override void OnDeactivated()
@@ -77,11 +83,8 @@ public class Immolation : RegularActiveAbility
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnValidate()
     {
-        if (damagePercentageCurve.curveType != CurveType.Custom)
-        {
-            damagePercentageCurve.UpdateCurve();
-        }
+        damagePercentageCurve.UpdateCurve();
     }
 }

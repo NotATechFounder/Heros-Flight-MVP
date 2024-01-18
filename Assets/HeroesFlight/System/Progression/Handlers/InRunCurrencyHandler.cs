@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace HeroesFlight.System.Stats.Handlers
 {
@@ -27,10 +28,8 @@ namespace HeroesFlight.System.Stats.Handlers
             }
             else
             {
-                currencyCache.Add(key, value);
+                currencyCache.Add(key, amount);
             }
-          
-            
             OnComplete?.Invoke();
         }
 

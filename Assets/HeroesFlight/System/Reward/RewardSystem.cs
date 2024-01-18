@@ -73,6 +73,9 @@ public class RewardSystem : RewardSystemInterface
 
     public RewardVisual[] GiveLevelUpReward(int gems, int gold)
     {
+        dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, gems);
+        dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, gold);
+
         List<RewardVisual> rewardVisuals = new List<RewardVisual>
         {
             CreateCurrencyRewardVisual(CurrencyKeys.Gem, gems),

@@ -2,6 +2,7 @@ using System;
 using HeroesFlight.System.Gameplay.Model;
 using HeroesFlight.System.NPC.Model;
 using HeroesFlightProject.System.Gameplay.Controllers.ShakeProfile;
+using UnityEditor;
 using UnityEngine;
 
 namespace HeroesFlight.System.Gameplay.Container
@@ -9,7 +10,10 @@ namespace HeroesFlight.System.Gameplay.Container
     public class GameplayContainer : MonoBehaviour
     {
         [SerializeField] GameAreaModel[] gameAreaModels;
-        [SerializeField] BoosterDropSO mobDrop;
+
+        [Header("Settings")]
+        [SerializeField] float timeStopRestoreSpeed = 10f;
+        [SerializeField] float timeStopDuration = 0.02f;
         [SerializeField] ScreenShakeProfile bossProfile;
 
         public event Action OnPlayerEnteredPortal;
@@ -17,17 +21,13 @@ namespace HeroesFlight.System.Gameplay.Container
         private Level currentLevel;
         private GameAreaModel currentModel;
 
+        public float TimeStopRestoreSpeed => timeStopRestoreSpeed;
+        public float TimeStopDuration => timeStopDuration;
         public int CurrentLvlIndex { get; private set; }
-
         public ScreenShakeProfile BossProfile=>bossProfile;
         public bool FinishedLoop => CurrentLvlIndex >= currentModel.SpawnModel.Levels.Length;
-
         public int MaxLvlIndex => currentModel.SpawnModel.Levels.Length;
-
-        public BoosterDropSO MobDrop => mobDrop;
-
         public float HeroProgressionExpEarnedPerKill => currentModel.HeroProgressionExpEarnedPerKill;
-
         public GameAreaModel CurrentModel => currentModel;
 
         public void Init(WorldType worldType)
@@ -62,6 +62,16 @@ namespace HeroesFlight.System.Gameplay.Container
             CurrentLvlIndex++;
 
             return currentLevel;
+        }
+
+        public float GetRunXpForLevel(LevelType levelType)
+        {
+            foreach (var entry in currentModel.InRunXp.inRunXpEntries)
+            {
+                if (entry.LevelType == levelType)
+                    return entry.xp;
+            }
+            return 0;
         }
 
         public void EnablePortal(Vector2 position)
