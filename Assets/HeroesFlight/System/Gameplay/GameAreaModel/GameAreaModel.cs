@@ -40,9 +40,7 @@ namespace HeroesFlight.System.Gameplay.Model
         public CustomAnimationCurve RunShardCurve => runShardCurve;
 
         public int PermanentXpPerRoom => permanentXpPerRoom;
-        public float TimeStopRestoreSpeed => timeStopRestoreSpeed;
-        public float TimeStopDuration => timeStopDuration;
-        public int RuneShardsPerEnemy => runeShardsPerEnemy;
+      
     }
 }
 
