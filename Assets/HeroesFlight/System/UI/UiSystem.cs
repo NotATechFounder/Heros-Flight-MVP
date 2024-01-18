@@ -28,11 +28,7 @@ namespace HeroesFlight.System.UI
 
         public CountDownTimer GameTimer { get; private set; }
 
-         const string MainMenuMusicID = "MainMenu";
-
-         const string GameMusicID = "ForestStart";
-
-         const string GameMusicLoopID = "ForestLoop";
+        const string MainMenuMusicID = "MainMenu";
 
         UiContainer container;
 

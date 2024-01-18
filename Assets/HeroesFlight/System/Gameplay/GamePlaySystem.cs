@@ -296,6 +296,7 @@ namespace HeroesFlight.System.Gameplay
         /// </summary>
         public void StartGameSession()
         {
+            AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey, container.CurrentModel.MusicLoopKey);
             uiSystem.UiEventHandler.GameMenu.Open();
             CoroutineUtility.WaitForSeconds(1f, () => // Run the first time the game is loaded
             {
@@ -834,7 +835,6 @@ namespace HeroesFlight.System.Gameplay
 
                     break;
                 case LevelType.Shrine:
-                    uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(false);
                     characterSystem.SetCharacterControllerState(true);
 
                     break;
@@ -1190,6 +1190,8 @@ namespace HeroesFlight.System.Gameplay
             Debug.Log("WORLD BOSS LOGIC");
             if (currentLevel.MiniHasBoss)
             {
+                AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicKey);
+
                 cameraController.CameraShaker.ShakeCamera(CinemachineImpulseDefinition.ImpulseShapes.Rumble,
                     3f, 3f);
                 uiSystem.ShowSpecialEnemyWarning(EncounterType.Miniboss);
@@ -1212,8 +1214,11 @@ namespace HeroesFlight.System.Gameplay
 
         private void InitWorldBossEncounter()
         {
-            //Init world boss
-            AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicKey);
+            if (currentLevel.MiniHasBoss)
+            {
+                AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicLoopKey);
+            }
+
             uiSystem.UpdateEnemiesCounter(0);
             combatSystem.StartCharacterComboCheck();
             ChangeState(GameState.Ongoing);
@@ -1343,10 +1348,10 @@ namespace HeroesFlight.System.Gameplay
         void ShowLevelPortal()
         {
             CoroutineUtility.WaitForSeconds(1f,
-                () =>
-                {
-                    container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
-                });
+            () =>
+            {
+                container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
+            });
         }
 
         void ShowGodBenevolencePrompt()
@@ -1385,32 +1390,36 @@ namespace HeroesFlight.System.Gameplay
             if (currentLevel.LevelType == LevelType.Shrine)
             {
                 shrineSystem.Shrine.OnShrineExit();
+                AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey, container.CurrentModel.MusicLoopKey);
+                uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(true);
             }
 
             CoroutineUtility.WaitForSeconds(0.5f, () =>
             {
                 Level newLevel = null;
                 uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level to level transition
-                    {
-                        ResetLogic();
-                        npcSystem.Reset();
+                {
+                    ResetLogic();
+                    npcSystem.Reset();
 
-                        newLevel = PreloadLvl();
-                        characterSystem.ResetCharacter(GetPlayerSpawnPosition);
-                    },
-                    () =>
+                    newLevel = PreloadLvl();
+                    characterSystem.ResetCharacter(GetPlayerSpawnPosition);
+                },
+                () =>
+                {
+                    if (newLevel.LevelType == LevelType.NormalCombat ||
+                        newLevel.LevelType == LevelType.WorldBoss)
                     {
-                        if (newLevel.LevelType == LevelType.NormalCombat ||
-                            newLevel.LevelType == LevelType.WorldBoss)
-                        {
-                            CoroutineUtility.Start(ContinueGameLoopRoutine());
-                            uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(true);
-                        }
-                        else
-                        {
-                            TogglePlayerMovementState(true);
-                        }
-                    });
+                        CoroutineUtility.Start(ContinueGameLoopRoutine());
+                        uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(true);
+                    }
+                    else
+                    {
+                        AudioManager.PlayMusicInstant("Shrine");
+                        uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(false);
+                        TogglePlayerMovementState(true);
+                    }
+                });
             });
         }
 

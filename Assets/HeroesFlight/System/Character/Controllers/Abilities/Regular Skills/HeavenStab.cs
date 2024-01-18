@@ -96,7 +96,7 @@ public class HeavenStab : RegularActiveAbility
     void HandleArrowDisable(ProjectileControllerInterface obj)
     {
         overlapChecker = null;
-        AudioManager.PlaySoundEffect("LightningExplosion", SoundEffectCategory.Hero);
+        //AudioManager.PlaySoundEffect("LightningExplosion", SoundEffectCategory.Hero);
         obj.OnDeactivate -= HandleArrowDisable;
         var arrow = obj as ProjectileControllerBase;
         ObjectPoolManager.ReleaseObject(arrow.gameObject);
