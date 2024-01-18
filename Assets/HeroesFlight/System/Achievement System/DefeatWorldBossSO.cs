@@ -9,7 +9,7 @@ public class DefeatWorldBossSO : QuestSO
 {
     public WorldType worldType;
 
-    public override void Awake()
+    public void Awake()
     {
         questType = QuestType.DefeatWorldBoss;
     }

@@ -66,11 +66,8 @@ public class MagicShield : RegularActiveAbility
 
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnValidate()
     {
-        if (healthAbsorptionCurve.curveType != CurveType.Custom)
-        {
-            healthAbsorptionCurve.UpdateCurve();
-        }
+        healthAbsorptionCurve.UpdateCurve();
     }
 }

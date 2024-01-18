@@ -17,18 +17,13 @@ namespace HeroesFlight.System.Gameplay.Model
 
         [SerializeField] private SpawnModel spawnModel;
         [SerializeField] private MobDifficultyHolder mobDifficulty;
-        [SerializeField] private MobDropTableHolder mobDropTable;
 
-        [SerializeField] private CustomAnimationCurve levelComplectionExpCurve;
-        [SerializeField] private CustomAnimationCurve runComplectionExpCurve;
-        [SerializeField] private CustomAnimationCurve reRunComplectionExpCurve;
+        [Header("Xp")]
+        [SerializeField] private InRunXp inRunXp;
+        [SerializeField] private int permanentXpPerRoom;
 
-        [Header("Time Stop Testing")]
-        [SerializeField] float timeStopRestoreSpeed;
-        [SerializeField] float timeStopDuration;
-
-        [Header("Drop values")] 
-        [SerializeField] private int runeShardsPerEnemy = 5;
+        [Header("Rewards")]
+        [SerializeField] private CustomAnimationCurve runShardCurve;
        
         public WorldType WorldType => worldType;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
@@ -39,15 +34,28 @@ namespace HeroesFlight.System.Gameplay.Model
         public LevelPortal PortalPrefab => portalPrefab;
         public Environment.Objects.Crystal CrystalPrefab => crystalPrefab;
         public MobDifficultyHolder MobDifficulty => mobDifficulty;
-        public MobDropTableHolder MobDropTableHolder => mobDropTable;
 
-        public CustomAnimationCurve LevelComplectionExpCurve => levelComplectionExpCurve;
+        public InRunXp InRunXp => inRunXp;
 
-        public CustomAnimationCurve InRunComplectionExpCurve => runComplectionExpCurve;
+        public CustomAnimationCurve RunShardCurve => runShardCurve;
 
+        public int PermanentXpPerRoom => permanentXpPerRoom;
         public float TimeStopRestoreSpeed => timeStopRestoreSpeed;
         public float TimeStopDuration => timeStopDuration;
-
         public int RuneShardsPerEnemy => runeShardsPerEnemy;
     }
+}
+
+
+[System.Serializable]
+public class InRunXp
+{
+    public InRunXpEntry[] inRunXpEntries;
+}
+
+[System.Serializable]
+public struct InRunXpEntry
+{
+    public LevelType LevelType;
+    public int xp;
 }

@@ -74,6 +74,11 @@ public class KnifeFluffy : RegularActiveAbility
         ObjectPoolManager.ReleaseObject(arrow.gameObject);
     }
 
+    private void OnValidate()
+    {
+        damageRadiousCurve.UpdateCurve();
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.DrawWireSphere(transform.position, currentRadious);
@@ -83,11 +88,6 @@ public class KnifeFluffy : RegularActiveAbility
             float angle = i * Mathf.PI * 2 / numberOfMobsToDamage;
             Vector3 pos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * currentRadious;
             Gizmos.DrawWireSphere(transform.position + pos, 0.1f);
-        }
-
-        if (damageRadiousCurve.curveType != CurveType.Custom)
-        {
-            damageRadiousCurve.UpdateCurve();
         }
     }
 

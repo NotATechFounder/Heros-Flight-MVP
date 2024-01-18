@@ -65,6 +65,7 @@ public class IlluminatedArrows : RegularActiveAbility
         this.baseDamage = baseDamage;
         overlapChecker.OnDetect += OnOverlap;
         this.characterControllerInterface = characterControllerInterface;
+        Flip (characterControllerInterface.IsFacingLeft);
         characterControllerInterface.OnFaceDirectionChange += Flip;
     }
 
@@ -93,11 +94,8 @@ public class IlluminatedArrows : RegularActiveAbility
         characterControllerInterface.OnFaceDirectionChange -= Flip;
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnValidate()
     {
-        if (damagePercentageCurve.curveType != CurveType.Custom)
-        {
-            damagePercentageCurve.UpdateCurve();
-        }
+        damagePercentageCurve.UpdateCurve();
     }
 }
