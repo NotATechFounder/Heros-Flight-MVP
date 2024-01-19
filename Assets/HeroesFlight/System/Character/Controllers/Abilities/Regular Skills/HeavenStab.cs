@@ -38,6 +38,7 @@ public class HeavenStab : RegularActiveAbility
     private float currentTime;
     bool isOn = false;
 
+    private ProjectileControllerBase currentProjectile;
     public override void OnActivated()
     {
         GetEffectParticleByLevel().Play();
@@ -81,16 +82,16 @@ public class HeavenStab : RegularActiveAbility
 
     private void FireProjectile()
     {
-        ProjectileControllerBase bullet = ObjectPoolManager.SpawnObject(projectileController, transform.position, Quaternion.identity);
-        bullet.transform.localScale = new Vector3(transform.localScale.x * bullet.transform.localScale.y, bullet.transform.localScale.y, 1);
-        OverlapChecker overlapChecker = bullet.GetComponent<OverlapChecker>();
-        hitEffect = bullet.GetComponentInChildren<ParticleSystem>();
+        currentProjectile = ObjectPoolManager.SpawnObject(projectileController, transform.position, Quaternion.identity);
+        currentProjectile.transform.localScale = new Vector3(transform.localScale.x * currentProjectile.transform.localScale.y, currentProjectile.transform.localScale.y, 1);
+        OverlapChecker overlapChecker = currentProjectile.GetComponent<OverlapChecker>();
+        hitEffect = currentProjectile.GetComponentInChildren<ParticleSystem>();
 
         overlapChecker.OnDetect = OnDetect;
         this.overlapChecker = overlapChecker;
 
-        bullet.SetupProjectile(currentDamage, -transform.localScale.x * Vector2.right);
-        bullet.OnDeactivate += HandleArrowDisable;
+        currentProjectile.SetupProjectile(currentDamage, -transform.localScale.x * Vector2.right);
+        currentProjectile.OnDeactivate += HandleArrowDisable;
     }
 
     void HandleArrowDisable(ProjectileControllerInterface obj)
@@ -139,5 +140,11 @@ public class HeavenStab : RegularActiveAbility
     private void OnValidate()
     {
         damagePercentageCurve.UpdateCurve();
+    }
+
+    public override void StopAbility()
+    {
+        base.StopAbility();
+        currentProjectile.DisableProjectile();
     }
 }

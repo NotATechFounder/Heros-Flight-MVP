@@ -49,8 +49,7 @@ namespace HeroesFlight.System.PostProccesing
 
         private void SetVolumeWeight(float intensity)
         {
-            Debug.Log($"setting intensity to {intensity}");
-            vignette.intensity.Override(intensity);
+           vignette.intensity.Override(intensity);
         }
 
         IEnumerator FlashingRoutine()
