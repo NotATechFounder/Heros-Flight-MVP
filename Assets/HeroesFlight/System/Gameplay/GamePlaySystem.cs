@@ -791,6 +791,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandlePlayerTriggerPortal()
         {
+            activeAbilityManager.StopAbilities();
             AudioManager.PlaySoundEffect("EnterPortal", SoundEffectCategory.UI);
             MoveToNextLvl();
         }

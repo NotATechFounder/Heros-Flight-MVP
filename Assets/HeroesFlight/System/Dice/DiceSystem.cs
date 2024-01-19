@@ -40,6 +40,8 @@ namespace HeroesFlight.System.Dice
             diceHandler.Init();
         }
 
+        public int DiceCost => diceHandler.GetGemCost;
+
         public void InjectUiConnection()
         {
             uiSystem.UiEventHandler.DiceMenu.OnGemRollPressed += () =>
@@ -105,6 +107,7 @@ namespace HeroesFlight.System.Dice
             
             uiSystem.UiEventHandler.DiceMenu.RollDiceUi(resultRoll,ConvertDiceRollToColor(currentRollType), () =>
             {
+                uiSystem.UiEventHandler.DiceMenu.SetGemButtonState(dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem) >= DiceCost);
                 onComplete?.Invoke(resultRoll);    
             });                 
         }
