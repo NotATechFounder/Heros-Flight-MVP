@@ -55,11 +55,6 @@ namespace HeroesFlight.System.UI
 
                 UiEventHandler.SettingsMenu.OnBackButtonPressed += () => { UiEventHandler.SettingsMenu.Close(); };
 
-                UiEventHandler.GameMenu.OnMenuOpened += () =>
-                {
-                    AudioManager.BlendTwoMusic(GameMusicID, GameMusicLoopID);
-                };
-
                 UiEventHandler.GameMenu.OnSpecialAttackButtonClicked += () => { OnSpecialButtonClicked?.Invoke(); };
 
                 UiEventHandler.GameMenu.OnPassiveAbilityButtonClicked += (index) => { OnPassiveAbilityButtonClicked?.Invoke(index); };
