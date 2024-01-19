@@ -269,4 +269,9 @@ public class AudioManager : MonoBehaviour
         if (Instance == null) Debug.LogError("No Audio Manager in the scene");
         return Instance != null;
     }
+
+    public static void BlendTwoInstantMusic(string musicKey, object musicLoopKey)
+    {
+        throw new NotImplementedException();
+    }
 }

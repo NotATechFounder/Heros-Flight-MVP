@@ -32,6 +32,20 @@ public class LevelSystem
     public int GetExpForLevel(int level) => levelCurve.GetCurrentValueInt(level);
     public float GetExpForNextLevel(int currentLevel) => levelCurve.GetCurrentValueInt(currentLevel + 1);
 
+
+    public Tuple<int, float> GetNumberOfLevelsGained(float extraExp)
+    {
+        int numberOfLevelsGained = 0;
+        float exp = currentExp + extraExp;
+        while (exp >= GetExpForNextLevel(currentLevel))
+        {
+            exp -= GetExpForNextLevel(currentLevel);
+            ++numberOfLevelsGained;
+        }
+        float normalizedExp = exp / GetExpForNextLevel(currentLevel + numberOfLevelsGained);
+        return new Tuple<int, float>(numberOfLevelsGained, normalizedExp);
+    }
+
     public void AddExp(float exp)
     {
         SetExp(currentExp + exp);

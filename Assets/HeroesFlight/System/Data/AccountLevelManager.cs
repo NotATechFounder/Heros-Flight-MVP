@@ -46,6 +46,21 @@ public class AccountLevelManager : MonoBehaviour
         }
     }
 
+    public int GetCurrentLevel()
+    {
+        return levelSystem.CurrentLevel;
+    }
+
+    public float GetCurrentExp()
+    {
+        return levelSystem.CurrentExp;
+    }
+
+    public float GetExpToNextLevel()
+    {
+        return levelSystem.GetExpForLevel(CurrentPlayerLvl);
+    }
+
     public int GetGemReward()
     {
         return gemCurve.GetCurrentValueInt(levelSystem.CurrentLevel);
@@ -54,6 +69,11 @@ public class AccountLevelManager : MonoBehaviour
     public int GetGoldReward()
     {
         return goldCurve.GetCurrentValueInt(levelSystem.CurrentLevel);
+    }
+
+    public Tuple<int, float> GetNumberOfLevelsToBeGained(float extraExp)
+    {
+        return levelSystem.GetNumberOfLevelsGained(extraExp);
     }
 
     public LevelSystem.ExpIncreaseResponse GetExpIncreaseResponse()
@@ -90,6 +110,13 @@ public class AccountLevelManager : MonoBehaviour
         data.currentLevel = levelSystem.CurrentLevel;
         data.currentExp = levelSystem.CurrentExp;
         FileManager.Save(SAVE_ID, data);
+    }
+
+    public void ResetExp()
+    {
+        data = new Data();
+        levelSystem = new LevelSystem(data.currentLevel, data.currentExp, levelCurve);
+        Save();
     }
 
     private void OnValidate()

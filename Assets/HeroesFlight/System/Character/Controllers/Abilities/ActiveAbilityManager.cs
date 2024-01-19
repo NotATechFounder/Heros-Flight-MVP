@@ -317,6 +317,14 @@ public class ActiveAbilityManager : MonoBehaviour
         List<ActiveAbilityType> randomAbilities = new List<ActiveAbilityType>();
         List<ActiveAbilityType> avaliableAbilities = eqquipedActiveActivities.Keys.ToList();
 
+        for (int i = 0; i < eqquipedActiveActivities.Count; i++)
+        {
+            if (IsActiveAbilityMaxLevel(avaliableAbilities[i]))
+            {
+                avaliableAbilities.Remove(avaliableAbilities[i]);
+            }
+        }
+
         int differenceInAmount = passiveActiveAbilityTypeExeption.Count - eqquipedActiveActivities.Count;
         for (int i = 0; i < differenceInAmount; i++)
         {
@@ -423,6 +431,14 @@ public class ActiveAbilityManager : MonoBehaviour
     {
         List<PassiveAbilityType> randomAbilities = new List<PassiveAbilityType>();
         List<PassiveAbilityType> avaliableAbilities = eqquipedPassiveAbilities.Keys.ToList();
+
+        for (int i = 0; i < eqquipedPassiveAbilities.Count; i++)
+        {
+            if (IsPassiveAbilityMaxLevel(avaliableAbilities[i]))
+            {
+                avaliableAbilities.Remove(avaliableAbilities[i]);
+            }
+        }
 
         int differenceInAmount = passiveAbilityTypeExeption.Count - eqquipedPassiveAbilities.Count;
         for (int i = 0; i < differenceInAmount; i++)
@@ -558,6 +574,16 @@ public class ActiveAbilityManager : MonoBehaviour
         }
     }
 
+    private bool IsPassiveAbilityMaxLevel(PassiveAbilityType passiveAbilityType)
+    {
+        return allPassiveAbilitiesDic[passiveAbilityType].IsMaxLevel(eqquipedPassiveAbilities[passiveAbilityType]);
+    }
+
+    private bool IsActiveAbilityMaxLevel(ActiveAbilityType activeAbilityType)
+    {
+        return eqquipedActiveActivities[activeAbilityType].IsMaxLevel();
+    }
+
     public List<PassiveAbilityType> GetEqquipedPassiveAbilities()
     {
         return new List<PassiveAbilityType>(eqquipedPassiveAbilities.Keys);
@@ -565,6 +591,12 @@ public class ActiveAbilityManager : MonoBehaviour
 
     public void AddExp(float exp)
     {
+        levelSystem.AddExp(exp);
+    }
+
+    public void ForceLevelUp()
+    {
+        float exp = levelSystem.GetExpForLevel(levelSystem.CurrentLevel + 1);
         levelSystem.AddExp(exp);
     }
 

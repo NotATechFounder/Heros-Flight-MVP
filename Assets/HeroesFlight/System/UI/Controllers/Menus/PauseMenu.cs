@@ -29,9 +29,9 @@ namespace UISystem
 
         public override void OnCreated()
         {
-            openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
+            openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f).SetTimeMode(TimeMode.Unscaled);
 
-            closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f);
+            closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetTimeMode(TimeMode.Unscaled);
             closeEffectBG.SetOnCompleted(CloseMenu);
 
             settingsButton.onClick.AddListener(() => OnSettingsButtonClicked?.Invoke());

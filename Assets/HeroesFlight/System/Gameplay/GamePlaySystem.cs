@@ -243,7 +243,30 @@ namespace HeroesFlight.System.Gameplay
 
             achievementSystem.UnlocksHandlers.OnRewardUnlocked += HandleRewardUnlockDuringRun;
             healthVisualizer = container.GetComponentInChildren<CharacterVignetteHealthVisualizer>();
+
+            AssignSummaryEvents();
+
             OnComplete?.Invoke();
+        }
+
+        private void AssignSummaryEvents()
+        {
+            float goldReward = CurrentLvlIndex * 100;
+            dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, (int)goldReward);
+            uiSystem.UiEventHandler.SummaryMenu.GetCurrentGold = () => { return goldReward.ToString(); };
+            uiSystem.UiEventHandler.SummaryMenu.GetCurrentTime = runTracker.GetTimePassed;
+            uiSystem.UiEventHandler.SummaryMenu.GetRewardVisuals = () =>
+            {
+                List<RewardVisualEntry> rewardVisualEntries = new List<RewardVisualEntry>();
+
+                foreach (var reward in runTracker.ReceivedRewards)
+                {
+                    RewardVisualEntry rewardVisualEntry = new RewardVisualEntry();
+                    rewardVisualEntry.icon = reward.RewardImage;
+                    rewardVisualEntries.Add(rewardVisualEntry);
+                }
+                return rewardVisualEntries;
+            };
         }
 
         private void CalculateRuneshardBoostModifier()
@@ -1134,7 +1157,8 @@ namespace HeroesFlight.System.Gameplay
             godsBenevolence.DeactivateGodsBenevolence();
             environmentSystem.CurrencySpawner.ActivateExpEffectItems(() =>
             {
-                activeAbilityManager.AddExp(container.GetRunXpForLevel(currentLevel.LevelType));
+                //activeAbilityManager.AddExp(container.GetRunXpForLevel(currentLevel.LevelType));
+                activeAbilityManager.ForceLevelUp();
                 progressionSystem.CollectRunCurrency();
             });
         }
@@ -1389,6 +1413,14 @@ namespace HeroesFlight.System.Gameplay
         {
             dataSystem.AccountLevelManager.AddExp(container.CurrentModel.PermanentXpPerRoom * CurrentLvlIndex);
             uiSystem.UiEventHandler.SummaryMenu.Open();
+
+            int currentLvl = dataSystem.AccountLevelManager.GetCurrentLevel();
+            Tuple<int, float> numberOfLevelsGained = dataSystem.AccountLevelManager.GetNumberOfLevelsToBeGained(container.CurrentModel.PermanentXpPerRoom * CurrentLvlIndex);
+
+            uiSystem.UiEventHandler.SummaryMenu.Display(currentLvl, numberOfLevelsGained.Item1, numberOfLevelsGained.Item2, () =>
+            {
+                dataSystem.AccountLevelManager.AddExp(container.CurrentModel.PermanentXpPerRoom * CurrentLvlIndex);
+            });
         }
 
         void HandleLvlRestart()
@@ -1527,19 +1559,6 @@ namespace HeroesFlight.System.Gameplay
             }
 
             return 1;
-        }
-
-        public List<RewardVisualEntry> GetRewardVisuals()
-        {
-            List <RewardVisualEntry> rewardVisualEntries = new List<RewardVisualEntry>();
-
-            foreach (var reward in runTracker.ReceivedRewards)
-            {
-                RewardVisualEntry rewardVisualEntry = new RewardVisualEntry();
-                rewardVisualEntry.icon = reward.RewardImage;
-                rewardVisualEntries.Add(rewardVisualEntry); 
-            }
-            return rewardVisualEntries;
         }
     }
 }

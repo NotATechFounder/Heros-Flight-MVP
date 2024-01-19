@@ -27,13 +27,13 @@ namespace UISystem
 
         public override void OnCreated()
         {
-            openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f);
+            openEffectBG = canvasGroup.JuicyAlpha(1, 0.15f).SetTimeMode(TimeMode.Unscaled);
 
-            openEffectContent = content.transform.JuicyScale(1, .15f).SetEase(Ease.EaseOutQuart).SetDelay(.05f);
+            openEffectContent = content.transform.JuicyScale(1, .15f).SetEase(Ease.EaseOutQuart).SetDelay(.05f).SetTimeMode(TimeMode.Unscaled);
 
-            closeEffectContent = content.transform.JuicyScale(0, .15f).SetEase(Ease.EaseOutQuart);
+            closeEffectContent = content.transform.JuicyScale(0, .15f).SetEase(Ease.EaseOutQuart).SetTimeMode(TimeMode.Unscaled);
 
-            closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
+            closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f).SetTimeMode(TimeMode.Unscaled);
             closeEffectBG.SetOnCompleted(CloseMenu);
 
             backButton.onClick.AddListener(() =>

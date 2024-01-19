@@ -68,8 +68,11 @@ namespace HeroesFlight.StateStack.State
             var diceSystem = GetService<DiceSystemInterface>();
             traitSystem.OnTraitsStateChange += HandleTraitStateChange;
 
-            uiSystem.UiEventHandler.MainMenu.AddGem += () => dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, 10000);
-            uiSystem.UiEventHandler.MainMenu.AddGold += () => dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, 10000);
+            //uiSystem.UiEventHandler.MainMenu.AddGem += () => dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, 10000);
+            //uiSystem.UiEventHandler.MainMenu.AddGold += () => dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, 10000);
+
+            uiSystem.UiEventHandler.PauseMenu.OnMenuOpened += () => Time.timeScale = 0;
+            uiSystem.UiEventHandler.PauseMenu.OnMenuClosed += () => Time.timeScale = 1;
 
             uiSystem.UiEventHandler.InventoryMenu.OnChangeHeroButtonClicked += uiSystem.UiEventHandler.CharacterSelectMenu.Open;
             uiSystem.UiEventHandler.InventoryMenu.OnStatPointButtonClicked += uiSystem.UiEventHandler.StatePointsMenu.Open;
@@ -131,8 +134,11 @@ namespace HeroesFlight.StateStack.State
 
             traitSystem.OnTraitsStateChange -= HandleTraitStateChange;
 
-            uiSystem.UiEventHandler.MainMenu.AddGem -= () => dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, 10000);
-            uiSystem.UiEventHandler.MainMenu.AddGold -= () => dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, 10000);
+            //uiSystem.UiEventHandler.MainMenu.AddGem -= () => dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, 10000);
+            //uiSystem.UiEventHandler.MainMenu.AddGold -= () => dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, 10000);
+
+            uiSystem.UiEventHandler.PauseMenu.OnMenuOpened -= () => Time.timeScale = 0;
+            uiSystem.UiEventHandler.PauseMenu.OnMenuClosed -= () => Time.timeScale = 1;
 
             uiSystem.UiEventHandler.InventoryMenu.OnChangeHeroButtonClicked -= uiSystem.UiEventHandler.CharacterSelectMenu.Open;
             uiSystem.UiEventHandler.InventoryMenu.OnStatPointButtonClicked -= uiSystem.UiEventHandler.StatePointsMenu.Open;

@@ -47,6 +47,11 @@ public abstract class RegularActiveAbility : MonoBehaviour
         return Mathf.FloorToInt((currentLevel - 1) / majorBoostLevel);
     }
 
+    public bool IsMaxLevel()
+    {
+        return currentLevel >= maxLevel;
+    }
+
     public ParticleSystem GetEffectParticleByLevel()
     {
         //return effectParticle[Mathf.FloorToInt((currentLevel - 1) / majorBoostLevel)];

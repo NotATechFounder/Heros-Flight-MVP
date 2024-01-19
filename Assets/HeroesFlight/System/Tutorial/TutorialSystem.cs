@@ -253,6 +253,8 @@ public class TutorialSystem : ITutorialInterface
 
     public void StartGameSession()
     {
+        AudioManager.BlendTwoInstantMusic(tutorialHandler.GetTutorialModel.MusicKey, tutorialHandler.GetTutorialModel.MusicLoopKey);
+
         uiSystem.UiEventHandler.GameMenu.Open();
 
         uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level transition
@@ -708,6 +710,8 @@ public class TutorialSystem : ITutorialInterface
 
             case LevelType.Shrine:
 
+                AudioManager.PlayMusicInstant("Shrine");
+
                 ShrineNPCHolder shrineNPCHolder = currentLevelEnvironment.GetComponent<ShrineNPCHolder>();
 
                 shrineNPCHolder.shrineNPCsCache[ShrineNPCType.AngelsGambit].Initialize(
@@ -845,7 +849,7 @@ public class TutorialSystem : ITutorialInterface
         godsBenevolence.DeactivateGodsBenevolence();
         environmentSystem.CurrencySpawner.ActivateExpEffectItems(() =>
         {
-            activeAbilityManager.AddExp(100);
+            activeAbilityManager.ForceLevelUp();
             progressionSystem.CollectRunCurrency();
         });
     }
@@ -1225,6 +1229,9 @@ public class TutorialSystem : ITutorialInterface
 
     public IEnumerator StatPointTutorialRoutine()
     {
+        dataSystem.AccountLevelManager.ResetExp();
+        dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.Gem, 0);
+
         uiSystem.UiEventHandler.MainMenu.SetAllButtonVibility(GameButtonVisiblity.Hidden);
 
         yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.InventoryMenu, GameButtonType.Inventory_StatPoints);
@@ -1249,6 +1256,8 @@ public class TutorialSystem : ITutorialInterface
 
         uiSystem.UiEventHandler.TutorialMenu.NextVisualStep();
 
+        dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, 200);
+
         yield return WaitForButtonPressed(uiSystem.UiEventHandler.StatePointsMenu.GetStatPointUIs[0].DiceButton);
 
         yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.DiceMenu, GameButtonType.DiceMenu_Info);
@@ -1270,7 +1279,7 @@ public class TutorialSystem : ITutorialInterface
 
     public IEnumerator ShopTutorialRoutine()
     {
-        dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.Gem, 50);
+        dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, 50);
 
         yield return WaitForGameButtonPressed(uiSystem.UiEventHandler.MainMenu, GameButtonType.Mainmenu_Shop);
 
