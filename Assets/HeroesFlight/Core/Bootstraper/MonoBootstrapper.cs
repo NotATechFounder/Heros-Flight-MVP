@@ -54,7 +54,7 @@ namespace HeroesFlight.Core.Bootstrapper
             GamePlaySystemInterface gamePlaySystem =
                 new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem,traitSystem, inventorySystem,achievementSystem,shrineSystem);
             ITutorialInterface tutorialInterface = 
-                new TutorialSystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem, uiSystem, progressionSystem, traitSystem, inventorySystem, rewardSystem);
+                new TutorialSystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem, uiSystem, progressionSystem, traitSystem, inventorySystem,rewardSystem,shrineSystem);
 
 
             m_ServiceLocator.Register(authenticationSystem);

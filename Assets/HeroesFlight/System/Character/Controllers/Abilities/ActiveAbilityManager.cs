@@ -568,6 +568,14 @@ public class ActiveAbilityManager : MonoBehaviour
     {
         levelCurve.UpdateCurve();
     }
+
+    public void StopAbilities()
+    {
+        foreach (var timedAbilityController in timedAbilitySlots)
+        {
+            timedAbilityController.StopAbility();
+        }
+    }
 }
 
 public static class DictionaryExtension

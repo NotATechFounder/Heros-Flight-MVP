@@ -45,10 +45,11 @@ namespace HeroesFlight.System.UI.DIce
         private JuicerRuntime diceRollStartEffect;
         private JuicerRuntime diceRollEndEffect;
 
-        public void ShowDiceMenu(int initialValue,Action OnRoll)
+        public void ShowDiceMenu(int initialValue,bool canUseGems,Action OnRoll)
         {
             rollText.text = initialValue.ToString();
             onRollAction = OnRoll;
+            gemROllButton.SetVisibility( canUseGems ? GameButtonVisiblity.Visible : GameButtonVisiblity.Hidden);
             ToggleCanvasGroup(rollCG, true);
             Open();
         }
@@ -172,6 +173,11 @@ namespace HeroesFlight.System.UI.DIce
         {
             adsRollText.text = index.ToString();
             adsRollButton.SetVisibility( index > 0 ? GameButtonVisiblity.Visible : GameButtonVisiblity.Hidden);
+        }
+
+        public void SetGemButtonState(bool isEnabled)
+        {
+            gemROllButton.SetVisibility( isEnabled ? GameButtonVisiblity.Visible : GameButtonVisiblity.Hidden);
         }
     }
 }

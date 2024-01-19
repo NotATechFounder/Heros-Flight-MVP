@@ -20,6 +20,7 @@ using HeroesFlight.System.NPC;
 using HeroesFlight.System.NPC.Controllers.Ability;
 using HeroesFlight.System.NPC.Controllers.Control;
 using HeroesFlight.System.NPC.Model;
+using HeroesFlight.System.PostProccesing;
 using HeroesFlight.System.ShrineSystem;
 using HeroesFlight.System.Stats;
 using HeroesFlight.System.Stats.Handlers;
@@ -137,6 +138,7 @@ namespace HeroesFlight.System.Gameplay
         private int reviveAmount;
 
         private RunTracker runTracker;
+        private CharacterVignetteHealthVisualizer healthVisualizer;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -240,6 +242,7 @@ namespace HeroesFlight.System.Gameplay
             RegisterShrineNPCUIEvents();
 
             achievementSystem.UnlocksHandlers.OnRewardUnlocked += HandleRewardUnlockDuringRun;
+            healthVisualizer = container.GetComponentInChildren<CharacterVignetteHealthVisualizer>();
             OnComplete?.Invoke();
         }
 
@@ -310,7 +313,7 @@ namespace HeroesFlight.System.Gameplay
                         PreloadLvl();
                         SetupCharacter();
                     }
-                    , ()=>
+                    , () =>
                     {
                         runTracker.RegisterRunStart();
                         ContinueGameLoop();
@@ -504,6 +507,7 @@ namespace HeroesFlight.System.Gameplay
             environmentSystem.ParticleManager.Spawn("CharacterRevival",
                 characterSystem.CurrentCharacter.CharacterTransform.position);
             combatSystem.RevivePlayer(healthPercentage);
+            healthVisualizer.UpdateVignetteIntensity(characterHealthController.CurrentHealthProportion);
             GameTimer.Resume();
             ChangeState(GameState.Ongoing);
             uiSystem.UiEventHandler.ReviveMenu.Close();
@@ -581,7 +585,7 @@ namespace HeroesFlight.System.Gameplay
 
         void OnEnemyHitSuccess()
         {
-            GameEffectController.StopTime(0.1f, container.TimeStopRestoreSpeed,container.TimeStopDuration);
+            GameEffectController.StopTime(0.1f, container.TimeStopRestoreSpeed, container.TimeStopDuration);
         }
 
         void HandleEnemySpawned(AiControllerBase obj)
@@ -640,7 +644,7 @@ namespace HeroesFlight.System.Gameplay
             enemiesToKill--;
             environmentSystem.ParticleManager.Spawn("Loot_Spawn", position, Quaternion.Euler(new Vector3(-90, 0, 0)));
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RuneShard,
-               0, position);
+                0, position);
 
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RunExperience, 0, position);
 
@@ -688,6 +692,11 @@ namespace HeroesFlight.System.Gameplay
                             CalculationType.Percentage, null));
                 }
 
+                var runeshardsToAdd =
+                    container.CurrentModel.RunShardCurve.GetCurrentValueInt(container.CurrentLvlIndex);
+                Debug.Log($" want add {runeshardsToAdd} runeshards");
+                HandleCurrencyCollected(CurrencyKeys.RuneShard, runeshardsToAdd);
+                
                 ChangeState(GameState.WaitingPortal);
             });
         }
@@ -696,6 +705,8 @@ namespace HeroesFlight.System.Gameplay
         {
             if (currentState != GameState.Ongoing)
                 return;
+
+            healthVisualizer.UpdateVignetteIntensity(characterHealthController.CurrentHealthProportion);
         }
 
 
@@ -782,6 +793,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandlePlayerTriggerPortal()
         {
+            activeAbilityManager.StopAbilities();
             AudioManager.PlaySoundEffect("EnterPortal", SoundEffectCategory.UI);
             MoveToNextLvl();
         }

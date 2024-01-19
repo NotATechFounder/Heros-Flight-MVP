@@ -20,6 +20,7 @@ public class TimedAbilityController
     private float currentTime = 0;
 
     public bool IsValid => owner != null;
+    private Coroutine runtimeRoutine;
 
     public void Init (MonoBehaviour targetOwner, float targetDuration, float targetCoolDownTime)
     {
@@ -37,7 +38,7 @@ public class TimedAbilityController
         if (!canUseAbility)
             return false;
         OnActivated?.Invoke();
-        owner.StartCoroutine(Runtime());
+        runtimeRoutine=  owner.StartCoroutine(Runtime());
         return true;
     }
 
@@ -80,5 +81,19 @@ public class TimedAbilityController
         if (owner != null)  owner.StopAllCoroutines();
         canUseAbility = true;
         OnCoolDownEnded?.Invoke();
+    }
+
+    public void StopAbility()
+    {
+        if (!IsValid)
+            return;
+        
+        if (runtimeRoutine != null)
+        {
+            owner.StopCoroutine(runtimeRoutine);
+        }
+        
+        IsActive = false;
+        StartCoolDown();
     }
 }
