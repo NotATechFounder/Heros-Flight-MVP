@@ -220,9 +220,10 @@ namespace HeroesFlight.System.UI
             if (targetIsPlayer)
             {
                 var damageString = string.Empty;
-                 damageString = !isCritical
-                    ? $"{(int)damage}"
-                    : $"!!{(int)damage}!!";
+                 // damageString = !isCritical
+                 //    ? $"{(int)damage}"
+                 //    : $"{(int)damage}";
+                 damageString = $"{(int)damage}";
                 var color = isHeal ? Color.green : Color.red;
                 PopUpManager.Instance.PopUpTextAtTransfrom(target, Vector3.zero, damageString,
                     color);
