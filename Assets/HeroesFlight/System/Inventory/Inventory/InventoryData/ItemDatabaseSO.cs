@@ -142,28 +142,6 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         return default;
     }
 
-
-#if UNITY_EDITOR
-    [ContextMenu("RenameAllItems")]
-    public void RenameAllItems()
-    {
-        for (int i = 0; i < Items.Length; i++)
-        {
-            Items[i].RenameFile();
-        }
-    }
-
-    [ContextMenu("PopulateItemEffects")]
-    public void PopulateItemEffects()
-    {
-        string path = AssetDatabase.GetAssetPath(this);
-        path = path.Replace(this.name + ".asset", "");
-        List<ItemEffectSO> scriptableObjectBases = ScriptableObjectUtils.GetAllScriptableObjectBaseInFile<ItemEffectSO>(path);
-        itemEffects = scriptableObjectBases.ToArray();
-        EditorUtility.SetDirty(this);
-        AssetDatabase.SaveAssets();
-    }
-
     public int GetBaseStatValue(EquipmentSO equipmentSO, Rarity rarity)
     {
         for (int i = 0; i < baseStats.Length; i++)
@@ -212,6 +190,75 @@ public class ItemDatabaseSO : ScriptableObjectDatabase<ItemSO>
         int incrementPerLevel = GetBaseStatIncrease(equipmentSO);
         return baseStatValue + incrementPerLevel * (level - 1);
     }
+#if UNITY_EDITOR
+    [ContextMenu("RenameAllItems")]
+    public void RenameAllItems()
+    {
+        for (int i = 0; i < Items.Length; i++)
+        {
+            Items[i].RenameFile();
+        }
+    }
+
+    [ContextMenu("PopulateItemEffects")]
+    public void PopulateItemEffects()
+    {
+        string path = AssetDatabase.GetAssetPath(this);
+        path = path.Replace(this.name + ".asset", "");
+        List<ItemEffectSO> scriptableObjectBases = ScriptableObjectUtils.GetAllScriptableObjectBaseInFile<ItemEffectSO>(path);
+        itemEffects = scriptableObjectBases.ToArray();
+        EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssets();
+    }
+
+    // public int GetBaseStatValue(EquipmentSO equipmentSO, Rarity rarity)
+    // {
+    //     for (int i = 0; i < baseStats.Length; i++)
+    //     {
+    //         if (baseStats[i].equipmentType == equipmentSO.equipmentType)
+    //         {
+    //             for (int j = 0; j < baseStats[i].starStats.Length; j++)
+    //             {
+    //                 if (baseStats[i].starStats[j].equipmentStar == equipmentSO.equipmentStar)
+    //                 {
+    //                     for (int k = 0; k < baseStats[i].starStats[j].rarityValues.Length; k++)
+    //                     {
+    //                         if (baseStats[i].starStats[j].rarityValues[k].rarity == rarity)
+    //                         {
+    //                             return baseStats[i].starStats[j].rarityValues[k].value;
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return 0;
+    // }
+    //
+    // public int GetBaseStatIncrease(EquipmentSO equipmentSO)
+    // {
+    //     for (int i = 0; i < baseStatIncrease.Length; i++)
+    //     {
+    //         if (baseStatIncrease[i].equipmentType == equipmentSO.equipmentType)
+    //         {
+    //             for (int j = 0; j < baseStatIncrease[i].starIncreases.Length; j++)
+    //             {
+    //                 if (baseStatIncrease[i].starIncreases[j].equipmentStar == equipmentSO.equipmentStar)
+    //                 {
+    //                     return baseStatIncrease[i].starIncreases[j].incrementPerLevel;
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return 0;
+    // }
+    //
+    // public int GetCurrentStatValue(EquipmentSO equipmentSO, Rarity rarity, int level)
+    // {
+    //     int baseStatValue = GetBaseStatValue(equipmentSO, rarity);
+    //     int incrementPerLevel = GetBaseStatIncrease(equipmentSO);
+    //     return baseStatValue + incrementPerLevel * (level - 1);
+    // }
 
 #endif
 }
