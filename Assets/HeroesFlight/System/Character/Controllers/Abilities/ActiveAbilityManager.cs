@@ -334,7 +334,6 @@ public class ActiveAbilityManager : MonoBehaviour
         List<ActiveAbilityType> randomAbilities = new List<ActiveAbilityType>();
         List<ActiveAbilityType> avaliableAbilities = new List<ActiveAbilityType>();
 
-
         foreach (ActiveAbilityType activeAbilityType in activeAbilityTypes)
         {
             ActiveAbilitySO activeAbilitySO = allActiveAbilitiesDic[activeAbilityType];
