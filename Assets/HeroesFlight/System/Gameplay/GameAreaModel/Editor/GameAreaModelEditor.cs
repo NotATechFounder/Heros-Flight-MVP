@@ -26,6 +26,9 @@ public class GameAreaModelEditor : Editor
 
     SerializedProperty bossDropProperty;
 
+    SerializedProperty musicKeyProperty;
+    SerializedProperty musicLoopKeyProperty;
+
     bool difficultyFoldout = false;
     Dictionary<int, bool> foldoutDictionary = new Dictionary<int, bool>();
 
@@ -46,6 +49,9 @@ public class GameAreaModelEditor : Editor
         permanetXpPerRoom = serializedObject.FindProperty("permanentXpPerRoom");
 
         runShardCurveProperty = serializedObject.FindProperty("runShardCurve");
+
+        musicKeyProperty = serializedObject.FindProperty("musicKey");
+        musicLoopKeyProperty = serializedObject.FindProperty("musicLoopKey");
 
         for (int i = 0; i < mobDifficultyArray.arraySize; i++)
         {
@@ -69,6 +75,9 @@ public class GameAreaModelEditor : Editor
         DisplayDiffiulties();
 
         DisplayExpCurves();
+
+        EditorGUILayout.PropertyField(musicKeyProperty);
+        EditorGUILayout.PropertyField(musicLoopKeyProperty);
 
         serializedObject.ApplyModifiedProperties();
     }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Achievement_System.ProgressionUnlocks.UnlockRewards;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Combat;
 using HeroesFlight.System.Combat.Effects.Effects;
@@ -10,6 +11,7 @@ using HeroesFlight.System.Combat.Enum;
 using HeroesFlight.System.Combat.Model;
 using HeroesFlight.System.Environment;
 using HeroesFlight.System.Gameplay.Container;
+using HeroesFlight.System.Gameplay.Controllers;
 using HeroesFlight.System.Gameplay.Controllers.Sound;
 using HeroesFlight.System.Gameplay.Enum;
 using HeroesFlight.System.Gameplay.Model;
@@ -18,6 +20,7 @@ using HeroesFlight.System.NPC;
 using HeroesFlight.System.NPC.Controllers.Ability;
 using HeroesFlight.System.NPC.Controllers.Control;
 using HeroesFlight.System.NPC.Model;
+using HeroesFlight.System.PostProccesing;
 using HeroesFlight.System.ShrineSystem;
 using HeroesFlight.System.Stats;
 using HeroesFlight.System.Stats.Handlers;
@@ -61,6 +64,7 @@ namespace HeroesFlight.System.Gameplay
             InventorySystem = inventorySystemInterface;
             achievementSystem = achievementSystemInterface;
             this.shrineSystem = shrineSystem;
+            runTracker = new RunTracker();
         }
 
         CountDownTimer GameTimer;
@@ -131,6 +135,9 @@ namespace HeroesFlight.System.Gameplay
         private int goldReceiveModifier;
 
         private int reviveAmount;
+
+        private RunTracker runTracker;
+        private CharacterVignetteHealthVisualizer healthVisualizer;
 
         public void Init(Scene scene = default, Action OnComplete = null)
         {
@@ -233,6 +240,8 @@ namespace HeroesFlight.System.Gameplay
 
             RegisterShrineNPCUIEvents();
 
+            achievementSystem.UnlocksHandlers.OnRewardUnlocked += HandleRewardUnlockDuringRun;
+            healthVisualizer = container.GetComponentInChildren<CharacterVignetteHealthVisualizer>();
             OnComplete?.Invoke();
         }
 
@@ -277,6 +286,7 @@ namespace HeroesFlight.System.Gameplay
             goldReceiveModifier = 0;
             reviveAmount = 0;
             shrineSystem.Shrine.GetAngelEffectManager.ResetAngelEffects();
+            runTracker.Reset();
         }
 
         private void AbilitySelectMenu_OnMenuClosed()
@@ -299,7 +309,11 @@ namespace HeroesFlight.System.Gameplay
                         PreloadLvl();
                         SetupCharacter();
                     }
-                    , ContinueGameLoop);
+                    , () =>
+                    {
+                        runTracker.RegisterRunStart();
+                        ContinueGameLoop();
+                    });
             });
         }
 
@@ -491,6 +505,7 @@ namespace HeroesFlight.System.Gameplay
             environmentSystem.ParticleManager.Spawn("CharacterRevival",
                 characterSystem.CurrentCharacter.CharacterTransform.position);
             combatSystem.RevivePlayer(healthPercentage);
+            healthVisualizer.UpdateVignetteIntensity(characterHealthController.CurrentHealthProportion);
             GameTimer.Resume();
             ChangeState(GameState.Ongoing);
             uiSystem.UiEventHandler.ReviveMenu.Close();
@@ -568,7 +583,7 @@ namespace HeroesFlight.System.Gameplay
 
         void OnEnemyHitSuccess()
         {
-            GameEffectController.StopTime(0.1f, container.TimeStopRestoreSpeed,container.TimeStopDuration);
+            GameEffectController.StopTime(0.1f, container.TimeStopRestoreSpeed, container.TimeStopDuration);
         }
 
         void HandleEnemySpawned(AiControllerBase obj)
@@ -627,7 +642,7 @@ namespace HeroesFlight.System.Gameplay
             enemiesToKill--;
             environmentSystem.ParticleManager.Spawn("Loot_Spawn", position, Quaternion.Euler(new Vector3(-90, 0, 0)));
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RuneShard,
-               0, position);
+                0, position);
 
             environmentSystem.CurrencySpawner.SpawnAtPosition(CurrencyKeys.RunExperience, 0, position);
 
@@ -675,6 +690,11 @@ namespace HeroesFlight.System.Gameplay
                             CalculationType.Percentage, null));
                 }
 
+                var runeshardsToAdd =
+                    container.CurrentModel.RunShardCurve.GetCurrentValueInt(container.CurrentLvlIndex);
+                Debug.Log($" want add {runeshardsToAdd} runeshards");
+                HandleCurrencyCollected(CurrencyKeys.RuneShard, runeshardsToAdd);
+                
                 ChangeState(GameState.WaitingPortal);
             });
         }
@@ -683,6 +703,8 @@ namespace HeroesFlight.System.Gameplay
         {
             if (currentState != GameState.Ongoing)
                 return;
+
+            healthVisualizer.UpdateVignetteIntensity(characterHealthController.CurrentHealthProportion);
         }
 
 
@@ -1465,6 +1487,11 @@ namespace HeroesFlight.System.Gameplay
         void EnableCharacterMovement()
         {
             TogglePlayerMovementState(true);
+        }
+
+        private void HandleRewardUnlockDuringRun(UnlockReward reward)
+        {
+            runTracker.AddReward(reward);
         }
     }
 }
