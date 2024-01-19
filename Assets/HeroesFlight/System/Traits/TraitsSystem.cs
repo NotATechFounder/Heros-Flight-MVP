@@ -21,7 +21,7 @@ namespace HeroesFlight.System.Stats.Handlers
             data.OnApplicationQuit += SaveTraitData;
             this.uiSystem = uiSystem;
             diceSystem = diceSystemInterface;
-            traitHandler = new TraitHandler(new Vector2Int(4, 8),dataSystem);
+            traitHandler = new TraitHandler(new Vector2Int(4, 8), dataSystem);
             LoadData();
         }
 
@@ -92,24 +92,25 @@ namespace HeroesFlight.System.Stats.Handlers
 
                     break;
                 case TraitModificationType.Reroll:
-                    uiSystem.UiEventHandler.DiceMenu.ShowDiceMenu(request.Model.CurrentValue, () =>
-                    {
-                        diceSystem.RollDice((rolledValue) =>
+                    uiSystem.UiEventHandler.DiceMenu.ShowDiceMenu(request.Model.CurrentValue,
+                        data.CurrencyManager.GetCurrecy(CurrencyKeys.Gem).GetCurrencyAmount >= diceSystem.DiceCost,
+                        () =>
                         {
-                            if (traitHandler.TryModifyTraitValue(request.Model.Id, rolledValue))
+                            diceSystem.RollDice((rolledValue) =>
                             {
-                                uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(traitHandler.GetTraitTreeData());
-                                uiSystem.UiEventHandler.DiceMenu.ModifyDiceRollResultUi($"+{rolledValue}");
-                                NotifyTraitStateChanged();
-                            }
+                                if (traitHandler.TryModifyTraitValue(request.Model.Id, rolledValue))
+                                {
+                                    uiSystem.UiEventHandler.TraitTreeMenu.UpdateTreeView(
+                                        traitHandler.GetTraitTreeData());
+                                    uiSystem.UiEventHandler.DiceMenu.ModifyDiceRollResultUi($"+{rolledValue}");
+                                    NotifyTraitStateChanged();
+                                }
+                            });
                         });
-                    });
 
 
                     break;
             }
-
-          
         }
 
 

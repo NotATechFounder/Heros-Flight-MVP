@@ -196,7 +196,7 @@ namespace HeroesFlight.StateStack.State
             var uiSystem = GetService<IUISystem>();
             var dataSystem = GetService<DataSystemInterface>();
             var diceSystem = GetService<DiceSystemInterface>();
-            uiSystem.UiEventHandler.DiceMenu.ShowDiceMenu(value, () =>
+            uiSystem.UiEventHandler.DiceMenu.ShowDiceMenu(value,dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.Gem)>= diceSystem.DiceCost, () =>
                 {
                     diceSystem.RollDice((rolledValue) =>
                     {
