@@ -10,23 +10,25 @@ using UnityEngine;
 
 public class LightningArrow : RegularActiveAbility
 {
-    [Header("LineDamage")]
-    [SerializeField] private float firstAttackDelay = 0.1f;
+    [Header("LineDamage")] [SerializeField]
+    private float firstAttackDelay = 0.1f;
+
     [SerializeField] private float lineDamageDelay = 0.25f;
     [SerializeField] private int linesOfDamage = 2;
     [SerializeField] private int linesOfDamagePerIncrease = 1;
 
-    [Header("Projectile")]
-    [SerializeField] private int numberOfProjectile = 10;
+    [Header("Projectile")] [SerializeField]
+    private int numberOfProjectile = 10;
+
     [SerializeField] private int spacing = 2;
 
-    [Header("Damage")]
-    [SerializeField] private CustomAnimationCurve damagePercentageCurve;
+    [Header("Damage")] [SerializeField] private CustomAnimationCurve damagePercentageCurve;
     [SerializeField] private ProjectileControllerBase projectileController;
     [SerializeField] Transform projectileSpawnPoint;
 
-    [Header("Animation and Viusal Settings")]
-    [SerializeField] private Transform visual;
+    [Header("Animation and Viusal Settings")] [SerializeField]
+    private Transform visual;
+
     [SerializeField] SkeletonAnimation skeletonAnimation;
     [SerializeField] public const string attackAnimation1Name = "animation";
 
@@ -37,6 +39,7 @@ public class LightningArrow : RegularActiveAbility
     private CharacterSimpleController characterControllerInterface;
 
     private ProjectileControllerBase currentProjectile;
+    private List<ProjectileControllerBase> rainProjectiles = new();
 
     private void Update()
     {
@@ -56,17 +59,15 @@ public class LightningArrow : RegularActiveAbility
 
         currentlinesOfDamage = GetMajorValueByLevel(linesOfDamage, linesOfDamagePerIncrease);
 
-        skeletonAnimation.AnimationState. SetAnimation(0, attackAnimation1Name, false);
+        skeletonAnimation.AnimationState.SetAnimation(0, attackAnimation1Name, false);
     }
 
     public override void OnDeactivated()
     {
-
     }
 
     public override void OnCoolDownEnded()
     {
-
     }
 
     private void AnimationState_Event(TrackEntry trackEntry, Spine.Event e)
@@ -114,7 +115,7 @@ public class LightningArrow : RegularActiveAbility
     private void FireUpProjectile()
     {
         currentProjectile = Instantiate(projectileController, projectileSpawnPoint.position, Quaternion.identity);
-        currentProjectile.SetupProjectile(currentDamage,Vector2.up);
+        currentProjectile.SetupProjectile(currentDamage, Vector2.up);
         currentProjectile.OnHit += HandleOnHit;
         currentProjectile.OnDeactivate += HandleArrowDisable;
 
@@ -127,18 +128,20 @@ public class LightningArrow : RegularActiveAbility
         Transform centre = currentProjectile.transform;
         for (int i = 0; i < numberOfProjectile; i++)
         {
-            Vector2 spawnPos = i % 2 == 0 ? centre.position + Vector3.left * spacing * (i / 2) : centre.position + Vector3.right * spacing * (i / 2);
-            ProjectileControllerBase  Projectile = Instantiate(projectileController, spawnPos, Quaternion.identity);
+            Vector2 spawnPos = i % 2 == 0
+                ? centre.position + Vector3.left * spacing * (i / 2)
+                : centre.position + Vector3.right * spacing * (i / 2);
+            ProjectileControllerBase Projectile = Instantiate(projectileController, spawnPos, Quaternion.identity);
             Projectile.SetupProjectile(currentDamage, Vector2.down);
             Projectile.OnHit += HandleOnHit;
             Projectile.OnDeactivate += HandleArrowDisable;
+            rainProjectiles.Add(Projectile);
             yield return new WaitForSeconds(Random.Range(0.05f, 0.1f));
         }
     }
 
     void HandleOnHit(ProjectileControllerInterface obj)
     {
-
     }
 
     void HandleArrowDisable(ProjectileControllerInterface obj)
@@ -158,5 +161,18 @@ public class LightningArrow : RegularActiveAbility
     private void OnValidate()
     {
         damagePercentageCurve.UpdateCurve();
+    }
+
+    public override void StopAbility()
+    {
+        base.StopAbility();
+        StopAllCoroutines();
+        foreach (var controller in rainProjectiles)
+        {
+            if (controller != null) controller.DisableProjectile();
+        }
+
+        if (currentProjectile != null) currentProjectile.DisableProjectile();
+        rainProjectiles.Clear();
     }
 }

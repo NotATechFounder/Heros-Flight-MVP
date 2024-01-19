@@ -161,7 +161,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
             switch (currencyID)
             {
-                case CurrencyKeys.Gold:
+                case CurrencyKeys.RuneShard:
                     audioID = "Gold";
                     goldEffect.Play();
                     break;

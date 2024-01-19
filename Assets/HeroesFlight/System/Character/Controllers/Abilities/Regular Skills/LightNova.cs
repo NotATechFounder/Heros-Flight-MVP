@@ -60,7 +60,7 @@ public class LightNova : RegularActiveAbility
         AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Hero);
 
         float healthToHeal = StatCalc.GetPercentage(characterHealthController.MaxHealth, healthPercentage);
-        characterHealthController.Heal(healthToHeal, false);
+        characterHealthController.Heal(healthToHeal, true);
     }
 
     public override void OnDeactivated()

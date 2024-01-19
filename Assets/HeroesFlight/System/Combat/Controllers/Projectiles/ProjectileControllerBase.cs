@@ -126,5 +126,11 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
                 ProjectileHit();
             }
         }
+
+        public void DisableProjectile()
+        {
+            gameObject.SetActive(false);
+            OnDeactivate?.Invoke(this);
+        }
     }
 }

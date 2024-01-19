@@ -224,14 +224,20 @@ public class ActiveAbilityManager : MonoBehaviour
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.EnergyBlast:
-                (passiveActiveAbility as EnergyBlast).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage), characterSystem);
+                (passiveActiveAbility as EnergyBlast).Initialize(level,
+                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage),
+                    characterSystem);
                 break;
             case ActiveAbilityType.HeavenHammer:
-                (passiveActiveAbility as HeavenHammer).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage), characterSystem);
+                (passiveActiveAbility as HeavenHammer).Initialize(level,
+                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage),
+                    characterSystem);
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             case ActiveAbilityType.IlluminatedArrows:
-                (passiveActiveAbility as IlluminatedArrows).Initialize(level, (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage), characterSystem);
+                (passiveActiveAbility as IlluminatedArrows).Initialize(level,
+                    (int)characterStatController.GetStatModel.GetCurrentStatValue(StatType.PhysicalDamage),
+                    characterSystem);
                 passiveActiveAbility.transform.SetParent(characterStatController.transform);
                 break;
             default: break;
@@ -277,7 +283,8 @@ public class ActiveAbilityManager : MonoBehaviour
     public void UpgradeAbility(ActiveAbilityType passiveActiveAbilityType)
     {
         eqquipedActiveActivities[passiveActiveAbilityType].LevelUp();
-        OnRegularActiveAbilityUpgraded?.Invoke(passiveActiveAbilityType, eqquipedActiveActivities[passiveActiveAbilityType].Level);
+        OnRegularActiveAbilityUpgraded?.Invoke(passiveActiveAbilityType,
+            eqquipedActiveActivities[passiveActiveAbilityType].Level);
     }
 
     bool AbilityAlreadyEquipped(ActiveAbilityType passiveActiveAbilityType)
@@ -344,8 +351,10 @@ public class ActiveAbilityManager : MonoBehaviour
                 {
                     avaliableAbilities.Add(activeAbilityType);
                 }
+
                 continue;
             }
+
             avaliableAbilities.Add(activeAbilityType);
         }
 
@@ -466,7 +475,8 @@ public class ActiveAbilityManager : MonoBehaviour
             return;
         if (timedAbilityController.ActivateAbility())
         {
-            ActiveAbilityType regularActiveAbilityType = activeAbiltyAndControllerDic.FirstOrDefault(x => x.Value == timedAbilityController).Key;
+            ActiveAbilityType regularActiveAbilityType =
+                activeAbiltyAndControllerDic.FirstOrDefault(x => x.Value == timedAbilityController).Key;
             RegularActiveAbility regularActiveAbility = eqquipedActiveActivities[regularActiveAbilityType];
             if (regularActiveAbility.IsInstant())
             {
@@ -510,6 +520,7 @@ public class ActiveAbilityManager : MonoBehaviour
             {
                 return;
             }
+
             eqquipedPassiveAbilities.Add(passiveAbilityType, level);
         }
 
@@ -574,6 +585,11 @@ public class ActiveAbilityManager : MonoBehaviour
         foreach (var timedAbilityController in timedAbilitySlots)
         {
             timedAbilityController.StopAbility();
+        }
+
+        foreach (var ability in eqquipedActiveActivities.Values)
+        {
+            ability.StopAbility();
         }
     }
 }
