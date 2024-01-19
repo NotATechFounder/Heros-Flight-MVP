@@ -58,6 +58,7 @@ namespace HeroesFlight.System.PostProccesing
             {
                 if (Mathf.Approximately(currentThreshold.IntensityValue, 0f))
                 {
+                    SetVolumeWeight(0);
                     yield return null; //Skip execution and wait for the next frame
                     continue;
                 }
