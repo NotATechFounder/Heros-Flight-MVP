@@ -24,14 +24,6 @@ public class EnergyManager : MonoBehaviour
 
     public int MaxEnergy() => maxEnergy;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            UseEnergy(5);
-        }
-    }
-
     public void Initialize(CurrencyManager currencyManager)
     {
         this.currencyManager = currencyManager;

@@ -244,6 +244,8 @@ namespace HeroesFlight.System.Gameplay
             achievementSystem.UnlocksHandlers.OnRewardUnlocked += HandleRewardUnlockDuringRun;
             healthVisualizer = container.GetComponentInChildren<CharacterVignetteHealthVisualizer>();
             OnComplete?.Invoke();
+
+            uiSystem.UiEventHandler.SummaryMenu.GetInfo += GetSummaryInfo;
         }
 
         private void CalculateRuneshardBoostModifier()
@@ -445,6 +447,8 @@ namespace HeroesFlight.System.Gameplay
 
             uiSystem.UiEventHandler.AbilitySelectMenu.OnGemReRoll -= AbilitySelectMenu_OnGemReRoll;
             uiSystem.UiEventHandler.AbilitySelectMenu.OnAdsReRoll -= AbilitySelectMenu_OnAdsReRoll;
+
+            uiSystem.UiEventHandler.SummaryMenu.GetInfo -= GetSummaryInfo;
 
             UnRegisterShrineNPCUIEvents();
         }
@@ -1531,17 +1535,22 @@ namespace HeroesFlight.System.Gameplay
             return 1;
         }
 
-        public List<RewardVisualEntry> GetRewardVisuals()
+        private void GetSummaryInfo(Func<string> gold, Func<string> time, Func<List<RewardVisualEntry>> rewards)
         {
-            List <RewardVisualEntry> rewardVisualEntries = new List<RewardVisualEntry>();
-
-            foreach (var reward in runTracker.ReceivedRewards)
+            gold = () => { return dataSystem.CurrencyManager.GetCurrencyAmount(CurrencyKeys.RuneShard).ToString(); };
+            time = () => { return runTracker.GetTimePassed().ToString(); };
+            rewards = () => 
             {
-                RewardVisualEntry rewardVisualEntry = new RewardVisualEntry();
-                rewardVisualEntry.icon = reward.RewardImage;
-                rewardVisualEntries.Add(rewardVisualEntry); 
-            }
-            return rewardVisualEntries;
+                List<RewardVisualEntry> rewardVisualEntries = new List<RewardVisualEntry>();
+
+                foreach (var reward in runTracker.ReceivedRewards)
+                {
+                    RewardVisualEntry rewardVisualEntry = new RewardVisualEntry();
+                    rewardVisualEntry.icon = reward.RewardImage;
+                    rewardVisualEntries.Add(rewardVisualEntry);
+                }
+                return rewardVisualEntries;
+            };
         }
     }
 }

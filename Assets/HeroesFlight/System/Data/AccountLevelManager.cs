@@ -92,6 +92,13 @@ public class AccountLevelManager : MonoBehaviour
         FileManager.Save(SAVE_ID, data);
     }
 
+    public void ResetExp()
+    {
+        data = new Data();
+        levelSystem = new LevelSystem(data.currentLevel, data.currentExp, levelCurve);
+        Save();
+    }
+
     private void OnValidate()
     {
         levelCurve.UpdateCurve();

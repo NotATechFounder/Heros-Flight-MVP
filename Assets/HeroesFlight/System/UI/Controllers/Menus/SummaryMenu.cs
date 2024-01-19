@@ -11,6 +11,8 @@ namespace UISystem
 {
     public class SummaryMenu : BaseMenu<SummaryMenu>
     {
+        public Action<Func<string>, Func<string>, Func<List<RewardVisualEntry>>> GetInfo;
+
         public Func<string> GetCurrentGold;
         public Func<string> GetCurrentTime;
         public Func<List<RewardVisualEntry>> GetRewardVisuals;
@@ -53,8 +55,8 @@ namespace UISystem
         {
             openEffectBG.Start();
 
-            if (GetCurrentGold != null)
-                coinText.text = GetCurrentGold.Invoke();
+            if (GetInfo != null)
+                GetInfo.Invoke(() => GetCurrentGold.Invoke(), () => GetCurrentTime.Invoke(), () => GetRewardVisuals.Invoke());
 
             foreach (var reward in rewards)
             {
