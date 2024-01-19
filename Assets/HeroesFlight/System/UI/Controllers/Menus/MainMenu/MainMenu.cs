@@ -115,9 +115,9 @@ namespace UISystem
             questComplectedEffect = questProgressBar.JuicyColour(Color.red, 0.5f);
             questComplectedEffect.SetLoop(-1).SetOnCompleted(() => questProgressBar.color = Color.yellow);
 
-            addGoldButton.onClick.AddListener(() => { AddGold?.Invoke(); });
+            addGoldButton.onClick.AddListener(TriggerShopButtonClick);
 
-            addGemButton.onClick.AddListener(() => { AddGem?.Invoke(); });
+            addGemButton.onClick.AddListener((TriggerShopButtonClick));
 
             playButton.onClick.AddListener(() => { OnPlayButtonPressed?.Invoke(); });
 
@@ -142,6 +142,7 @@ namespace UISystem
                     currentNavigationButton = navigationButton;
                     OnNavigationButtonClicked?.Invoke(navigationButton.navigationButtonType);
                 });
+                UpdateButtonPinState(navigationButton.navigationButtonType, false);
             }
 
             questClaimButton.onClick.AddListener(() =>
@@ -149,6 +150,20 @@ namespace UISystem
                 OnQuestClaimButtonPressed?.Invoke();
                 questComplectedEffect.Stop();
             });
+        }
+
+        private void TriggerShopButtonClick()
+        {
+            foreach (var button in navigationButtons)
+            {
+                if (button.navigationButtonType == MenuNavigationButtonType.Shop)
+                {
+                    currentNavigationButton = button;
+                    OnNavigationButtonClicked?.Invoke(currentNavigationButton.navigationButtonType);
+                    break;
+                    ;
+                }
+            }
         }
 
         public override void OnOpened()
@@ -255,7 +270,7 @@ namespace UISystem
 
             worldImage.sprite = worldVisualDic[worldType].icon;
             worldNameText.text = worldVisualDic[worldType].worldName;
-            worldLevelText.text = isUnlocked ? GetMaxLevelReached?.Invoke(worldType).ToString() + " / 30" : "Locked";
+            worldLevelText.text = isUnlocked ? GetMaxLevelReached?.Invoke(worldType).ToString() + " / 15" : "Locked";
         }
 
         public void UpdateQuestInfo(QuestStatusRequest questStatusRequest)

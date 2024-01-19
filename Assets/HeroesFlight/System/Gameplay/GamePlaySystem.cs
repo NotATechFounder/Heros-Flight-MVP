@@ -726,9 +726,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleCharacterDamaged(HealthModificationIntentModel healthModificationIntentModel)
         {
-            if (currentState != GameState.Ongoing)
-                return;
-
+            Debug.Log("456");
             healthVisualizer.UpdateVignetteIntensity(characterHealthController.CurrentHealthProportion);
         }
 

@@ -15,7 +15,7 @@ public abstract class RegularActiveAbility : MonoBehaviour
     public ActiveAbilityType PassiveActiveAbilityType => activeAbilitySO.GetAbilityVisualData.ActiveAbilityType;
     public int Level => currentLevel;
     public ActiveAbilitySO ActiveAbilitySO => activeAbilitySO;
-
+   
     public void Init(ActiveAbilitySO activeAbilitySO)
     {
         this.activeAbilitySO = activeAbilitySO;
@@ -63,5 +63,10 @@ public abstract class RegularActiveAbility : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         OnActivated();
+    }
+
+    public virtual void StopAbility()
+    {
+        
     }
 }
