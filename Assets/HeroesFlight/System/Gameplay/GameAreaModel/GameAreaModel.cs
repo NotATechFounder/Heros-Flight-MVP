@@ -13,7 +13,6 @@ namespace HeroesFlight.System.Gameplay.Model
         [SerializeField] private Environment.Objects.Crystal crystalPrefab;
         [SerializeField] Level angelsGambitLevel;
         [SerializeField] BoosterDropSO bossDrop;
-        [SerializeField] private string bossMusicKey;
 
         [SerializeField] private SpawnModel spawnModel;
         [SerializeField] private MobDifficultyHolder mobDifficulty;
@@ -28,12 +27,15 @@ namespace HeroesFlight.System.Gameplay.Model
         [Header("Music")]
         [SerializeField] private string musicKey;
         [SerializeField] private string musicLoopKey;
+        [SerializeField] private string bossMusicKey;
+        [SerializeField] private string bossMusicLoopKey;
 
         public WorldType WorldType => worldType;
         public float HeroProgressionExpEarnedPerKill => heroProgressionExpEarnedPerKill;
         public Level ShrineLevel => angelsGambitLevel;
         public BoosterDropSO BossDrop => bossDrop;
         public string WorldBossMusicKey => bossMusicKey;
+        public string WorldBossMusicLoopKey => bossMusicLoopKey;
         public SpawnModel SpawnModel => spawnModel;
         public LevelPortal PortalPrefab => portalPrefab;
         public Environment.Objects.Crystal CrystalPrefab => crystalPrefab;

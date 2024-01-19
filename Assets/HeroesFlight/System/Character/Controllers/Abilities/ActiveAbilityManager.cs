@@ -334,7 +334,6 @@ public class ActiveAbilityManager : MonoBehaviour
         List<ActiveAbilityType> randomAbilities = new List<ActiveAbilityType>();
         List<ActiveAbilityType> avaliableAbilities = new List<ActiveAbilityType>();
 
-
         foreach (ActiveAbilityType activeAbilityType in activeAbilityTypes)
         {
             ActiveAbilitySO activeAbilitySO = allActiveAbilitiesDic[activeAbilityType];
@@ -560,6 +559,7 @@ public class ActiveAbilityManager : MonoBehaviour
 
     public void ResetAbility()
     {
+        Debug.Log("Resetting Ability");
         eqquipedPassiveAbilities.Clear();
         eqquipedActiveActivities.Clear();
     }

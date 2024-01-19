@@ -17,6 +17,7 @@ public class LightNova : RegularActiveAbility
 {
     [Header("LightNova")] 
     [SerializeField] private float damageMultiplier = 1;
+    [SerializeField] private float healthPercentage = 50;
     [SerializeField] private OverlapChecker overlapChecker;
     [Header("Animation and Viusal Settings")]
     [SerializeField] SkeletonAnimation skeletonAnimation;
@@ -57,7 +58,9 @@ public class LightNova : RegularActiveAbility
         GetEffectParticleByLevel().Play();
         overlapChecker.DetectOverlap();
         AudioManager.PlaySoundEffect("Explosion", SoundEffectCategory.Hero);
-        characterHealthController.Heal(characterHealthController.MaxHealth, false);
+
+        float healthToHeal = StatCalc.GetPercentage(characterHealthController.MaxHealth, healthPercentage);
+        characterHealthController.Heal(healthToHeal, false);
     }
 
     public override void OnDeactivated()

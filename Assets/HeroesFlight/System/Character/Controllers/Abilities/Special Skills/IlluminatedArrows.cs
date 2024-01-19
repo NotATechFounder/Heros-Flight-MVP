@@ -42,6 +42,7 @@ public class IlluminatedArrows : RegularActiveAbility
 
     public override void OnActivated()
     {
+        visual.gameObject.SetActive(true);
         GetEffectParticleByLevel().gameObject.SetActive(true);
         currentlinesOfDamage = GetMajorValueByLevel(linesOfDamage, linesOfDamagePerIncrease);
         currentDamage =
@@ -51,6 +52,7 @@ public class IlluminatedArrows : RegularActiveAbility
 
     public override void OnDeactivated()
     {
+        visual.gameObject.SetActive(false);
         GetEffectParticleByLevel().gameObject.SetActive(false);
         isOn = false;
     }
@@ -61,6 +63,7 @@ public class IlluminatedArrows : RegularActiveAbility
 
     public void Initialize(int level, int baseDamage, CharacterSimpleController characterControllerInterface)
     {
+        visual.gameObject.SetActive(false);
         this.currentLevel = level;
         this.baseDamage = baseDamage;
         overlapChecker.OnDetect += OnOverlap;

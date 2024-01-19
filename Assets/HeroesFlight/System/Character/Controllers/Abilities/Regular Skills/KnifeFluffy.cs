@@ -25,14 +25,14 @@ public class KnifeFluffy : RegularActiveAbility
     private int numberOfMobsToDamage;
     private float currentRadious;
     int currentDamage;
+    int baseDamage;
 
     public override void OnActivated()
     {
         GetEffectParticleByLevel().Play();
         numberOfMobsToDamage = GetMajorValueByLevel(baseNumberOfMobsToDamage, numberOfMobsToDamagePerLevel);
-
         currentRadious = damageRadiousCurve.GetCurrentValueFloat(currentLevel);
-
+        currentDamage = (int)StatCalc.GetPercentage(baseDamage, damagePercentage);
         overlapChecker.DetectOverlap(); 
     }
 
@@ -49,9 +49,8 @@ public class KnifeFluffy : RegularActiveAbility
     public void Initialize(int level, int baseDamage)
     {
         this.currentLevel = level;
+        this.baseDamage = baseDamage;
         overlapChecker.OnDetect += HandleOverlap;
- 
-        currentDamage = (int)StatCalc.GetPercentage(baseDamage, damagePercentage);
     }
 
     private void HandleOverlap(int count, Collider2D[] collider2D)
@@ -68,7 +67,7 @@ public class KnifeFluffy : RegularActiveAbility
 
     void HandleArrowDisable(ProjectileControllerInterface obj)
     {
-        AudioManager.PlaySoundEffect("LightningExplosion", SoundEffectCategory.Hero);
+        //AudioManager.PlaySoundEffect("LightningExplosion", SoundEffectCategory.Hero);
         obj.OnHit -= HandleArrowDisable;
         var arrow = obj as ProjectileControllerBase;
         ObjectPoolManager.ReleaseObject(arrow.gameObject);

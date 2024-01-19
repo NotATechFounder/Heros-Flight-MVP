@@ -223,7 +223,7 @@ public class AchievementSystem : IAchievementSystemInterface
         questRewardHandler.RewardClaimed();
         List<Reward> rewards = questRewardHandler.CurrentQuest.GetQuestRewardPack().GetReward();
         rewardSystemInterface.ProcessRewards(rewards);
-        List<RewardVisual> rewardVisuals = rewardSystemInterface.GetRewardVisuals(rewards);
+        List<RewardVisualEntry> rewardVisuals = rewardSystemInterface.GetRewardVisuals(rewards);
         uiSystem.UiEventHandler.RewardMenu.DisplayRewardsVisual (rewardVisuals.ToArray());
         UpdateQuestVisual();
     }

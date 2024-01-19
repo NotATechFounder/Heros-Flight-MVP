@@ -15,7 +15,6 @@ public class GameAreaModelEditor : Editor
     SerializedProperty portalPrefabProperty;
     SerializedProperty crystalPrefabProperty;
     SerializedProperty angelsGambitLevelProperty;
-    SerializedProperty bossMusicKeyProperty;
     SerializedProperty spawnModelProperty;
     SerializedProperty mobDifficultyProperty;
     SerializedProperty mobDifficultyArray;
@@ -28,6 +27,8 @@ public class GameAreaModelEditor : Editor
 
     SerializedProperty musicKeyProperty;
     SerializedProperty musicLoopKeyProperty;
+    SerializedProperty bossMusicKeyProperty;
+    SerializedProperty bossMusicKeyLoopProperty;
 
     bool difficultyFoldout = false;
     Dictionary<int, bool> foldoutDictionary = new Dictionary<int, bool>();
@@ -39,7 +40,6 @@ public class GameAreaModelEditor : Editor
         portalPrefabProperty = serializedObject.FindProperty("portalPrefab");
         crystalPrefabProperty = serializedObject.FindProperty("crystalPrefab");
         angelsGambitLevelProperty = serializedObject.FindProperty("angelsGambitLevel");
-        bossMusicKeyProperty = serializedObject.FindProperty("bossMusicKey");
         spawnModelProperty = serializedObject.FindProperty("spawnModel");
         mobDifficultyProperty = serializedObject.FindProperty("mobDifficulty");
         mobDifficultyArray = mobDifficultyProperty.FindPropertyRelative("mobDifficulties");
@@ -52,6 +52,8 @@ public class GameAreaModelEditor : Editor
 
         musicKeyProperty = serializedObject.FindProperty("musicKey");
         musicLoopKeyProperty = serializedObject.FindProperty("musicLoopKey");
+        bossMusicKeyProperty = serializedObject.FindProperty("bossMusicKey");
+        bossMusicKeyLoopProperty = serializedObject.FindProperty("bossMusicLoopKey");
 
         for (int i = 0; i < mobDifficultyArray.arraySize; i++)
         {
@@ -69,7 +71,6 @@ public class GameAreaModelEditor : Editor
         EditorGUILayout.PropertyField(crystalPrefabProperty);
         EditorGUILayout.PropertyField(angelsGambitLevelProperty);
         EditorGUILayout.PropertyField(bossDropProperty);
-        EditorGUILayout.PropertyField(bossMusicKeyProperty);
         EditorGUILayout.PropertyField(spawnModelProperty);
 
         DisplayDiffiulties();
@@ -78,6 +79,8 @@ public class GameAreaModelEditor : Editor
 
         EditorGUILayout.PropertyField(musicKeyProperty);
         EditorGUILayout.PropertyField(musicLoopKeyProperty);
+        EditorGUILayout.PropertyField(bossMusicKeyProperty);
+        EditorGUILayout.PropertyField(bossMusicKeyLoopProperty);
 
         serializedObject.ApplyModifiedProperties();
     }

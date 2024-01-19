@@ -10,7 +10,7 @@ using UnityEngine;
 
 public class LevelUpMenu : BaseMenu <LevelUpMenu>
 {
-    public event Func<RewardVisual[]> GetRewardVisuals;
+    public event Func<RewardVisualEntry[]> GetRewardVisuals;
 
 
     [SerializeField] private Transform container;
@@ -79,7 +79,7 @@ public class LevelUpMenu : BaseMenu <LevelUpMenu>
         DisplayRewards(GetRewardVisuals?.Invoke());
     }
 
-    public void DisplayRewards(params RewardVisual[] rewardVisual)
+    public void DisplayRewards(params RewardVisualEntry[] rewardVisual)
     {
         for (int i = 0; i < rewardVisual.Length; i++)
         {

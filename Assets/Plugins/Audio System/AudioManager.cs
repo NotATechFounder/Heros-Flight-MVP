@@ -152,6 +152,16 @@ public class AudioManager : MonoBehaviour
         yield return PlayMusicFade(loopMusic, loop);
     }
 
+    private IEnumerator BlendTwoMusicInstantRoutine(AudioClip intro, AudioClip loopMusic, bool loop = true)
+    {
+        musicPlayer.clip = intro;
+        musicPlayer.Play();
+        yield return new WaitForSecondsRealtime(musicPlayer.clip.length - .5f);
+        musicPlayer.clip = loopMusic;
+        musicPlayer.loop = loop;
+        musicPlayer.Play();
+    }
+
     public static AudioClip GetMusicClip(string audioID)
     {
         if (!InstanceExists()) return null;
@@ -204,6 +214,15 @@ public class AudioManager : MonoBehaviour
         Instance.StartCoroutine(Instance.PlayMusicFade(GetMusicClip(ID), loop));
     }
 
+    public static void PlayMusicInstant(string ID, bool loop = true)
+    {
+        if (!InstanceExists()) return;
+        Instance.StopAllCoroutines();
+        Instance.musicPlayer.clip = GetMusicClip(ID);
+        Instance.musicPlayer.loop = loop;
+        Instance.musicPlayer.Play();
+    }
+
     public static void PauseMusic()
     {
         if (!InstanceExists()) return;
@@ -227,6 +246,13 @@ public class AudioManager : MonoBehaviour
         if (!InstanceExists()) return;
         Instance.StopAllCoroutines();
         Instance.StartCoroutine(Instance.BlendTwoMusicRoutine(GetMusicClip(startAudioID), GetMusicClip(nextAudioID), loop));
+    }
+
+    public static void BlendTwoInstantMusic(string startAudioID, string nextAudioID, bool loop = true)
+    {
+        if (!InstanceExists()) return;
+        Instance.StopAllCoroutines();
+        Instance.StartCoroutine(Instance.BlendTwoMusicInstantRoutine(GetMusicClip(startAudioID), GetMusicClip(nextAudioID), loop));
     }
 
     public static Audio3DPlayer Play3DSoundEffect(string audioID, Vector3 position, float _minDistance = 1, float _maxDistance = 500, float _dopplerLevel = 1, float _spread = 0, AudioRolloffMode _audioRolloffMode = AudioRolloffMode.Linear)

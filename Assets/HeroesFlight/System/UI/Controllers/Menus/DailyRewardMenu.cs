@@ -11,7 +11,7 @@ namespace UISystem
 {
     public class DailyRewardMenu : BaseMenu<DailyRewardMenu>
     {
-        public event Func<int, List<RewardVisual>> GetRewardVisuals;
+        public event Func<int, List<RewardVisualEntry>> GetRewardVisuals;
         public event Func<int> GetLastUnlockedIndex;
         public event Func<bool> IsRewardReady;
         public event Action OnContinueButtonClicked;

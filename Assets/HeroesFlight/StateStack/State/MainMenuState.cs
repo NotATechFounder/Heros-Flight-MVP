@@ -107,7 +107,7 @@ namespace HeroesFlight.StateStack.State
             dataSystem.AccountLevelManager.OnLevelUp += AccountLevelManager_OnLevelUp;
         }
 
-        private System.UI.Reward.RewardVisual[] LevelUpMenu_GetRewardVisuals()
+        private System.UI.Reward.RewardVisualEntry[] LevelUpMenu_GetRewardVisuals()
         {
             var dataSystem = GetService<DataSystemInterface>();
             return GetService<RewardSystemInterface>().GiveLevelUpReward(dataSystem.AccountLevelManager.GetGemReward(),

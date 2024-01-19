@@ -57,7 +57,7 @@ public class AutoShooter : MonoBehaviour
 
     void HandleArrowDisable(ProjectileControllerInterface obj)
     {
-        AudioManager.PlaySoundEffect("LightningExplosion", SoundEffectCategory.Hero);
+        //AudioManager.PlaySoundEffect("LightningExplosion", SoundEffectCategory.Hero);
         obj.OnHit -= HandleArrowDisable;
         var arrow = obj as ProjectileControllerBase;
         ObjectPoolManager.ReleaseObject(arrow.gameObject);

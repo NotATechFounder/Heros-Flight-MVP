@@ -45,7 +45,7 @@ public class DailyRewardUI : MonoBehaviour
         readyEffect.SetLoop(-1);
     }
 
-    public void SetVisual(List<RewardVisual> rewardVisual)
+    public void SetVisual(List<RewardVisualEntry> rewardVisual)
     {
         for (int i = 0; i < rewardVisual.Count; i++)
         {

@@ -63,7 +63,8 @@ namespace UISystem
         [SerializeField] private TextMeshProUGUI comboCounterText;
         [SerializeField] private TextMeshProUGUI comboFeedbackText;
 
-        [Header("Boss")][SerializeField] private GroupImageFill bossHealthFill;
+        [Header("Boss")]
+        [SerializeField] private GroupImageFill bossHealthFill;
 
         [SerializeField] GameObject bossCanvas;
 
@@ -468,6 +469,7 @@ namespace UISystem
         public void ToggleActionButtonsVisibility(bool value)
         {
             ToggleCanvasGroup (actionButtonsCanvasGroup, value);
+            progressionFill.gameObject.SetActive(value);
         }
 
         void ToggleCanvasGroup(CanvasGroup cg, bool isEnabled)

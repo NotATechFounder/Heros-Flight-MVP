@@ -12,7 +12,7 @@ public class RewardView : MonoBehaviour
     public Image rewardIcon;
     public TextMeshProUGUI rewardText;
 
-    public void SetVisual(RewardVisual rewardVisual)
+    public void SetVisual(RewardVisualEntry rewardVisual)
     {
         rewardIcon.sprite = rewardVisual.icon;
         rewardText.text = rewardVisual.amount.ToString();

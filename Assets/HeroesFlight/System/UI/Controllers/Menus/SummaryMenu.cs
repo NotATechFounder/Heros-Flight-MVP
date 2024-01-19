@@ -3,28 +3,39 @@ using UnityEngine;
 using TMPro;
 using System;
 using UISystem.Entries;
+using UnityEngine.UI;
+using HeroesFlight.System.UI.Reward;
+using System.Collections.Generic;
 
 namespace UISystem
 {
     public class SummaryMenu : BaseMenu<SummaryMenu>
     {
         public Func<string> GetCurrentGold;
+        public Func<string> GetCurrentTime;
+        public Func<List<RewardVisualEntry>> GetRewardVisuals;
 
         public event Action OnContinueButtonClicked;
 
         [Header("Texts")]
         [SerializeField] TextMeshProUGUI coinText;
-        [SerializeField] TextMeshProUGUI killsText;
         [SerializeField] TextMeshProUGUI timeText;
+
+        [Header("level")]
+        [SerializeField] TextMeshProUGUI levelText;
+        [SerializeField] TextMeshProUGUI expText;
+        [SerializeField] Image expBar;
 
         [Header("Buttons")]
         [SerializeField] AdvanceButton homeButton;
         [SerializeField] AdvanceButton retryButton;
         [SerializeField] AdvanceButton continueButton;
 
-
-        [SerializeField] RewardEntry entryPrefab;
+        [Header("Rewards")]
+        [SerializeField] RewardView entryPrefab;
         [SerializeField] Transform rewardsParent;
+
+        private List<RewardView> rewards = new List<RewardView>();
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
 
@@ -44,6 +55,11 @@ namespace UISystem
 
             if (GetCurrentGold != null)
                 coinText.text = GetCurrentGold.Invoke();
+
+            foreach (var reward in rewards)
+            {
+                Destroy(reward.gameObject);
+            }
         }
 
         public override void OnClosed()
@@ -66,10 +82,11 @@ namespace UISystem
             Close();
         }
 
-        public void AddRewardEntry(string summary)
+        public void AddRewardEntry(RewardVisualEntry rewardVisualEntry)
         {
-            var entry = Instantiate(entryPrefab, rewardsParent);
-            entry.SetupReward(summary);
+            RewardView entry = Instantiate(entryPrefab, rewardsParent);
+            entry.SetVisual(rewardVisualEntry);
+            rewards.Add(entry);
         }
     }
 }
