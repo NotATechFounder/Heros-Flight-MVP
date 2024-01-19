@@ -296,7 +296,8 @@ namespace HeroesFlight.System.Gameplay
         /// </summary>
         public void StartGameSession()
         {
-            AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey, container.CurrentModel.MusicLoopKey);
+            AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey + GetMusicIndex(), container.CurrentModel.MusicLoopKey + GetMusicIndex());
+
             uiSystem.UiEventHandler.GameMenu.Open();
             CoroutineUtility.WaitForSeconds(1f, () => // Run the first time the game is loaded
             {
@@ -830,6 +831,8 @@ namespace HeroesFlight.System.Gameplay
                         });
                     }
 
+                    if(container.CurrentLvlIndex == 6 || container.CurrentLvlIndex == 11)
+                        AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey + GetMusicIndex(), container.CurrentModel.MusicLoopKey + GetMusicIndex());
 
                     uiSystem.UiEventHandler.GameMenu.SetProgressionFill(CurrentLvlIndex / (float)MaxLvlIndex);
 
@@ -1218,6 +1221,10 @@ namespace HeroesFlight.System.Gameplay
             {
                 AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicLoopKey);
             }
+            else
+            {
+                AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicKey);
+            }
 
             uiSystem.UpdateEnemiesCounter(0);
             combatSystem.StartCharacterComboCheck();
@@ -1390,7 +1397,9 @@ namespace HeroesFlight.System.Gameplay
             if (currentLevel.LevelType == LevelType.Shrine)
             {
                 shrineSystem.Shrine.OnShrineExit();
-                AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey, container.CurrentModel.MusicLoopKey);
+
+                AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey + GetMusicIndex(), container.CurrentModel.MusicLoopKey + GetMusicIndex());
+
                 uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(true);
             }
 
@@ -1490,6 +1499,24 @@ namespace HeroesFlight.System.Gameplay
         private void HandleRewardUnlockDuringRun(UnlockReward reward)
         {
             runTracker.AddReward(reward);
+        }
+
+        private int GetMusicIndex()
+        {
+            if (CurrentLvlIndex >= 1 && CurrentLvlIndex <= 5)
+            {
+                return 1;
+            }
+            else if (CurrentLvlIndex >= 6 && CurrentLvlIndex <= 10)
+            {
+                return 2;
+            }
+            else if (CurrentLvlIndex >= 11 && CurrentLvlIndex <= 15)
+            {   
+                return 3;
+            }
+
+            return 1;
         }
     }
 }
