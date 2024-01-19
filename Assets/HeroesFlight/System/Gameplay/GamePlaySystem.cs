@@ -1522,6 +1522,7 @@ namespace HeroesFlight.System.Gameplay
         public List<RewardVisualEntry> GetRewardVisuals()
         {
             List <RewardVisualEntry> rewardVisualEntries = new List<RewardVisualEntry>();
+
             foreach (var reward in runTracker.ReceivedRewards)
             {
                 RewardVisualEntry rewardVisualEntry = new RewardVisualEntry();

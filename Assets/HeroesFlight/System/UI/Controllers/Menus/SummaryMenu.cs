@@ -11,14 +11,14 @@ namespace UISystem
 {
     public class SummaryMenu : BaseMenu<SummaryMenu>
     {
-        public Func<float> GetCurrentKills;
         public Func<string> GetCurrentGold;
+        public Func<string> GetCurrentTime;
+        public Func<List<RewardVisualEntry>> GetRewardVisuals;
 
         public event Action OnContinueButtonClicked;
 
         [Header("Texts")]
         [SerializeField] TextMeshProUGUI coinText;
-        [SerializeField] TextMeshProUGUI killsText;
         [SerializeField] TextMeshProUGUI timeText;
 
         [Header("level")]
