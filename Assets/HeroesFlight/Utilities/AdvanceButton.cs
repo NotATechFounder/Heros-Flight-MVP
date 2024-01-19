@@ -59,8 +59,8 @@ public class AdvanceButton : Button
     {
         if (Application.isPlaying)
         {
-            onClickDownSizeEffect = transform.JuicyScale(buttonDownScale, buttonDownDuration);
-            onClickUpSizeEffect = transform.JuicyScale(buttonInitialScale, buttonUpDuration);
+            onClickDownSizeEffect = transform.JuicyScale(buttonDownScale, buttonDownDuration).SetTimeMode(TimeMode.Unscaled);
+            onClickUpSizeEffect = transform.JuicyScale(buttonInitialScale, buttonUpDuration).SetTimeMode(TimeMode.Unscaled);
         }
     }
 

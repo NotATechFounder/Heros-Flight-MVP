@@ -557,6 +557,12 @@ public class ActiveAbilityManager : MonoBehaviour
         levelSystem.AddExp(exp);
     }
 
+    public void ForceLevelUp()
+    {
+        float exp = levelSystem.GetExpForLevel(levelSystem.CurrentLevel + 1);
+        levelSystem.AddExp(exp);
+    }
+
     public void ResetAbility()
     {
         Debug.Log("Resetting Ability");

@@ -253,6 +253,8 @@ public class TutorialSystem : ITutorialInterface
 
     public void StartGameSession()
     {
+        AudioManager.BlendTwoInstantMusic(tutorialHandler.GetTutorialModel.MusicKey, tutorialHandler.GetTutorialModel.MusicLoopKey);
+
         uiSystem.UiEventHandler.GameMenu.Open();
 
         uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level transition
@@ -708,6 +710,8 @@ public class TutorialSystem : ITutorialInterface
 
             case LevelType.Shrine:
 
+                AudioManager.PlayMusicInstant("Shrine");
+
                 ShrineNPCHolder shrineNPCHolder = currentLevelEnvironment.GetComponent<ShrineNPCHolder>();
 
                 shrineNPCHolder.shrineNPCsCache[ShrineNPCType.AngelsGambit].Initialize(
@@ -845,7 +849,7 @@ public class TutorialSystem : ITutorialInterface
         godsBenevolence.DeactivateGodsBenevolence();
         environmentSystem.CurrencySpawner.ActivateExpEffectItems(() =>
         {
-            activeAbilityManager.AddExp(100);
+            activeAbilityManager.ForceLevelUp();
             progressionSystem.CollectRunCurrency();
         });
     }
