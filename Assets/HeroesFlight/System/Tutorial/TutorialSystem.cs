@@ -96,10 +96,11 @@ public class TutorialSystem : ITutorialInterface
     private Dictionary<GameButtonType, JuicerRuntime> tutorialButtonEffects = new Dictionary<GameButtonType,JuicerRuntime>();
 
     private ButtonCheck buttonCheck;
+    private ShrineSystemInterface shrineSystem;
 
     public TutorialSystem(DataSystemInterface dataSystem, CharacterSystemInterface characterSystem, NpcSystemInterface npcSystem, EnvironmentSystemInterface environmentSystem, 
         CombatSystemInterface combatSystem, IUISystem uiSystem, 
-        ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystem, InventorySystemInterface inventorySystem, RewardSystemInterface rewardSystemInterface)
+        ProgressionSystemInterface progressionSystem, TraitSystemInterface traitSystem, InventorySystemInterface inventorySystem, RewardSystemInterface rewardSystemInterface, ShrineSystemInterface shrineSystemInterface)
     {
         this.dataSystem = dataSystem;
         this.characterSystem = characterSystem;
@@ -111,6 +112,7 @@ public class TutorialSystem : ITutorialInterface
         this.traitSystem = traitSystem;
         this.inventorySystem = inventorySystem;
         this.rewardSystem = rewardSystemInterface;
+        shrineSystem = shrineSystemInterface;
     }
 
     public void GameplayTutorialCompleted()
@@ -137,6 +139,8 @@ public class TutorialSystem : ITutorialInterface
         cameraController = scene.GetComponentInChildren<CameraControllerInterface>();
 
         shrine = scene.GetComponentInChildren<Shrine>();
+        shrine.InitNpcStates(new ShrineSaveData());
+        Debug.Log($"shrine not founded ? {shrine==null}");
         activeAbilityManager = scene.GetComponentInChildren<ActiveAbilityManager>();
         godsBenevolence = scene.GetComponentInChildren<GodsBenevolence>();
 
