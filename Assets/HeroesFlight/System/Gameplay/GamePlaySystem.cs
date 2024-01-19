@@ -522,6 +522,7 @@ namespace HeroesFlight.System.Gameplay
                 cameraController.SetCameraState(GameCameraType.Character);
                 TogglePlayerCombatState(true);
                 TogglePlayerMovementState(true);
+                characterHealthController.SetInvulnerableState(currentState!=GameState.Ongoing);
             });
         }
 
@@ -1500,11 +1501,7 @@ namespace HeroesFlight.System.Gameplay
 
         private void ReviveCharacterWithFullHp(ReviveRequestModel reviveRequestModel)
         {
-            if (reviveAmount >= 2)
-            {
-                return;
-            }
-
+           
             switch (reviveRequestModel.ReviveType)
             {
                 case UiReviveType.Gems:
@@ -1518,11 +1515,20 @@ namespace HeroesFlight.System.Gameplay
 
                     break;
                 case UiReviveType.Ads:
-                    dataSystem.AdManager.ShowRewardedAd(() =>
+                    if (!dataSystem.AdManager.IsReady)
                     {
                         ReviveCharacter(100f);
                         reviveAmount++;
-                    });
+                    }
+                    else
+                    {
+                        dataSystem.AdManager.ShowRewardedAd(() =>
+                        {
+                            ReviveCharacter(100f);
+                            reviveAmount++;
+                        });
+                    }
+                  
                     break;
             }
         }
@@ -1530,7 +1536,7 @@ namespace HeroesFlight.System.Gameplay
         void TogglePlayerCombatState(bool canAttack)
         {
             characterAttackController.ToggleControllerState(canAttack);
-            characterHealthController.SetInvulnerableState(currentState!=GameState.Ongoing);
+            characterHealthController.SetInvulnerableState(!canAttack);
         }
 
         void EnableCharacterMovement()
