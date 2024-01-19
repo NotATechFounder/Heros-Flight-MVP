@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using HeroesFlight.Common.Enum;
+using UnityEngine;
 
 public class RewardSystem : RewardSystemInterface
 {
