@@ -175,6 +175,7 @@ namespace HeroesFlight.System.Inventory
             List<CombatEffect> combatEffects = new List<CombatEffect>();
             foreach (var item in items)
             {
+                Debug.Log($"{item.itemSO.Name}");
                 EquipmentSO equipmentSO = item.itemSO as EquipmentSO;
                 foreach (UniqueCombatEffect uniqueCombatEffect in equipmentSO.uniqueCombatEffects)
                 {
@@ -206,6 +207,7 @@ namespace HeroesFlight.System.Inventory
                             {
                                 FreezeStatusEffect effectInstance =
                                     ScriptableObject.CreateInstance(effets.GetType()) as FreezeStatusEffect;
+                                Debug.Log(effectInstance==null);
                                 effectInstance.SetData(effets as FreezeStatusEffect);
                                 FreezeEffectData freezeEffectData = effectInstance.GetData<FreezeEffectData>();
                                 freezeEffectData.ProcChance.SetStartValue(effets.GetData<FreezeEffectData>().ProcChance

@@ -1530,7 +1530,7 @@ namespace HeroesFlight.System.Gameplay
         void TogglePlayerCombatState(bool canAttack)
         {
             characterAttackController.ToggleControllerState(canAttack);
-            characterHealthController.SetInvulnerableState(!canAttack);
+            characterHealthController.SetInvulnerableState(currentState!=GameState.Ongoing);
         }
 
         void EnableCharacterMovement()

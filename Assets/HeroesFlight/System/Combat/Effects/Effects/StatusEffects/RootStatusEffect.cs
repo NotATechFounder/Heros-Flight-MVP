@@ -6,7 +6,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects
     [CreateAssetMenu(fileName = "RootEffect", menuName = "Combat/Effects/StatusEffects/Root", order = 100)]
     public class RootStatusEffect : StatusEffect
     {
-        [SerializeField] private RootEffectData Data;
+        [SerializeField] private RootEffectData Data= new RootEffectData();
         public override T GetData<T>()
         {
             return Data as T;

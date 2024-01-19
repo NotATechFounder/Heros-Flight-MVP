@@ -8,7 +8,7 @@ namespace HeroesFlight.System.Combat.Effects.Effects
     [CreateAssetMenu(fileName = "PoisonEffect", menuName = "Combat/Effects/StatusEffects/Poison", order = 100)]
     public class PoisonStatusEffect : StatusEffect
     {
-        [SerializeField] private PoisonEffectData Data;
+        [SerializeField] private PoisonEffectData Data= new PoisonEffectData();
         public override T GetData<T>()
         {
             return Data as T;
