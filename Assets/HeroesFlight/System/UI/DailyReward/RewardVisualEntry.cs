@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HeroesFlight.System.UI.Reward
 {
-    public class RewardVisual
+    public class RewardVisualEntry
     {
         public Sprite icon;
         public Color color;

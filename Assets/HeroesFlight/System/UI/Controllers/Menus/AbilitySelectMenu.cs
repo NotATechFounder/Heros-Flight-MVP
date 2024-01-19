@@ -70,11 +70,9 @@ namespace UISystem
 
             ActiveAbilityType passiveActiveAbilityType = GetRandomActiveAbility.Invoke(1, new List<ActiveAbilityType>() { currentActiveDisplayed })[0];
 
-            currentPassiveDisplayed.Clear();
-
+            currentPassiveDisplayed = passiveAbilityTypes;
             for (int i = 0; i < passiveAbilityTypes.Count; i++)
             {
-                currentPassiveDisplayed.Add(passiveAbilityTypes[i]);
                 PassiveAbilityVisualData abilityVisualData = GetRandomPassiveAbilityVisualData.Invoke(passiveAbilityTypes[i]);
                 abilityButtonUIs[i].SetInfo(abilityVisualData.Icon, "Passive", abilityVisualData.DisplayName, abilityVisualData.Description, GetPassiveAbilityLevel(passiveAbilityTypes[i]));
                 PassiveAbilityType passiveAbilityType = passiveAbilityTypes[i];

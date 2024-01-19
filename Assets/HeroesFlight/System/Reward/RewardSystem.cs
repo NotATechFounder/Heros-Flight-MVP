@@ -60,9 +60,9 @@ public class RewardSystem : RewardSystemInterface
         rewardDataHandler.ClaimedReward();
     }
 
-    private List<RewardVisual> GetDailyRewardVisual(int day)
+    private List<RewardVisualEntry> GetDailyRewardVisual(int day)
     {
-        List <RewardVisual> rewardVisuals = new List<RewardVisual>();
+        List <RewardVisualEntry> rewardVisuals = new List<RewardVisualEntry>();
         Reward[] rewards = rewardDataHandler.GetDailyRewardSO.GetRewards(day);
         for (int i = 0; i < rewards.Length; i++)
         {
@@ -71,12 +71,12 @@ public class RewardSystem : RewardSystemInterface
         return rewardVisuals;
     }
 
-    public RewardVisual[] GiveLevelUpReward(int gems, int gold)
+    public RewardVisualEntry[] GiveLevelUpReward(int gems, int gold)
     {
         dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gem, gems);
         dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, gold);
 
-        List<RewardVisual> rewardVisuals = new List<RewardVisual>
+        List<RewardVisualEntry> rewardVisuals = new List<RewardVisualEntry>
         {
             CreateCurrencyRewardVisual(CurrencyKeys.Gem, gems),
             CreateCurrencyRewardVisual(CurrencyKeys.Gold, gold)
@@ -119,9 +119,9 @@ public class RewardSystem : RewardSystemInterface
         inventorySystem.InventoryHandler.AddMultipleToInventory(inventoryAddModificators.ToArray());
     }
 
-    public RewardVisual GetRewardVisual(Reward reward)
+    public RewardVisualEntry GetRewardVisual(Reward reward)
     {
-        RewardVisual rewardVisual = new RewardVisual();
+        RewardVisualEntry rewardVisual = new RewardVisualEntry();
         switch (reward.GetRewardObject<RewardBaseSO>())
         {
             case CurrencySO currencySO:
@@ -143,10 +143,10 @@ public class RewardSystem : RewardSystemInterface
         return rewardVisual;
     }
 
-    public RewardVisual CreateCurrencyRewardVisual(string id, int amount)
+    public RewardVisualEntry CreateCurrencyRewardVisual(string id, int amount)
     {
         CurrencySO currencySO = dataSystem.CurrencyManager.GetCurrecy(id);
-        RewardVisual rewardVisual = new RewardVisual();
+        RewardVisualEntry rewardVisual = new RewardVisualEntry();
         rewardVisual.icon = currencySO.GetSprite;
         rewardVisual.color = currencySO.GetColor;
         rewardVisual.name = currencySO.GetCurrencyName;
@@ -154,9 +154,9 @@ public class RewardSystem : RewardSystemInterface
         return rewardVisual;
     }
 
-    public List<RewardVisual> GetRewardVisuals(List<Reward> rewards)
+    public List<RewardVisualEntry> GetRewardVisuals(List<Reward> rewards)
     {
-        List<RewardVisual> rewardVisuals = new List<RewardVisual>();
+        List<RewardVisualEntry> rewardVisuals = new List<RewardVisualEntry>();
         foreach (Reward reward in rewards)
         {
             rewardVisuals.Add(GetRewardVisual(reward));

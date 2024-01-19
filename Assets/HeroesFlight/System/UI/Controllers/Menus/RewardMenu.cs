@@ -45,7 +45,7 @@ namespace UISystem
 
         private List<RewardView> rewardViews = new List<RewardView>();
         private ChestEffect selectedChestEffect;
-        private RewardVisual[] rewardVisualArray;
+        private RewardVisualEntry[] rewardVisualArray;
 
         JuicerRuntime openEffectBG;
         JuicerRuntime closeEffectBG;
@@ -100,7 +100,7 @@ namespace UISystem
             }
         }
 
-        public void DisplayRewards(params RewardVisual[] rewardVisual)
+        public void DisplayRewards(params RewardVisualEntry[] rewardVisual)
         {
             for (int i = 0; i < rewardVisual.Length; i++)
             {
@@ -114,13 +114,13 @@ namespace UISystem
             quitButton.gameObject.SetActive(true);
         }
 
-        public void DisplayRewardsVisual(params RewardVisual[] rewardVisual)
+        public void DisplayRewardsVisual(params RewardVisualEntry[] rewardVisual)
         {
             Open();
             DisplayRewards(rewardVisual);
         }
 
-        public void DisplayRewardsVisual(ChestType chestType, params RewardVisual[] rewardVisual)
+        public void DisplayRewardsVisual(ChestType chestType, params RewardVisualEntry[] rewardVisual)
         {
             rewardParent.gameObject.SetActive(false);
 

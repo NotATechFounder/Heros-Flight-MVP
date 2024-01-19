@@ -7,7 +7,7 @@ public interface RewardSystemInterface : StateDependantSystemInterface
     public void InjectUiConnection();
     void ProcessReward(Reward reward);
     void ProcessRewards(List<Reward> rewards);
-    RewardVisual GetRewardVisual(Reward reward);
-    List<RewardVisual> GetRewardVisuals(List<Reward> rewards);
-    RewardVisual[] GiveLevelUpReward(int gems, int gold);
+    RewardVisualEntry GetRewardVisual(Reward reward);
+    List<RewardVisualEntry> GetRewardVisuals(List<Reward> rewards);
+    RewardVisualEntry[] GiveLevelUpReward(int gems, int gold);
 }

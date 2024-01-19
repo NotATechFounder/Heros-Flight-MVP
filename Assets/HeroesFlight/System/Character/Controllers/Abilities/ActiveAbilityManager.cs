@@ -559,6 +559,7 @@ public class ActiveAbilityManager : MonoBehaviour
 
     public void ResetAbility()
     {
+        Debug.Log("Resetting Ability");
         eqquipedPassiveAbilities.Clear();
         eqquipedActiveActivities.Clear();
     }

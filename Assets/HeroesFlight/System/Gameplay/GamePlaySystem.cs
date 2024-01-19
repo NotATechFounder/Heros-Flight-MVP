@@ -27,6 +27,7 @@ using HeroesFlight.System.Stats.Traits.Enum;
 using HeroesFlight.System.UI;
 using HeroesFlight.System.UI.Enum;
 using HeroesFlight.System.UI.Model;
+using HeroesFlight.System.UI.Reward;
 using HeroesFlightProject.System.Gameplay.Controllers;
 using HeroesFlightProject.System.NPC.Controllers;
 using HeroesFlightProject.System.NPC.Enum;
@@ -284,6 +285,7 @@ namespace HeroesFlight.System.Gameplay
             reviveAmount = 0;
             shrineSystem.Shrine.GetAngelEffectManager.ResetAngelEffects();
             runTracker.Reset();
+            activeAbilityManager.ResetAbility();
         }
 
         private void AbilitySelectMenu_OnMenuClosed()
@@ -460,8 +462,6 @@ namespace HeroesFlight.System.Gameplay
             crystals.Clear();
 
             environmentSystem.BoosterSpawner.ClearAllBoosters();
-
-            activeAbilityManager.ResetAbility();
 
             // EffectManager.ResetAngelEffects();
             enemiesToKill = 0;
@@ -1517,6 +1517,18 @@ namespace HeroesFlight.System.Gameplay
             }
 
             return 1;
+        }
+
+        public List<RewardVisualEntry> GetRewardVisuals()
+        {
+            List <RewardVisualEntry> rewardVisualEntries = new List<RewardVisualEntry>();
+            foreach (var reward in runTracker.ReceivedRewards)
+            {
+                RewardVisualEntry rewardVisualEntry = new RewardVisualEntry();
+                rewardVisualEntry.icon = reward.RewardImage;
+                rewardVisualEntries.Add(rewardVisualEntry); 
+            }
+            return rewardVisualEntries;
         }
     }
 }
