@@ -38,6 +38,8 @@ namespace UISystem
             closeButton.onClick.AddListener(() => OnResumeButtonClicked?.Invoke());
             resumeButton.onClick.AddListener(() => OnResumeButtonClicked?.Invoke());
             quitButton.onClick.AddListener(() => OnQuitButtonClicked?.Invoke());
+            runeShardsTMP.text = "0";
+            keysTMP.text = "0";
         }
 
         public override void OnOpened()

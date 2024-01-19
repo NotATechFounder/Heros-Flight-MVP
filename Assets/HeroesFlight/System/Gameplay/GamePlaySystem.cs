@@ -505,6 +505,7 @@ namespace HeroesFlight.System.Gameplay
             environmentSystem.ParticleManager.Spawn("CharacterRevival",
                 characterSystem.CurrentCharacter.CharacterTransform.position);
             combatSystem.RevivePlayer(healthPercentage);
+            healthVisualizer.UpdateVignetteIntensity(characterHealthController.CurrentHealthProportion);
             GameTimer.Resume();
             ChangeState(GameState.Ongoing);
             uiSystem.UiEventHandler.ReviveMenu.Close();
@@ -689,6 +690,11 @@ namespace HeroesFlight.System.Gameplay
                             CalculationType.Percentage, null));
                 }
 
+                var runeshardsToAdd =
+                    container.CurrentModel.RunShardCurve.GetCurrentValueInt(container.CurrentLvlIndex);
+                Debug.Log($" want add {runeshardsToAdd} runeshards");
+                HandleCurrencyCollected(CurrencyKeys.RuneShard, runeshardsToAdd);
+                
                 ChangeState(GameState.WaitingPortal);
             });
         }
