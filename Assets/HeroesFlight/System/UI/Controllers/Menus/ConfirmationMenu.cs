@@ -36,15 +36,15 @@ namespace UISystem
         {
             canvasGroup.alpha = 0;
 
-            _openEffectBG = canvasGroup.JuicyAlpha(1, 0.25f);
+            _openEffectBG = canvasGroup.JuicyAlpha(1, 0.25f).SetTimeMode(TimeMode.Unscaled);;
             _openEffectBG.SetOnStart(() => canvasGroup.alpha = 0);
 
 
             openEffectContainer = container.JuicyScale(Vector3.one, 0.5f)
                                             .SetEase(Ease.EaseInQuint)
-                                            .SetDelay(0.25f);
+                                            .SetDelay(0.25f).SetTimeMode(TimeMode.Unscaled);;
 
-            _closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f);
+            _closeEffectBG = canvasGroup.JuicyAlpha(0, 0.15f).SetDelay(.15f).SetTimeMode(TimeMode.Unscaled);;
             _closeEffectBG.SetOnCompleted(CloseMenu);
 
             closeButton.onClick.AddListener(() =>
