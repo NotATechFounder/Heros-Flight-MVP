@@ -1,5 +1,6 @@
 using HeroesFlight.System.UI.Reward;
 using Pelumi.Juicer;
+using Plugins.Audio_System;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -93,6 +94,8 @@ namespace UISystem
         {
             OnClaimRewardButtonClicked?.Invoke(index);
             dailyRewardUIs[index].SetState(DailyRewardUI.State.Claimed);
+
+            AudioManager.PlaySoundEffect("GoldOpen", SoundEffectCategory.UI);
         }
 
         public void OnRewardReadyToBeCollected(int index)

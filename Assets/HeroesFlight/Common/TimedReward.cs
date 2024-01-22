@@ -68,6 +68,13 @@ public class TimedReward
 
         ShowNextRewardTime();
 
+        if (string.IsNullOrEmpty(rewardClaimDate))
+        {
+            //First time player open the game
+            TimedRewardUnlocked();
+            return;
+        }
+
         DateTime currentDateTime = InternetManager.Instance.GetCurrentDateTime();
         DateTime rewardClaimDateTime = DateTime.Parse(rewardClaimDate ?? currentDateTime.ToString());
 
@@ -92,7 +99,7 @@ public class TimedReward
         if (elapsedTime >= nextRewardDelay) TimedRewardUnlocked();
     }
 
-    private void TimedRewardUnlocked()
+    public void TimedRewardUnlocked()
     {
         isRewardReady = true;
         OnRewardReadyToBeCollected?.Invoke();

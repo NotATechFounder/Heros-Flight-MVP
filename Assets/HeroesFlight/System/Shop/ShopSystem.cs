@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using Plugins.Audio_System;
 public class ShopSystem : IShopSystemInterface
 {
     public ShopDataHolder ShopDataHolder { get; private set; }
@@ -103,6 +103,8 @@ public class ShopSystem : IShopSystemInterface
                 break;
             default: break;
         }
+
+        AudioManager.PlaySoundEffect("GemOpen", SoundEffectCategory.UI);
     }
 
     public void Reset()
@@ -128,8 +130,9 @@ public class ShopSystem : IShopSystemInterface
                 List<Reward> rewards = chest.OpenChest();
                 rewardSystem.ProcessRewards(rewards);
                 uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(chestType, rewardSystem.GetRewardVisuals(rewards).ToArray());
-
                 ShopDataHolder.GetTimedRegularChestRewardHandler.ReduceRewardCount();
+
+                AudioManager.PlaySoundEffect("ChectOpen", SoundEffectCategory.UI);
             });
             return;
         }
@@ -140,6 +143,8 @@ public class ShopSystem : IShopSystemInterface
             List<Reward> rewards = chest.OpenChest();
             rewardSystem.ProcessRewards(rewards);
             uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(chestType, rewardSystem.GetRewardVisuals(rewards).ToArray());
+
+            AudioManager.PlaySoundEffect("ChectOpen", SoundEffectCategory.UI);
         }
         else
         {
@@ -163,8 +168,9 @@ public class ShopSystem : IShopSystemInterface
             {
                 dataSystem.CurrencyManager.AddCurrency(content.reward.GetRewardObject<CurrencySO>(), content.reward.GetAmount());
                 uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(content.reward));
-
                 ShopDataHolder.GetTimeGoldPackRewardHandlerGold.ReduceRewardCount();
+
+                AudioManager.PlaySoundEffect("GoldOpen", SoundEffectCategory.UI);
             });
             return;
         }
@@ -174,6 +180,8 @@ public class ShopSystem : IShopSystemInterface
             dataSystem.CurrencyManager.ReduceCurency(CurrencyKeys.Gem, content.cost);
             dataSystem.CurrencyManager.AddCurrency(content.reward.GetRewardObject<CurrencySO>(), content.reward.GetAmount());
             uISystem.UiEventHandler.RewardMenu.DisplayRewardsVisual(rewardSystem.GetRewardVisual(content.reward));
+
+            AudioManager.PlaySoundEffect("GoldOpen", SoundEffectCategory.UI);
         }
         else
         {
