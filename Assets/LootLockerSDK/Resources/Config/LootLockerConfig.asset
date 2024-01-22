@@ -1,3 +1,31 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a48d4c4e4bc37877911fc7157695d73be6e5beba05d19f25cba684a84337bc9d
-size 862
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 182cd195a28310e479cddf7ff82822f8, type: 3}
+  m_Name: LootLockerConfig
+  m_EditorClassIdentifier: 
+  apiKey: dev_778d29efe91146379551f11431e000fb
+  token: ee1c24176d82d8a0b281e22bd392267163d08ac6
+  adminToken: 
+  refreshToken: 
+  domainKey: cy8p5ug4
+  gameID: 0
+  game_version: 1.0.0.0
+  sdk_version: 
+  deviceID: 93b9caae-d68f-4b51-a74c-5b6878db2ce2
+  url: https://api.lootlocker.io/v1
+  adminUrl: https://cy8p5ug4.api.lootlocker.io/admin
+  playerUrl: https://cy8p5ug4.api.lootlocker.io/player
+  userUrl: https://cy8p5ug4.api.lootlocker.io/game
+  baseUrl: https://cy8p5ug4.api.lootlocker.io
+  clientSideRequestTimeOut: 5
+  currentDebugLevel: 0
+  allowTokenRefresh: 1
