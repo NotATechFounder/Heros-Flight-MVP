@@ -1,3 +1,33 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:cb72078e8ed0ab4157cf7e6dd834d8f84a5ff6308fd52c6c9738cef629d7dfb9
-size 784
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e6dc22417b04595b43c0ceec9c5dae2, type: 3}
+  m_Name: HornedMushroomModel
+  m_EditorClassIdentifier: 
+  enemyType: 6
+  enemySpawmType: 0
+  wanderingDistance: 3
+  agroDistance: 4
+  agroDuration: 5
+  attacksInteruptable: 0
+  useKnockback: 0
+  knockBackForce: 5
+  knockBackDuration: 0.1
+  aiData:
+    attackSpeed: 3
+    moveSpeed: 2.5
+    attackRange: 2.5
+    defense: 10
+    criticalHitChance: 5
+    criticalHitDamage:
+      min: 1.2
+      max: 1.2
+    aggravatedSpeedModifier: 2

@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:669c6e7d781096e9ae54ca09e77752290b0f48fbfa137bc625d636e93f323bc8
-size 504
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e3e95a05e4c9774397eeeb7bdee8ccb, type: 3}
+  m_Name: Move
+  m_EditorClassIdentifier: 
+  skeletonDataAsset: {fileID: 11400000, guid: 85b5195bcff1e6242ae2b2fb57f93090, type: 2}
+  animationName: Move

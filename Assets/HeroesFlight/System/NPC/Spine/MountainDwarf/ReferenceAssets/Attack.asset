@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:dcc9081c80f734c1935f5a8d792fa86896856b3ba8a31435c8a6b78a2d5c18bd
-size 508
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e3e95a05e4c9774397eeeb7bdee8ccb, type: 3}
+  m_Name: Attack
+  m_EditorClassIdentifier: 
+  skeletonDataAsset: {fileID: 11400000, guid: fed1eae0a8ea4da43965bfdcf6eaedca, type: 2}
+  animationName: Attack

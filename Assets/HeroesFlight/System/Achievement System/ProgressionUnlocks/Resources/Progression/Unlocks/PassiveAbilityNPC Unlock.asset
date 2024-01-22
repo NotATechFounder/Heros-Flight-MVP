@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:de8004b8919fb1ebb1de0aaea98ad09e4388fc9133cae9c078b04709258d5aff
-size 590
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1fce836a7d447188ca0b230ef2556c1, type: 3}
+  m_Name: PassiveAbilityNPC Unlock
+  m_EditorClassIdentifier: 
+  unlockId: PassiveAbilityNPC Unlock
+  objectiveType: 0
+  objectiveValue: 4
+  targetWorld: 0
+  unlockReward: {fileID: 11400000, guid: bbc654f7fbfaa744290d3af42b2b8104, type: 2}

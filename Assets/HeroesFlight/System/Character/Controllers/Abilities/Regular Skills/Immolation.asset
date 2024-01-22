@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6e5e2041d63b071a43a6ae865ad10460e8c65496531fbacc824b31a3dcc08a76
-size 782
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aee05d2256a9894b9490d5e27c0753b, type: 3}
+  m_Name: Immolation
+  m_EditorClassIdentifier: 
+  abilityVisualData:
+    regularActiveType: 0
+    regularActiveAbilityType: 4
+    icon: {fileID: 21300000, guid: 3697697add4b02841a194bac4259d177, type: 3}
+    displayName: Immolation
+    description: "A flaming aura to burn enemies around you\r"
+  duration: 15
+  cooldown: 5
+  passiveActiveAbility: {fileID: 3485250608560355339, guid: 1b7c8c32004a3f94a9ddb7da8a6aab95,
+    type: 3}

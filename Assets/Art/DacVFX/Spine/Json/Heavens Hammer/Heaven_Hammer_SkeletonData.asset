@@ -1,3 +1,33 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:dfd3b27df8b9c69d639556825df4ee6ed05389df5ff5577d24586118c6383c36
-size 1034
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
+  m_Name: Heaven_Hammer_SkeletonData
+  m_EditorClassIdentifier: 
+  atlasAssets:
+  - {fileID: 11400000, guid: dfcd20c7b35d25f40b36303e70f287e8, type: 2}
+  scale: 0.01
+  skeletonJSON: {fileID: 4900000, guid: 2a3ddcf3c90a0894aaca8cb2d97fc3ea, type: 3}
+  isUpgradingBlendModeMaterials: 0
+  blendModeMaterials:
+    requiresBlendModeMaterials: 1
+    applyAdditiveMaterial: 1
+    additiveMaterials:
+    - pageName: Heaven_Hammer.png
+      material: {fileID: 2100000, guid: d24e5883ec1e6fb44a01e366d58d46c2, type: 2}
+    multiplyMaterials: []
+    screenMaterials: []
+  skeletonDataModifiers: []
+  fromAnimation: []
+  toAnimation: []
+  duration: []
+  defaultMix: 0.2
+  controller: {fileID: 0}

@@ -1,3 +1,56 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:464359f73f1a0414527bd65fb8ae9fe239ff62e2b23035b0383640dc9c4b13a5
-size 2851
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03e958fbc24ea0b4ebcd07ce2a709bbc, type: 3}
+  m_Name: Active Ability Database
+  m_EditorClassIdentifier: 
+  _manualInsert: 0
+  Items:
+  - {fileID: 11400000, guid: 5dca007e8cbd6d84fb341570797535a1, type: 2}
+  - {fileID: 11400000, guid: 582b54d7e13e8e341af602b196b3db96, type: 2}
+  - {fileID: 11400000, guid: fea8295d93f3e534ba55ed7d3adb17fd, type: 2}
+  - {fileID: 11400000, guid: bcf89b545bed0b942a150e282fff5132, type: 2}
+  - {fileID: 11400000, guid: 4078baafded03cb4094d500724335feb, type: 2}
+  - {fileID: 11400000, guid: a81326467da7eff4cba7648c00bae7cc, type: 2}
+  - {fileID: 11400000, guid: a90b1d0d03074b54e91a80b7afef2aac, type: 2}
+  - {fileID: 11400000, guid: e9503147bf31ef54ba758fd142f3455e, type: 2}
+  - {fileID: 11400000, guid: bc59b837b7b49ba45adf0614f0b68851, type: 2}
+  - {fileID: 11400000, guid: 03e22c9b22d9f784583ad8e41dbabbf3, type: 2}
+  - {fileID: 11400000, guid: 166af144a52dc9048af7e612154f02a9, type: 2}
+  - {fileID: 11400000, guid: 4832b8cf257867347802513d4fe24206, type: 2}
+  - {fileID: 11400000, guid: 2c600f9454a1d474baf297561ece3b1b, type: 2}
+  scriptableObjectDatabaseItems:
+  - ID: ChainRotate
+    scriptableObject: {fileID: 11400000, guid: 5dca007e8cbd6d84fb341570797535a1, type: 2}
+  - ID: HeavenStab
+    scriptableObject: {fileID: 11400000, guid: 582b54d7e13e8e341af602b196b3db96, type: 2}
+  - ID: Immolation
+    scriptableObject: {fileID: 11400000, guid: fea8295d93f3e534ba55ed7d3adb17fd, type: 2}
+  - ID: KageBunshin
+    scriptableObject: {fileID: 11400000, guid: bcf89b545bed0b942a150e282fff5132, type: 2}
+  - ID: KnifeFluffy
+    scriptableObject: {fileID: 11400000, guid: 4078baafded03cb4094d500724335feb, type: 2}
+  - ID: LightningArrow
+    scriptableObject: {fileID: 11400000, guid: a81326467da7eff4cba7648c00bae7cc, type: 2}
+  - ID: LightNova
+    scriptableObject: {fileID: 11400000, guid: a90b1d0d03074b54e91a80b7afef2aac, type: 2}
+  - ID: MagicShield
+    scriptableObject: {fileID: 11400000, guid: e9503147bf31ef54ba758fd142f3455e, type: 2}
+  - ID: OrbOfLightning
+    scriptableObject: {fileID: 11400000, guid: bc59b837b7b49ba45adf0614f0b68851, type: 2}
+  - ID: SwordWhirlwind
+    scriptableObject: {fileID: 11400000, guid: 03e22c9b22d9f784583ad8e41dbabbf3, type: 2}
+  - ID: EnergyBlast
+    scriptableObject: {fileID: 11400000, guid: 166af144a52dc9048af7e612154f02a9, type: 2}
+  - ID: HeavenHammer
+    scriptableObject: {fileID: 11400000, guid: 4832b8cf257867347802513d4fe24206, type: 2}
+  - ID: IlluminatedArrows
+    scriptableObject: {fileID: 11400000, guid: 2c600f9454a1d474baf297561ece3b1b, type: 2}

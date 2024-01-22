@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e4d9b8d85bda1cfa69f456638867d7dd713cba1893980eaf56d7d7959c77f244
-size 574
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: wood_spike_trap_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: da737c634ef062d449bb249266cfca30, type: 3}
+  materials:
+  - {fileID: 2100000, guid: f2fbc6dcf4899a543a478e88439ba0fd, type: 2}

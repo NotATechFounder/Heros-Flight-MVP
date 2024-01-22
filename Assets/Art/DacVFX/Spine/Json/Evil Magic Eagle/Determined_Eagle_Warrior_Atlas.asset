@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c3d6fff47a0df46472b675ae8e74408d4016510dbc53bb7ce51ed20571a82750
-size 583
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: Determined_Eagle_Warrior_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: d4d58f5817ad8eb40848cd6316662d96, type: 3}
+  materials:
+  - {fileID: 2100000, guid: f5b4829bb37fb674b97f1e706876c750, type: 2}

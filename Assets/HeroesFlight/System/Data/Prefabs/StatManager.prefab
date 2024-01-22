@@ -1,3 +1,52 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:65fd7a9dc7594a4f21b556d909400c984fedfcc20cc3e7a47d873b82fd907828
-size 1727
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2958339415444796200
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1173273379028328790}
+  - component: {fileID: 6746935323745584001}
+  m_Layer: 0
+  m_Name: StatManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1173273379028328790
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2958339415444796200}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1171.2461, y: 423.243, z: -7.556164}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6746935323745584001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2958339415444796200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b620389e3f3addf4381b4cb340f568c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statPointSO:
+  - {fileID: 11400000, guid: 2be551cbd5a901d4aa56dabe5bf8bfb7, type: 2}
+  - {fileID: 11400000, guid: 63c4ab89e99277c458e1ab00319f4e70, type: 2}
+  - {fileID: 11400000, guid: 3c73a3142b532084188df379c2b307d8, type: 2}
+  - {fileID: 11400000, guid: d9c8f0658299cd0439ba4dbcb4bd9d17, type: 2}
+  - {fileID: 11400000, guid: 5109759bfda22f943a8e1f8346e2aabf, type: 2}

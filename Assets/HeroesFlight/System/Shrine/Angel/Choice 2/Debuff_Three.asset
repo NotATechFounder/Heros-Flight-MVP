@@ -1,3 +1,40 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:30976a299b0873810e0c3266e808b8756316e53add3b4f08bfded54329ca2780
-size 1004
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f07e707ae2af5f5498f3b0dbfa8835d6, type: 3}
+  m_Name: Debuff_Three
+  m_EditorClassIdentifier: 
+  cardName: Attack Speed Down
+  descriptionTemplate: You experience a<color=red> {ATT_P}% attack speed reduction
+    </color> . If you survive, you will get a permanent attack speed boost!
+  cardImage: {fileID: 21300000, guid: 5913b2548a75d8445856e68225c1b1c7, type: 3}
+  cardType: 1
+  affterBonusEffect:
+    statKey: 
+    effect: 4
+    targetType: 1
+    tierValues:
+    - 10
+    - 10
+    - 10
+    showStatEffect: 0
+    showTierValues: 0
+  effects:
+  - statKey: '{ATT_P}'
+    effect: 5
+    targetType: 1
+    tierValues:
+    - 25
+    - 25
+    - 25
+    showStatEffect: 1
+    showTierValues: 1
+  chance: 1

@@ -1,3 +1,135 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2e77cc695bc48d0874672aad7dc3d5af41cad63f798de9b68e3cc3266b46475e
-size 5159
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 454b277c0d5fdf643ba1bad9975d38b6, type: 3}
+  m_Name: Tagon  Character
+  m_EditorClassIdentifier: 
+  characterType: 0
+  isUnlockedDefault: 1
+  isSelectedDefault: 1
+  unlockPrice: 500
+  appearanceData:
+    preConfiguredSkin: CLASSES/tagon_warrior
+    m_BaseSkinReference: APPEARANCE/skin_color/skin_2
+    m_EyeLashesSkinReference: APPEARANCE/eyebrows/eyebrows_004
+    m_HairSkinReference: APPEARANCE/hair/hair_012
+    m_EyesSkinReference: APPEARANCE/eyes/black/eyes_black_5
+    m_LipsSkinReference: APPEARANCE/lips/lips_001
+    m_ClothesSkinReference: OUTFIT/topwear/topwear_001_common
+    m_PantsSkinReference: OUTFIT/bottomwear/bottomwear_001_common
+    m_WingsSkinReference: OUTFIT/back_wings/back_wings_004_rare
+    m_HatSkinReference: OUTFIT/hat/hat_000_null
+    m_WeaponSkinReference: 
+    dataAsset: {fileID: 11400000, guid: d7a53c122cb59af45b0a8b51abd4c931, type: 2}
+  playerStatData:
+    attackSpeed: 1
+    moveSpeed: 11
+    attackRange: 3
+    defense: 2
+    criticalHitChance: 10
+    criticalHitDamage:
+      min: 1.3
+      max: 1.6
+    heroType: 0
+    health: 1250
+    vitality: 150
+    agility: 150
+    resilience: 150
+    dodgeChance: 0
+    magicDamage:
+      min: 90
+      max: 105
+    physicalDamage:
+      min: 78
+      max: 133
+  m_AnimationData:
+    idleAnimation: {fileID: 11400000, guid: 2d5f67112d32a5b4681735db23bd56d8, type: 2}
+    flyingUpAnimation: {fileID: 11400000, guid: d0fb82d0dc310d84981dcb5a403fefa4,
+      type: 2}
+    flyingDownAnimation: {fileID: 11400000, guid: fe13241bd1226c548962dd8367524ec8,
+      type: 2}
+    flyingForwardAnimation: {fileID: 11400000, guid: c30190c0f46a2a14ea87d645c40f30a2,
+      type: 2}
+    turnLeftAnimation: {fileID: 11400000, guid: a33f9d462270eee419cf1495fbcf7942,
+      type: 2}
+    turnRightAnimation: {fileID: 11400000, guid: 30b755e6099b92c43a77490011f0a796,
+      type: 2}
+    ultAnimations:
+    - animation: {fileID: 11400000, guid: 861c64028ee9610409facca5d05883ec, type: 2}
+      vfxEntries:
+      - index: 0
+        particleSystem: {fileID: 3999514262698793752, guid: 4adfab843aeeadc49bb41b1decc3d21a,
+          type: 3}
+      soundEntries: []
+    attackAniamtions:
+    - animation: {fileID: 11400000, guid: 44edc750dea454243af8a2fae15361cd, type: 2}
+      vfxEntries:
+      - index: 0
+        particleSystem: {fileID: 8825985851292802735, guid: d6112b513bd16f147ba5df008ff5e24e,
+          type: 3}
+      soundEntries:
+      - index: 0
+        audio: {fileID: 8300000, guid: 08ec594420b21be4f8e359d544efdd6b, type: 3}
+    - animation: {fileID: 11400000, guid: 95f073711fefad54f8df55d147e2d417, type: 2}
+      vfxEntries:
+      - index: 0
+        particleSystem: {fileID: 3026532230522890424, guid: 5c357d3c6865d234790285ebdf9d2ef4,
+          type: 3}
+      soundEntries:
+      - index: 0
+        audio: {fileID: 8300000, guid: 848fa9935681daf49b570ae5c97b0882, type: 3}
+    - animation: {fileID: 11400000, guid: 44e40b13824cf354bb261901a9cad2fb, type: 2}
+      vfxEntries:
+      - index: 0
+        particleSystem: {fileID: 3200601936564024427, guid: bd6b6e91c1e4ed34c87d8efba9e9edfe,
+          type: 3}
+      soundEntries:
+      - index: 0
+        audio: {fileID: 8300000, guid: 848fa9935681daf49b570ae5c97b0882, type: 3}
+      - index: 1
+        audio: {fileID: 8300000, guid: 7cb30e7919f728348a8a5df33ba4fac6, type: 3}
+    deathAnimation: {fileID: 11400000, guid: d9e60c665c8cca244ac567457072e644, type: 2}
+  ultimateData:
+    enemiesPerAttack: 10
+    damageMultiplier: 1.2
+    charges: 100
+  attackData:
+    enemiesPerAttack: 2
+  vfxData:
+    autoattackNormal: {fileID: 7077668204143035085, guid: 4510f09669970fb4580b5a13056ecc8a,
+      type: 3}
+    autoattackCrit: {fileID: 7077668204143035085, guid: 4510f09669970fb4580b5a13056ecc8a,
+      type: 3}
+    ultNormal: {fileID: 5317095592980956069, guid: f36c03a4b8538f342bcdd663bd77ee5d,
+      type: 3}
+    ultCrit: {fileID: 5317095592980956069, guid: f36c03a4b8538f342bcdd663bd77ee5d,
+      type: 3}
+  characterUiData:
+    characterName: Targon
+    description: Tagon, founder of Arthdal. His power comes from being half neanderthal
+      and half human.
+    unlockDescription: 
+    playstyleDescription: He has a lot of health to take hits but lack in defense.
+      Using a sword, get close to strike monsters with devastating slashes.
+    ultimateDescription: Tagon charges his sword to cut all enemies with four devasting
+      world bending slashes.
+    characterUnlockedImage: {fileID: 21300000, guid: 9f771f71946a25a4c802908abb10e60d,
+      type: 3}
+    characterClassIcon: {fileID: 21300000, guid: 302f09cafaf034480882d36b23e45017,
+      type: 3}
+    characterClassName: {fileID: 21300000, guid: f607dad790e787b4ca33fb86549e1bf8,
+      type: 3}
+    characterLockedImage: {fileID: 21300000, guid: 83acbc1f973789247aefdfd5d59a2dc7,
+      type: 3}
+  characterData:
+    characterType: 0
+    isUnlocked: 1
+    isSelected: 1

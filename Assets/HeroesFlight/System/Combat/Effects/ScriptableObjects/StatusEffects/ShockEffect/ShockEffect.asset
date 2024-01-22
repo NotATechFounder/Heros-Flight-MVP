@@ -1,3 +1,31 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d7f8db77a0aa6a3e8b089c07fcda62bc7df884302fbb66974256d4ff78b538e0
-size 795
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d2a78cdb1464721a8acfe1ca6d7d06d, type: 3}
+  m_Name: ShockEffect
+  m_EditorClassIdentifier: 
+  effectType: 4
+  calculationType: 0
+  visual: {fileID: 3614454696545507858, guid: 33b498d489dd5db4b96ec281667815be, type: 3}
+  durationType: 0
+  duration: 10
+  isStackable: 0
+  canBeReApplied: 0
+  Data:
+    ProcChance:
+      StartValue: 5
+      IncreasePerLvl: 2.5
+    MainDamage:
+      StartValue: 50
+      IncreasePerLvl: 20
+    SecondaryDamage:
+      StartValue: 25
+      IncreasePerLvl: 10

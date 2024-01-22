@@ -1,3 +1,125 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:48d7e71bd2cbee8687cfa9824458329c5bfb759c87d6d9bc9a57eac1a74771bf
-size 3502
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc25d82d879e598438df43a941657c9d, type: 3}
+  m_Name: MusicBank
+  m_EditorClassIdentifier: 
+  _valueList:
+  - Key: MainMenu
+    Asset: {fileID: 8300000, guid: 9eddf1b56a5707b48a215d5d301202ab, type: 3}
+    Info: Mainmenu music
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: WorldBoss1
+    Asset: {fileID: 8300000, guid: 20a290424c5f6cb4cbccf544ac4e03c1, type: 3}
+    Info: MiniBoss Sound
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: MFintro1
+    Asset: {fileID: 8300000, guid: e26e4962a72cb0443a037eabf03a1377, type: 3}
+    Info: MF world theme 1 loop - no fade in, start instantly as intro finishes,
+      no fade out, loop
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: MFloop1
+    Asset: {fileID: 8300000, guid: a3d264f1468448e4abd2801992a5effb, type: 3}
+    Info: MF world theme 1 loop - no fade in, start instantly as intro finishes,
+      no fade out, loop
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: MSintro1
+    Asset: {fileID: 8300000, guid: c01c4f8a0e9a20d4694166bc8f29e32a, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: MSloop1
+    Asset: {fileID: 8300000, guid: 000c06b260075ec4dae52bbc21df24da, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: MFboss1
+    Asset: {fileID: 8300000, guid: 20a290424c5f6cb4cbccf544ac4e03c1, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: MSboss1
+    Asset: {fileID: 8300000, guid: 85165d399c0d27449a92df2af4bac775, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: MSbossLoop
+    Asset: {fileID: 8300000, guid: 180902c0f2a04d647adf356dbf395030, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: Shrine
+    Asset: {fileID: 8300000, guid: dd2fb89bd9b782b4b9382fbe1022b9f1, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: MFintro2
+    Asset: {fileID: 8300000, guid: 67066906269f65742b2298c09bb7cae2, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: MFloop2
+    Asset: {fileID: 8300000, guid: 770cbd0ac1b7f8145a62e0d1a56963ca, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: MFintro3
+    Asset: {fileID: 8300000, guid: 90faa46c8cbd40e4084712ac38d7f1d8, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: MFloop3
+    Asset: {fileID: 8300000, guid: 26b176066cbc4f14b95f2c4253cce929, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: MSintro2
+    Asset: {fileID: 8300000, guid: d02aaa2885531464dafef4829e8021b8, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: MSloop2
+    Asset: {fileID: 8300000, guid: bc30a2d867a7335419cfe4a32087b2e1, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: MSintro3
+    Asset: {fileID: 8300000, guid: c3841fb3d09edb344ba77c02f8536316, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: MSloop3
+    Asset: {fileID: 8300000, guid: 48109c546f666cf4bb1b01c3260ebedc, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1

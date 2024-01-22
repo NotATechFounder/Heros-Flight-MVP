@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e36a30db85be45622cf988dd576cc59ebd326a4c8f376994d020ef5576af4635
-size 564
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: Chain_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: 6b2e52003973ff24cb6a7f994a408f84, type: 3}
+  materials:
+  - {fileID: 2100000, guid: 335934b1f3c31ba4a854d5413ee299c9, type: 2}

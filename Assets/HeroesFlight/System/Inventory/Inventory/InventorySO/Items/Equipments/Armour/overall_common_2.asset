@@ -1,3 +1,93 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8d7b1a8ffb2d2ad9750043f45f7db78b7b562199d0f0a48446e710fed41cb3f7
-size 2213
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 994d15f67afc34a14b822da7fa5eba4c, type: 3}
+  m_Name: overall_common_2
+  m_EditorClassIdentifier: 
+  ID: overall_common_2
+  Name: Aristocrats Top
+  icon: {fileID: 21300000, guid: d967deb3265be1046a02519330c62b3a, type: 3}
+  itemType: 0
+  description: Ironically stronger than some leather equipment
+  equipmentStar: 0
+  equipmentType: 1
+  statType: 2
+  heroType: 0
+  specialHeroEffect:
+    statType: 0
+    value: 0
+    statCalculationType: 0
+  uniqueStatModificationEffects:
+  - rarity: 3
+    statType: 13
+    curve:
+      animationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 20
+          inSlope: 0
+          outSlope: 0.5
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 40
+          value: 40
+          inSlope: 0.5
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      curveType: 1
+      minLevel: 0
+      minValue: 20
+      maxLevel: 40
+      maxValue: 40
+  - rarity: 3
+    statType: 12
+    curve:
+      animationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 20
+          inSlope: 0
+          outSlope: 0.5
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 40
+          value: 40
+          inSlope: 0.5
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      curveType: 1
+      minLevel: 0
+      minValue: 20
+      maxLevel: 40
+      maxValue: 40
+  uniqueCombatEffects: []

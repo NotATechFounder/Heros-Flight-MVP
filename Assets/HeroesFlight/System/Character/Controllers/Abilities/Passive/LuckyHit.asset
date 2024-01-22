@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:70f4c1bc20b701be417c950d437a748bfbf28365e9a2bbb8b028a6efd7c66280
-size 764
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 684ac1df1857b8147900490fc0f6fa38, type: 3}
+  m_Name: LuckyHit
+  m_EditorClassIdentifier: 
+  regularAbilityVisualData:
+    passiveActiveAbilityType: 7
+    displayName: Lucky Hit
+    icon: {fileID: 21300000, guid: 62ecbee3cfd029c489fbfb5faa287e5e, type: 3}
+    description: Plus 0.25% crit
+  combatEffects:
+  - id: Lucky Hit
+    applyType: 2
+    visual: {fileID: 0}
+    effectToApply:
+    - {fileID: 11400000, guid: 72bfff96b65580c40a82457b027cc3c4, type: 2}

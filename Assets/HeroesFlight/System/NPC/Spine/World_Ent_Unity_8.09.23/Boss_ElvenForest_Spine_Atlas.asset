@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:749ace0f6cd35c9f234b7a5d886a15333f259ae6e4284ada8d5593134c28cf13
-size 794
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: Boss_ElvenForest_Spine_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: 1c4b7dffad2000a48a3e5e8807fd2c6a, type: 3}
+  materials:
+  - {fileID: 2100000, guid: e8abcf1836d478f40a238f70fb9126ea, type: 2}
+  - {fileID: 2100000, guid: 49e5f2833afa76941b2bfa85158fb2ba, type: 2}
+  - {fileID: 2100000, guid: 3d328d70c44c5cc4aad2c3e46d40e21b, type: 2}
+  - {fileID: 2100000, guid: 9458a7a4d64cefb44a99b724b68d8a81, type: 2}

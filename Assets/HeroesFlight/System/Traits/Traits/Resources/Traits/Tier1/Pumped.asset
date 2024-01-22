@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:752962782084e50495426e388632ba4b42ab092ea66b403c7c52bda653b7cc10
-size 753
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0c8e64447544703987e53567f92a1e5, type: 3}
+  m_Name: Pumped
+  m_EditorClassIdentifier: 
+  id: Pumped
+  requiredCharacterLvl: 5
+  blockingFeatId: 
+  image: {fileID: 21300000, guid: e290989a86c04a444ba23e953d80cfc9, type: 3}
+  description: Power + {0}(+{1})
+  tier: 1
+  slot: 2
+  currency: {fileID: 11400000, guid: f27107a93061f6745ba9a40c63d0b63a, type: 2}
+  cost: 200
+  effect: {fileID: 11400000, guid: 4b998481b9d100148945c8b775d473e6, type: 2}

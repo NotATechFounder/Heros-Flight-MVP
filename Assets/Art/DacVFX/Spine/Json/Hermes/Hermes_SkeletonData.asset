@@ -1,3 +1,33 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:25c5f619e2f5bb8718489318310b911bbe666d21262dd5e330038829c2ce9b80
-size 1020
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
+  m_Name: Hermes_SkeletonData
+  m_EditorClassIdentifier: 
+  atlasAssets:
+  - {fileID: 11400000, guid: eb754631a61556b438df843f65571379, type: 2}
+  scale: 0.01
+  skeletonJSON: {fileID: 4900000, guid: 9eeca7701f8f5f4499cb1757b3fdad83, type: 3}
+  isUpgradingBlendModeMaterials: 0
+  blendModeMaterials:
+    requiresBlendModeMaterials: 1
+    applyAdditiveMaterial: 1
+    additiveMaterials:
+    - pageName: Hermes.png
+      material: {fileID: 2100000, guid: 9459c0f4fd8806c448ef106cb388814d, type: 2}
+    multiplyMaterials: []
+    screenMaterials: []
+  skeletonDataModifiers: []
+  fromAnimation: []
+  toAnimation: []
+  duration: []
+  defaultMix: 0.2
+  controller: {fileID: 0}

@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b5959205506a0343c6ec9da535dbbdefb8451f49db260da4db339f295375ea88
-size 662
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06ef0aa5d0580774c8f5ed5a4cd5b7e7, type: 3}
+  m_Name: Rare Chest
+  m_EditorClassIdentifier: 
+  chestType: 1
+  chestInfo: Contains <color=#87CEEB>Rare</color> or <color=#e865fb>Epic</color>
+    equipment
+  rewards: {fileID: 11400000, guid: 8be67d48a463e3e4f9f9ad3338cc18ec, type: 2}
+  price: 50
+  timeType: 0
+  nextRewardTimeAdded: 20
+  checkingInterval: 2

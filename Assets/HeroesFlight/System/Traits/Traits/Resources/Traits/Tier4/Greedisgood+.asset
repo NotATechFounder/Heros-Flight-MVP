@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0cd1627423301e300e2ce22c4e9c09b4ef80c9f36c9ab78f16071419f1ad3c3b
-size 778
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0c8e64447544703987e53567f92a1e5, type: 3}
+  m_Name: Greedisgood+
+  m_EditorClassIdentifier: 
+  id: Greedisgood+
+  requiredCharacterLvl: 20
+  blockingFeatId: Greedisgood
+  image: {fileID: 21300000, guid: 7425254a3ecf46b438e59ad78bf5b93c, type: 3}
+  description: Gold gain + {0} %
+  tier: 4
+  slot: 4
+  currency: {fileID: 11400000, guid: f27107a93061f6745ba9a40c63d0b63a, type: 2}
+  cost: 2200
+  effect: {fileID: 11400000, guid: 743de4d12e9cf4b4c988f2d76f7e84f5, type: 2}

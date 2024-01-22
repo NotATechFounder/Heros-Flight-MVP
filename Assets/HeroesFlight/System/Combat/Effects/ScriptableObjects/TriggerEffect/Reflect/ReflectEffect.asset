@@ -1,3 +1,27 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:35bda4654259bb7747af56e7fa6399eae6766e40d843df21f2bb594ea28396ec
-size 716
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c22f0ff6c4914f45aede5d7be181cab4, type: 3}
+  m_Name: ReflectEffect
+  m_EditorClassIdentifier: 
+  effectType: 5
+  calculationType: 0
+  visual: {fileID: 185442, guid: dcfe910ce142ae4488e9059df4f1c153, type: 3}
+  Data:
+    ProcChance:
+      StartValue: 100
+      IncreasePerLvl: 0
+    FlatDamage:
+      StartValue: 50
+      IncreasePerLvl: 50
+    PercentageDamage:
+      StartValue: 1
+      IncreasePerLvl: 0.25

@@ -1,3 +1,59 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e60e26845966d2956e3575d2b3a2fcd0826ac9346251dcbfed2e584cb5c74bbe
-size 3019
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bc8f4b2143b5394e97812c073cdf1c1, type: 3}
+  m_Name: Hercules
+  m_EditorClassIdentifier: 
+  benevolenceName: Apollo
+  benevolenceType: 3
+  benevolenceTarget: 0
+  benevolenceKeyValues:
+  - key: DamagePercentage
+    Value: 100
+  godsBenevolenceAfterEffects: []
+  effectPrefab: {fileID: 5018825414976310225, guid: edef100cff7ba474794dd56ad8cffdbe,
+    type: 3}
+  benevolenceVisualSO:
+    benevolenceType: 3
+    benevolenceDescription: 
+    benevolenceFrame: {fileID: 21300000, guid: d53449827b6a2494b81ad8eb99f8c5b1, type: 3}
+    benevolencePuzzles:
+    - pieces:
+      - {fileID: 233491080, guid: e8f78a1cd32818349868ebbf7b157052, type: 3}
+      - {fileID: -1977555943, guid: e8f78a1cd32818349868ebbf7b157052, type: 3}
+      - {fileID: 739483160, guid: e8f78a1cd32818349868ebbf7b157052, type: 3}
+      - {fileID: 467843458, guid: e8f78a1cd32818349868ebbf7b157052, type: 3}
+      - {fileID: -484098040, guid: e8f78a1cd32818349868ebbf7b157052, type: 3}
+      - {fileID: 44008182, guid: e8f78a1cd32818349868ebbf7b157052, type: 3}
+      - {fileID: 735125046, guid: e8f78a1cd32818349868ebbf7b157052, type: 3}
+      - {fileID: 1162849326, guid: e8f78a1cd32818349868ebbf7b157052, type: 3}
+      - {fileID: 402730954, guid: e8f78a1cd32818349868ebbf7b157052, type: 3}
+    - pieces:
+      - {fileID: -1632686240, guid: 181f2b9d36a844d4383cd296e99898a6, type: 3}
+      - {fileID: 1886078264, guid: 181f2b9d36a844d4383cd296e99898a6, type: 3}
+      - {fileID: -430417565, guid: 181f2b9d36a844d4383cd296e99898a6, type: 3}
+      - {fileID: -120804021, guid: 181f2b9d36a844d4383cd296e99898a6, type: 3}
+      - {fileID: 637831620, guid: 181f2b9d36a844d4383cd296e99898a6, type: 3}
+      - {fileID: -391153449, guid: 181f2b9d36a844d4383cd296e99898a6, type: 3}
+      - {fileID: -319273483, guid: 181f2b9d36a844d4383cd296e99898a6, type: 3}
+      - {fileID: -1368279867, guid: 181f2b9d36a844d4383cd296e99898a6, type: 3}
+      - {fileID: -1561669239, guid: 181f2b9d36a844d4383cd296e99898a6, type: 3}
+    - pieces:
+      - {fileID: 1281129571, guid: 540a18f284dd0a242a14423335418aa8, type: 3}
+      - {fileID: 1354967731, guid: 540a18f284dd0a242a14423335418aa8, type: 3}
+      - {fileID: 319948583, guid: 540a18f284dd0a242a14423335418aa8, type: 3}
+      - {fileID: 193775566, guid: 540a18f284dd0a242a14423335418aa8, type: 3}
+      - {fileID: -1860977589, guid: 540a18f284dd0a242a14423335418aa8, type: 3}
+      - {fileID: -1574311348, guid: 540a18f284dd0a242a14423335418aa8, type: 3}
+      - {fileID: 84833426, guid: 540a18f284dd0a242a14423335418aa8, type: 3}
+      - {fileID: -1995013273, guid: 540a18f284dd0a242a14423335418aa8, type: 3}
+      - {fileID: 1399465856, guid: 540a18f284dd0a242a14423335418aa8, type: 3}
+    completedSfxKey: 

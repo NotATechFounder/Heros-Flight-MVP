@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:068337e44a30d4d58b9c875e1137ed29a5bcb7b547d606ba59b33b9bf914c5e4
-size 630
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f486a565e7aa4a4492365abe1f9cd35, type: 3}
+  m_Name: Critical Hit
+  m_EditorClassIdentifier: 
+  statAttributeType: 4
+  description: Increase your critical hit chance by 5%.
+  icon: {fileID: 21300000, guid: 5de24d28ed0283e4db5da8f9342224ca, type: 3}
+  keyValues:
+  - statType: 7
+    statCalculationType: 1
+    valuePerSp: 1

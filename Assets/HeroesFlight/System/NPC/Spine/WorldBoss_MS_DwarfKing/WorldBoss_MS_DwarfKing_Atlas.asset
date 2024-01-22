@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8daf0641d94a33fec3604403214dace492fbf9aa1faa72723e1b92bab4f0ae77
-size 652
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: WorldBoss_MS_DwarfKing_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: b8353c12100c7654bba09ef353a8318b, type: 3}
+  materials:
+  - {fileID: 2100000, guid: 472e5ed6c40a8f84f9ba45fe341c6fea, type: 2}
+  - {fileID: 2100000, guid: a6e908b0d59ff7f4784cebc2756fe1ef, type: 2}

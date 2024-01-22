@@ -1,3 +1,39 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b3ba507f382d0f59479dc987f0e8c0fdc9d3debf766d5de9f2f8dcb70587feef
-size 1381
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
+  m_Name: Golden_Chest_SkeletonData
+  m_EditorClassIdentifier: 
+  atlasAssets:
+  - {fileID: 11400000, guid: 43beb8c3bea43be4195677fcf3220766, type: 2}
+  scale: 0.01
+  skeletonJSON: {fileID: 4900000, guid: 6be57a3dbcb955745805fdc5f28c83e8, type: 3}
+  isUpgradingBlendModeMaterials: 0
+  blendModeMaterials:
+    requiresBlendModeMaterials: 1
+    applyAdditiveMaterial: 1
+    additiveMaterials:
+    - pageName: Golden_Chest.png
+      material: {fileID: 2100000, guid: 721d0d0c01dcdc446be7c17d4060a8ef, type: 2}
+    - pageName: Golden_Chest_2.png
+      material: {fileID: 2100000, guid: 00c2479fbac9e624d88cc6be0498f125, type: 2}
+    multiplyMaterials:
+    - pageName: Golden_Chest.png
+      material: {fileID: 2100000, guid: bd788178cfbd4544fb277ed7a3b2c038, type: 2}
+    - pageName: Golden_Chest_2.png
+      material: {fileID: 2100000, guid: 5a87854badba3804b95aba9a06df13e1, type: 2}
+    screenMaterials: []
+  skeletonDataModifiers: []
+  fromAnimation: []
+  toAnimation: []
+  duration: []
+  defaultMix: 0.2
+  controller: {fileID: 0}

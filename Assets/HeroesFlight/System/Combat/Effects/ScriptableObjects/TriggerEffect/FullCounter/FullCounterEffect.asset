@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a56c8a498528c036cdb2938e9ca60e2591ad0ea7cc7fecb9f3f087d774648028
-size 647
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c280a82036164768b542fdae5feb3b0e, type: 3}
+  m_Name: FullCounterEffect
+  m_EditorClassIdentifier: 
+  effectType: 7
+  calculationType: 0
+  visual: {fileID: 185442, guid: 8118656e898f2fb4daa469e2393514dd, type: 3}
+  Data:
+    ProcChance:
+      StartValue: 5
+      IncreasePerLvl: 2.5
+    Damage:
+      StartValue: 200
+      IncreasePerLvl: 0

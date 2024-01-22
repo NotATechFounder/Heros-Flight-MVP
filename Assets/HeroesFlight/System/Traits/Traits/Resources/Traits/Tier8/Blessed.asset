@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7a4efbb94e73ff460bf4ae1d0b1f77fab5cfecfd6862539e62630778983585ae
-size 799
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0c8e64447544703987e53567f92a1e5, type: 3}
+  m_Name: Blessed
+  m_EditorClassIdentifier: 
+  id: Blessed
+  requiredCharacterLvl: 38
+  blockingFeatId: Greedisgood++
+  image: {fileID: 21300000, guid: 083ddff32a53de94488ebdf8866133c6, type: 3}
+  description: Heal  {0} % of HP after completing each level
+  tier: 8
+  slot: 4
+  currency: {fileID: 11400000, guid: f27107a93061f6745ba9a40c63d0b63a, type: 2}
+  cost: 16000
+  effect: {fileID: 11400000, guid: d768164f427d83149b6807044a1710f5, type: 2}

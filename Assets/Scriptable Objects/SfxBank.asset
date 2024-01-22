@@ -1,3 +1,301 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b54d1a45e6575353e9ae51c9b00b954ccd5f7c25b9dd672be95560f488be9e19
-size 10478
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc25d82d879e598438df43a941657c9d, type: 3}
+  m_Name: SfxBank
+  m_EditorClassIdentifier: 
+  _valueList:
+  - Key: Button Click
+    Asset: {fileID: 0}
+    Info: 
+    IsGroup: 1
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 9969a2bb7ddae89439e730344532e23e, type: 3}
+    - Chance: 1
+      Asset: {fileID: 8300000, guid: b73421cc38189414880dd100f2e26a43, type: 3}
+    ShowFoldOut: 0
+  - Key: Attack Sound
+    Asset: {fileID: 0}
+    Info: 
+    IsGroup: 1
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 0
+  - Key: AttackBooster
+    Asset: {fileID: 8300000, guid: d8c07d03988dd46479818c035d52491e, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 0
+  - Key: HealthBooster
+    Asset: {fileID: 8300000, guid: e7f1564417b4a9745bc07d1c570d7e4a, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 0
+  - Key: DefenseBooster
+    Asset: {fileID: 8300000, guid: cafeaa4b14d861f468ee0de0bbc282fa, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 0
+  - Key: SpeedBooster
+    Asset: {fileID: 8300000, guid: a4a627b10aa14f04ba3ec92ec66a57ab, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 0
+  - Key: Gold
+    Asset: {fileID: 8300000, guid: f15bb912e58775e4a9dabd62f163a1a5, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 1
+  - Key: Experience
+    Asset: {fileID: 8300000, guid: f15bb912e58775e4a9dabd62f163a1a5, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 1
+  - Key: AresPuzzle
+    Asset: {fileID: 8300000, guid: a522e94e1e14e7f45acb3e8663670627, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 0
+  - Key: HermesPuzzle
+    Asset: {fileID: 8300000, guid: bdf2f50be031f8d42956084e2a333f9f, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 0
+  - Key: RotateTiles
+    Asset: {fileID: 8300000, guid: 6a922438e482e0943a9b6b6ea94d77ca, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 0
+  - Key: RotateLastTile
+    Asset: {fileID: 8300000, guid: f3e93a44544629b4598e2a522ab55e5a, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 0
+  - Key: EnterPortal
+    Asset: {fileID: 8300000, guid: 651a3edcf1bc85e458d48416e89ffc5f, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 1
+  - Key: ExitPortal
+    Asset: {fileID: 8300000, guid: 2b1c5af6b3d50594fa677ae237aebe02, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 1
+  - Key: CrystalBreak
+    Asset: {fileID: 8300000, guid: 37268b754272a314c900d363ee4451ae, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 1
+  - Key: PoisonCloud
+    Asset: {fileID: 8300000, guid: 5fc6315c03e977746a71296b2583c525, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 1
+  - Key: ExperienceUp
+    Asset: {fileID: 8300000, guid: 3055982c05d365a468f4165b944a50f4, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 1
+  - Key: LevelUp
+    Asset: {fileID: 8300000, guid: ba94e9cd1ef23714ab995be6649f022f, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 1
+  - Key: Hit
+    Asset: {fileID: 8300000, guid: 5162c5a524773e545a9114739fc43a4b, type: 3}
+    Info: 
+    IsGroup: 1
+    GroupAsset:
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 6801606de2defad468f4120df1cd63bf, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 75af98f2b74adaa44a68063f78f46fc5, type: 3}
+    - Chance: 0.5
+      Asset: {fileID: 8300000, guid: 8878df847c8ba6943b603ba207346436, type: 3}
+    ShowFoldOut: 1
+  - Key: HeroProgressionGain
+    Asset: {fileID: 8300000, guid: 08ece4a5cc2f8b54886d053afd904e1a, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: LightningExplosion
+    Asset: {fileID: 8300000, guid: 03d7c4687554ad442a556ea26334dfac, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: StormSkillActivation
+    Asset: {fileID: 8300000, guid: 7b365b24c0991014c8351b89d71d33ed, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: TagonSkillActivation
+    Asset: {fileID: 8300000, guid: fb39accfae6e82c4cb970bcfc08b35f5, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: ValSkillActivation
+    Asset: {fileID: 8300000, guid: b32e80fd71885d741bb0051b0c096fb8, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: Explosion
+    Asset: {fileID: 8300000, guid: 92d3259b6a9732e4ba3fb95331b2c95d, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: GemOpen
+    Asset: {fileID: 8300000, guid: 1dcd3529095dfa247af8b054944f5590, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: ChectOpen
+    Asset: {fileID: 8300000, guid: e376819f12991a14ba1917c178cd956b, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: GoldOpen
+    Asset: {fileID: 8300000, guid: 1dcd3529095dfa247af8b054944f5590, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: LevelUpPop
+    Asset: {fileID: 8300000, guid: b963084442a1bac43ba7d1ecd1d76dbf, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1

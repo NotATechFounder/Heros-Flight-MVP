@@ -1,3 +1,59 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:093016d32e6ee3b9c568a05d2590c297822d611a8e499915c61f3a5afcaccd14
-size 3029
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bc8f4b2143b5394e97812c073cdf1c1, type: 3}
+  m_Name: Apollo
+  m_EditorClassIdentifier: 
+  benevolenceName: Apollo
+  benevolenceType: 2
+  benevolenceTarget: 0
+  benevolenceKeyValues:
+  - key: DamagePercentage
+    Value: 100
+  godsBenevolenceAfterEffects: []
+  effectPrefab: {fileID: 8579957610512722271, guid: 2882465a063e89f42a2fc91262e341b1,
+    type: 3}
+  benevolenceVisualSO:
+    benevolenceType: 2
+    benevolenceDescription: 
+    benevolenceFrame: {fileID: 21300000, guid: 054445c04037ce446b4b648ab6d68ce2, type: 3}
+    benevolencePuzzles:
+    - pieces:
+      - {fileID: 932310039, guid: 14e36f0cde0d8f44f9ef3ed34ee8b895, type: 3}
+      - {fileID: -175455318, guid: 14e36f0cde0d8f44f9ef3ed34ee8b895, type: 3}
+      - {fileID: -1507382284, guid: 14e36f0cde0d8f44f9ef3ed34ee8b895, type: 3}
+      - {fileID: 2066467911, guid: 14e36f0cde0d8f44f9ef3ed34ee8b895, type: 3}
+      - {fileID: -351729832, guid: 14e36f0cde0d8f44f9ef3ed34ee8b895, type: 3}
+      - {fileID: -432827335, guid: 14e36f0cde0d8f44f9ef3ed34ee8b895, type: 3}
+      - {fileID: 97014740, guid: 14e36f0cde0d8f44f9ef3ed34ee8b895, type: 3}
+      - {fileID: 842924119, guid: 14e36f0cde0d8f44f9ef3ed34ee8b895, type: 3}
+      - {fileID: 1693195375, guid: 14e36f0cde0d8f44f9ef3ed34ee8b895, type: 3}
+    - pieces:
+      - {fileID: 636571044, guid: 0485c9eef1628984e941f31971afb4df, type: 3}
+      - {fileID: 883801004, guid: 0485c9eef1628984e941f31971afb4df, type: 3}
+      - {fileID: -1341230700, guid: 0485c9eef1628984e941f31971afb4df, type: 3}
+      - {fileID: -1178417318, guid: 0485c9eef1628984e941f31971afb4df, type: 3}
+      - {fileID: -979510299, guid: 0485c9eef1628984e941f31971afb4df, type: 3}
+      - {fileID: 742429496, guid: 0485c9eef1628984e941f31971afb4df, type: 3}
+      - {fileID: -1365219219, guid: 0485c9eef1628984e941f31971afb4df, type: 3}
+      - {fileID: -1788899609, guid: 0485c9eef1628984e941f31971afb4df, type: 3}
+      - {fileID: -2133745264, guid: 0485c9eef1628984e941f31971afb4df, type: 3}
+    - pieces:
+      - {fileID: -1420797405, guid: 6d36229c15efbd8439eac89b06a3463c, type: 3}
+      - {fileID: 1353420319, guid: 6d36229c15efbd8439eac89b06a3463c, type: 3}
+      - {fileID: 515544089, guid: 6d36229c15efbd8439eac89b06a3463c, type: 3}
+      - {fileID: 1541667017, guid: 6d36229c15efbd8439eac89b06a3463c, type: 3}
+      - {fileID: -727128696, guid: 6d36229c15efbd8439eac89b06a3463c, type: 3}
+      - {fileID: 536966882, guid: 6d36229c15efbd8439eac89b06a3463c, type: 3}
+      - {fileID: 40102001, guid: 6d36229c15efbd8439eac89b06a3463c, type: 3}
+      - {fileID: 1584949069, guid: 6d36229c15efbd8439eac89b06a3463c, type: 3}
+      - {fileID: -1433287363, guid: 6d36229c15efbd8439eac89b06a3463c, type: 3}
+    completedSfxKey: AresPuzzle

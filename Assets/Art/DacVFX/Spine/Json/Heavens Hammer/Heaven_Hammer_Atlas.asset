@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0b5dab793ecd12cd8c6e04f8a0bb01114a32f4eb876e7c5c70cbca22d9471cb4
-size 572
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: Heaven_Hammer_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: e20b2c94fcb9f774d9785cecce85a259, type: 3}
+  materials:
+  - {fileID: 2100000, guid: 5accea90dc7296a46ae0bba89d9960f0, type: 2}

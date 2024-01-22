@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9505ed0f6baf8c5a04835854282e5faa304163ea6ed1bdc7a00ef5eb1e5e591d
-size 569
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: monster_03_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: 99854713152700d428eeb2fbc8162d42, type: 3}
+  materials:
+  - {fileID: 2100000, guid: cf6379606037c804fa4d47fd45c895be, type: 2}

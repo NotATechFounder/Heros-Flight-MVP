@@ -1,3 +1,29 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e8e8b150757616c0ada86fb5d7317fe5bc1ca6fb19835eb4194e2fe3d617c4b7
-size 1417
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/HeroesFlight/Core/Scenes/Boot Strap.unity
+    guid: e7bda26e962e97743946c3aa9005fb47
+  - enabled: 1
+    path: Assets/HeroesFlight/System/Authentication/Scene/AuthenticationScene.unity
+    guid: 623a7e2fee0994c4e9de0c55a92e284c
+  - enabled: 1
+    path: Assets/HeroesFlight/System/Data/Scenes/DataScene.unity
+    guid: d21f722fd8d410b40b0c6489bc44b110
+  - enabled: 1
+    path: Assets/HeroesFlight/System/UI/Scenes/UIScene.unity
+    guid: 605537d8ab45fca4080dde035c1a0388
+  - enabled: 1
+    path: Assets/HeroesFlight/System/Environment/Scene/EnvironmentScene.unity
+    guid: db0d28048d6aed145b5901e74ddebf97
+  - enabled: 1
+    path: Assets/HeroesFlight/System/Gameplay/Scenes/GameScene.unity
+    guid: c7bfccd8c8ec7ef4e84e2328f1b11ff2
+  - enabled: 1
+    path: Assets/HeroesFlight/System/Tutorial/Scene/TutorialScene.unity
+    guid: adc47ede0da007c429a7d8a166d83027
+  m_configObjects: {}

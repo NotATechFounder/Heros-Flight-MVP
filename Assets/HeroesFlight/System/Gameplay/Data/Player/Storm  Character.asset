@@ -1,3 +1,124 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:64f362699e89dfbab29ca73aaad13eb704c846ceb7fc603a207097831fe577dd
-size 4709
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 454b277c0d5fdf643ba1bad9975d38b6, type: 3}
+  m_Name: Storm  Character
+  m_EditorClassIdentifier: 
+  characterType: 2
+  isUnlockedDefault: 0
+  isSelectedDefault: 0
+  unlockPrice: 500
+  appearanceData:
+    preConfiguredSkin: CLASSES/storm_mage
+    m_BaseSkinReference: APPEARANCE/skin_color/skin_2
+    m_EyeLashesSkinReference: APPEARANCE/eyebrows/eyebrows_004
+    m_HairSkinReference: APPEARANCE/hair/hair_012
+    m_EyesSkinReference: APPEARANCE/eyes/black/eyes_black_5
+    m_LipsSkinReference: APPEARANCE/lips/lips_001
+    m_ClothesSkinReference: OUTFIT/topwear/topwear_001_common
+    m_PantsSkinReference: OUTFIT/bottomwear/bottomwear_001_common
+    m_WingsSkinReference: OUTFIT/back_wings/back_wings_004_rare
+    m_HatSkinReference: OUTFIT/hat/hat_000_null
+    m_WeaponSkinReference: 
+    dataAsset: {fileID: 11400000, guid: d7a53c122cb59af45b0a8b51abd4c931, type: 2}
+  playerStatData:
+    attackSpeed: 1
+    moveSpeed: 11
+    attackRange: 3
+    defense: 1
+    criticalHitChance: 15
+    criticalHitDamage:
+      min: 1.3
+      max: 1.6
+    heroType: 2
+    health: 400
+    vitality: 100
+    agility: 150
+    resilience: 150
+    dodgeChance: 0
+    magicDamage:
+      min: 90
+      max: 105
+    physicalDamage:
+      min: 63
+      max: 148
+  m_AnimationData:
+    idleAnimation: {fileID: 11400000, guid: 3ca096e67733b3a4aa8d8efc8177a265, type: 2}
+    flyingUpAnimation: {fileID: 11400000, guid: d0fb82d0dc310d84981dcb5a403fefa4,
+      type: 2}
+    flyingDownAnimation: {fileID: 11400000, guid: ca0ffe92d6799ef498ccfa20754f5564,
+      type: 2}
+    flyingForwardAnimation: {fileID: 11400000, guid: 7f4f584172fb1554dbf3a025902562e0,
+      type: 2}
+    turnLeftAnimation: {fileID: 11400000, guid: a33f9d462270eee419cf1495fbcf7942,
+      type: 2}
+    turnRightAnimation: {fileID: 11400000, guid: 30b755e6099b92c43a77490011f0a796,
+      type: 2}
+    ultAnimations:
+    - animation: {fileID: 11400000, guid: 4ff1e22ea1bb8aa458da7b35cc685f67, type: 2}
+      vfxEntries:
+      - index: 0
+        particleSystem: {fileID: 5135113083848882356, guid: 7f4021942a3635444a5aecc08372c410,
+          type: 3}
+      soundEntries: []
+    attackAniamtions:
+    - animation: {fileID: 11400000, guid: bb552a8b360dbc046afc60ad37dade8c, type: 2}
+      vfxEntries: []
+      soundEntries:
+      - index: 0
+        audio: {fileID: 8300000, guid: f344c8bda91a66a4f91d6c1bbf165fb8, type: 3}
+    - animation: {fileID: 11400000, guid: 40fbd2a0d6290544cabfdaea8da0b484, type: 2}
+      vfxEntries: []
+      soundEntries:
+      - index: 0
+        audio: {fileID: 8300000, guid: f344c8bda91a66a4f91d6c1bbf165fb8, type: 3}
+    - animation: {fileID: 11400000, guid: a3181786b69dfa6409d4086504b4e565, type: 2}
+      vfxEntries: []
+      soundEntries:
+      - index: 0
+        audio: {fileID: 8300000, guid: f344c8bda91a66a4f91d6c1bbf165fb8, type: 3}
+    deathAnimation: {fileID: 11400000, guid: d9e60c665c8cca244ac567457072e644, type: 2}
+  ultimateData:
+    enemiesPerAttack: 10
+    damageMultiplier: 2
+    charges: 200
+  attackData:
+    enemiesPerAttack: 4
+  vfxData:
+    autoattackNormal: {fileID: 1967212680905750871, guid: a18350248d89e904f82215a9fe00e786,
+      type: 3}
+    autoattackCrit: {fileID: 1967212680905750871, guid: a18350248d89e904f82215a9fe00e786,
+      type: 3}
+    ultNormal: {fileID: 8266647253989785494, guid: 1337c59db87154740b5deb4d0f8de98e,
+      type: 3}
+    ultCrit: {fileID: 8266647253989785494, guid: 1337c59db87154740b5deb4d0f8de98e,
+      type: 3}
+  characterUiData:
+    characterName: Storm
+    description: Storm is a mage that uses powerful staff to cast their lightning
+      magic.
+    unlockDescription: Unlock by completing the Mystical Forest world
+    playstyleDescription: They have traded their health and defense to learn magic.
+      Shoot from a distance and avoid being hit!
+    ultimateDescription: Merging lightning with alchemy, Storm creates full screen
+      transmutation circles channeling powerful lightning shocks!
+    characterUnlockedImage: {fileID: 21300000, guid: dddf5e91c6dd15b4ba5415a401abaddc,
+      type: 3}
+    characterClassIcon: {fileID: 21300000, guid: c7959b9a9324b46e3b1efe7cfb7812aa,
+      type: 3}
+    characterClassName: {fileID: 21300000, guid: f607dad790e787b4ca33fb86549e1bf8,
+      type: 3}
+    characterLockedImage: {fileID: 21300000, guid: 4180239276b906d4ca76276f7e680d7a,
+      type: 3}
+  characterData:
+    characterType: 2
+    isUnlocked: 0
+    isSelected: 0

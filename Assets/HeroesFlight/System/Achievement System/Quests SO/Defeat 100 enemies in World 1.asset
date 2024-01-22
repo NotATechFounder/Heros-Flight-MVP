@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:013f09b9174f5d9121a9eae06771d12ad9563429a989f6a61ab5ad213cc53294
-size 598
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f68d048e28ec604bb5e2f68feb5601b, type: 3}
+  m_Name: Defeat 100 enemies in World 1
+  m_EditorClassIdentifier: 
+  ID: 3
+  questInfo: Defeat 100 enemies in World 1
+  questType: 4
+  questGoal: 100
+  rewardPack: {fileID: 11400000, guid: f25863db0ac6be045b7b33de197610a8, type: 2}
+  worldType: 0

@@ -1,3 +1,72 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:623097cd5012906c1edfee6b122ff9d6bf157a1589f6b7a7cfc94846fd317b77
-size 3044
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2619514652498593203
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6817668177986911163}
+  - component: {fileID: 7952307832086848562}
+  m_Layer: 0
+  m_Name: InventorySystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6817668177986911163
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2619514652498593203}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.4225507, y: -8.992298, z: -0.11173795}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7952307832086848562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2619514652498593203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 428af8446e0a05448abaabbc6b24cf41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainItemInventorySO: {fileID: 11400000, guid: 8582fc7fe734e9d4595bc292d9620eff,
+    type: 2}
+  itemDatabaseSO: {fileID: 11400000, guid: b6e1b089be8053749915f36bf477b862, type: 2}
+  testItem:
+  - {fileID: 11400000, guid: 762e865a732a7ee43bba53836fc5f075, type: 2}
+  - {fileID: 11400000, guid: be54d4ba81f6e56469cedfe08ba207b9, type: 2}
+  - {fileID: 11400000, guid: 8122b5b627d1cc142ba8208d6c45ed21, type: 2}
+  - {fileID: 11400000, guid: a104e777df70d4c408c443aae42853aa, type: 2}
+  - {fileID: 11400000, guid: 35457d1cdba70274b91ba7373198131e, type: 2}
+  - {fileID: 11400000, guid: fb3478f6b7727314da992a99e47964d5, type: 2}
+  - {fileID: 11400000, guid: b994098b1f871704c904a3804f8cb055, type: 2}
+  - {fileID: 11400000, guid: 4039efa69acc18249a469f9f88807860, type: 2}
+  - {fileID: 11400000, guid: 4a6da58d569950645aea35be5e6148db, type: 2}
+  - {fileID: 11400000, guid: 6960257fc85f29644b26162f5f9c589f, type: 2}
+  - {fileID: 11400000, guid: 7b03ccfd50f652d4883aa40e6e00584d, type: 2}
+  - {fileID: 11400000, guid: 5c7ca360e64b98145a1249c9c5e2bdf2, type: 2}
+  - {fileID: 11400000, guid: 8d0ec58ecf1979443a658f0a32d4cc8f, type: 2}
+  - {fileID: 11400000, guid: a37eda03f6bfbca49be7f9fa823ea186, type: 2}
+  - {fileID: 11400000, guid: cd818f89af84c6d4e98bc25c9eaaf6c4, type: 2}
+  testMaterialItem:
+  - {fileID: 11400000, guid: dd8d5903153616446a88d87699751900, type: 2}
+  - {fileID: 11400000, guid: 0b35a79cd8ca5c34681032071ed4d821, type: 2}
+  - {fileID: 11400000, guid: 485ce86c5f4b852439cd61ea6a71d976, type: 2}
+  - {fileID: 11400000, guid: e398c4447e3ccd244bb8079ad4c5f45d, type: 2}
+  - {fileID: 11400000, guid: bccee3717ad5b554cbb52c0d5644d367, type: 2}
+  currencyManager: {fileID: 0}

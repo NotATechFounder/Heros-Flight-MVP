@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:244efd3d828e374a7652ff6cd9ad8dd8d564ca3a093d8dacc69338a7efcb960f
-size 572
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: Mountain_Wolf_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: 7cf8ba5bfab4d8f4db74b0117eb37e55, type: 3}
+  materials:
+  - {fileID: 2100000, guid: 3b18d18abc0c30f4aaac53c74f156034, type: 2}

@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:79892a81b814a0035220833b93ebdb59b080857eefa401865a3eb59c18392a15
-size 561
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef91595378f04377866774b87f8353c1, type: 3}
+  m_Name: GreedisgoodEffect
+  m_EditorClassIdentifier: 
+  traitType: 1
+  value: 5
+  canBeRerolled: 0
+  valueRange: {x: 1, y: 12}
+  targetType: {fileID: 11400000, guid: f27107a93061f6745ba9a40c63d0b63a, type: 2}

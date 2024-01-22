@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2d6cbf383ae14bb6cb3dedb17e02639c84a03f8cd2492ce70bb068ad95391d57
-size 605
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aabd662e8c3c8284db03521369826eeb, type: 3}
+  m_Name: UltimateAbility
+  m_EditorClassIdentifier: 
+  tutorialState: 4
+  tutorialVisualData:
+    title: Untilate Ability
+    steps:
+    - description: When your yellow bar is charged, you can unleash your ultimate
+        attack by pressing the button!

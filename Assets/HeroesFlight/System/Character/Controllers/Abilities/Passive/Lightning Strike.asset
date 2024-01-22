@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9f55323cdc56445922ec4ebce1e95887cad9c3b7a3fa9e9aaf0581b608fe7557
-size 812
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 684ac1df1857b8147900490fc0f6fa38, type: 3}
+  m_Name: Lightning Strike
+  m_EditorClassIdentifier: 
+  regularAbilityVisualData:
+    passiveActiveAbilityType: 2
+    displayName: Lightning Strike
+    icon: {fileID: 21300000, guid: 99d62b31be6534b46baafe4efb858a69, type: 3}
+    description: Your attack has a chance to inflict Shock
+  combatEffects:
+  - id: Lightning Strike
+    applyType: 1
+    visual: {fileID: 0}
+    effectToApply:
+    - {fileID: 11400000, guid: 3b81c0455755d0845bdb36ce14c61821, type: 2}
