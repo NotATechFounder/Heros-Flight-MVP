@@ -28,18 +28,6 @@ MonoBehaviour:
   bossDrop: {fileID: 11400000, guid: 88e969b146b0d1a4e9d8cd9d119d9edd, type: 2}
   spawnModel:
     levels:
-    - levelType: 2
-      lvlDuration: 120
-      levelPrefab: {fileID: 3272113625133634179, guid: 5eb750dfe15b2e04facfbf1978b0dbe5,
-        type: 3}
-      timeBetweenWaves: 2
-      waves:
-      - totalMobsToSpawn: 1
-        timeBetweenMobs: 1
-        avaliableTrashMobs: []
-        avaliableMiniBosses: []
-        boss: {fileID: 1701121598879654883, guid: 468075390002a7447879465e4ec9ddf9,
-          type: 3}
     - levelType: 0
       lvlDuration: 120
       levelPrefab: {fileID: 1035709890281199850, guid: 44b54038494f90f4ba6adca6a70222d7,
@@ -311,6 +299,18 @@ MonoBehaviour:
           spawnChance: 69
         avaliableMiniBosses: []
         boss: {fileID: 0}
+    - levelType: 2
+      lvlDuration: 120
+      levelPrefab: {fileID: 3272113625133634179, guid: 5eb750dfe15b2e04facfbf1978b0dbe5,
+        type: 3}
+      timeBetweenWaves: 2
+      waves:
+      - totalMobsToSpawn: 1
+        timeBetweenMobs: 1
+        avaliableTrashMobs: []
+        avaliableMiniBosses: []
+        boss: {fileID: 1701121598879654883, guid: 468075390002a7447879465e4ec9ddf9,
+          type: 3}
   mobDifficulty:
     mobDifficulties:
     - enemyType: 0
