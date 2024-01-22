@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:dde6518d5b3e57931fbe52fdda94b2d25a396e2a183c2c46b3a292ee286cf792
-size 515
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9fc324d458f44fb82fe495f419b3f3f, type: 3}
+  m_Name: Multi-cast
+  m_EditorClassIdentifier: 
+  StatData:
+    TargetStat: 18
+    CalculationType: 0
+    StatValue:
+      StartValue: 1
+      IncreasePerLvl: 0.25

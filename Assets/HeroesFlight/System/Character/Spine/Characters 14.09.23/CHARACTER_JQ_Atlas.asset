@@ -1,3 +1,23 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a5eb9b633832bef87e8ce5e8394d64d9790f84211a694e5e46d2bd2eef85c3aa
-size 997
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: CHARACTER_JQ_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: 33968b40dea1dee43a4a30667143b28d, type: 3}
+  materials:
+  - {fileID: 2100000, guid: 2e08d74bda8c89d43857685e84011c36, type: 2}
+  - {fileID: 2100000, guid: c767844e64c2b2a4fbdf998ca7cb05dc, type: 2}
+  - {fileID: 2100000, guid: 7182ed7445533c448af1aa2e20e8ba54, type: 2}
+  - {fileID: 2100000, guid: 4c0fabccc4758f0469dab5d65ddf59c9, type: 2}
+  - {fileID: 2100000, guid: 5f1360e3cb804c846af01179a14047c5, type: 2}
+  - {fileID: 2100000, guid: 1a0e43d3bbc281b4382242efa0588a23, type: 2}
+  - {fileID: 2100000, guid: f01d8da9a0511534d810ea55631eea9a, type: 2}

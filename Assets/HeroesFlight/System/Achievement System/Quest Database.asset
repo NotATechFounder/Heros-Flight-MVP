@@ -1,3 +1,71 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:31e34c543949d25674c336e68a012b7db10544b05c357efcbe25ab9f1553616f
-size 3569
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d0586c3c44dbb04f9b1006e87219c56, type: 3}
+  m_Name: Quest Database
+  m_EditorClassIdentifier: 
+  _manualInsert: 0
+  Items:
+  - {fileID: 11400000, guid: 9fa322397eef834418a11bd2d9330f89, type: 2}
+  - {fileID: 11400000, guid: 39e242d4e5b1cd04cab7c042476dda96, type: 2}
+  - {fileID: 11400000, guid: 6da8060b052c03d4482bf4d1e77fcb7f, type: 2}
+  - {fileID: 11400000, guid: 56272e38c7e3e334b9845c4501f4f15a, type: 2}
+  - {fileID: 11400000, guid: dccbe42c4046d444f8bf49841de3b9ff, type: 2}
+  - {fileID: 11400000, guid: e409ec9f10330974192d62aabf9bd761, type: 2}
+  - {fileID: 11400000, guid: 650c4174e37f90a438b392e380051b9e, type: 2}
+  - {fileID: 11400000, guid: c513657376392524ba6f08ed39e53f86, type: 2}
+  - {fileID: 11400000, guid: ddcd8ffb978d0254ba70bb366e72aa6d, type: 2}
+  - {fileID: 11400000, guid: f32db2d28146ac4458849030f7ccb552, type: 2}
+  - {fileID: 11400000, guid: 50b4007ff31e306458b6533caef5d7fe, type: 2}
+  - {fileID: 11400000, guid: 362e54933da80ca4a8854c1cdea58709, type: 2}
+  - {fileID: 11400000, guid: 497de5b58d896e1469ab6cb66f5b6bff, type: 2}
+  - {fileID: 11400000, guid: e32e802cc3d6eef4bb40e91e052952f1, type: 2}
+  - {fileID: 11400000, guid: 0a99cbf7ce056994b920b48d62a94e53, type: 2}
+  - {fileID: 11400000, guid: 44050c9b845510948a80a7e371be9fc7, type: 2}
+  - {fileID: 11400000, guid: e752735b740e61a44bf9a1767e13f6b2, type: 2}
+  - {fileID: 11400000, guid: 382501d7bb3479046900b12ecbcc9231, type: 2}
+  scriptableObjectDatabaseItems:
+  - ID: 1
+    scriptableObject: {fileID: 11400000, guid: 9fa322397eef834418a11bd2d9330f89, type: 2}
+  - ID: 2
+    scriptableObject: {fileID: 11400000, guid: 6da8060b052c03d4482bf4d1e77fcb7f, type: 2}
+  - ID: 3
+    scriptableObject: {fileID: 11400000, guid: dccbe42c4046d444f8bf49841de3b9ff, type: 2}
+  - ID: 4
+    scriptableObject: {fileID: 11400000, guid: 362e54933da80ca4a8854c1cdea58709, type: 2}
+  - ID: 5
+    scriptableObject: {fileID: 11400000, guid: ddcd8ffb978d0254ba70bb366e72aa6d, type: 2}
+  - ID: 6
+    scriptableObject: {fileID: 11400000, guid: 650c4174e37f90a438b392e380051b9e, type: 2}
+  - ID: 7
+    scriptableObject: {fileID: 11400000, guid: 497de5b58d896e1469ab6cb66f5b6bff, type: 2}
+  - ID: 8
+    scriptableObject: {fileID: 11400000, guid: f32db2d28146ac4458849030f7ccb552, type: 2}
+  - ID: 9
+    scriptableObject: {fileID: 11400000, guid: 39e242d4e5b1cd04cab7c042476dda96, type: 2}
+  - ID: 10
+    scriptableObject: {fileID: 11400000, guid: 56272e38c7e3e334b9845c4501f4f15a, type: 2}
+  - ID: 11
+    scriptableObject: {fileID: 11400000, guid: 382501d7bb3479046900b12ecbcc9231, type: 2}
+  - ID: 12
+    scriptableObject: {fileID: 11400000, guid: e409ec9f10330974192d62aabf9bd761, type: 2}
+  - ID: 13
+    scriptableObject: {fileID: 11400000, guid: 44050c9b845510948a80a7e371be9fc7, type: 2}
+  - ID: 14
+    scriptableObject: {fileID: 11400000, guid: e752735b740e61a44bf9a1767e13f6b2, type: 2}
+  - ID: 15
+    scriptableObject: {fileID: 11400000, guid: 0a99cbf7ce056994b920b48d62a94e53, type: 2}
+  - ID: 16
+    scriptableObject: {fileID: 11400000, guid: c513657376392524ba6f08ed39e53f86, type: 2}
+  - ID: 17
+    scriptableObject: {fileID: 11400000, guid: e32e802cc3d6eef4bb40e91e052952f1, type: 2}
+  - ID: 18
+    scriptableObject: {fileID: 11400000, guid: 50b4007ff31e306458b6533caef5d7fe, type: 2}

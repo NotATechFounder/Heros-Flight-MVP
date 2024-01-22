@@ -1,3 +1,39 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d5067e599a2c50df97210beae1a58ead7f99622b4c1dfbfb00d8f54d19a3efb2
-size 1381
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
+  m_Name: Silver_Chest_SkeletonData
+  m_EditorClassIdentifier: 
+  atlasAssets:
+  - {fileID: 11400000, guid: 4732c42798a30da4c98389e3fdda42db, type: 2}
+  scale: 0.01
+  skeletonJSON: {fileID: 4900000, guid: f5544d08fdbcee74f8d86f3f4f08216f, type: 3}
+  isUpgradingBlendModeMaterials: 0
+  blendModeMaterials:
+    requiresBlendModeMaterials: 1
+    applyAdditiveMaterial: 1
+    additiveMaterials:
+    - pageName: Silver_Chest.png
+      material: {fileID: 2100000, guid: b4f44973afe748a40a0cf094a91fb696, type: 2}
+    - pageName: Silver_Chest_2.png
+      material: {fileID: 2100000, guid: d51c0bc0dcdd5734ca4ee468fcab166d, type: 2}
+    multiplyMaterials:
+    - pageName: Silver_Chest.png
+      material: {fileID: 2100000, guid: b74ea8e981fc5164f9b72236a48016a1, type: 2}
+    - pageName: Silver_Chest_2.png
+      material: {fileID: 2100000, guid: 97ebff4a0cd93c34bb8a7cba55bba4ca, type: 2}
+    screenMaterials: []
+  skeletonDataModifiers: []
+  fromAnimation: []
+  toAnimation: []
+  duration: []
+  defaultMix: 0.2
+  controller: {fileID: 0}

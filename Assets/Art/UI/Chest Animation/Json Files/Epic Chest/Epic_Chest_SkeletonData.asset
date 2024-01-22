@@ -1,3 +1,39 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:93fe57e425a25e1ad0007f29fe17d94ef851d1d8639679d6b153a5815c974d2c
-size 1371
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
+  m_Name: Epic_Chest_SkeletonData
+  m_EditorClassIdentifier: 
+  atlasAssets:
+  - {fileID: 11400000, guid: e338fc67779df7348887664147dfad45, type: 2}
+  scale: 0.01
+  skeletonJSON: {fileID: 4900000, guid: ab46d8d6946251943867715e26f5b5bc, type: 3}
+  isUpgradingBlendModeMaterials: 0
+  blendModeMaterials:
+    requiresBlendModeMaterials: 1
+    applyAdditiveMaterial: 1
+    additiveMaterials:
+    - pageName: Epic_Chest.png
+      material: {fileID: 2100000, guid: 6eb49497cc9cf4240a611c602d85367d, type: 2}
+    - pageName: Epic_Chest_2.png
+      material: {fileID: 2100000, guid: ed91a56437b107c4284450435925bee3, type: 2}
+    multiplyMaterials:
+    - pageName: Epic_Chest.png
+      material: {fileID: 2100000, guid: ae9fbbb0b6c0cc74b8eff9be4fa42df6, type: 2}
+    - pageName: Epic_Chest_2.png
+      material: {fileID: 2100000, guid: efa714b6e37591143b66036c657a98d4, type: 2}
+    screenMaterials: []
+  skeletonDataModifiers: []
+  fromAnimation: []
+  toAnimation: []
+  duration: []
+  defaultMix: 0.2
+  controller: {fileID: 0}

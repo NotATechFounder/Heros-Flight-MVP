@@ -1,3 +1,59 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b933dcc722d90b3a4a5351eac08f2f37e482d9932213ee87d7cf5533e1f0e27d
-size 3006
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10eba64904dee0d4b9e92896620da5bd, type: 3}
+  m_Name: Passive Ability Database
+  m_EditorClassIdentifier: 
+  _manualInsert: 0
+  Items:
+  - {fileID: 11400000, guid: 453ee50de16c9ec45bc14e200b047c44, type: 2}
+  - {fileID: 11400000, guid: be81b1273892cf04ebac983cb15a1ffd, type: 2}
+  - {fileID: 11400000, guid: 34a9ec59e9c1c71429bb4f864355243a, type: 2}
+  - {fileID: 11400000, guid: 3c19c09a50d5d48458c78cc00f7d88c9, type: 2}
+  - {fileID: 11400000, guid: 959585b406267a04ca8f5ca30af3fb7a, type: 2}
+  - {fileID: 11400000, guid: 9648bc1e615104d4f8f2097b3390a032, type: 2}
+  - {fileID: 11400000, guid: 3e46e26aafcd93841a4a292b35bce138, type: 2}
+  - {fileID: 11400000, guid: 423140420dbba2649a70ca2e729b8691, type: 2}
+  - {fileID: 11400000, guid: 2bd96164996446a4885896edaa6f4c89, type: 2}
+  - {fileID: 11400000, guid: 84d69a377db33f74988a2a2bb08ae76c, type: 2}
+  - {fileID: 11400000, guid: a7f4526a20ef94648bfa6ffc8ed6ea17, type: 2}
+  - {fileID: 11400000, guid: 5433b5d471bb0ad4a94955bed897c7e4, type: 2}
+  - {fileID: 11400000, guid: b84379004fc972445b7804cbfffaee2a, type: 2}
+  - {fileID: 11400000, guid: ee9d711e2530fdf4fa80714b8bad50d7, type: 2}
+  scriptableObjectDatabaseItems:
+  - ID: DuckDodgeDip
+    scriptableObject: {fileID: 11400000, guid: 453ee50de16c9ec45bc14e200b047c44, type: 2}
+  - ID: FlameStrike
+    scriptableObject: {fileID: 11400000, guid: be81b1273892cf04ebac983cb15a1ffd, type: 2}
+  - ID: Flex
+    scriptableObject: {fileID: 11400000, guid: 34a9ec59e9c1c71429bb4f864355243a, type: 2}
+  - ID: FrostStrike
+    scriptableObject: {fileID: 11400000, guid: 3c19c09a50d5d48458c78cc00f7d88c9, type: 2}
+  - ID: FullCounter
+    scriptableObject: {fileID: 11400000, guid: 959585b406267a04ca8f5ca30af3fb7a, type: 2}
+  - ID: GreedIsGood
+    scriptableObject: {fileID: 11400000, guid: 9648bc1e615104d4f8f2097b3390a032, type: 2}
+  - ID: HeartThief
+    scriptableObject: {fileID: 11400000, guid: 3e46e26aafcd93841a4a292b35bce138, type: 2}
+  - ID: IfritsArmor
+    scriptableObject: {fileID: 11400000, guid: 423140420dbba2649a70ca2e729b8691, type: 2}
+  - ID: LichArmor
+    scriptableObject: {fileID: 11400000, guid: 2bd96164996446a4885896edaa6f4c89, type: 2}
+  - ID: LightningStrike
+    scriptableObject: {fileID: 11400000, guid: 84d69a377db33f74988a2a2bb08ae76c, type: 2}
+  - ID: LuckyHit
+    scriptableObject: {fileID: 11400000, guid: a7f4526a20ef94648bfa6ffc8ed6ea17, type: 2}
+  - ID: Multicast
+    scriptableObject: {fileID: 11400000, guid: 5433b5d471bb0ad4a94955bed897c7e4, type: 2}
+  - ID: Reflect
+    scriptableObject: {fileID: 11400000, guid: b84379004fc972445b7804cbfffaee2a, type: 2}
+  - ID: Sacrifice
+    scriptableObject: {fileID: 11400000, guid: ee9d711e2530fdf4fa80714b8bad50d7, type: 2}

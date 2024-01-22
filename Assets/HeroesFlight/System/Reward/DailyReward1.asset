@@ -1,3 +1,49 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5fffb923f2344432c823282e1a3bf07170e9e92fd764b44cefa9325f66eafd6c
-size 1593
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6576a3f6ed7c14e4a822b4608d69b8f3, type: 3}
+  m_Name: DailyReward1
+  m_EditorClassIdentifier: 
+  dayRewards:
+  - rewards:
+    - rewardObject: {fileID: 11400000, guid: 8d0ec58ecf1979443a658f0a32d4cc8f, type: 2}
+      amount: 1
+      rarity: 2
+  - rewards:
+    - rewardObject: {fileID: 11400000, guid: dd8d5903153616446a88d87699751900, type: 2}
+      amount: 10
+      rarity: 0
+  - rewards:
+    - rewardObject: {fileID: 11400000, guid: 3ea6aec948d8d354ca5ebadec62ab4f5, type: 2}
+      amount: 100
+      rarity: 2
+  - rewards:
+    - rewardObject: {fileID: 11400000, guid: 3ea6aec948d8d354ca5ebadec62ab4f5, type: 2}
+      amount: 150
+      rarity: 0
+  - rewards:
+    - rewardObject: {fileID: 11400000, guid: 4dcc5dc169802b249815cc2b45daa42a, type: 2}
+      amount: 1
+      rarity: 2
+  - rewards:
+    - rewardObject: {fileID: 11400000, guid: a104e777df70d4c408c443aae42853aa, type: 2}
+      amount: 1
+      rarity: 2
+  - rewards:
+    - rewardObject: {fileID: 11400000, guid: 4202633ab9c9a1944a23a6de5ad07636, type: 2}
+      amount: 1
+      rarity: 3
+    - rewardObject: {fileID: 11400000, guid: 076b7ea03b0bca641aa9467494d8002e, type: 2}
+      amount: 1
+      rarity: 2
+    - rewardObject: {fileID: 11400000, guid: 3ea6aec948d8d354ca5ebadec62ab4f5, type: 2}
+      amount: 100
+      rarity: 0

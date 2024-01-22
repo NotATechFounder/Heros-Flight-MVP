@@ -1,3 +1,62 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:39c27697724681dd1b29bab7ccde9d3a95a9d1158de441df719258319604e220
-size 1818
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2545769828072606370
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7129707892411140551}
+  - component: {fileID: 2846930543662592950}
+  m_Layer: 0
+  m_Name: WorldManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7129707892411140551
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2545769828072606370}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1042.169, y: 958.2135, z: -10.052683}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2846930543662592950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2545769828072606370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fb3ea3ea95477e478134d07bd3b0a06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worlds:
+  - {fileID: 11400000, guid: 517462acd96fce24fbbfe10f224b3614, type: 2}
+  - {fileID: 11400000, guid: 882022c4d90392744898d04ccf0cadee, type: 2}
+  - {fileID: 11400000, guid: d113be24b6c2e784e8b0b675bf117093, type: 2}
+  selectedWorld: 0
+  data:
+    worldInfoData:
+    - worldType: 0
+      maxLevelReached: 0
+      isUnlocked: 1
+    - worldType: 1
+      maxLevelReached: 0
+      isUnlocked: 0
+    - worldType: 2
+      maxLevelReached: 0
+      isUnlocked: 0

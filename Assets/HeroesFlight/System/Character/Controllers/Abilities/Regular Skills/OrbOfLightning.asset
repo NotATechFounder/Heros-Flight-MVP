@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4ce8e5826fe940ec41192974252f8aa9b01e1f3e928005069a3ebac9f764df89
-size 785
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aee05d2256a9894b9490d5e27c0753b, type: 3}
+  m_Name: OrbOfLightning
+  m_EditorClassIdentifier: 
+  abilityVisualData:
+    regularActiveType: 0
+    regularActiveAbilityType: 1
+    icon: {fileID: 21300000, guid: d69dacb3a30ebe74783eaf5f528bc21e, type: 3}
+    displayName: Orb Of Lightning
+    description: Summon an ancient orb to shoot enemies
+  duration: 10
+  cooldown: 5
+  passiveActiveAbility: {fileID: 6972777895503530555, guid: c1ef46551744a2543b195b835f6bac53,
+    type: 3}

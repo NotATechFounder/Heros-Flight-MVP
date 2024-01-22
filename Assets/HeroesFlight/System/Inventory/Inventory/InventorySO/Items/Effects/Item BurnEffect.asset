@@ -1,3 +1,28 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:48704cc7908f6fa8ce0c52557fe7a2bf3a86be7c7c37b40e54d2c6b2c696a1ca
-size 717
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e38f18e0478c4de2affe569121cb0f6c, type: 3}
+  m_Name: Item BurnEffect
+  m_EditorClassIdentifier: 
+  calculationType: 1
+  effectType: 0
+  visual: {fileID: 134572, guid: 7c1b627e705f998448adac9689c44505, type: 3}
+  durationType: 0
+  duration: 10
+  isStackable: 1
+  canBeReApplied: 1
+  data:
+    ProcChance:
+      StartValue: 100
+      IncreasePerLvl: 0
+    Damage:
+      StartValue: 2.5
+      IncreasePerLvl: 2.5

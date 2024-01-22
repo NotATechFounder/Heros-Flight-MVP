@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7ccace414fd620a5c69e3face689e7c8545ba8ba2a2939ea8b905f386844f9b1
-size 608
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aabd662e8c3c8284db03521369826eeb, type: 3}
+  m_Name: PasiveAbility
+  m_EditorClassIdentifier: 
+  tutorialState: 2
+  tutorialVisualData:
+    title: Passive Ability
+    steps:
+    - description: You received a passive ability. You can have a max of three during
+        the run. They are always active.

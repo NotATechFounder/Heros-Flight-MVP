@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:da67cebd6d4c0187e6d24069dfb045fff665198ffb500f20dc8d8d0a38129049
-size 544
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aabd662e8c3c8284db03521369826eeb, type: 3}
+  m_Name: Fly
+  m_EditorClassIdentifier: 
+  tutorialState: 0
+  tutorialVisualData:
+    title: Movement
+    steps:
+    - description: Use the joystick to fly your hero. Try and fly to the light!

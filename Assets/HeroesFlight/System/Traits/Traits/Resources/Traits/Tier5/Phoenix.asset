@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3f1890f79e80fcd227d6f6eed34f6d6541f9dec7c16ccb172c0cd7fa3f323207
-size 789
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0c8e64447544703987e53567f92a1e5, type: 3}
+  m_Name: Phoenix
+  m_EditorClassIdentifier: 
+  id: Phoenix
+  requiredCharacterLvl: 30
+  blockingFeatId: Greedisgood+
+  image: {fileID: 21300000, guid: 9272a9ee78c44064885e383f31cc5761, type: 3}
+  description: Revives once per run with + {0} % HP
+  tier: 5
+  slot: 4
+  currency: {fileID: 11400000, guid: f27107a93061f6745ba9a40c63d0b63a, type: 2}
+  cost: 11000
+  effect: {fileID: 11400000, guid: 489cd9c47a4161e498cd8566cf3467a6, type: 2}

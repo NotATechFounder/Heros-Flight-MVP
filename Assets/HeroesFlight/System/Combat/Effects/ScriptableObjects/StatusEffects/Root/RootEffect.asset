@@ -1,3 +1,28 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:bde59af8799e8f1eb89c48da446b465160bcdd431bde8dc3aaf8e022ed316019
-size 721
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e014df2d85304a96890b3529a04bf197, type: 3}
+  m_Name: RootEffect
+  m_EditorClassIdentifier: 
+  effectType: 2
+  calculationType: 1
+  visual: {fileID: 516619353808813170, guid: 514fae14cc1d32c4eb4e39ab363e8c2a, type: 3}
+  durationType: 0
+  duration: 5
+  isStackable: 0
+  canBeReApplied: 0
+  Data:
+    ProcChance:
+      StartValue: 5
+      IncreasePerLvl: 2.5
+    Damage:
+      StartValue: 1
+      IncreasePerLvl: 2.5

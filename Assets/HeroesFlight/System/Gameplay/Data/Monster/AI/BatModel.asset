@@ -1,3 +1,34 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:41c81a33a5bbc0ce8b65e39e827cb48544f8790a0206557f3680e7c53154aeab
-size 807
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e6dc22417b04595b43c0ceec9c5dae2, type: 3}
+  m_Name: BatModel
+  m_EditorClassIdentifier: 
+  enemyType: 0
+  enemySpawmType: 1
+  wanderingDistance: 4
+  agroDistance: 15.07
+  agroDuration: 5
+  attacksInteruptable: 1
+  useKnockback: 1
+  knockBackForce: 5
+  knockBackDuration: 0.1
+  deathAniamtionSpeedModifier: 1
+  aiData:
+    attackSpeed: 5
+    moveSpeed: 5.5
+    attackRange: 4
+    defense: 0
+    criticalHitChance: 5
+    criticalHitDamage:
+      min: 1.2
+      max: 1.2
+    aggravatedSpeedModifier: 1

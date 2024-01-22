@@ -1,3 +1,28 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e9c21b4294d0cc320fa542ff354b2dd47079838f98d8a236f1c53ad6bd34799b
-size 789
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f486a565e7aa4a4492365abe1f9cd35, type: 3}
+  m_Name: Agility
+  m_EditorClassIdentifier: 
+  statAttributeType: 2
+  description: Increase your attack speed and flight speed by 5%, as well as dodge
+    by 2.5%.
+  icon: {fileID: 21300000, guid: 0279522e30275b844a9093cfd01e72b0, type: 3}
+  keyValues:
+  - statType: 4
+    statCalculationType: 1
+    valuePerSp: 1
+  - statType: 3
+    statCalculationType: 1
+    valuePerSp: 1
+  - statType: 5
+    statCalculationType: 1
+    valuePerSp: 0.5

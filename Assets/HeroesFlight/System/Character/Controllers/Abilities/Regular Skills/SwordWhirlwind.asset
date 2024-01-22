@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:76e3f74684c0ec8c5d25d633381fa79c68ab553ec26d5baae378b9411a0c34df
-size 778
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aee05d2256a9894b9490d5e27c0753b, type: 3}
+  m_Name: SwordWhirlwind
+  m_EditorClassIdentifier: 
+  abilityVisualData:
+    regularActiveType: 0
+    regularActiveAbilityType: 6
+    icon: {fileID: 21300000, guid: bde388a0b81f2d548a3bbeba74ecefdb, type: 3}
+    displayName: Sword Whirlwind
+    description: A whirlwind of slashes around you
+  duration: 0
+  cooldown: 5
+  passiveActiveAbility: {fileID: 7672884483136821891, guid: 6b4e64f18b8e0bb41bd30a85e8826f04,
+    type: 3}

@@ -1,3 +1,97 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c5f5c8706be0ac6a4ca5b3a291564dad75f8f5262a3aac17e7308c7988f54b80
-size 2243
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 138d23b997183ed4680d8aaf636fbdef, type: 3}
+  m_Name: common_ring_12
+  m_EditorClassIdentifier: 
+  ID: common_ring_12
+  Name: Warrior Ring
+  icon: {fileID: 21300000, guid: 84ef481f8be549e41803367b7a977c64, type: 3}
+  itemType: 0
+  description: Probably Aragorns ring
+  equipmentStar: 4
+  equipmentType: 2
+  statType: 8
+  heroType: 0
+  specialHeroEffect:
+    statType: 0
+    value: 0
+    statCalculationType: 0
+  uniqueStatModificationEffects:
+  - rarity: 2
+    statType: 9
+    curve:
+      animationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 5
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 30
+          value: 5
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      curveType: 1
+      minLevel: 0
+      minValue: 5
+      maxLevel: 30
+      maxValue: 5
+      customCurveKeys:
+        keys: []
+  - rarity: 3
+    statType: 9
+    curve:
+      animationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 5
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 40
+          value: 5
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      curveType: 1
+      minLevel: 0
+      minValue: 5
+      maxLevel: 40
+      maxValue: 5
+      customCurveKeys:
+        keys: []
+  uniqueCombatEffects: []

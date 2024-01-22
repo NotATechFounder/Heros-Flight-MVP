@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:40564fbf7a6b220799910fef712cbc6a75657de8a6552d665832303ef42f9939
-size 570
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: stretchyman_Atlas
+  m_EditorClassIdentifier: 
+  atlasFile: {fileID: 4900000, guid: 28bb5b41e2ad9854d9383931dfb9fcd7, type: 3}
+  materials:
+  - {fileID: 2100000, guid: 4b63a700916880349a9dfdc58c7e3f31, type: 2}

@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:baad35b9c34ddb57a4cd9c8a1f9726430d16c5a7ffbea959743e10533609c214
-size 769
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aee05d2256a9894b9490d5e27c0753b, type: 3}
+  m_Name: MagicShield
+  m_EditorClassIdentifier: 
+  abilityVisualData:
+    regularActiveType: 0
+    regularActiveAbilityType: 2
+    icon: {fileID: 21300000, guid: 1ed92896118676947be0e0d80db7fc3c, type: 3}
+    displayName: Magic Shield
+    description: Damage absorbing magic shield
+  duration: 10
+  cooldown: 5
+  passiveActiveAbility: {fileID: 2497808693062100193, guid: 2afaf978e780ba94ca1e7b5cb9676d73,
+    type: 3}

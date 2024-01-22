@@ -1,3 +1,273 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:10285c9bb87d467ad16bbdcfca5632c9b1cae1206c9fce3a671aad580cf89973
-size 8124
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &453401115226031975
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4313518401486904931}
+  - component: {fileID: 344917452546498585}
+  m_Layer: 0
+  m_Name: Epic10 Chest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4313518401486904931
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453401115226031975}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4009853031619221557}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &344917452546498585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453401115226031975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1674e4ae25652c41804bd28120f4ff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chestSO: {fileID: 11400000, guid: d2eb97eeaf6dc174bb22139acce9b2d4, type: 2}
+--- !u!1 &1067959149378194002
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8763731297185565484}
+  - component: {fileID: 2615554320831945805}
+  m_Layer: 0
+  m_Name: Epic Chest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8763731297185565484
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067959149378194002}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4009853031619221557}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2615554320831945805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067959149378194002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1674e4ae25652c41804bd28120f4ff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chestSO: {fileID: 11400000, guid: d9716650e54f3d047a65cc8b5fc009c2, type: 2}
+--- !u!1 &1647141583107894996
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4009853031619221557}
+  - component: {fileID: 515693874074849255}
+  m_Layer: 0
+  m_Name: Shop Data Holder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4009853031619221557
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647141583107894996}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1951.7286, y: 464.91605, z: -4.400727}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5663620427097369158}
+  - {fileID: 332780047888989549}
+  - {fileID: 8763731297185565484}
+  - {fileID: 4313518401486904931}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &515693874074849255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647141583107894996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cca9085879359a4683a71f38986fe3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chests:
+  - {fileID: 3951896349650226880}
+  - {fileID: 4738835797788544583}
+  - {fileID: 2615554320831945805}
+  - {fileID: 344917452546498585}
+  goldPack:
+    goldPacks:
+    - goldPackType: 0
+      cost: 20
+      reward:
+        rewardObject: {fileID: 11400000, guid: f27107a93061f6745ba9a40c63d0b63a, type: 2}
+        amount: 1100
+        rarity: 0
+    - goldPackType: 1
+      cost: 80
+      reward:
+        rewardObject: {fileID: 11400000, guid: f27107a93061f6745ba9a40c63d0b63a, type: 2}
+        amount: 5800
+        rarity: 0
+    - goldPackType: 2
+      cost: 250
+      reward:
+        rewardObject: {fileID: 11400000, guid: f27107a93061f6745ba9a40c63d0b63a, type: 2}
+        amount: 17300
+        rarity: 0
+  regularChestRewardHandler:
+    key: RegularChest
+    rewardCount: 2
+    timeType: 1
+    nextRewardTimeAdded: 1
+    checkingInterval: 0.5
+    data:
+      lastRewardTime: 
+      rewardCount: 0
+  goldChestRewardHandler:
+    key: GoldChest
+    rewardCount: 2
+    timeType: 1
+    nextRewardTimeAdded: 1
+    checkingInterval: 0.5
+    data:
+      lastRewardTime: 
+      rewardCount: 0
+--- !u!1 &4093687119863622627
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5663620427097369158}
+  - component: {fileID: 3951896349650226880}
+  m_Layer: 0
+  m_Name: Regular Chest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5663620427097369158
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4093687119863622627}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4009853031619221557}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3951896349650226880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4093687119863622627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1674e4ae25652c41804bd28120f4ff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chestSO: {fileID: 11400000, guid: 74a810448567cb4429ae48315b530e8f, type: 2}
+--- !u!1 &4163814074635161970
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 332780047888989549}
+  - component: {fileID: 4738835797788544583}
+  m_Layer: 0
+  m_Name: Rare Chest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &332780047888989549
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4163814074635161970}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4009853031619221557}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4738835797788544583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4163814074635161970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1674e4ae25652c41804bd28120f4ff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chestSO: {fileID: 11400000, guid: 5183dcc0bcedfba45808e4c6677f13bb, type: 2}

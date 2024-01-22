@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:790f00c555fa985dd554c241d58d4a828337efd7abf36f09fd68d89b340e501a
-size 813
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 684ac1df1857b8147900490fc0f6fa38, type: 3}
+  m_Name: Ifrits Armor
+  m_EditorClassIdentifier: 
+  regularAbilityVisualData:
+    passiveActiveAbilityType: 4
+    displayName: Ifrits Armor
+    icon: {fileID: 21300000, guid: 72f1e7ef91d8a2a419598fd7017b775d, type: 3}
+    description: Taking a hit has a chance to inflict Burn on the enemy
+  combatEffects:
+  - id: Ifrits Armor
+    applyType: 0
+    visual: {fileID: 0}
+    effectToApply:
+    - {fileID: 11400000, guid: 9ccc2825de3e55a439d9bc072158000c, type: 2}

@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c38bd672ecf19c2ab3c905f853ab851a63733ca851251242f7bcc1feacb28cd7
-size 780
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aee05d2256a9894b9490d5e27c0753b, type: 3}
+  m_Name: HeavenStab
+  m_EditorClassIdentifier: 
+  abilityVisualData:
+    regularActiveType: 0
+    regularActiveAbilityType: 0
+    icon: {fileID: 21300000, guid: 243d9fa30d8deca428453d4bcd35d4f7, type: 3}
+    displayName: Heaven Stab
+    description: Stab enemies in front with a heaven's spear
+  duration: 0
+  cooldown: 5
+  passiveActiveAbility: {fileID: 5718446856236103003, guid: 65c5e788e7df55e44b64111d866618f5,
+    type: 3}

@@ -1,3 +1,50 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b18619abcd4261b6bb130e352693e1ef57f037cd7e6701e042e737549cfd314c
-size 1509
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6382126441694769164
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1838841656973148886}
+  - component: {fileID: 4910496021256111813}
+  m_Layer: 0
+  m_Name: RewardDataHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1838841656973148886
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6382126441694769164}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.4225507, y: -8.992298, z: -0.11173795}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4910496021256111813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6382126441694769164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdd16b86577c0884cb02aebf7552a3b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeType: 0
+  nextRewardTimeAdded: 30
+  checkingInterval: 1
+  dailyRewardSO: {fileID: 11400000, guid: c7233c8d03bcbbd4dbacb6f7cb8cb808, type: 2}

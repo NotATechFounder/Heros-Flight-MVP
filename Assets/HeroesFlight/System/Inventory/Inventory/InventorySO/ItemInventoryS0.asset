@@ -1,3 +1,104 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4299dc96d3e919dc915605fc5b6787d427dc2e239f5eecb2f58c3a47b9e30789
-size 2702
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fccb66b01aee3d4998f89137211f480, type: 3}
+  m_Name: ItemInventoryS0
+  m_EditorClassIdentifier: 
+  max: 100
+  inventoryID: ItemInventory
+  inventoryData:
+    equipmentData:
+    - ID: common_necklace_1
+      value: 1
+      instanceID: Item :55d1cbf2-381b-4278-91be-5ac6de1cda1e
+      rarity: 1
+      eqquiped: 0
+    - ID: common_necklace_2
+      value: 1
+      instanceID: Item :ecced787-446d-4010-9f3b-9bf162133462
+      rarity: 1
+      eqquiped: 0
+    - ID: common_necklace_3
+      value: 1
+      instanceID: Item :b6c21906-6cef-4e3c-aa10-0e1c90b234d9
+      rarity: 3
+      eqquiped: 1
+    - ID: overall_cloak_1
+      value: 1
+      instanceID: Item :03f331e1-0ad0-436f-9f75-01c6c6f82d5b
+      rarity: 0
+      eqquiped: 0
+    - ID: overall_cloak_2
+      value: 1
+      instanceID: Item :cc6c144f-9343-4825-9796-5d510cd250a9
+      rarity: 1
+      eqquiped: 0
+    - ID: overall_cloak_3
+      value: 1
+      instanceID: Item :5949cc3f-5d1f-4392-a4dc-7b3151240dce
+      rarity: 2
+      eqquiped: 1
+    - ID: belt_common_1
+      value: 1
+      instanceID: Item :27a22f5e-97a5-4a8f-98dd-3fc7bba81b83
+      rarity: 1
+      eqquiped: 0
+    - ID: belt_common_2
+      value: 1
+      instanceID: Item :9475d220-27e8-48ab-8fe5-8ab3f695219a
+      rarity: 0
+      eqquiped: 0
+    - ID: belt_common_3
+      value: 1
+      instanceID: Item :316d2bb5-fc21-4b49-acf3-a59f0ef1f451
+      rarity: 3
+      eqquiped: 0
+    - ID: common_ring_1
+      value: 1
+      instanceID: Item :f5c22e3d-189d-4763-8241-9bedf907ddf2
+      rarity: 0
+      eqquiped: 0
+    - ID: common_ring_2
+      value: 1
+      instanceID: Item :0ee34786-b380-4a04-9cba-1a3846838275
+      rarity: 1
+      eqquiped: 0
+    - ID: common_ring_3
+      value: 1
+      instanceID: Item :ed2e8287-b574-44f3-9994-ab5c7474a122
+      rarity: 3
+      eqquiped: 0
+    - ID: weapon_lance_1
+      value: 1
+      instanceID: Item :f56fbc15-b190-4008-8d98-2f79eda35a01
+      rarity: 2
+      eqquiped: 0
+    - ID: weapon_lance_2
+      value: 1
+      instanceID: Item :cbb9aa2e-9eb3-4247-a5aa-0d538921a69b
+      rarity: 0
+      eqquiped: 0
+    - ID: weapon_lance_3
+      value: 1
+      instanceID: Item :377ab622-b329-4075-b5c1-3a6e089da84e
+      rarity: 3
+      eqquiped: 1
+    materialData:
+    - ID: M_Weapon
+      value: 22
+    - ID: M_Armour
+      value: 22
+    - ID: M_Belt
+      value: 22
+    - ID: M_Necklace
+      value: 22
+    - ID: M_Ring
+      value: 22

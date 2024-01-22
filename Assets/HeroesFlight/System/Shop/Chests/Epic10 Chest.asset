@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:329ced6dae9313b7d7e7e72dc4f48cc8d584d24ca235207c2466fdeb93f9fecd
-size 669
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06ef0aa5d0580774c8f5ed5a4cd5b7e7, type: 3}
+  m_Name: Epic10 Chest
+  m_EditorClassIdentifier: 
+  chestType: 3
+  chestInfo: Contains <color=#e865fb>Epic</color>,  <color=yellow>Legendary</color>
+    equipment
+  rewards: {fileID: 11400000, guid: 5c6ddd8bc1f41734d879081aa9b94f10, type: 2}
+  price: 1000
+  timeType: 0
+  nextRewardTimeAdded: 20
+  checkingInterval: 2

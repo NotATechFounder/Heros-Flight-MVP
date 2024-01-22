@@ -1,3 +1,28 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5212550dbed272da81c6bbd19b9bf912ce242f255ec1531f548e7161026c839a
-size 710
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f311a95bdf84f2cba76494bdf15dcd8, type: 3}
+  m_Name: PoisonEffect
+  m_EditorClassIdentifier: 
+  effectType: 3
+  calculationType: 1
+  visual: {fileID: 135720, guid: efbd9c58ba892da4ca3fa50dcfcd894d, type: 3}
+  durationType: 0
+  duration: 10
+  isStackable: 1
+  canBeReApplied: 1
+  Data:
+    ProcChance:
+      StartValue: 5
+      IncreasePerLvl: 2.5
+    Damage:
+      StartValue: 3
+      IncreasePerLvl: 2

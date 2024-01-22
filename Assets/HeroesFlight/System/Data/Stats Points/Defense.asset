@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3f599763ee4d80f1c7fbdacc1ed9d74e0357640ca9d6c5cbdb6df349776feafd
-size 626
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f486a565e7aa4a4492365abe1f9cd35, type: 3}
+  m_Name: Defense
+  m_EditorClassIdentifier: 
+  statAttributeType: 3
+  description: Increase your resistance to damage by 2%.
+  icon: {fileID: 21300000, guid: f61bb60ba81a0d240975f6ee43525d88, type: 3}
+  keyValues:
+  - statType: 6
+    statCalculationType: 1
+    valuePerSp: 2

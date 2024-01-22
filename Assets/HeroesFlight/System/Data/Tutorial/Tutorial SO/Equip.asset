@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e29665a0cda96fe273aa03f292ac998587afad66f84adf427c8562c783e88a6e
-size 654
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aabd662e8c3c8284db03521369826eeb, type: 3}
+  m_Name: Equip
+  m_EditorClassIdentifier: 
+  tutorialState: 6
+  tutorialVisualData:
+    title: Equipments
+    steps:
+    - description: "Nice work finishing the in-game tutorial. Here is a reward. Now
+        let\u2019s equip it!"
+    - description: Click to select the item and then 'equip' to use it.

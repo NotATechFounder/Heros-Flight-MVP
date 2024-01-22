@@ -1,3 +1,72 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e6837f3fc5560b6acdebc6329724c29932839ad89c6749ac7ef6328e9430ebd6
-size 3767
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bc8f4b2143b5394e97812c073cdf1c1, type: 3}
+  m_Name: Ares
+  m_EditorClassIdentifier: 
+  benevolenceName: 'Ares '
+  benevolenceType: 1
+  benevolenceTarget: 0
+  benevolenceKeyValues:
+  - key: LifeSteal
+    Value: 1
+  - key: DamageInc
+    Value: 120
+  godsBenevolenceAfterEffects:
+  - increasePerStack: 0.2
+    keyValue:
+      key: LifeSteal
+      Value: 0.5
+  effectPrefab: {fileID: 8307841013805952443, guid: 3f98231119f1aa34da12fe5ee653ffe8,
+    type: 3}
+  benevolenceVisualSO:
+    benevolenceType: 1
+    benevolenceDescription: "For the next round, a large black sword will float above
+      the hero that represents Ares' rage. Visually, the sword will swing when mobs
+      are within it\u2019s very large attack range. Ares sword attack range (y axis)
+      is 2x wider with lifesteal per kill (100 or 1% of your HP per enemy hit, whichever
+      is higher), does 120% of your damage and hits all mobs within range.\r\n\r\nIf
+      the round is completed successfully, Ares powers will permanently be imbued
+      into the player. Each attack will now do lifesteal starting from 0.5% and incrementally
+      increasing by 0.2% by the number of stacks."
+    benevolenceFrame: {fileID: 21300000, guid: e47d132a96ed7304c8f6927b0e6309a1, type: 3}
+    benevolencePuzzles:
+    - pieces:
+      - {fileID: -1560386111, guid: ea7442030fe8fab4ba0a01b7919dc365, type: 3}
+      - {fileID: -374956143, guid: ea7442030fe8fab4ba0a01b7919dc365, type: 3}
+      - {fileID: -1491087422, guid: ea7442030fe8fab4ba0a01b7919dc365, type: 3}
+      - {fileID: -744242198, guid: ea7442030fe8fab4ba0a01b7919dc365, type: 3}
+      - {fileID: -880842597, guid: ea7442030fe8fab4ba0a01b7919dc365, type: 3}
+      - {fileID: 72067063, guid: ea7442030fe8fab4ba0a01b7919dc365, type: 3}
+      - {fileID: 1554608884, guid: ea7442030fe8fab4ba0a01b7919dc365, type: 3}
+      - {fileID: -1103017330, guid: ea7442030fe8fab4ba0a01b7919dc365, type: 3}
+      - {fileID: 1586147079, guid: ea7442030fe8fab4ba0a01b7919dc365, type: 3}
+    - pieces:
+      - {fileID: -900651389, guid: dc5547b4816e8a4408f71b510f2b7d6d, type: 3}
+      - {fileID: -1609765215, guid: dc5547b4816e8a4408f71b510f2b7d6d, type: 3}
+      - {fileID: 1145988215, guid: dc5547b4816e8a4408f71b510f2b7d6d, type: 3}
+      - {fileID: 1009844698, guid: dc5547b4816e8a4408f71b510f2b7d6d, type: 3}
+      - {fileID: -54664911, guid: dc5547b4816e8a4408f71b510f2b7d6d, type: 3}
+      - {fileID: -1402541293, guid: dc5547b4816e8a4408f71b510f2b7d6d, type: 3}
+      - {fileID: -1520066321, guid: dc5547b4816e8a4408f71b510f2b7d6d, type: 3}
+      - {fileID: -1710660207, guid: dc5547b4816e8a4408f71b510f2b7d6d, type: 3}
+      - {fileID: -308846627, guid: dc5547b4816e8a4408f71b510f2b7d6d, type: 3}
+    - pieces:
+      - {fileID: 2056916052, guid: e878688b486c52d4cb346b3e7d8c2463, type: 3}
+      - {fileID: -1414391697, guid: e878688b486c52d4cb346b3e7d8c2463, type: 3}
+      - {fileID: -703141982, guid: e878688b486c52d4cb346b3e7d8c2463, type: 3}
+      - {fileID: -757726939, guid: e878688b486c52d4cb346b3e7d8c2463, type: 3}
+      - {fileID: -1604952972, guid: e878688b486c52d4cb346b3e7d8c2463, type: 3}
+      - {fileID: -1358185256, guid: e878688b486c52d4cb346b3e7d8c2463, type: 3}
+      - {fileID: -1566151856, guid: e878688b486c52d4cb346b3e7d8c2463, type: 3}
+      - {fileID: -1740598949, guid: e878688b486c52d4cb346b3e7d8c2463, type: 3}
+      - {fileID: 1045583982, guid: e878688b486c52d4cb346b3e7d8c2463, type: 3}
+    completedSfxKey: AresPuzzle

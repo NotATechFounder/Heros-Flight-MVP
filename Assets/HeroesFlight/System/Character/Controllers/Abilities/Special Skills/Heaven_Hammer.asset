@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:66c604b7478bf9233568c9db5764eb1b43aa176e037943e0c195337b41b30e84
-size 783
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aee05d2256a9894b9490d5e27c0753b, type: 3}
+  m_Name: Heaven_Hammer
+  m_EditorClassIdentifier: 
+  abilityVisualData:
+    regularActiveType: 1
+    regularActiveAbilityType: 11
+    icon: {fileID: 21300000, guid: fd6644b4cd4a502479628628d792cfbe, type: 3}
+    displayName: Heavens Hammer
+    description: Smash down your foes with a holy hammer
+  duration: 0
+  cooldown: 5
+  passiveActiveAbility: {fileID: 5597020239399667961, guid: 318567544b513a14aabdc63cea602bc4,
+    type: 3}

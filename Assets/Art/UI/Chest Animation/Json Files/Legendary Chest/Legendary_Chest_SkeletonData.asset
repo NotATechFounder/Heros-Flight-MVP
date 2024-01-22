@@ -1,3 +1,39 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f25ffc325d5da598f7d4a89e2df056287a53e72870726d3d9dbe74a0bfa26545
-size 1396
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
+  m_Name: Legendary_Chest_SkeletonData
+  m_EditorClassIdentifier: 
+  atlasAssets:
+  - {fileID: 11400000, guid: e6cb0b3af05024147b408109d8d966b1, type: 2}
+  scale: 0.01
+  skeletonJSON: {fileID: 4900000, guid: d50e95dae8586af42a497ddc0cf820b2, type: 3}
+  isUpgradingBlendModeMaterials: 0
+  blendModeMaterials:
+    requiresBlendModeMaterials: 1
+    applyAdditiveMaterial: 1
+    additiveMaterials:
+    - pageName: Legendary_Chest.png
+      material: {fileID: 2100000, guid: a31aad4578b7b86449df187cb9a86aa3, type: 2}
+    - pageName: Legendary_Chest_2.png
+      material: {fileID: 2100000, guid: a16f73fbda672e4478a7f54c6b446bb6, type: 2}
+    multiplyMaterials:
+    - pageName: Legendary_Chest.png
+      material: {fileID: 2100000, guid: 2a06adebb42f7c240ae2e02e9a74f611, type: 2}
+    - pageName: Legendary_Chest_2.png
+      material: {fileID: 2100000, guid: 982062089c210d440a2e4bbd9c9769fc, type: 2}
+    screenMaterials: []
+  skeletonDataModifiers: []
+  fromAnimation: []
+  toAnimation: []
+  duration: []
+  defaultMix: 0.2
+  controller: {fileID: 0}

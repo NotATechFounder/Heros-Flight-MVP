@@ -1,3 +1,80 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:707970f77146b1398bf56c3c3035f5e9d54b4b59032e31ece10f7679db005dfc
-size 1764
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc77aa23aff3fee4ca0c99ff0f1889fc, type: 3}
+  m_Name: Damage
+  m_EditorClassIdentifier: 
+  itemEffectType: 0
+  buffInfo:
+    effectName: 
+    effectSuffix: 
+  effectRarityStats:
+  - rarity: 0
+    statCurve:
+      animationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      curveType: 0
+      minLevel: 0
+      minValue: 0
+      maxLevel: 0
+      maxValue: 0
+  - rarity: 1
+    statCurve:
+      animationCurve:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 0
+        m_PostInfinity: 0
+        m_RotationOrder: 0
+      curveType: 0
+      minLevel: 0
+      minValue: 0
+      maxLevel: 0
+      maxValue: 0
+  - rarity: 2
+    statCurve:
+      animationCurve:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 0
+        m_PostInfinity: 0
+        m_RotationOrder: 0
+      curveType: 0
+      minLevel: 0
+      minValue: 0
+      maxLevel: 0
+      maxValue: 0
+  - rarity: 3
+    statCurve:
+      animationCurve:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 0
+        m_PostInfinity: 0
+        m_RotationOrder: 0
+      curveType: 0
+      minLevel: 0
+      minValue: 0
+      maxLevel: 0
+      maxValue: 0

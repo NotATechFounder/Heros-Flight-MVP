@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:86bf7ea6b7119bff9eec7a62a4f54c44a85e35f130ba3d0a38e04b7df74190ff
-size 620
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f486a565e7aa4a4492365abe1f9cd35, type: 3}
+  m_Name: Vatality
+  m_EditorClassIdentifier: 
+  statAttributeType: 1
+  description: Increase your total health by 250
+  icon: {fileID: 21300000, guid: 8ee45de119e5e2945834c0bbe32582c2, type: 3}
+  keyValues:
+  - statType: 2
+    statCalculationType: 0
+    valuePerSp: 50

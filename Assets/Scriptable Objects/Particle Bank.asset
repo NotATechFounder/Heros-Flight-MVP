@@ -1,3 +1,112 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d0da704ffd69b6f3f0a4849a698f2c38bdc89eb5295ced7ce1438fa8b90ce9a5
-size 3289
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9ad212123436b54f976c5c241a6c118, type: 3}
+  m_Name: Particle Bank
+  m_EditorClassIdentifier: 
+  _valueList:
+  - Key: GreenBlood
+    Asset: {fileID: 4165919791854745927, guid: 046dce7fc6ae41249bbdc48af17efd40, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: Tagon_Attack_Normal
+    Asset: {fileID: 3102584463401386459, guid: 47efa4bbc1c3b944cb6a48910fd4a7f7, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: Tagon_Attack_Crit
+    Asset: {fileID: 3102584463401386459, guid: 47efa4bbc1c3b944cb6a48910fd4a7f7, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: Tagon_Ult_Normal
+    Asset: {fileID: 5317095592980956069, guid: f36c03a4b8538f342bcdd663bd77ee5d, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: Tagon_Ult_Crit
+    Asset: {fileID: 3102584463401386459, guid: 47efa4bbc1c3b944cb6a48910fd4a7f7, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: Lancer_Attack_Normal
+    Asset: {fileID: 8416150075800629982, guid: ae9d0ddb3aeb3b64ba9587f18603305f, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: Lancer_Attack_Crit
+    Asset: {fileID: 8416150075800629982, guid: ae9d0ddb3aeb3b64ba9587f18603305f, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: Lancer_Ult_Normal
+    Asset: {fileID: 8416150075800629982, guid: ae9d0ddb3aeb3b64ba9587f18603305f, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: Lancer_Ult_Crit
+    Asset: {fileID: 8416150075800629982, guid: ae9d0ddb3aeb3b64ba9587f18603305f, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: Enemy_Death
+    Asset: {fileID: 7811109538269548837, guid: 6e15ecb48ec25b04a95d4d5ca43bb163, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: Loot_Spawn
+    Asset: {fileID: 7343454926472845822, guid: 607f14c9fd1a5e14698e775345d3334c, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 0
+  - Key: Storm_Attack_Normal
+    Asset: {fileID: 1967212680905750871, guid: a18350248d89e904f82215a9fe00e786, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: Storm_Attack_Ult
+    Asset: {fileID: 8266647253989785494, guid: 1337c59db87154740b5deb4d0f8de98e, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: Chain_Lightning
+    Asset: {fileID: -6032822693211608336, guid: e38907cf08280554899af235347dfc57,
+      type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: BossSpawn
+    Asset: {fileID: 8110381784945280349, guid: e4bbb5bf93a931345b4ed37cc637f6bf, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1
+  - Key: CharacterRevival
+    Asset: {fileID: 1857262124478718682, guid: 49846e17c660e96469eebd1c742aa474, type: 3}
+    Info: 
+    IsGroup: 0
+    GroupAsset: []
+    ShowFoldOut: 1

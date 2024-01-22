@@ -1,3 +1,102 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:cd843b43847ba3efd00e3c3b331f7a17d0425ce2d2ef34d89563b4be614f0c88
-size 2454
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd6a297f58334476999a869f860e9b0, type: 3}
+  m_Name: weapon_lance_3
+  m_EditorClassIdentifier: 
+  ID: weapon_lance_3
+  Name: Magenta Lance
+  icon: {fileID: 21300000, guid: 7f444f07f72e8c5458da1d330feee277, type: 3}
+  itemType: 0
+  description: Battle in style with this vibrant choice.
+  equipmentStar: 1
+  equipmentType: 0
+  statType: 0
+  heroType: 0
+  specialHeroEffect:
+    statType: 0
+    value: 5
+    statCalculationType: 0
+  uniqueStatModificationEffects:
+  - rarity: 2
+    statType: 11
+    curve:
+      animationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 10
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 30
+          value: 10
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      curveType: 1
+      minLevel: 0
+      minValue: 10
+      maxLevel: 30
+      maxValue: 10
+      customCurveKeys:
+        keys: []
+  uniqueCombatEffects:
+  - rarity: 3
+    combatEffect:
+      id: weapon_lance_3
+      applyType: 0
+      visual: {fileID: 0}
+      effectToApply:
+      - {fileID: 11400000, guid: e5adfbcdb31fd9a408f2166e23ed45fa, type: 2}
+    curve:
+      animationCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0.05
+          inSlope: 0
+          outSlope: 0.005
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 40
+          value: 0.25
+          inSlope: 0.005
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      curveType: 1
+      minLevel: 0
+      minValue: 0.05
+      maxLevel: 40
+      maxValue: 0.25
+      customCurveKeys:
+        keys: []

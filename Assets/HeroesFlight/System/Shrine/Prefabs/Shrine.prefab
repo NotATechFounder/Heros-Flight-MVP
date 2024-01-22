@@ -1,3 +1,121 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:47e5f4378f694943eecf4281c30c3aed1a3be2ba0fa17690ab2035c371978a56
-size 3441
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2618630833007958627
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5830555526119021923}
+  - component: {fileID: 5282658417034009586}
+  - component: {fileID: 2758588569897768370}
+  - component: {fileID: 3212182858498959820}
+  m_Layer: 0
+  m_Name: Shrine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5830555526119021923
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2618630833007958627}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5282658417034009586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2618630833007958627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 633fa77b20766854f9f4874ce3cc2de3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  angelEffectManager: {fileID: 2758588569897768370}
+  healer: {fileID: 3212182858498959820}
+  shrineNPCFees:
+  - shrineNPCType: 0
+    unlocked: 1
+    startingRuneShards: 0
+    startingGems: 0
+    adsCount: 0
+    visitPerIncrement: 0
+    pricePecentageIncPerVisit: 0
+    pricePecentageIncPerLevel: 0
+    gemsPriceIncreasePerVisit: 50
+  - shrineNPCType: 3
+    unlocked: 1
+    startingRuneShards: 248
+    startingGems: 60
+    adsCount: 1
+    visitPerIncrement: 3
+    pricePecentageIncPerVisit: 30
+    pricePecentageIncPerLevel: 5
+    gemsPriceIncreasePerVisit: 50
+  - shrineNPCType: 1
+    unlocked: 1
+    startingRuneShards: 345
+    startingGems: 100
+    adsCount: 2
+    visitPerIncrement: 1
+    pricePecentageIncPerVisit: 30
+    pricePecentageIncPerLevel: 5
+    gemsPriceIncreasePerVisit: 50
+  - shrineNPCType: 2
+    unlocked: 1
+    startingRuneShards: 345
+    startingGems: 100
+    adsCount: 2
+    visitPerIncrement: 1
+    pricePecentageIncPerVisit: 30
+    pricePecentageIncPerLevel: 5
+    gemsPriceIncreasePerVisit: 50
+  - shrineNPCType: 4
+    unlocked: 1
+    startingRuneShards: 300
+    startingGems: 750
+    adsCount: 2
+    visitPerIncrement: 1
+    pricePecentageIncPerVisit: 10
+    pricePecentageIncPerLevel: 5
+    gemsPriceIncreasePerVisit: 50
+--- !u!114 &2758588569897768370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2618630833007958627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3f0cb033100e4f49a2293f332a6e0fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3212182858498959820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2618630833007958627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 483ffaef31b7d584fb27f4710db6e5a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healPercentage: 10

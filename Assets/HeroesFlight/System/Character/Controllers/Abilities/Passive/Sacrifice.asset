@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:afcb588c25c49cfd1be90dc892f1ba3131920b1ccc11428b95aad61c5a4f1e0e
-size 793
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 684ac1df1857b8147900490fc0f6fa38, type: 3}
+  m_Name: Sacrifice
+  m_EditorClassIdentifier: 
+  regularAbilityVisualData:
+    passiveActiveAbilityType: 10
+    displayName: Sacrifice
+    icon: {fileID: 21300000, guid: 8537bbf51eac5524896affe59fc0ea1d, type: 3}
+    description: The more HP lost, the more damage you deal
+  combatEffects:
+  - id: Sacrifice
+    applyType: 1
+    visual: {fileID: 0}
+    effectToApply:
+    - {fileID: 11400000, guid: a66b2d9549828284e80d78c4acda5c74, type: 2}

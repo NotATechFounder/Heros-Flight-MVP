@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:eefcd3828998f7266239094940d4be6cdaf5ea8e57465a39f1c7e3939513c1be
-size 490
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cbb1c93b91f41b9b5cd27037d1d70fb, type: 3}
+  m_Name: PumpedEffect
+  m_EditorClassIdentifier: 
+  traitType: 0
+  value: 3
+  canBeRerolled: 1
+  valueRange: {x: 1, y: 12}
+  targetStat: 0

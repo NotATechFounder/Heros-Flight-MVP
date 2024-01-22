@@ -1,3 +1,23 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f92d6efcb390b075495117ba6eadc330a54ea0c2c51aeb0a7f322f4802725445
-size 615
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b297a4ee142520418eff8b2fc8fcaca, type: 3}
+  m_Name: Regular Reward Pack
+  m_EditorClassIdentifier: 
+  numberOfRewards: 1
+  itemQueries:
+  - rarity: 0
+    chance: 70
+  - rarity: 1
+    chance: 50
+  - rarity: 2
+    chance: 10
+  itemDatabase: {fileID: 11400000, guid: b6e1b089be8053749915f36bf477b862, type: 2}

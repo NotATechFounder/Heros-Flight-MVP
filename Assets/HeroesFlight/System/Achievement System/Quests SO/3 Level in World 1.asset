@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:19132a76d5194cd4bebd6d586341a909919e3850a3f5275e8fffb3d7b4a8cddb
-size 574
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a22103a451ac344a86a0effa02918d5, type: 3}
+  m_Name: 3 Level in World 1
+  m_EditorClassIdentifier: 
+  ID: 1
+  questInfo: 3 Level in World 1
+  questType: 0
+  questGoal: 3
+  rewardPack: {fileID: 11400000, guid: f25863db0ac6be045b7b33de197610a8, type: 2}
+  worldType: 0

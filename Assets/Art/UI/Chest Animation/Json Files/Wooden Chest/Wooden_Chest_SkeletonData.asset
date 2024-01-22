@@ -1,3 +1,39 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:39a65601e7d40bfa1a7dd5c67a1f3233a0044e3a02bf5536f3d0a8c5919dfe2d
-size 1381
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
+  m_Name: Wooden_Chest_SkeletonData
+  m_EditorClassIdentifier: 
+  atlasAssets:
+  - {fileID: 11400000, guid: 144fce3633241424c8780289524207e3, type: 2}
+  scale: 0.01
+  skeletonJSON: {fileID: 4900000, guid: dd670539c10d57146b0f84cf53dd39f3, type: 3}
+  isUpgradingBlendModeMaterials: 0
+  blendModeMaterials:
+    requiresBlendModeMaterials: 1
+    applyAdditiveMaterial: 1
+    additiveMaterials:
+    - pageName: Wooden_Chest.png
+      material: {fileID: 2100000, guid: a485009b68aeaf9489fe6b9300b76883, type: 2}
+    - pageName: Wooden_Chest_2.png
+      material: {fileID: 2100000, guid: db90f1f9c24885440818be092f481602, type: 2}
+    multiplyMaterials:
+    - pageName: Wooden_Chest.png
+      material: {fileID: 2100000, guid: f1b836dfa62ba9349bf9f49ae1c364b4, type: 2}
+    - pageName: Wooden_Chest_2.png
+      material: {fileID: 2100000, guid: 85b3045e1b248204f8d98790bf5011f9, type: 2}
+    screenMaterials: []
+  skeletonDataModifiers: []
+  fromAnimation: []
+  toAnimation: []
+  duration: []
+  defaultMix: 0.2
+  controller: {fileID: 0}
