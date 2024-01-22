@@ -244,29 +244,36 @@ namespace HeroesFlight.System.Gameplay
             achievementSystem.UnlocksHandlers.OnRewardUnlocked += HandleRewardUnlockDuringRun;
             healthVisualizer = container.GetComponentInChildren<CharacterVignetteHealthVisualizer>();
 
-            AssignSummaryEvents();
 
             OnComplete?.Invoke();
         }
 
-        private void AssignSummaryEvents()
+        private SummaryDataModel ProcessRunSummary()
         {
-            float goldReward = CurrentLvlIndex * 100;
-            dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, (int)goldReward);
-            uiSystem.UiEventHandler.SummaryMenu.GetCurrentGold = () => { return goldReward.ToString(); };
-            uiSystem.UiEventHandler.SummaryMenu.GetCurrentTime = runTracker.GetTimePassed;
-            uiSystem.UiEventHandler.SummaryMenu.GetRewardVisuals = () =>
-            {
-                List<RewardVisualEntry> rewardVisualEntries = new List<RewardVisualEntry>();
+            int goldReward = CurrentLvlIndex * 100;
+            dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, goldReward);
 
-                foreach (var reward in runTracker.ReceivedRewards)
-                {
-                    RewardVisualEntry rewardVisualEntry = new RewardVisualEntry();
-                    rewardVisualEntry.icon = reward.RewardImage;
-                    rewardVisualEntries.Add(rewardVisualEntry);
-                }
-                return rewardVisualEntries;
-            };
+            List<RewardVisualEntry> rewardVisualEntries = new List<RewardVisualEntry>();
+
+            foreach (var reward in runTracker.ReceivedRewards)
+            {
+                RewardVisualEntry rewardVisualEntry = new RewardVisualEntry();
+                rewardVisualEntry.icon = reward.RewardImage;
+                rewardVisualEntries.Add(rewardVisualEntry);
+            }
+
+            dataSystem.AccountLevelManager.AddExp(container.CurrentModel.PermanentXpPerRoom * CurrentLvlIndex);
+            uiSystem.UiEventHandler.SummaryMenu.Open();
+
+            int currentLvl = dataSystem.AccountLevelManager.GetCurrentLevel();
+            Tuple<int, float> numberOfLevelsGained =
+                dataSystem.AccountLevelManager.GetNumberOfLevelsToBeGained(container.CurrentModel.PermanentXpPerRoom *
+                                                                           CurrentLvlIndex);
+
+            var summaryData = new SummaryDataModel(numberOfLevelsGained, goldReward, runTracker.GetTimePassed(), currentLvl,
+                rewardVisualEntries);
+
+            return summaryData;
         }
 
         private void CalculateRuneshardBoostModifier()
@@ -324,7 +331,8 @@ namespace HeroesFlight.System.Gameplay
         /// </summary>
         public void StartGameSession()
         {
-            AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey + GetMusicIndex(), container.CurrentModel.MusicLoopKey + GetMusicIndex());
+            AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey + GetMusicIndex(),
+                container.CurrentModel.MusicLoopKey + GetMusicIndex());
 
             uiSystem.UiEventHandler.GameMenu.Open();
             CoroutineUtility.WaitForSeconds(1f, () => // Run the first time the game is loaded
@@ -522,7 +530,7 @@ namespace HeroesFlight.System.Gameplay
                 cameraController.SetCameraState(GameCameraType.Character);
                 TogglePlayerCombatState(true);
                 TogglePlayerMovementState(true);
-                characterHealthController.SetInvulnerableState(currentState!=GameState.Ongoing);
+                characterHealthController.SetInvulnerableState(currentState != GameState.Ongoing);
             });
         }
 
@@ -720,14 +728,14 @@ namespace HeroesFlight.System.Gameplay
                     container.CurrentModel.RunShardCurve.GetCurrentValueInt(container.CurrentLvlIndex);
                 Debug.Log($" want add {runeshardsToAdd} runeshards");
                 HandleCurrencyCollected(CurrencyKeys.RuneShard, runeshardsToAdd);
-                
+
                 ChangeState(GameState.WaitingPortal);
             });
         }
 
         void HandleCharacterDamaged(HealthModificationIntentModel healthModificationIntentModel)
         {
-            Debug.Log("456");
+            
             healthVisualizer.UpdateVignetteIntensity(characterHealthController.CurrentHealthProportion);
         }
 
@@ -865,8 +873,9 @@ namespace HeroesFlight.System.Gameplay
                         });
                     }
 
-                    if(container.CurrentLvlIndex == 6 || container.CurrentLvlIndex == 11)
-                        AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey + GetMusicIndex(), container.CurrentModel.MusicLoopKey + GetMusicIndex());
+                    if (container.CurrentLvlIndex == 6 || container.CurrentLvlIndex == 11)
+                        AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey + GetMusicIndex(),
+                            container.CurrentModel.MusicLoopKey + GetMusicIndex());
 
                     uiSystem.UiEventHandler.GameMenu.SetProgressionFill(CurrentLvlIndex / (float)MaxLvlIndex);
 
@@ -1390,10 +1399,10 @@ namespace HeroesFlight.System.Gameplay
         void ShowLevelPortal()
         {
             CoroutineUtility.WaitForSeconds(1f,
-            () =>
-            {
-                container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
-            });
+                () =>
+                {
+                    container.EnablePortal(currentLevelEnvironment.GetSpawnpoint(SpawnType.Portal).GetSpawnPosition());
+                });
         }
 
         void ShowGodBenevolencePrompt()
@@ -1412,16 +1421,12 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleGameLoopFinish()
         {
-            dataSystem.AccountLevelManager.AddExp(container.CurrentModel.PermanentXpPerRoom * CurrentLvlIndex);
-            uiSystem.UiEventHandler.SummaryMenu.Open();
-
-            int currentLvl = dataSystem.AccountLevelManager.GetCurrentLevel();
-            Tuple<int, float> numberOfLevelsGained = dataSystem.AccountLevelManager.GetNumberOfLevelsToBeGained(container.CurrentModel.PermanentXpPerRoom * CurrentLvlIndex);
-
-            uiSystem.UiEventHandler.SummaryMenu.Display(currentLvl, numberOfLevelsGained.Item1, numberOfLevelsGained.Item2, () =>
-            {
-                dataSystem.AccountLevelManager.AddExp(container.CurrentModel.PermanentXpPerRoom * CurrentLvlIndex);
-            });
+            var summaryData = ProcessRunSummary();
+            uiSystem.UiEventHandler.SummaryMenu.Display(summaryData,
+                () =>
+                {
+                    dataSystem.AccountLevelManager.AddExp(container.CurrentModel.PermanentXpPerRoom * CurrentLvlIndex);
+                });
         }
 
         void HandleLvlRestart()
@@ -1441,7 +1446,8 @@ namespace HeroesFlight.System.Gameplay
             {
                 shrineSystem.Shrine.OnShrineExit();
 
-                AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey + GetMusicIndex(), container.CurrentModel.MusicLoopKey + GetMusicIndex());
+                AudioManager.BlendTwoInstantMusic(container.CurrentModel.MusicKey + GetMusicIndex(),
+                    container.CurrentModel.MusicLoopKey + GetMusicIndex());
 
                 uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(true);
             }
@@ -1450,28 +1456,28 @@ namespace HeroesFlight.System.Gameplay
             {
                 Level newLevel = null;
                 uiSystem.UiEventHandler.GameMenu.ShowTransition(() => // level to level transition
-                {
-                    ResetLogic();
-                    npcSystem.Reset();
+                    {
+                        ResetLogic();
+                        npcSystem.Reset();
 
-                    newLevel = PreloadLvl();
-                    characterSystem.ResetCharacter(GetPlayerSpawnPosition);
-                },
-                () =>
-                {
-                    if (newLevel.LevelType == LevelType.NormalCombat ||
-                        newLevel.LevelType == LevelType.WorldBoss)
+                        newLevel = PreloadLvl();
+                        characterSystem.ResetCharacter(GetPlayerSpawnPosition);
+                    },
+                    () =>
                     {
-                        CoroutineUtility.Start(ContinueGameLoopRoutine());
-                        uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(true);
-                    }
-                    else
-                    {
-                        AudioManager.PlayMusicInstant("Shrine");
-                        uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(false);
-                        TogglePlayerMovementState(true);
-                    }
-                });
+                        if (newLevel.LevelType == LevelType.NormalCombat ||
+                            newLevel.LevelType == LevelType.WorldBoss)
+                        {
+                            CoroutineUtility.Start(ContinueGameLoopRoutine());
+                            uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(true);
+                        }
+                        else
+                        {
+                            AudioManager.PlayMusicInstant("Shrine");
+                            uiSystem.UiEventHandler.GameMenu.ToggleActionButtonsVisibility(false);
+                            TogglePlayerMovementState(true);
+                        }
+                    });
             });
         }
 
@@ -1501,7 +1507,6 @@ namespace HeroesFlight.System.Gameplay
 
         private void ReviveCharacterWithFullHp(ReviveRequestModel reviveRequestModel)
         {
-           
             switch (reviveRequestModel.ReviveType)
             {
                 case UiReviveType.Gems:
@@ -1528,7 +1533,7 @@ namespace HeroesFlight.System.Gameplay
                             reviveAmount++;
                         });
                     }
-                  
+
                     break;
             }
         }
@@ -1560,7 +1565,7 @@ namespace HeroesFlight.System.Gameplay
                 return 2;
             }
             else if (CurrentLvlIndex >= 11 && CurrentLvlIndex <= 15)
-            {   
+            {
                 return 3;
             }
 
