@@ -19,6 +19,7 @@ public class DailyRewardUI : MonoBehaviour
 
     [SerializeField] private State state;
     [SerializeField] private TextMeshProUGUI dayText;
+    [SerializeField] private Transform container;
     [SerializeField] private RewardView[] singleRewardViews;
 
     [Header ("NotReady")]
@@ -38,10 +39,10 @@ public class DailyRewardUI : MonoBehaviour
 
     private void Awake()
     {
-        advanceButton = GetComponentInChildren<AdvanceButton>();
+        advanceButton = GetComponent<AdvanceButton>();  
         advanceButton.onClick.AddListener(() => OnRewardButtonClicked?.Invoke(rewardIndex));
 
-        readyEffect = readyContent.transform.JuicyScale(1.2f, 1.0f);
+        readyEffect = container.transform.JuicyScale(1.2f, 1.0f);
         readyEffect.SetLoop(-1);
     }
 

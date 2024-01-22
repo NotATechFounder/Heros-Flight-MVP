@@ -1,6 +1,7 @@
 using HeroesFlight.System.UI.Reward;
 using Pelumi.Juicer;
 using Pelumi.ObjectPool;
+using Plugins.Audio_System;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -58,6 +59,8 @@ public class LevelUpMenu : BaseMenu <LevelUpMenu>
         }
 
         rewardViews.Clear();
+
+        AudioManager.PlaySoundEffect("LevelUpPop", SoundEffectCategory.UI);
     }
 
     public override void OnClosed()

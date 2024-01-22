@@ -73,10 +73,6 @@ public class RewardDataHandler : MonoBehaviour
     {
         DailyRewardData loadedData = FileManager.Load<DailyRewardData>(DailyReward_Save);
         dailyRewardData = loadedData ?? new DailyRewardData();
-        if (loadedData == null)
-        {
-            dailyRewardData.lastClaimedTime = InternetManager.Instance.GetCurrentDateTime().ToString();
-        }
     }
 
     public void Save()
