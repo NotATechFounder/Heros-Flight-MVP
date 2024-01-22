@@ -31,7 +31,6 @@ namespace HeroesFlight.System.PostProccesing
 
         public void UpdateVignetteIntensity(float characterHpPerc)
         {
-            Debug.Log(characterHpPerc);
             foreach (var threshold in healthThresholds)
             {
                 if (characterHpPerc >= threshold.HealthValue)

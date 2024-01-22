@@ -89,8 +89,7 @@ namespace HeroesFlight.System.UI
 
             UiEventHandler.SummaryMenu.OnMenuOpened += () => { };
 
-            UiEventHandler.SummaryMenu.GetCurrentGold = () => { return UiEventHandler.GameMenu.RuinShardText.text; };
-
+         
             UiEventHandler.SummaryMenu.OnContinueButtonClicked += () =>
             {
                 OnReturnToMainMenuRequest?.Invoke();
