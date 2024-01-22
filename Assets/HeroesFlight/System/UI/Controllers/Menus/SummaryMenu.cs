@@ -7,19 +7,13 @@ using HeroesFlight.System.UI.Reward;
 using System.Collections.Generic;
 using Plugins.Audio_System;
 using System.Collections;
+using HeroesFlight.System.UI.Model;
 
 namespace UISystem
 {
     public class SummaryMenu : BaseMenu<SummaryMenu>
     {
-        public Func<string> GetCurrentGold;
-        public Func<TimeSpan> GetCurrentTime;
-        public Func<List<RewardVisualEntry>> GetRewardVisuals;
-
-        public Func<int> GetAccountLevel;
-        public Func<int> GetExpReward;
-        public Func<int> GetCurrentExp;
-        public Func<int> GetExpToNextLevel;
+    
 
         public event Action OnContinueButtonClicked;
 
@@ -62,9 +56,13 @@ namespace UISystem
         {
             openEffectBG.Start();
 
-            coinText.text = GetCurrentGold.Invoke();
+        }
 
-            TimeSpan time = GetCurrentTime.Invoke();
+        private void SetupView(SummaryDataModel model)
+        {
+            coinText.text =model.GoldGained.ToString();
+
+            TimeSpan time = model.TimeSpent;
             string timeValue = "";
             if (time.Days != 0) timeValue = String.Format("{0:D1} D : {1:D2} H: {2:D2}M : {3:D2} S", time.Days, time.Hours, time.Minutes, time.Seconds);
             else if (time.Days == 0 && time.Hours == 0 && time.Minutes == 0) timeValue = String.Format("{0:D2} S", time.Seconds);
@@ -72,7 +70,7 @@ namespace UISystem
             else timeValue = String.Format("{0:D2}H: {1:D2} M : {2:D2} S", time.Hours, time.Minutes, time.Seconds);
             timeText.text = timeValue;
 
-            List<RewardVisualEntry> rewardVisualEntries = GetRewardVisuals.Invoke();
+            List<RewardVisualEntry> rewardVisualEntries = model.rewardVisualEntries;
             foreach (var reward in rewards)
             {
                 Destroy(reward.gameObject);
@@ -98,12 +96,14 @@ namespace UISystem
 
         }
 
-        public void Display(int currentLevel, int numberOfLevelInc, float value, Action OnComplete)
-        {
-            Open();
-            StartCoroutine(UpdateExpBarRoutine(currentLevel, numberOfLevelInc, value, OnComplete));
-        }
+       
 
+        public void Display(SummaryDataModel data, Action onComplete)
+        {
+            SetupView(data);
+            Open();
+            StartCoroutine(UpdateExpBarRoutine(data.CurrentLvl, data.NumberOfLevelsGained.Item1, data.NumberOfLevelsGained.Item2, onComplete));
+        }
 
         public IEnumerator UpdateExpBarRoutine(int currentLevel, int numberOfLevelInc, float value, Action OnComplete)
         {

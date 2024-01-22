@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Healer : MonoBehaviour
@@ -14,8 +12,7 @@ public class Healer : MonoBehaviour
 
     public void Heal()
     {
-        float healthToHeal = StatCalc.GetPercentage (characterStatController.GetStatModel.GetCurrentStatValue(StatType.MaxHealth), healPercentage);
-        characterStatController.ModifyHealth(healthToHeal, true);
+        characterStatController.ModifyHealth(healPercentage, true);
         Debug.Log("Healed");
     }
 }
