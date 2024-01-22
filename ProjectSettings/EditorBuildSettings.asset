@@ -26,4 +26,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/HeroesFlight/System/Tutorial/Scene/TutorialScene.unity
     guid: adc47ede0da007c429a7d8a166d83027
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: ba2681ee72d00db40800e7c6cad8719e,
+      type: 2}
+    com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000,
+      guid: 22593708b1f6e89409de45ac8b62924b, type: 2}
+    com.unity.addressableassets: {fileID: 11400000, guid: 54f1c53f463217848b384c1df8b11781,
+      type: 2}

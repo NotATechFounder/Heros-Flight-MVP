@@ -8,22 +8,22 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Enemy
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Character
+  - Obstacle
+  - EnemyPhysics
+  - Platform
+  - AiMovement
+  - AiFLyingMovement
+  - LevelPlatform
+  - Boosters
+  - UI_IgnoreTouch
+  - AiMovementPlatform
+  - PlatformBounds
+  - Projectile
+  - Detectors
   - 
   - 
   - 
@@ -38,6 +38,36 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 3081577077
+    locked: 0
+  - name: Midground
+    uniqueID: 2717633995
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Foreground
+    uniqueID: 1912419155
+    locked: 0
+  - name: Background Vfx
+    uniqueID: 1995683709
+    locked: 0
+  - name: Boosters
+    uniqueID: 387821225
+    locked: 0
+  - name: NPC
+    uniqueID: 155020093
+    locked: 0
+  - name: Platform
+    uniqueID: 3214253519
+    locked: 0
+  - name: Gameplay
+    uniqueID: 1549407545
+    locked: 0
+  - name: UI Overlay
+    uniqueID: 3236648097
+    locked: 0
+  - name: Foreground Vfx
+    uniqueID: 622727571
     locked: 0
