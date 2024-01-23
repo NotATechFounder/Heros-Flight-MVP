@@ -72,7 +72,7 @@ public class Immolation : RegularActiveAbility
             {
                 
                 healthController.TryDealDamage(new HealthModificationIntentModel(currentDamage,
-                DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Flat,null));
+                DamageCritType.NoneCritical, AttackType.Regular, CalculationType.Percentage,null));
             }
         }
     }
