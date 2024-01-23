@@ -265,6 +265,7 @@ namespace HeroesFlight.System.Gameplay
                 
                 RewardVisualEntry rewardVisualEntry = new RewardVisualEntry();
                 rewardVisualEntry.icon = reward.RewardImage;
+                rewardVisualEntry.amount = 1;
                 rewardVisualEntries.Add(rewardVisualEntry);
             }
 
