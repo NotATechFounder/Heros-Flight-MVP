@@ -140,7 +140,6 @@ public class TutorialSystem : ITutorialInterface
 
         shrine = scene.GetComponentInChildren<Shrine>();
         shrine.InitNpcStates(new ShrineSaveData());
-        Debug.Log($"shrine not founded ? {shrine==null}");
         activeAbilityManager = scene.GetComponentInChildren<ActiveAbilityManager>();
         godsBenevolence = scene.GetComponentInChildren<GodsBenevolence>();
 
