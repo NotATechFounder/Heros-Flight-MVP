@@ -17,8 +17,8 @@ MonoBehaviour:
     regularActiveAbilityType: 10
     icon: {fileID: 21300000, guid: e3d4d28153866fd48b206cb3563e1b5d, type: 3}
     displayName: Energy Blast
-    description: Blast enemies in front with an energy cannon
+    description: 'Special: Blast enemies in front with an energy cannon'
   duration: 2
-  cooldown: 5
+  cooldown: 30
   passiveActiveAbility: {fileID: 2533127532117566998, guid: 01185e6793c42c2459cf08356dfacb07,
     type: 3}

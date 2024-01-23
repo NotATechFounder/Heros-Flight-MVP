@@ -48,7 +48,7 @@ MonoBehaviour:
         type: 3}
       timeBetweenWaves: 1
       waves:
-      - totalMobsToSpawn: 15
+      - totalMobsToSpawn: 10
         timeBetweenMobs: 0.1
         avaliableTrashMobs:
         - aiPrefab: {fileID: 1544928924323398027, guid: 79c17d6c9d59a0d40baa0a95630b3cec,
@@ -62,7 +62,7 @@ MonoBehaviour:
         type: 3}
       timeBetweenWaves: 1
       waves:
-      - totalMobsToSpawn: 20
+      - totalMobsToSpawn: 12
         timeBetweenMobs: 0.1
         avaliableTrashMobs:
         - aiPrefab: {fileID: 7121512436518617976, guid: fe4f90f142f113f4cb243b4a16f7bc60,
@@ -79,7 +79,7 @@ MonoBehaviour:
         type: 3}
       timeBetweenWaves: 2
       waves:
-      - totalMobsToSpawn: 25
+      - totalMobsToSpawn: 12
         timeBetweenMobs: 0.5
         avaliableTrashMobs:
         - aiPrefab: {fileID: 7883444607107800428, guid: 495961ef07a53ce439e29e6a7ce5abad,
@@ -99,7 +99,7 @@ MonoBehaviour:
         type: 3}
       timeBetweenWaves: 2
       waves:
-      - totalMobsToSpawn: 30
+      - totalMobsToSpawn: 13
         timeBetweenMobs: 0.1
         avaliableTrashMobs:
         - aiPrefab: {fileID: 1544928924323398027, guid: 79c17d6c9d59a0d40baa0a95630b3cec,
@@ -119,7 +119,7 @@ MonoBehaviour:
         type: 3}
       timeBetweenWaves: 2
       waves:
-      - totalMobsToSpawn: 35
+      - totalMobsToSpawn: 13
         timeBetweenMobs: 0.1
         avaliableTrashMobs:
         - aiPrefab: {fileID: 6808548870767820540, guid: 75580f1c88f07cc46a9838a1809ec230,
@@ -139,7 +139,7 @@ MonoBehaviour:
         type: 3}
       timeBetweenWaves: 2
       waves:
-      - totalMobsToSpawn: 40
+      - totalMobsToSpawn: 14
         timeBetweenMobs: 0.1
         avaliableTrashMobs:
         - aiPrefab: {fileID: 2999025737129541610, guid: a94c924ca66e38d44bcf064046de124d,
@@ -159,7 +159,7 @@ MonoBehaviour:
         type: 3}
       timeBetweenWaves: 2
       waves:
-      - totalMobsToSpawn: 45
+      - totalMobsToSpawn: 14
         timeBetweenMobs: 0.1
         avaliableTrashMobs:
         - aiPrefab: {fileID: 2592365497263661317, guid: 7285687d9f26cc4478fc502ad9bc9673,
@@ -213,7 +213,7 @@ MonoBehaviour:
         type: 3}
       timeBetweenWaves: 2
       waves:
-      - totalMobsToSpawn: 55
+      - totalMobsToSpawn: 15
         timeBetweenMobs: 0.1
         avaliableTrashMobs:
         - aiPrefab: {fileID: 7121512436518617976, guid: fe4f90f142f113f4cb243b4a16f7bc60,
@@ -233,7 +233,7 @@ MonoBehaviour:
         type: 3}
       timeBetweenWaves: 2
       waves:
-      - totalMobsToSpawn: 60
+      - totalMobsToSpawn: 15
         timeBetweenMobs: 0.1
         avaliableTrashMobs:
         - aiPrefab: {fileID: 7121512436518617976, guid: fe4f90f142f113f4cb243b4a16f7bc60,
@@ -250,7 +250,7 @@ MonoBehaviour:
         type: 3}
       timeBetweenWaves: 2
       waves:
-      - totalMobsToSpawn: 65
+      - totalMobsToSpawn: 16
         timeBetweenMobs: 0.1
         avaliableTrashMobs:
         - aiPrefab: {fileID: 7121512436518617976, guid: fe4f90f142f113f4cb243b4a16f7bc60,
@@ -270,7 +270,7 @@ MonoBehaviour:
         type: 3}
       timeBetweenWaves: 2
       waves:
-      - totalMobsToSpawn: 70
+      - totalMobsToSpawn: 15
         timeBetweenMobs: 0.1
         avaliableTrashMobs:
         - aiPrefab: {fileID: 2592365497263661317, guid: 7285687d9f26cc4478fc502ad9bc9673,
@@ -890,9 +890,9 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 1200
+            value: 1500
             inSlope: 0
-            outSlope: 92.85714
+            outSlope: 71.42857
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
@@ -900,7 +900,7 @@ MonoBehaviour:
           - serializedVersion: 3
             time: 15
             value: 2500
-            inSlope: 92.85714
+            inSlope: 71.42857
             outSlope: 0
             tangentMode: 0
             weightedMode: 0
@@ -911,7 +911,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 1
         minLevel: 1
-        minValue: 1200
+        minValue: 1500
         maxLevel: 15
         maxValue: 2500
         customCurveKeys:
@@ -922,17 +922,17 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 100
+            value: 200
             inSlope: 0
-            outSlope: 8.571428
+            outSlope: 7.142857
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 220
-            inSlope: 8.571428
+            value: 300
+            inSlope: 7.142857
             outSlope: 0
             tangentMode: 0
             weightedMode: 0
@@ -943,9 +943,9 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 1
         minLevel: 1
-        minValue: 100
+        minValue: 200
         maxLevel: 15
-        maxValue: 220
+        maxValue: 300
         customCurveKeys:
           keys: []
     - enemyType: 10
@@ -987,7 +987,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 80
+            value: 200
             inSlope: 0
             outSlope: 7.142857
             tangentMode: 0
@@ -996,7 +996,7 @@ MonoBehaviour:
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 180
+            value: 300
             inSlope: 7.142857
             outSlope: 0
             tangentMode: 0
@@ -1008,9 +1008,9 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 1
         minLevel: 1
-        minValue: 80
+        minValue: 200
         maxLevel: 15
-        maxValue: 180
+        maxValue: 300
         customCurveKeys:
           keys: []
     - enemyType: 11
@@ -1052,7 +1052,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 80
+            value: 200
             inSlope: 0
             outSlope: 7.142857
             tangentMode: 0
@@ -1061,7 +1061,7 @@ MonoBehaviour:
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 180
+            value: 300
             inSlope: 7.142857
             outSlope: 0
             tangentMode: 0
@@ -1073,9 +1073,9 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 1
         minLevel: 1
-        minValue: 80
+        minValue: 200
         maxLevel: 15
-        maxValue: 180
+        maxValue: 300
         customCurveKeys:
           keys: []
     - enemyType: 13

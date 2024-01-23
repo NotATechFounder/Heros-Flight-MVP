@@ -118,4 +118,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483ffaef31b7d584fb27f4710db6e5a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healPercentage: 10
+  healPercentage: 40

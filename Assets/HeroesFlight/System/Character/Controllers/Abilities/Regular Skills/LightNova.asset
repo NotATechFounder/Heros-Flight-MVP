@@ -19,6 +19,6 @@ MonoBehaviour:
     displayName: Light Nova
     description: Heals and explodes, doing area damage
   duration: 0
-  cooldown: 5
+  cooldown: 30
   passiveActiveAbility: {fileID: 8503150468356813972, guid: 1e3291c92e5706b4f9620c8102dfb05d,
     type: 3}

@@ -56,17 +56,17 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 1
-        value: 50
+        value: 100
         inSlope: 0
-        outSlope: 6.25
+        outSlope: 18.75
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 9
-        value: 100
-        inSlope: 6.25
+        value: 250
+        inSlope: 18.75
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
@@ -77,9 +77,9 @@ MonoBehaviour:
       m_RotationOrder: 4
     curveType: 1
     minLevel: 1
-    minValue: 50
+    minValue: 100
     maxLevel: 9
-    maxValue: 100
+    maxValue: 250
     customCurveKeys:
       keys: []
   overlapChecker: {fileID: 8707806956440256495}

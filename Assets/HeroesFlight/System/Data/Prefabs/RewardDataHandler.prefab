@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdd16b86577c0884cb02aebf7552a3b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeType: 0
-  nextRewardTimeAdded: 30
+  timeType: 2
+  nextRewardTimeAdded: 24
   checkingInterval: 1
   dailyRewardSO: {fileID: 11400000, guid: c7233c8d03bcbbd4dbacb6f7cb8cb808, type: 2}

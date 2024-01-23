@@ -17,7 +17,7 @@ public class LightNova : RegularActiveAbility
 {
     [Header("LightNova")] 
     [SerializeField] private float damageMultiplier = 1;
-    [SerializeField] private float healthPercentage = 50;
+    [SerializeField] private float healthPercentage = 20;
     [SerializeField] private OverlapChecker overlapChecker;
     [Header("Animation and Viusal Settings")]
     [SerializeField] SkeletonAnimation skeletonAnimation;
