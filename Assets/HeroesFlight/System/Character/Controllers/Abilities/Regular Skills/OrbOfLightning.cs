@@ -59,10 +59,4 @@ public class OrbOfLightning : RegularActiveAbility
             damagePercentageCurve.UpdateCurve();
         }
     }
-
-    public override void StopAbility()
-    {
-        base.StopAbility();
-        OnDeactivated();
-    }
 }
