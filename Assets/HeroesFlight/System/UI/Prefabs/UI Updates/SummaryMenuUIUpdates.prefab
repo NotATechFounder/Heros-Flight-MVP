@@ -3042,6 +3042,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewPriority: 1
   closeBehaviour: 0
+  characterImage: {fileID: 987014898114101741}
   coinText: {fileID: 8807340845274983232}
   timeText: {fileID: 2118591244968557646}
   levelText: {fileID: 3474757033347417646}

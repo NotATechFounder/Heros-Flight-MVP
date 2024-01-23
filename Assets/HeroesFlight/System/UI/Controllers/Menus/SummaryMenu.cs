@@ -13,9 +13,9 @@ namespace UISystem
 {
     public class SummaryMenu : BaseMenu<SummaryMenu>
     {
-    
-
         public event Action OnContinueButtonClicked;
+
+        [SerializeField] Image characterImage;
 
         [Header("Texts")]
         [SerializeField] TextMeshProUGUI coinText;
@@ -60,6 +60,7 @@ namespace UISystem
 
         private void SetupView(SummaryDataModel model)
         {
+            characterImage.sprite = model.CurrentCharacterSO.CharacterUiData.CharacterUnlockedImage;
             coinText.text =model.GoldGained.ToString();
 
             TimeSpan time = model.TimeSpent;

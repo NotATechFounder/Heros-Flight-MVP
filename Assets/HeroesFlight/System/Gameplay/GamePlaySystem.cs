@@ -271,7 +271,7 @@ namespace HeroesFlight.System.Gameplay
                                                                            CurrentLvlIndex);
 
             var summaryData = new SummaryDataModel(numberOfLevelsGained, goldReward, runTracker.GetTimePassed(), currentLvl,
-                rewardVisualEntries);
+                rewardVisualEntries, dataSystem.CharacterManager.GetSelectedCharacter());
 
             return summaryData;
         }
