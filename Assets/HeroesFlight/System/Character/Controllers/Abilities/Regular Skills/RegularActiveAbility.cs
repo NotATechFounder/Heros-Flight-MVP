@@ -67,6 +67,6 @@ public abstract class RegularActiveAbility : MonoBehaviour
 
     public virtual void StopAbility()
     {
-        
+
     }
 }
