@@ -118,4 +118,10 @@ public class ChainRotate : RegularActiveAbility
     {
         damagePercentageCurve.UpdateCurve();
     }
+
+    public override void StopAbility()
+    {
+        base.StopAbility();
+        OnDeactivated();
+    }
 }

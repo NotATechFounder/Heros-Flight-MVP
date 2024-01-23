@@ -145,6 +145,7 @@ public class HeavenStab : RegularActiveAbility
     public override void StopAbility()
     {
         base.StopAbility();
+        if (currentProjectile)  
         currentProjectile.DisableProjectile();
     }
 }
