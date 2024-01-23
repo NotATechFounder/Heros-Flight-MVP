@@ -691,7 +691,7 @@ namespace HeroesFlight.System.Gameplay
             {
                 GameTimer.Stop();
 
-                Debug.Log(CurrentLvlIndex);
+               
                 achievementSystem.AddQuestProgress(
                     new QuestEntry<LevelComplectionQuest>(
                         new LevelComplectionQuest(dataSystem.WorldManger.SelectedWorld)));
