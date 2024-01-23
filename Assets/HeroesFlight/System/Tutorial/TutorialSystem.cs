@@ -245,9 +245,7 @@ public class TutorialSystem : ITutorialInterface
 
     private void GameMenu_OnLevelUpComplete(int obj)
     {
-        Debug.Log("GameMenu_OnLevelUpComplete");
         StartTutorialState(TutorialMode.PasiveAbility);
-
        // uiSystem.UiEventHandler.AbilitySelectMenu.Open();
     }
 
@@ -1098,8 +1096,8 @@ public class TutorialSystem : ITutorialInterface
             CoroutineUtility.WaitForSeconds(2, () =>
             {
                 ShowLevelPortal();
-                uiSystem.UiEventHandler.TutorialMenu.DisplayMessage("Use Portal is transverse levels");
-            });
+                StartTutorialState(TutorialMode.TraverseToNextLevel);
+           });
         });
 
         tutorialDictionary.Add(TutorialMode.UltimateAbility, UltimateAbilityTutorial);
@@ -1114,6 +1112,14 @@ public class TutorialSystem : ITutorialInterface
         });
 
         tutorialDictionary.Add(TutorialMode.Shrine, shrineTutorial);
+
+        TutorialRuntime enterPortalTutorial = new TutorialRuntime(TutorialMode.TraverseToNextLevel);
+        enterPortalTutorial.AssignEvents(() =>
+        {
+            enterPortalTutorial.IsCompleted = true;
+        }, () => { Debug.Log("enter Portal Tutorial ended"); });
+        
+        tutorialDictionary.Add(TutorialMode.TraverseToNextLevel,enterPortalTutorial);
     }
 
     public void InitialseUITutorialRuntimeStates()
@@ -1173,6 +1179,7 @@ public class TutorialSystem : ITutorialInterface
 
     public void DisplayTutorialStartUI(TutorialMode tutorialMode, Action OnStartUIClosed)
     {
+        Debug.Log(tutorialMode);
         TutorialSO tutorialSO = dataSystem.TutorialDataHolder.GetTutorialSO(tutorialMode);
         DisableMovement();
         uiSystem.UiEventHandler.TutorialMenu.SetTutorialDataToDisplay(tutorialSO.GetTutorialVisualData,()=>
