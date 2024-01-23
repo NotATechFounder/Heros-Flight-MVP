@@ -306,19 +306,18 @@ namespace UISystem
 
         public void UpdateButtonPinState(MenuNavigationButtonType buttonType, bool isEnabled)
         {
-            Debug.Log($"should disable pin for button {buttonType}");
+           
             foreach (var button in navigationButtons)
             {
                 if (button.navigationButtonType == buttonType)
                 {
                     if (button.UpdatePin != null)
                     {
-                        Debug.Log($" disable pin for button {buttonType} with state {isEnabled}");
-                        button.UpdatePin.SetActive(isEnabled);
+                       button.UpdatePin.SetActive(isEnabled);
                     }
                     else
                     {
-                        Debug.LogError($"{buttonType} do not have pin object on it ");
+                        Debug.LogError($"{buttonType} do not have pin object on it ,this is optional");
                     }
 
                     break;

@@ -51,7 +51,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
             {
                 var targetAbility =
                     abilities[possibleAbilities.ElementAt(Random.Range(0, possibleAbilities.Count))];
-                Debug.Log(targetAbility.name);
                 if (targetAbility.StopMovementOnUse)
                 {
                     targetAbility.UseAbility(() => { onComplete?.Invoke(); });

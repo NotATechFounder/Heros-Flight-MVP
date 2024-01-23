@@ -175,7 +175,6 @@ namespace HeroesFlight.System.Inventory
             List<CombatEffect> combatEffects = new List<CombatEffect>();
             foreach (var item in items)
             {
-                Debug.Log($"{item.itemSO.Name}");
                 EquipmentSO equipmentSO = item.itemSO as EquipmentSO;
                 foreach (UniqueCombatEffect uniqueCombatEffect in equipmentSO.uniqueCombatEffects)
                 {

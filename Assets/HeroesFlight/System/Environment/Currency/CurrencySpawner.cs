@@ -16,8 +16,7 @@ public class CurrencySpawner : MonoBehaviour
 
     public void SetPlayer(Transform playerTrans)
     {
-        playerTransfrom = playerTrans;
-        Debug.Log(playerTransfrom.name);
+        playerTransfrom = playerTrans; 
     }
 
     public void SpawnAtPosition(string key, float amount, Vector3 position)

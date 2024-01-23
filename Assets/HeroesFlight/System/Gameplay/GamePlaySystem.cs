@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using HeroesFlight.Common.Enum;
+using HeroesFlight.System.Achievement_System.ProgressionUnlocks;
 using HeroesFlight.System.Achievement_System.ProgressionUnlocks.UnlockRewards;
 using HeroesFlight.System.Character;
 using HeroesFlight.System.Combat;
@@ -257,6 +258,11 @@ namespace HeroesFlight.System.Gameplay
 
             foreach (var reward in runTracker.ReceivedRewards)
             {
+                //Skipping npc unlock rewards as theres no images for them
+                if(reward.UnlockType==ProgressionUnlockType.NPC)
+                    continue;
+                
+                
                 RewardVisualEntry rewardVisualEntry = new RewardVisualEntry();
                 rewardVisualEntry.icon = reward.RewardImage;
                 rewardVisualEntries.Add(rewardVisualEntry);
@@ -305,7 +311,6 @@ namespace HeroesFlight.System.Gameplay
 
         public void Reset()
         {
-            Debug.Log("reseting gameplay");
             dataSystem.CurrencyManager.SetCurencyAmount(CurrencyKeys.RuneShard, 0);
             npcSystem.OnEnemySpawned -= HandleEnemySpawned;
             combatSystem.OnEntityReceivedDamage -= HandleEntityReceivedDamage;
@@ -321,10 +326,7 @@ namespace HeroesFlight.System.Gameplay
             activeAbilityManager.ResetAbility();
         }
 
-        private void AbilitySelectMenu_OnMenuClosed()
-        {
-            throw new NotImplementedException();
-        }
+     
 
         /// <summary>
         /// Used to start game from first lvl
@@ -368,7 +370,7 @@ namespace HeroesFlight.System.Gameplay
                     break;
                 case CombatEntityType.MiniBoss:
                     HandleEnemyDeath(deathModel.Position);
-                    SpawnLootFromMiniboss(deathModel.Position);
+                    SpawnLootFromMiniBoss(deathModel.Position);
                     break;
                 case CombatEntityType.Boss:
                     break;
@@ -626,7 +628,7 @@ namespace HeroesFlight.System.Gameplay
 
             if (obj.EnemyType == EnemyType.MiniBoss)
             {
-                HandleMinibossSpawned(obj, healthController);
+                HandleMiniBossSpawned(obj, healthController);
             }
             else
             {
@@ -643,7 +645,7 @@ namespace HeroesFlight.System.Gameplay
                 CombatEntityType.Mob));
         }
 
-        private void HandleMinibossSpawned(AiControllerBase obj, IHealthController healthController)
+        private void HandleMiniBossSpawned(AiControllerBase obj, IHealthController healthController)
         {
             var attackController = obj.GetComponent<IAttackControllerInterface>();
             var effectsController = obj.GetComponent<CombatEffectsController>();
@@ -658,7 +660,7 @@ namespace HeroesFlight.System.Gameplay
             }
         }
 
-        void SpawnLootFromMiniboss(Vector3 position)
+        void SpawnLootFromMiniBoss(Vector3 position)
         {
             environmentSystem.BoosterSpawner.SpawnBoostLoot(container.CurrentModel.BossDrop,
                 position);
@@ -689,7 +691,7 @@ namespace HeroesFlight.System.Gameplay
             {
                 GameTimer.Stop();
 
-                Debug.Log(CurrentLvlIndex);
+               
                 achievementSystem.AddQuestProgress(
                     new QuestEntry<LevelComplectionQuest>(
                         new LevelComplectionQuest(dataSystem.WorldManger.SelectedWorld)));
@@ -726,7 +728,7 @@ namespace HeroesFlight.System.Gameplay
 
                 var runeshardsToAdd =
                     container.CurrentModel.RunShardCurve.GetCurrentValueInt(container.CurrentLvlIndex);
-                Debug.Log($" want add {runeshardsToAdd} runeshards");
+                
                 HandleCurrencyCollected(CurrencyKeys.RuneShard, runeshardsToAdd);
 
                 ChangeState(GameState.WaitingPortal);
@@ -747,9 +749,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleCharacterDeath()
         {
-            Debug.LogError($"character died and game state is {currentState}");
-            // if (currentState != GameState.Ongoing)
-            //     return;
+           
             characterAttackController.GetComponent<CharacterAnimationController>().StopUltSequence();
 
 
@@ -765,9 +765,6 @@ namespace HeroesFlight.System.Gameplay
             OnLevelFailed?.Invoke();
 
             dataSystem.WorldManger.SetMaxLevelReached(dataSystem.WorldManger.SelectedWorld, container.CurrentLvlIndex);
-
-            //freezes engine?  
-            // GameTimer.Pause();
             CoroutineUtility.WaitForSeconds(1f, () => { ChangeState(GameState.Died); });
         }
 
@@ -805,9 +802,6 @@ namespace HeroesFlight.System.Gameplay
                     healthModificationIntentModel.DefenderTransform.position);
 
 
-            //  GameEffectController.StopFrame(0.1f);
-
-            // OnEnemyDamaged?.Invoke(damageModel);
             hitEffectsPlayer.PlayHitEffect("Hit", true);
         }
 
@@ -817,7 +811,6 @@ namespace HeroesFlight.System.Gameplay
             if (currentState == newState)
                 return;
             currentState = newState;
-            Debug.Log(currentState);
             HandleGameStateChanged(newState);
         }
 
@@ -1012,8 +1005,7 @@ namespace HeroesFlight.System.Gameplay
             uiSystem.UiEventHandler.HealingNPCMenu.GetCurrencyPrice +=
                 shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.HealingMagicRune].GetPrice;
             uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseRequested += HandleShrineHealerNpcPurchaseRequest;
-            // uiSystem.UiEventHandler.HealingNPCMenu.OnPurchaseCompleted += () => { shrine.GetHealer.Heal(); };
-
+    
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.OnMenuClosed += EnableCharacterMovement;
             uiSystem.UiEventHandler.ActiveAbilityRerollerNPCMenu.GetCurrencyPrice +=
                 shrineSystem.Shrine.ShrineNPCFeeCache[ShrineNPCType.ActiveAbilityReRoller].GetPrice;
@@ -1151,10 +1143,9 @@ namespace HeroesFlight.System.Gameplay
         }
 
 
-        public void StoreRunReward()
+         void StoreRunReward()
         {
             progressionSystem.SaveRunResults();
-            //collectedHeroProgressionSp = 0;
         }
 
         void HandleBoosterWithDurationActivated(BoosterContainer container)
@@ -1234,7 +1225,7 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleWorldBoss()
         {
-            Debug.Log("WORLD BOSS LOGIC");
+           
             if (currentLevel.MiniHasBoss)
             {
                 AudioManager.PlayMusic(container.CurrentModel.WorldBossMusicKey);
@@ -1248,7 +1239,7 @@ namespace HeroesFlight.System.Gameplay
                 var healthController = miniboss.GetComponent<IHealthController>();
 
 
-                HandleMinibossSpawned(miniboss, healthController);
+                HandleMiniBossSpawned(miniboss, healthController);
                 healthController.OnDeath += (health) => { InitWorldBossEncounter(); };
                 TogglePlayerCombatState(true);
                 TogglePlayerMovementState(true);
@@ -1354,14 +1345,12 @@ namespace HeroesFlight.System.Gameplay
 
         void HandleSpecialEnemyHealthChange(float amount)
         {
-            Debug.Log($"updating with {amount}");
             uiSystem.UpdateSpecialEnemyHealthBar(amount);
         }
 
         void SpawnLootFromBoss(Transform target)
         {
-            Debug.Log("Crystal destroyed spawning loot");
-            environmentSystem.BoosterSpawner.SpawnBoostLoot(container.CurrentModel.BossDrop,
+           environmentSystem.BoosterSpawner.SpawnBoostLoot(container.CurrentModel.BossDrop,
                 target.transform.position);
         }
 

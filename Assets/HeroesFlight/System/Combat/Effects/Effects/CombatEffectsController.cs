@@ -259,7 +259,6 @@ namespace HeroesFlight.System.Combat.Effects.Effects
         {
             var data = status.GetData<EffectData>();
             var triggerChance = data.ProcChance.GetCurrentValue(modelLvl);
-            Debug.Log(triggerChance);
             var rng = Random.Range(0, 101);
             if (rng > triggerChance)
                 return;

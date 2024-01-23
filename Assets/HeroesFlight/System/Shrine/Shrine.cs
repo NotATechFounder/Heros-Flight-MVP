@@ -206,7 +206,6 @@ namespace HeroesFlight.System.ShrineSystem
         public void VisitIncrement()
         {
             int runShardIncrement = (int)StatCalc.GetPercentage(startingRuneShards, pricePecentageIncPerVisit);
-            Debug.Log(runShardIncrement);
             currentRuneShards += runShardIncrement;
 
             int gemIncrement = (int)StatCalc.GetPercentage(startingGems, gemsPriceIncreasePerVisit);

@@ -10,4 +10,5 @@
     LevelUp,
     StatPoint,
     OpenShop,
+    TraverseToNextLevel
 }

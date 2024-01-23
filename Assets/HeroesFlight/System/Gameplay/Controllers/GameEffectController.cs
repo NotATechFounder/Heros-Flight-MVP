@@ -22,7 +22,7 @@ public class GameEffectController : MonoBehaviour
 
       
         Time.timeScale = 0.2f;
-        Debug.Log(Time.timeScale);
+       
         CoroutineUtility.WaitForSecondsRealtime(2f, () =>
         {
             Time.timeScale = 1f;

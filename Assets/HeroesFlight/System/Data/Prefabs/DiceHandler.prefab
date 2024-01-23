@@ -48,7 +48,7 @@ MonoBehaviour:
   rewardHandler:
     key: Dice
     rewardCount: 2
-    timeType: 1
+    timeType: 3
     nextRewardTimeAdded: 1
     checkingInterval: 0.5
     data:

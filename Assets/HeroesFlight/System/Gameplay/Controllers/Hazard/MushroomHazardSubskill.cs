@@ -60,7 +60,7 @@ namespace HeroesFlightProject.System.Gameplay.Controllers.Hazard
             if (collider2D.TryGetComponent(out IHealthController healthController))
             {
                 float damage = StatCalc.GetPercentage(healthPercentageDecrease, healthController.CurrentHealth);
-                healthController.TryDealDamage(new HealthModificationIntentModel(damage, 
+                healthController.TryDealDamage(new HealthModificationIntentModel(healthPercentageDecrease, 
                     DamageCritType.NoneCritical, AttackType.Regular,CalculationType.Percentage,null));
             }
         }

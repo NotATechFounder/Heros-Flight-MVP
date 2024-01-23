@@ -32,7 +32,6 @@ namespace HeroesFlightProject.System.Gameplay.Controllers
 
         public void SetStats(float newDamage, float newCritChance)
         {
-            Debug.Log($"Damage is {newDamage}");
             damage = newDamage;
             critChance = newCritChance;
             healthController = GetComponentInParent<AiHealthController>();
