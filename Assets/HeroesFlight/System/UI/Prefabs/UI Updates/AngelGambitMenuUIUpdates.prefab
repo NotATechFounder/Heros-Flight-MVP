@@ -2727,7 +2727,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Skip to refuse the Angel's offer
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 5684566fdc047bd4b86480e24465c4ca, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c77b20bd67ab1314e9557abac4621631, type: 2}
   m_sharedMaterial: {fileID: 1837786630179185202, guid: 5684566fdc047bd4b86480e24465c4ca,
     type: 2}
   m_fontSharedMaterials: []
@@ -2792,7 +2792,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &6660179714287495577

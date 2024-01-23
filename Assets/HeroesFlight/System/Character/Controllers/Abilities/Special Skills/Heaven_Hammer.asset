@@ -17,8 +17,8 @@ MonoBehaviour:
     regularActiveAbilityType: 11
     icon: {fileID: 21300000, guid: fd6644b4cd4a502479628628d792cfbe, type: 3}
     displayName: Heavens Hammer
-    description: Smash down your foes with a holy hammer
+    description: 'Special: Smash down your foes with a holy hammer'
   duration: 0
-  cooldown: 5
+  cooldown: 30
   passiveActiveAbility: {fileID: 5597020239399667961, guid: 318567544b513a14aabdc63cea602bc4,
     type: 3}
