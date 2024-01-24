@@ -62,9 +62,9 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 1
-        value: 40
+        value: 100
         inSlope: 0
-        outSlope: 17.5
+        outSlope: 10
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
@@ -72,7 +72,7 @@ MonoBehaviour:
       - serializedVersion: 3
         time: 9
         value: 180
-        inSlope: 17.5
+        inSlope: 10
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
@@ -83,7 +83,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     curveType: 1
     minLevel: 1
-    minValue: 40
+    minValue: 100
     maxLevel: 9
     maxValue: 180
     customCurveKeys:
