@@ -1128,9 +1128,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+  buttonType: 0
   onClickToggle:
     m_PersistentCalls:
       m_Calls: []
+  buttonInitialScale: {x: 1, y: 1, z: 1}
+  buttonDownScale: {x: 0.9, y: 0.9, z: 0.9}
+  buttonUpScale: {x: 1.1, y: 1.1, z: 1.1}
+  buttonDownColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  buttonUpColor: {r: 1, g: 1, b: 1, a: 1}
+  buttonDownDuration: 0.1
+  buttonUpDuration: 0.25
 --- !u!1 &2471566931029463857
 GameObject:
   m_ObjectHideFlags: 0
@@ -1191,7 +1199,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewPriority: 5
   closeBehaviour: 0
-  countDownTime: 60
+  countDownTime: 30
   countDownText: {fileID: 1070649061949303242}
   closeButton: {fileID: 4972777391543485194}
   animationCurve:
@@ -2035,9 +2043,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+  buttonType: 0
   onClickToggle:
     m_PersistentCalls:
       m_Calls: []
+  buttonInitialScale: {x: 1, y: 1, z: 1}
+  buttonDownScale: {x: 0.9, y: 0.9, z: 0.9}
+  buttonUpScale: {x: 1.1, y: 1.1, z: 1.1}
+  buttonDownColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  buttonUpColor: {r: 1, g: 1, b: 1, a: 1}
+  buttonDownDuration: 0.1
+  buttonUpDuration: 0.25
 --- !u!1 &5478110049511657456
 GameObject:
   m_ObjectHideFlags: 0

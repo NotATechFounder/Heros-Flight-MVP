@@ -19,6 +19,6 @@ MonoBehaviour:
     displayName: Knife Fluffy
     description: Scatter of knives around you
   duration: 0
-  cooldown: 5
+  cooldown: 1
   passiveActiveAbility: {fileID: 9050018899516516684, guid: 3e0f7cfb050759846a553c5b30fc7712,
     type: 3}

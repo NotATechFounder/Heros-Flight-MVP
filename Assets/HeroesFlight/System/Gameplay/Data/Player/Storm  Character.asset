@@ -31,7 +31,7 @@ MonoBehaviour:
     dataAsset: {fileID: 11400000, guid: d7a53c122cb59af45b0a8b51abd4c931, type: 2}
   playerStatData:
     attackSpeed: 1
-    moveSpeed: 11
+    moveSpeed: 13
     attackRange: 3
     defense: 1
     criticalHitChance: 15
@@ -120,5 +120,5 @@ MonoBehaviour:
       type: 3}
   characterData:
     characterType: 2
-    isUnlocked: 0
+    isUnlocked: 1
     isSelected: 0
