@@ -32,7 +32,7 @@ MonoBehaviour:
   playerStatData:
     attackSpeed: 1
     moveSpeed: 13
-    attackRange: 3
+    attackRange: 5
     defense: 1
     criticalHitChance: 15
     criticalHitDamage:

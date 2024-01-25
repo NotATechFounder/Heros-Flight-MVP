@@ -405,6 +405,8 @@ MonoBehaviour:
     minValue: 0
     maxLevel: 0
     maxValue: 0
+    customCurveKeys:
+      keys: []
   itemUpgradeMaterialCost:
     animationCurve:
       serializedVersion: 2
@@ -615,6 +617,8 @@ MonoBehaviour:
     minValue: 0
     maxLevel: 0
     maxValue: 0
+    customCurveKeys:
+      keys: []
   rarityInfos:
   - rarity: 0
     palette:
@@ -654,53 +658,53 @@ MonoBehaviour:
     - equipmentStar: 0
       rarityValues:
       - rarity: 0
-        value: 150
+        value: 55
       - rarity: 1
-        value: 300
+        value: 85
       - rarity: 2
-        value: 450
+        value: 115
       - rarity: 3
-        value: 600
+        value: 145
     - equipmentStar: 1
       rarityValues:
       - rarity: 0
-        value: 175
+        value: 80
       - rarity: 1
-        value: 325
+        value: 110
       - rarity: 2
-        value: 475
+        value: 140
       - rarity: 3
-        value: 625
+        value: 170
     - equipmentStar: 2
       rarityValues:
       - rarity: 0
-        value: 200
+        value: 105
       - rarity: 1
-        value: 350
+        value: 135
       - rarity: 2
-        value: 500
+        value: 165
       - rarity: 3
-        value: 650
+        value: 195
     - equipmentStar: 3
       rarityValues:
       - rarity: 0
-        value: 225
+        value: 130
       - rarity: 1
-        value: 375
+        value: 160
       - rarity: 2
-        value: 525
+        value: 190
       - rarity: 3
-        value: 675
+        value: 220
     - equipmentStar: 4
       rarityValues:
       - rarity: 0
-        value: 250
+        value: 155
       - rarity: 1
-        value: 400
+        value: 185
       - rarity: 2
-        value: 550
+        value: 215
       - rarity: 3
-        value: 700
+        value: 245
   - equipmentType: 1
     starStats:
     - equipmentStar: 0
@@ -758,53 +762,53 @@ MonoBehaviour:
     - equipmentStar: 0
       rarityValues:
       - rarity: 0
-        value: 50
+        value: 40
       - rarity: 1
-        value: 65
+        value: 70
       - rarity: 2
-        value: 80
+        value: 100
       - rarity: 3
-        value: 110
+        value: 130
     - equipmentStar: 1
       rarityValues:
       - rarity: 0
         value: 65
       - rarity: 1
-        value: 80
-      - rarity: 2
         value: 95
-      - rarity: 3
-        value: 125
-    - equipmentStar: 2
-      rarityValues:
-      - rarity: 0
-        value: 80
-      - rarity: 1
-        value: 95
-      - rarity: 2
-        value: 110
-      - rarity: 3
-        value: 160
-    - equipmentStar: 3
-      rarityValues:
-      - rarity: 0
-        value: 95
-      - rarity: 1
-        value: 110
       - rarity: 2
         value: 125
       - rarity: 3
         value: 155
+    - equipmentStar: 2
+      rarityValues:
+      - rarity: 0
+        value: 90
+      - rarity: 1
+        value: 120
+      - rarity: 2
+        value: 150
+      - rarity: 3
+        value: 180
+    - equipmentStar: 3
+      rarityValues:
+      - rarity: 0
+        value: 115
+      - rarity: 1
+        value: 145
+      - rarity: 2
+        value: 175
+      - rarity: 3
+        value: 205
     - equipmentStar: 4
       rarityValues:
       - rarity: 0
-        value: 110
-      - rarity: 1
-        value: 125
-      - rarity: 2
         value: 140
-      - rarity: 3
+      - rarity: 1
         value: 170
+      - rarity: 2
+        value: 200
+      - rarity: 3
+        value: 230
   - equipmentType: 3
     starStats:
     - equipmentStar: 0

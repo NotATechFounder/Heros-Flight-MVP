@@ -21,11 +21,12 @@ MonoBehaviour:
   useKnockback: 0
   knockBackForce: 2
   knockBackDuration: 0.1
+  deathAniamtionSpeedModifier: 1
   aiData:
     attackSpeed: 2
     moveSpeed: 4.5
     attackRange: 4.5
-    defense: 20
+    defense: 35
     criticalHitChance: 20
     criticalHitDamage:
       min: 4

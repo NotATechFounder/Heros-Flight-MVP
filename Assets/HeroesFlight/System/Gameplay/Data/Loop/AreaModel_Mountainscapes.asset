@@ -565,17 +565,17 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 6000
+            value: 14000
             inSlope: 0
-            outSlope: 1000
+            outSlope: 7.142857
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 20000
-            inSlope: 1000
+            value: 14100
+            inSlope: 7.142857
             outSlope: 0
             tangentMode: 0
             weightedMode: 0
@@ -586,9 +586,9 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 1
         minLevel: 1
-        minValue: 6000
+        minValue: 14000
         maxLevel: 15
-        maxValue: 20000
+        maxValue: 14100
         customCurveKeys:
           keys: []
       damageStat:
@@ -597,17 +597,17 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 200
+            value: 500
             inSlope: 0
-            outSlope: 10.714286
+            outSlope: 17.857143
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 350
-            inSlope: 10.714286
+            value: 750
+            inSlope: 17.857143
             outSlope: 0
             tangentMode: 0
             weightedMode: 0
@@ -618,9 +618,9 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 1
         minLevel: 1
-        minValue: 200
+        minValue: 500
         maxLevel: 15
-        maxValue: 350
+        maxValue: 750
         customCurveKeys:
           keys: []
     - enemyType: 5
@@ -825,17 +825,17 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 1200
+            value: 4000
             inSlope: 0
-            outSlope: 92.85714
+            outSlope: 35.714287
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 2500
-            inSlope: 92.85714
+            value: 4500
+            inSlope: 35.714287
             outSlope: 0
             tangentMode: 0
             weightedMode: 0
@@ -846,9 +846,9 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 1
         minLevel: 1
-        minValue: 1200
+        minValue: 4000
         maxLevel: 15
-        maxValue: 2500
+        maxValue: 4500
         customCurveKeys:
           keys: []
       damageStat:
@@ -857,17 +857,17 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 100
+            value: 400
             inSlope: 0
-            outSlope: 8.571428
+            outSlope: 7.142857
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 220
-            inSlope: 8.571428
+            value: 500
+            inSlope: 7.142857
             outSlope: 0
             tangentMode: 0
             weightedMode: 0
@@ -878,9 +878,9 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 1
         minLevel: 1
-        minValue: 100
+        minValue: 400
         maxLevel: 15
-        maxValue: 220
+        maxValue: 500
         customCurveKeys:
           keys: []
     - enemyType: 9
@@ -890,72 +890,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 1500
-            inSlope: 0
-            outSlope: 71.42857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
             value: 2500
-            inSlope: 71.42857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 1500
-        maxLevel: 15
-        maxValue: 2500
-        customCurveKeys:
-          keys: []
-      damageStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 200
-            inSlope: 0
-            outSlope: 7.142857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 300
-            inSlope: 7.142857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 200
-        maxLevel: 15
-        maxValue: 300
-        customCurveKeys:
-          keys: []
-    - enemyType: 10
-      healthStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 1000
             inSlope: 0
             outSlope: 71.42857
             tangentMode: 0
@@ -964,7 +899,7 @@ MonoBehaviour:
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 2000
+            value: 3500
             inSlope: 71.42857
             outSlope: 0
             tangentMode: 0
@@ -976,399 +911,9 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 1
         minLevel: 1
-        minValue: 1000
+        minValue: 2500
         maxLevel: 15
-        maxValue: 2000
-        customCurveKeys:
-          keys: []
-      damageStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 200
-            inSlope: 0
-            outSlope: 7.142857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 300
-            inSlope: 7.142857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 200
-        maxLevel: 15
-        maxValue: 300
-        customCurveKeys:
-          keys: []
-    - enemyType: 11
-      healthStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 1000
-            inSlope: 0
-            outSlope: 71.42857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 2000
-            inSlope: 71.42857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 1000
-        maxLevel: 15
-        maxValue: 2000
-        customCurveKeys:
-          keys: []
-      damageStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 200
-            inSlope: 0
-            outSlope: 7.142857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 300
-            inSlope: 7.142857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 200
-        maxLevel: 15
-        maxValue: 300
-        customCurveKeys:
-          keys: []
-    - enemyType: 13
-      healthStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 1000
-            inSlope: 0
-            outSlope: 71.42857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 2000
-            inSlope: 71.42857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 1000
-        maxLevel: 15
-        maxValue: 2000
-        customCurveKeys:
-          keys: []
-      damageStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 80
-            inSlope: 0
-            outSlope: 7.142857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 180
-            inSlope: 7.142857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 80
-        maxLevel: 15
-        maxValue: 180
-        customCurveKeys:
-          keys: []
-    - enemyType: 14
-      healthStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 1000
-            inSlope: 0
-            outSlope: 71.42857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 2000
-            inSlope: 71.42857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 1000
-        maxLevel: 15
-        maxValue: 2000
-        customCurveKeys:
-          keys: []
-      damageStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 80
-            inSlope: 0
-            outSlope: 7.142857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 180
-            inSlope: 7.142857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 80
-        maxLevel: 15
-        maxValue: 180
-        customCurveKeys:
-          keys: []
-    - enemyType: 12
-      healthStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 1000
-            inSlope: 0
-            outSlope: 71.42857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 2000
-            inSlope: 71.42857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 1000
-        maxLevel: 15
-        maxValue: 2000
-        customCurveKeys:
-          keys: []
-      damageStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 80
-            inSlope: 0
-            outSlope: 7.142857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 180
-            inSlope: 7.142857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 80
-        maxLevel: 15
-        maxValue: 180
-        customCurveKeys:
-          keys: []
-    - enemyType: 16
-      healthStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 1000
-            inSlope: 0
-            outSlope: 71.42857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 2000
-            inSlope: 71.42857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 1000
-        maxLevel: 15
-        maxValue: 2000
-        customCurveKeys:
-          keys: []
-      damageStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 80
-            inSlope: 0
-            outSlope: 7.142857
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 180
-            inSlope: 7.142857
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 80
-        maxLevel: 15
-        maxValue: 180
-        customCurveKeys:
-          keys: []
-    - enemyType: 17
-      healthStat:
-        animationCurve:
-          serializedVersion: 2
-          m_Curve:
-          - serializedVersion: 3
-            time: 1
-            value: 10000
-            inSlope: 0
-            outSlope: 2428.5715
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          - serializedVersion: 3
-            time: 15
-            value: 44000
-            inSlope: 2428.5715
-            outSlope: 0
-            tangentMode: 0
-            weightedMode: 0
-            inWeight: 0
-            outWeight: 0
-          m_PreInfinity: 2
-          m_PostInfinity: 2
-          m_RotationOrder: 4
-        curveType: 1
-        minLevel: 1
-        minValue: 10000
-        maxLevel: 15
-        maxValue: 44000
+        maxValue: 3500
         customCurveKeys:
           keys: []
       damageStat:
@@ -1379,15 +924,15 @@ MonoBehaviour:
             time: 1
             value: 300
             inSlope: 0
-            outSlope: 10.714286
+            outSlope: 17.857143
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 450
-            inSlope: 10.714286
+            value: 550
+            inSlope: 17.857143
             outSlope: 0
             tangentMode: 0
             weightedMode: 0
@@ -1400,7 +945,462 @@ MonoBehaviour:
         minLevel: 1
         minValue: 300
         maxLevel: 15
+        maxValue: 550
+        customCurveKeys:
+          keys: []
+    - enemyType: 10
+      healthStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 1500
+            inSlope: 0
+            outSlope: 35.714287
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 2000
+            inSlope: 35.714287
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 1500
+        maxLevel: 15
+        maxValue: 2000
+        customCurveKeys:
+          keys: []
+      damageStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 200
+            inSlope: 0
+            outSlope: 10.714286
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 350
+            inSlope: 10.714286
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 200
+        maxLevel: 15
+        maxValue: 350
+        customCurveKeys:
+          keys: []
+    - enemyType: 11
+      healthStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 1600
+            inSlope: 0
+            outSlope: 28.571428
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 2000
+            inSlope: 28.571428
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 1600
+        maxLevel: 15
+        maxValue: 2000
+        customCurveKeys:
+          keys: []
+      damageStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 375
+            inSlope: 0
+            outSlope: 5.357143
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 450
+            inSlope: 5.357143
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 375
+        maxLevel: 15
         maxValue: 450
+        customCurveKeys:
+          keys: []
+    - enemyType: 13
+      healthStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 3000
+            inSlope: 0
+            outSlope: 35.714287
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 3500
+            inSlope: 35.714287
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 3000
+        maxLevel: 15
+        maxValue: 3500
+        customCurveKeys:
+          keys: []
+      damageStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 450
+            inSlope: 0
+            outSlope: 10.714286
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 600
+            inSlope: 10.714286
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 450
+        maxLevel: 15
+        maxValue: 600
+        customCurveKeys:
+          keys: []
+    - enemyType: 14
+      healthStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 2500
+            inSlope: 0
+            outSlope: 7.142857
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 2600
+            inSlope: 7.142857
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 2500
+        maxLevel: 15
+        maxValue: 2600
+        customCurveKeys:
+          keys: []
+      damageStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 550
+            inSlope: 0
+            outSlope: 7.142857
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 650
+            inSlope: 7.142857
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 550
+        maxLevel: 15
+        maxValue: 650
+        customCurveKeys:
+          keys: []
+    - enemyType: 12
+      healthStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 3000
+            inSlope: 0
+            outSlope: 35.714287
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 3500
+            inSlope: 35.714287
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 3000
+        maxLevel: 15
+        maxValue: 3500
+        customCurveKeys:
+          keys: []
+      damageStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 450
+            inSlope: 0
+            outSlope: 7.142857
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 550
+            inSlope: 7.142857
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 450
+        maxLevel: 15
+        maxValue: 550
+        customCurveKeys:
+          keys: []
+    - enemyType: 16
+      healthStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 4000
+            inSlope: 0
+            outSlope: 35.714287
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 4500
+            inSlope: 35.714287
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 4000
+        maxLevel: 15
+        maxValue: 4500
+        customCurveKeys:
+          keys: []
+      damageStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 450
+            inSlope: 0
+            outSlope: 3.5714285
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 500
+            inSlope: 3.5714285
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 450
+        maxLevel: 15
+        maxValue: 500
+        customCurveKeys:
+          keys: []
+    - enemyType: 17
+      healthStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 30000
+            inSlope: 0
+            outSlope: 1071.4286
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 45000
+            inSlope: 1071.4286
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 30000
+        maxLevel: 15
+        maxValue: 45000
+        customCurveKeys:
+          keys: []
+      damageStat:
+        animationCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 1
+            value: 750
+            inSlope: 0
+            outSlope: 7.142857
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 15
+            value: 850
+            inSlope: 7.142857
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        curveType: 1
+        minLevel: 1
+        minValue: 750
+        maxLevel: 15
+        maxValue: 850
         customCurveKeys:
           keys: []
   inRunXp:
