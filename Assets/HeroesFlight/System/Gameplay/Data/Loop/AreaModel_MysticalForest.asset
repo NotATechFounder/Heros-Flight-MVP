@@ -579,15 +579,15 @@ MonoBehaviour:
             time: 1
             value: 6000
             inSlope: 0
-            outSlope: 642.8571
+            outSlope: 71.42857
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 15000
-            inSlope: 642.8571
+            value: 7000
+            inSlope: 71.42857
             outSlope: 0
             tangentMode: 0
             weightedMode: 0
@@ -600,7 +600,7 @@ MonoBehaviour:
         minLevel: 1
         minValue: 6000
         maxLevel: 15
-        maxValue: 15000
+        maxValue: 7000
         customCurveKeys:
           keys: []
       damageStat:
