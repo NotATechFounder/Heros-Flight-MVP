@@ -39,7 +39,7 @@ MonoBehaviour:
       min: 1.3
       max: 1.6
     heroType: 1
-    health: 2000
+    health: 8000
     vitality: 150
     agility: 150
     resilience: 150
@@ -48,8 +48,8 @@ MonoBehaviour:
       min: 90
       max: 105
     physicalDamage:
-      min: 45
-      max: 60
+      min: 315
+      max: 420
   m_AnimationData:
     idleAnimation: {fileID: 11400000, guid: 2d5f67112d32a5b4681735db23bd56d8, type: 2}
     flyingUpAnimation: {fileID: 11400000, guid: d0fb82d0dc310d84981dcb5a403fefa4,

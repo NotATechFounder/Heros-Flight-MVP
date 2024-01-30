@@ -658,53 +658,53 @@ MonoBehaviour:
     - equipmentStar: 0
       rarityValues:
       - rarity: 0
-        value: 55
+        value: 150
       - rarity: 1
-        value: 85
+        value: 300
       - rarity: 2
-        value: 115
+        value: 450
       - rarity: 3
-        value: 145
+        value: 600
     - equipmentStar: 1
       rarityValues:
       - rarity: 0
-        value: 80
+        value: 175
       - rarity: 1
-        value: 110
+        value: 325
       - rarity: 2
-        value: 140
+        value: 475
       - rarity: 3
-        value: 170
+        value: 625
     - equipmentStar: 2
       rarityValues:
       - rarity: 0
-        value: 105
+        value: 200
       - rarity: 1
-        value: 135
+        value: 350
       - rarity: 2
-        value: 165
+        value: 500
       - rarity: 3
-        value: 195
+        value: 650
     - equipmentStar: 3
       rarityValues:
       - rarity: 0
-        value: 130
+        value: 225
       - rarity: 1
-        value: 160
+        value: 375
       - rarity: 2
-        value: 190
+        value: 525
       - rarity: 3
-        value: 220
+        value: 675
     - equipmentStar: 4
       rarityValues:
       - rarity: 0
-        value: 155
+        value: 250
       - rarity: 1
-        value: 185
+        value: 400
       - rarity: 2
-        value: 215
+        value: 550
       - rarity: 3
-        value: 245
+        value: 700
   - equipmentType: 1
     starStats:
     - equipmentStar: 0
@@ -762,53 +762,53 @@ MonoBehaviour:
     - equipmentStar: 0
       rarityValues:
       - rarity: 0
-        value: 40
-      - rarity: 1
-        value: 70
-      - rarity: 2
-        value: 100
-      - rarity: 3
         value: 130
+      - rarity: 1
+        value: 260
+      - rarity: 2
+        value: 350
+      - rarity: 3
+        value: 500
     - equipmentStar: 1
       rarityValues:
       - rarity: 0
-        value: 65
-      - rarity: 1
-        value: 95
-      - rarity: 2
-        value: 125
-      - rarity: 3
         value: 155
+      - rarity: 1
+        value: 285
+      - rarity: 2
+        value: 375
+      - rarity: 3
+        value: 525
     - equipmentStar: 2
       rarityValues:
       - rarity: 0
-        value: 90
-      - rarity: 1
-        value: 120
-      - rarity: 2
-        value: 150
-      - rarity: 3
         value: 180
+      - rarity: 1
+        value: 310
+      - rarity: 2
+        value: 400
+      - rarity: 3
+        value: 550
     - equipmentStar: 3
       rarityValues:
       - rarity: 0
-        value: 115
-      - rarity: 1
-        value: 145
-      - rarity: 2
-        value: 175
-      - rarity: 3
         value: 205
+      - rarity: 1
+        value: 335
+      - rarity: 2
+        value: 425
+      - rarity: 3
+        value: 575
     - equipmentStar: 4
       rarityValues:
       - rarity: 0
-        value: 140
-      - rarity: 1
-        value: 170
-      - rarity: 2
-        value: 200
-      - rarity: 3
         value: 230
+      - rarity: 1
+        value: 360
+      - rarity: 2
+        value: 450
+      - rarity: 3
+        value: 600
   - equipmentType: 3
     starStats:
     - equipmentStar: 0

@@ -33,13 +33,13 @@ MonoBehaviour:
     attackSpeed: 1
     moveSpeed: 13
     attackRange: 5
-    defense: 1
+    defense: 4
     criticalHitChance: 15
     criticalHitDamage:
       min: 1.3
       max: 1.6
     heroType: 2
-    health: 400
+    health: 4000
     vitality: 100
     agility: 150
     resilience: 150
@@ -48,8 +48,8 @@ MonoBehaviour:
       min: 90
       max: 105
     physicalDamage:
-      min: 63
-      max: 148
+      min: 252
+      max: 592
   m_AnimationData:
     idleAnimation: {fileID: 11400000, guid: 3ca096e67733b3a4aa8d8efc8177a265, type: 2}
     flyingUpAnimation: {fileID: 11400000, guid: d0fb82d0dc310d84981dcb5a403fefa4,
