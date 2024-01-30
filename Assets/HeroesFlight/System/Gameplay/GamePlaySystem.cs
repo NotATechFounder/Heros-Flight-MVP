@@ -251,7 +251,7 @@ namespace HeroesFlight.System.Gameplay
 
         private SummaryDataModel ProcessRunSummary()
         {
-            int goldReward = CurrentLvlIndex * 100;
+            int goldReward = CurrentLvlIndex * 388;
             dataSystem.CurrencyManager.AddCurrency(CurrencyKeys.Gold, goldReward);
 
             List<RewardVisualEntry> rewardVisualEntries = new List<RewardVisualEntry>();

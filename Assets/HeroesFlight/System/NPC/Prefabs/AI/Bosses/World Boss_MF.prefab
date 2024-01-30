@@ -746,10 +746,10 @@ MonoBehaviour:
   stopOnUse: 0
   abilityParticle: {fileID: 0}
   abilityInteraptuble: 0
-  damage: 300
-  canCrit: 0
-  critChance: 0
-  critModifier: 1
+  damage: 644
+  canCrit: 1
+  critChance: 40.4
+  critModifier: 1.4
   abilityZones:
   - ZoneVisual: {fileID: 1502175428497277635}
     ZoneChecker: {fileID: 1161931008080167956}
@@ -1154,10 +1154,10 @@ MonoBehaviour:
   stopOnUse: 0
   abilityParticle: {fileID: 0}
   abilityInteraptuble: 0
-  damage: 200
-  canCrit: 0
-  critChance: 0
-  critModifier: 1
+  damage: 500
+  canCrit: 1
+  critChance: 100
+  critModifier: 1.3
   abilityZones:
   - ZoneVisual: {fileID: 7125660877630862615}
     ZoneChecker: {fileID: 4345069053788204338}
@@ -1247,7 +1247,7 @@ MonoBehaviour:
   stopOnUse: 1
   abilityParticle: {fileID: 2280824207714229832}
   abilityInteraptuble: 0
-  buffStrenght: 50.7
+  buffStrenght: 90
   buffDuration: 30
   attackAbilities:
   - {fileID: 8301045690162043148}
@@ -1605,7 +1605,7 @@ MonoBehaviour:
   stopOnUse: 1
   abilityParticle: {fileID: 0}
   abilityInteraptuble: 0
-  damage: 40
+  damage: 388
   canCrit: 0
   critChance: 0
   critModifier: 1
@@ -2299,10 +2299,10 @@ MonoBehaviour:
   stopOnUse: 0
   abilityParticle: {fileID: 0}
   abilityInteraptuble: 0
-  damage: 250
+  damage: 700
   canCrit: 1
-  critChance: 40.5
-  critModifier: 1.2
+  critChance: 50.2
+  critModifier: 1.5
   abilityZones:
   - ZoneVisual: {fileID: 3514983605379083638}
     ZoneChecker: {fileID: 7306510314580588188}
@@ -2720,7 +2720,7 @@ MonoBehaviour:
   stopOnUse: 0
   abilityParticle: {fileID: 0}
   abilityInteraptuble: 0
-  damage: 150
+  damage: 400
   canCrit: 0
   critChance: 0
   critModifier: 1
@@ -4436,10 +4436,10 @@ MonoBehaviour:
   stopOnUse: 0
   abilityParticle: {fileID: 0}
   abilityInteraptuble: 0
-  damage: 280
+  damage: 750
   canCrit: 0
   critChance: 30.7
-  critModifier: 1.3
+  critModifier: 1.5
   abilityZones:
   - ZoneVisual: {fileID: 6228873445644831906}
     ZoneChecker: {fileID: 323097477749419389}
@@ -5707,7 +5707,7 @@ MonoBehaviour:
   stopOnUse: 1
   abilityParticle: {fileID: 0}
   abilityInteraptuble: 0
-  damage: 40
+  damage: 394
   canCrit: 0
   critChance: 0
   critModifier: 1

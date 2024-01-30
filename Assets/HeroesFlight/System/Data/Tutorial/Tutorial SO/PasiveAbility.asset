@@ -16,5 +16,4 @@ MonoBehaviour:
   tutorialVisualData:
     title: Passive Ability
     steps:
-    - description: You received a passive ability. You can have a max of three during
-        the run. They are always active.
+    - description: You received a passive ability, which will always be active!

@@ -16,6 +16,6 @@ MonoBehaviour:
   tutorialVisualData:
     title: Open Shop
     steps:
-    - description: Great work completing the menu tutorial. Time to get another reward.
-        Click the Shop.
+    - description: Great work completing the menu tutorial. Time to get another reward
+        in the shop!
     - description: Take our gems and open a Rare Chest for powerful items!

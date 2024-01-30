@@ -16,5 +16,4 @@ MonoBehaviour:
   tutorialVisualData:
     title: Shrine
     steps:
-    - description: Once every few levels, you can enter the Shrine. Unlock each NPC,
-        and they will help you on the journey. For a cost.
+    - description: You have entered the Shrine. For a cost, each NPC will help you.
