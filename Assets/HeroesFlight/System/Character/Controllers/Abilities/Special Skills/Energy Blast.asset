@@ -19,6 +19,6 @@ MonoBehaviour:
     displayName: Energy Blast
     description: 'Special: Blast enemies in front with an energy cannon'
   duration: 2
-  cooldown: 30
+  cooldown: 15
   passiveActiveAbility: {fileID: 2533127532117566998, guid: 01185e6793c42c2459cf08356dfacb07,
     type: 3}

@@ -49,14 +49,14 @@ MonoBehaviour:
   tutorialSOs:
   - {fileID: 11400000, guid: f90577e3c071cbc4bb0a8ffa916aa8f9, type: 2}
   - {fileID: 11400000, guid: f001ce0a88c573149913a01458d44d8e, type: 2}
-  - {fileID: 11400000, guid: c88e17e21ab2cdb47863815e4555703c, type: 2}
   - {fileID: 11400000, guid: 515624e4059701041aa0c96fee14555d, type: 2}
-  - {fileID: 11400000, guid: cf319174662bc6e4bae345ef6bb7b677, type: 2}
   - {fileID: 11400000, guid: 338d5c21a7053ba48bd96e8ec1688a4c, type: 2}
   - {fileID: 11400000, guid: 7ed7f7f8528476647b7304a48ae6aa09, type: 2}
   - {fileID: 11400000, guid: e9206f30b83213d4e813bc095c164d9c, type: 2}
-  - {fileID: 11400000, guid: 880f22c4388a8de419acf325c8525c51, type: 2}
   - {fileID: 11400000, guid: 01d759881e285e34ca36e1b6400af5ac, type: 2}
+  - {fileID: 11400000, guid: 880f22c4388a8de419acf325c8525c51, type: 2}
+  - {fileID: 11400000, guid: c88e17e21ab2cdb47863815e4555703c, type: 2}
+  - {fileID: 11400000, guid: cf319174662bc6e4bae345ef6bb7b677, type: 2}
 --- !u!1001 &6242322565576841664
 PrefabInstance:
   m_ObjectHideFlags: 0

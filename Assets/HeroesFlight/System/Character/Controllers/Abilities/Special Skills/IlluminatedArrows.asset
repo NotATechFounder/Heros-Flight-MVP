@@ -19,6 +19,6 @@ MonoBehaviour:
     displayName: Illuminated Arrows
     description: 'Special: Non-stop flurry of arrows blasting the front'
   duration: 10
-  cooldown: 30
+  cooldown: 15
   passiveActiveAbility: {fileID: 8247616050967844228, guid: 5a656b54cab3e1442af063df1b9894fe,
     type: 3}

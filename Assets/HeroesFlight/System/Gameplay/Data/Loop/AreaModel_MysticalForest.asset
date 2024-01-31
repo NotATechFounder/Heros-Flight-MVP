@@ -257,7 +257,7 @@ MonoBehaviour:
         avaliableMiniBosses: []
         boss: {fileID: 0}
     - levelType: 0
-      lvlDuration: 18
+      lvlDuration: 120
       levelPrefab: {fileID: 3272113625133634179, guid: ca9b4fb908cf7ac4786292f4d62d5710,
         type: 3}
       timeBetweenWaves: 2
@@ -267,13 +267,7 @@ MonoBehaviour:
         avaliableTrashMobs:
         - aiPrefab: {fileID: 6401415947284711722, guid: d0352cfec55e26f4686d36b91215b047,
             type: 3}
-          spawnChance: 70
-        - aiPrefab: {fileID: 1189957920734102541, guid: cc82349d9ef97db499605e43de09e97d,
-            type: 3}
-          spawnChance: 20
-        - aiPrefab: {fileID: 5089161057898482585, guid: 0ceaebee982a4f34cbc29fd2429d4334,
-            type: 3}
-          spawnChance: 10
+          spawnChance: 100
         avaliableMiniBosses: []
         boss: {fileID: 0}
     - levelType: 0
@@ -317,7 +311,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 1000
+            value: 250
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -338,7 +332,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 2
         minLevel: 1
-        minValue: 1000
+        minValue: 250
         maxLevel: 15
         maxValue: 2000
         customCurveKeys:
@@ -349,7 +343,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 400
+            value: 100
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -370,7 +364,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 2
         minLevel: 1
-        minValue: 400
+        minValue: 100
         maxLevel: 15
         maxValue: 800
         customCurveKeys:
@@ -403,7 +397,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 3
         minLevel: 1
-        minValue: 1000
+        minValue: 250
         maxLevel: 15
         maxValue: 2000
         customCurveKeys:
@@ -435,7 +429,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 3
         minLevel: 1
-        minValue: 1000
+        minValue: 75
         maxLevel: 15
         maxValue: 2000
         customCurveKeys:
@@ -512,7 +506,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 2000
+            value: 500
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -521,7 +515,7 @@ MonoBehaviour:
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 4000
+            value: 2000
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -533,9 +527,9 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 2
         minLevel: 1
-        minValue: 2000
+        minValue: 500
         maxLevel: 15
-        maxValue: 4000
+        maxValue: 2000
         customCurveKeys:
           keys: []
       damageStat:
@@ -544,7 +538,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 600
+            value: 150
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -565,7 +559,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 2
         minLevel: 1
-        minValue: 600
+        minValue: 150
         maxLevel: 15
         maxValue: 1200
         customCurveKeys:
@@ -674,7 +668,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 1000
+            value: 250
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -695,7 +689,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 2
         minLevel: 1
-        minValue: 1000
+        minValue: 250
         maxLevel: 15
         maxValue: 2000
         customCurveKeys:
@@ -707,7 +701,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 1600
+            value: 400
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -716,7 +710,7 @@ MonoBehaviour:
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 3200
+            value: 1800
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -728,9 +722,9 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 2
         minLevel: 1
-        minValue: 1600
+        minValue: 400
         maxLevel: 15
-        maxValue: 3200
+        maxValue: 1800
         customCurveKeys:
           keys: []
       damageStat:
@@ -739,7 +733,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 600
+            value: 150
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -760,7 +754,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 2
         minLevel: 1
-        minValue: 600
+        minValue: 150
         maxLevel: 15
         maxValue: 1200
         customCurveKeys:
@@ -772,7 +766,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 1600
+            value: 400
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -793,7 +787,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 2
         minLevel: 1
-        minValue: 1600
+        minValue: 400
         maxLevel: 15
         maxValue: 3200
         customCurveKeys:
@@ -804,7 +798,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 700
+            value: 175
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -825,7 +819,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 2
         minLevel: 1
-        minValue: 700
+        minValue: 175
         maxLevel: 15
         maxValue: 1400
         customCurveKeys:
@@ -869,7 +863,7 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 1000
+            value: 250
             inSlope: 0
             outSlope: 0
             tangentMode: 0
@@ -890,7 +884,7 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 2
         minLevel: 1
-        minValue: 1000
+        minValue: 250
         maxLevel: 15
         maxValue: 2000
         customCurveKeys:

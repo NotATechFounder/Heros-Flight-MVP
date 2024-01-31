@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Vatality
   m_EditorClassIdentifier: 
   statAttributeType: 1
-  description: Increase your total health by 250
+  description: Increase your total health by 750
   icon: {fileID: 21300000, guid: 8ee45de119e5e2945834c0bbe32582c2, type: 3}
   keyValues:
   - statType: 2
     statCalculationType: 0
-    valuePerSp: 50
+    valuePerSp: 750

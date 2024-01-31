@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeTime: 7
   shakeForce: 7
-  defaultvelocity: {x: -1, y: 1, z: -1}
+  defaultvelocity: {x: 0, y: -1, z: -1}
   impulseCurve:
     serializedVersion: 2
     m_Curve:
@@ -39,6 +39,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  listenerAmplitude: 1000
-  listenerFrequency: 50000
+  listenerAmplitude: 200
+  listenerFrequency: 10
   listenerDuration: 5

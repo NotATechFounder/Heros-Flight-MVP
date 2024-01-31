@@ -57,7 +57,7 @@ MonoBehaviour:
     IsGroup: 0
     GroupAsset: []
     ShowFoldOut: 1
-  - Key: MSboss1
+  - Key: MSboss
     Asset: {fileID: 8300000, guid: 85165d399c0d27449a92df2af4bac775, type: 3}
     Info: 
     IsGroup: 0
