@@ -57,6 +57,9 @@ MonoBehaviour:
         - aiPrefab: {fileID: 7121512436518617976, guid: fe4f90f142f113f4cb243b4a16f7bc60,
             type: 3}
           spawnChance: 53
+        - aiPrefab: {fileID: 5987690118523913595, guid: c6288064fee3f2246a126030dedd3f26,
+            type: 3}
+          spawnChance: 53
         avaliableMiniBosses: []
         boss: {fileID: 0}
     - levelType: 0
@@ -71,9 +74,9 @@ MonoBehaviour:
         - aiPrefab: {fileID: 7121512436518617976, guid: fe4f90f142f113f4cb243b4a16f7bc60,
             type: 3}
           spawnChance: 29
-        - aiPrefab: {fileID: 1544928924323398027, guid: 79c17d6c9d59a0d40baa0a95630b3cec,
+        - aiPrefab: {fileID: 5987690118523913595, guid: c6288064fee3f2246a126030dedd3f26,
             type: 3}
-          spawnChance: 65
+          spawnChance: 25
         avaliableMiniBosses: []
         boss: {fileID: 0}
     - levelType: 0

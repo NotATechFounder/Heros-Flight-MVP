@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StatData:
     TargetStat: 14
-    CalculationType: 0
+    CalculationType: 1
     StatValue:
-      StartValue: 0.1
-      IncreasePerLvl: 0.1
+      StartValue: 1
+      IncreasePerLvl: 1

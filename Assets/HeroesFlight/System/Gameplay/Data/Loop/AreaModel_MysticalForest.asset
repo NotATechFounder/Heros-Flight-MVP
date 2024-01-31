@@ -896,17 +896,17 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 30000
+            value: 64000
             inSlope: 0
-            outSlope: 71.42857
+            outSlope: 785.7143
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 31000
-            inSlope: 71.42857
+            value: 75000
+            inSlope: 785.7143
             outSlope: 0
             tangentMode: 0
             weightedMode: 0
@@ -917,9 +917,9 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 1
         minLevel: 1
-        minValue: 30000
+        minValue: 64000
         maxLevel: 15
-        maxValue: 31000
+        maxValue: 75000
         customCurveKeys:
           keys: []
       damageStat:
@@ -928,17 +928,17 @@ MonoBehaviour:
           m_Curve:
           - serializedVersion: 3
             time: 1
-            value: 1800
+            value: 2100
             inSlope: 0
-            outSlope: 7.142857
+            outSlope: 28.571428
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
             time: 15
-            value: 1900
-            inSlope: 7.142857
+            value: 2500
+            inSlope: 28.571428
             outSlope: 0
             tangentMode: 0
             weightedMode: 0
@@ -949,9 +949,9 @@ MonoBehaviour:
           m_RotationOrder: 4
         curveType: 1
         minLevel: 1
-        minValue: 1800
+        minValue: 2100
         maxLevel: 15
-        maxValue: 1900
+        maxValue: 2500
         customCurveKeys:
           keys: []
   inRunXp:
