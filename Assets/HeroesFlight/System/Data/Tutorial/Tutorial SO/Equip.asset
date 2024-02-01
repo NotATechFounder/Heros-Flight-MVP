@@ -16,6 +16,5 @@ MonoBehaviour:
   tutorialVisualData:
     title: Equipments
     steps:
-    - description: "Nice work finishing the in-game tutorial. Here is a reward. Now
-        let\u2019s equip it!"
+    - description: Nice work finishing the in-game tutorial. Let's equip your reward!
     - description: Click to select the item and then 'equip' to use it.

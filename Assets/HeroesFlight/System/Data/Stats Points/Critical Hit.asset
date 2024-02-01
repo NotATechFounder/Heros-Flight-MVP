@@ -18,4 +18,4 @@ MonoBehaviour:
   keyValues:
   - statType: 7
     statCalculationType: 1
-    valuePerSp: 1
+    valuePerSp: 5

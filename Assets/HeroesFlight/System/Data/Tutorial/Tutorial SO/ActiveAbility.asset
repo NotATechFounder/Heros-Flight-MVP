@@ -16,5 +16,4 @@ MonoBehaviour:
   tutorialVisualData:
     title: Active Ability
     steps:
-    - description: You received an active ability. You can have a max of three during
-        the run. Press the ability to cast it!
+    - description: You received an active ability. Press the ability to cast it!

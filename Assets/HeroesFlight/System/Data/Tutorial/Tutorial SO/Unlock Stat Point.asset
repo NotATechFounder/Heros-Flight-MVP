@@ -16,9 +16,8 @@ MonoBehaviour:
   tutorialVisualData:
     title: Stat Points
     steps:
-    - description: Every level, you will get some SP to power-up your next run. Now
-        open the Stat Points menu to try.
+    - description: You received SP for leveling up. Now open the Stat Points menu
+        to use it.
     - description: Press the arrow up to INCREASE your SP.
     - description: Press the arrow down to DECREASE your SP.
-    - description: "Now let\u2019s test your luck. Let\u2019s roll the Miracle Dice
-        for additional bonuses!"
+    - description: "Let\u2019s roll the Miracle Dice for additional bonuses!"

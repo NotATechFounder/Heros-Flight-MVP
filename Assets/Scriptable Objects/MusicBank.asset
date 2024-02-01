@@ -51,13 +51,13 @@ MonoBehaviour:
     IsGroup: 0
     GroupAsset: []
     ShowFoldOut: 0
-  - Key: MFboss1
-    Asset: {fileID: 8300000, guid: 20a290424c5f6cb4cbccf544ac4e03c1, type: 3}
+  - Key: MFboss
+    Asset: {fileID: 8300000, guid: 0496e0049751d134ea6e149f63266510, type: 3}
     Info: 
     IsGroup: 0
     GroupAsset: []
     ShowFoldOut: 1
-  - Key: MSboss1
+  - Key: MSboss
     Asset: {fileID: 8300000, guid: 85165d399c0d27449a92df2af4bac775, type: 3}
     Info: 
     IsGroup: 0

@@ -34273,7 +34273,7 @@ MonoBehaviour:
       keys: []
   overlapChecker: {fileID: 6032044278416496122}
   visual: {fileID: 6652857377672208178}
-  linesOfDamage: 2
+  linesOfDamage: 11
   linesOfDamagePerIncrease: 1
 --- !u!1 &3558568071538909040
 GameObject:

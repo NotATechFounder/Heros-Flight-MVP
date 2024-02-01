@@ -79,4 +79,4 @@ MonoBehaviour:
   currencyColor: {r: 0.9921569, g: 0.9215687, b: 0, a: 1}
   _currencyData:
     key: ENERGY
-    Amount: 45
+    Amount: 21

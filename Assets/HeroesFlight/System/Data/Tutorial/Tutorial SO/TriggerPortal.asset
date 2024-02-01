@@ -16,4 +16,4 @@ MonoBehaviour:
   tutorialVisualData:
     title: Portal
     steps:
-    - description: Enter portal to move to next level
+    - description: Fly into the portal to progress!

@@ -16,4 +16,4 @@ MonoBehaviour:
   tutorialVisualData:
     title: Movement
     steps:
-    - description: Use the joystick to fly your hero. Try and fly to the light!
+    - description: Use the joystick to fly your hero. Fly to the light!
