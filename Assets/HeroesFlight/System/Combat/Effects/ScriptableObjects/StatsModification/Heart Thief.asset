@@ -16,5 +16,5 @@ MonoBehaviour:
     TargetStat: 14
     CalculationType: 0
     StatValue:
-      StartValue: 1
-      IncreasePerLvl: 1
+      StartValue: 0.25
+      IncreasePerLvl: 0.25

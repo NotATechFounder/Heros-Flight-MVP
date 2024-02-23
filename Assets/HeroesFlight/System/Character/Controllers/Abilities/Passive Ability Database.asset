@@ -20,7 +20,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3c19c09a50d5d48458c78cc00f7d88c9, type: 2}
   - {fileID: 11400000, guid: 959585b406267a04ca8f5ca30af3fb7a, type: 2}
   - {fileID: 11400000, guid: 9648bc1e615104d4f8f2097b3390a032, type: 2}
-  - {fileID: 11400000, guid: 3e46e26aafcd93841a4a292b35bce138, type: 2}
   - {fileID: 11400000, guid: 423140420dbba2649a70ca2e729b8691, type: 2}
   - {fileID: 11400000, guid: 2bd96164996446a4885896edaa6f4c89, type: 2}
   - {fileID: 11400000, guid: 84d69a377db33f74988a2a2bb08ae76c, type: 2}
@@ -41,8 +40,6 @@ MonoBehaviour:
     scriptableObject: {fileID: 11400000, guid: 959585b406267a04ca8f5ca30af3fb7a, type: 2}
   - ID: GreedIsGood
     scriptableObject: {fileID: 11400000, guid: 9648bc1e615104d4f8f2097b3390a032, type: 2}
-  - ID: HeartThief
-    scriptableObject: {fileID: 11400000, guid: 3e46e26aafcd93841a4a292b35bce138, type: 2}
   - ID: IfritsArmor
     scriptableObject: {fileID: 11400000, guid: 423140420dbba2649a70ca2e729b8691, type: 2}
   - ID: LichArmor
