@@ -13,19 +13,19 @@ MonoBehaviour:
   m_Name: LootLockerConfig
   m_EditorClassIdentifier: 
   apiKey: dev_778d29efe91146379551f11431e000fb
-  token: ee1c24176d82d8a0b281e22bd392267163d08ac6
+  token: 
   adminToken: 
   refreshToken: 
   domainKey: cy8p5ug4
   gameID: 0
   game_version: 1.0.0.0
   sdk_version: 
-  deviceID: 93b9caae-d68f-4b51-a74c-5b6878db2ce2
+  deviceID: 
   url: https://api.lootlocker.io/v1
-  adminUrl: https://cy8p5ug4.api.lootlocker.io/admin
-  playerUrl: https://cy8p5ug4.api.lootlocker.io/player
-  userUrl: https://cy8p5ug4.api.lootlocker.io/game
-  baseUrl: https://cy8p5ug4.api.lootlocker.io
+  adminUrl: https://api.lootlocker.io/admin
+  playerUrl: https://api.lootlocker.io/player
+  userUrl: https://api.lootlocker.io/game
+  baseUrl: https://api.lootlocker.io
   clientSideRequestTimeOut: 5
   currentDebugLevel: 0
   allowTokenRefresh: 1
