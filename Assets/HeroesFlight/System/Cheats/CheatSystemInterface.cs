@@ -6,6 +6,6 @@
         void AddItems();
         void UnlockTraits();
         void KillAllEnemies();
-        void MakePlayerImmortal();
+        void MakePlayerImmortal(bool isImmortal);
     }
 }

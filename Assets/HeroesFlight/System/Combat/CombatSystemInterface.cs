@@ -16,7 +16,7 @@ namespace HeroesFlight.System.Combat
         void StartCharacterComboCheck();
         void SetSpecialBarValue(float value);
         void ManuallyNotifyEntityDeath(EntityDeathModel model);
-        void MakePlayerImmortal();
+        void MakePlayerImmortal(bool isImmortal);
        
     }
 }

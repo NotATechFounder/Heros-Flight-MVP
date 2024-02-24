@@ -1,10 +1,13 @@
 ﻿using System;
 using HeroesFlight.System.Cheats.Data;
+using HeroesFlight.System.Cheats.Enum;
+using HeroesFlight.System.Cheats.UI;
 using HeroesFlight.System.Combat;
 using HeroesFlight.System.Gameplay;
 using HeroesFlight.System.Inventory;
 using HeroesFlight.System.NPC;
 using HeroesFlight.System.Stats.Handlers;
+using StansAssets.Foundation.Extensions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -37,8 +40,42 @@ namespace HeroesFlight.System.Cheats
 
         private const string Setup_File_Location = "Cheats/CheatsDataProfile";
         private CheatsDataProfile profile;
+        private CheatsUiControllerInterface uiController;
 
-        public void Init(Scene scene = default, Action onComplete = null) { }
+        public void Init(Scene scene = default, Action onComplete = null)
+        {
+            Debug.Log("Initied");
+            uiController = scene.GetComponentInChildren<CheatsUiController>();
+            uiController.SetState(profile.EnableCheats);
+            uiController.OnCheatButtonClicked += HandleCheatButtonClicked;
+        }
+
+        private void HandleCheatButtonClicked(CheatButtonClickModel obj)
+        {
+            Debug.Log(obj.ButtonType);
+            switch (obj.ButtonType)
+            {
+                case CheatsButtonType.AddCurrency:
+                    AddCurrency();
+                    break;
+                case CheatsButtonType.UnlockTraits:
+                    UnlockTraits();
+                    break;
+                case CheatsButtonType.Immortality:
+                    MakePlayerImmortal(obj.ToggleValue);
+                    break;
+                case CheatsButtonType.AddItems:
+                    AddItems();
+                    break;
+                case CheatsButtonType.KillAllMobs:
+                    KillAllEnemies();
+                    break;
+                case CheatsButtonType.Navigation:
+                    break;
+               
+            }
+        }
+
         public void Reset() { }
 
         /// <summary>
@@ -77,9 +114,9 @@ namespace HeroesFlight.System.Cheats
         /// <summary>
         /// Makes the player immortal.
         /// </summary>
-        public void MakePlayerImmortal()
+        public void MakePlayerImmortal(bool isImmortal)
         {
-            combatSystem.MakePlayerImmortal();
+            combatSystem.MakePlayerImmortal(isImmortal);
         }
     }
 }

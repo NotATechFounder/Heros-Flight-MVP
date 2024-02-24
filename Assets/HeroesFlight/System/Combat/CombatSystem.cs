@@ -234,9 +234,9 @@ namespace HeroesFlight.System.Combat
             OnEntityDied?.Invoke(model);
         }
 
-        public void MakePlayerImmortal()
+        public void MakePlayerImmortal(bool isImmortal)
         {
-            ignoringPlayerDamageTaken = !ignoringPlayerDamageTaken;
+            ignoringPlayerDamageTaken = isImmortal;
         }
 
       
