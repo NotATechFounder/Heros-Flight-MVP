@@ -53,30 +53,40 @@ public class InventoryHandler : MonoBehaviour, IInventoryChangeSignal
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            List<InventoryAddModificator> itemsToAdd = new List<InventoryAddModificator>();
-            foreach (ItemSO item in testItem)
-            {
-                Rarity randomRarity = (Rarity)UnityEngine.Random.Range(0, 4);
-
-                itemsToAdd.Add(new InventoryAddModificator(item, 1, randomRarity));
-            }
-            AddMultipleToInventory(itemsToAdd.ToArray());
+            AddTestitems();
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            List<InventoryAddModificator> itemsToAdd = new List<InventoryAddModificator>();
-            foreach (ItemSO item in testMaterialItem)
-            {
-                itemsToAdd.Add(new InventoryAddModificator(item, 1, Rarity.Common));
-            }
-            AddMultipleToInventory(itemsToAdd.ToArray());
+            AddTestMaterials();
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             RemoveMultipleToInventory(GetInventoryEquippedItems().ToArray());
         }
+    }
+
+    private void AddTestMaterials()
+    {
+        List<InventoryAddModificator> itemsToAdd = new List<InventoryAddModificator>();
+        foreach (ItemSO item in testMaterialItem)
+        {
+            itemsToAdd.Add(new InventoryAddModificator(item, 1, Rarity.Common));
+        }
+        AddMultipleToInventory(itemsToAdd.ToArray());
+    }
+
+    private void AddTestitems()
+    {
+        List<InventoryAddModificator> itemsToAdd = new List<InventoryAddModificator>();
+        foreach (ItemSO item in testItem)
+        {
+            Rarity randomRarity = (Rarity)UnityEngine.Random.Range(0, 4);
+
+            itemsToAdd.Add(new InventoryAddModificator(item, 1, randomRarity));
+        }
+        AddMultipleToInventory(itemsToAdd.ToArray());
     }
 
     public void Init(CurrencyManager currencyManager)
@@ -362,4 +372,10 @@ public class InventoryHandler : MonoBehaviour, IInventoryChangeSignal
     }
 
     public List<Item> GetInventoryEquippedItems() => new List<Item>(equippedItemDic.Values);
+
+    public void AddAllTestItems()
+    {
+        AddTestitems();
+        AddTestMaterials();
+    }
 }

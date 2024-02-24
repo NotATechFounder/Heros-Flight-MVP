@@ -14,6 +14,8 @@ namespace HeroesFlight.System.NPC
         NpcContainer container;
 
         public NpcContainer NpcContainer => container;
+        public event Action<AiControllerBase> OnEnemySpawned;
+
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
@@ -26,8 +28,6 @@ namespace HeroesFlight.System.NPC
             container.Reset();
         }
 
-        public event Action<AiControllerBase> OnEnemySpawned;
-      
         public void SpawnEnemies(Level level, int levelIndex)
         {
             container.SpawnEnemies(level, levelIndex,OnEnemySpawned);
@@ -41,6 +41,14 @@ namespace HeroesFlight.System.NPC
         public AiControllerBase SpawnEntity(AiControllerBase prefab)
         {
             return container.SpawnEntity(prefab);
+        }
+
+        public void KillAllSpawnedEntities()
+        {
+            if(container==null)
+                return;
+            
+            container.KillAllSpawnedEnemies();
         }
     }
 }

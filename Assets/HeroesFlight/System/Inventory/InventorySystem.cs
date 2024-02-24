@@ -206,7 +206,7 @@ namespace HeroesFlight.System.Inventory
                             {
                                 FreezeStatusEffect effectInstance =
                                     ScriptableObject.CreateInstance(effets.GetType()) as FreezeStatusEffect;
-                                Debug.Log(effectInstance==null);
+                                Debug.Log(effectInstance == null);
                                 effectInstance.SetData(effets as FreezeStatusEffect);
                                 FreezeEffectData freezeEffectData = effectInstance.GetData<FreezeEffectData>();
                                 freezeEffectData.ProcChance.SetStartValue(effets.GetData<FreezeEffectData>().ProcChance
@@ -283,6 +283,14 @@ namespace HeroesFlight.System.Inventory
             }
 
             return combatEffects;
+        }
+
+        public void AddPredefinedItems()
+        {
+            if (InventoryHandler == null)
+                return;
+
+            InventoryHandler.AddAllTestItems();
         }
     }
 }
