@@ -44,36 +44,9 @@ namespace HeroesFlight.System.Cheats
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
-            Debug.Log("Initied");
             uiController = scene.GetComponentInChildren<CheatsUiController>();
             uiController.SetState(profile.EnableCheats);
             uiController.OnCheatButtonClicked += HandleCheatButtonClicked;
-        }
-
-        private void HandleCheatButtonClicked(CheatButtonClickModel obj)
-        {
-            Debug.Log(obj.ButtonType);
-            switch (obj.ButtonType)
-            {
-                case CheatsButtonType.AddCurrency:
-                    AddCurrency();
-                    break;
-                case CheatsButtonType.UnlockTraits:
-                    UnlockTraits();
-                    break;
-                case CheatsButtonType.Immortality:
-                    MakePlayerImmortal(obj.ToggleValue);
-                    break;
-                case CheatsButtonType.AddItems:
-                    AddItems();
-                    break;
-                case CheatsButtonType.KillAllMobs:
-                    KillAllEnemies();
-                    break;
-                case CheatsButtonType.Navigation:
-                    break;
-               
-            }
         }
 
         public void Reset() { }
@@ -117,6 +90,36 @@ namespace HeroesFlight.System.Cheats
         public void MakePlayerImmortal(bool isImmortal)
         {
             combatSystem.MakePlayerImmortal(isImmortal);
+        }
+
+        /// <summary>
+        /// Handles the click event of the cheat button.
+        /// </summary>
+        /// <param name="eventData">The cheat button click model.</param>
+        void HandleCheatButtonClicked(CheatButtonClickModel eventData)
+        {
+            Debug.Log(eventData.ButtonType);
+            switch (eventData.ButtonType)
+            {
+                case CheatsButtonType.AddCurrency:
+                    AddCurrency();
+                    break;
+                case CheatsButtonType.UnlockTraits:
+                    UnlockTraits();
+                    break;
+                case CheatsButtonType.Immortality:
+                    MakePlayerImmortal(eventData.ToggleValue);
+                    break;
+                case CheatsButtonType.AddItems:
+                    AddItems();
+                    break;
+                case CheatsButtonType.KillAllMobs:
+                    KillAllEnemies();
+                    break;
+                case CheatsButtonType.Navigation:
+                    break;
+               
+            }
         }
     }
 }

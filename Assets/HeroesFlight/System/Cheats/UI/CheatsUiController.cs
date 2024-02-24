@@ -67,14 +67,12 @@ namespace HeroesFlight.System.Cheats.UI
         {
             panel.anchoredPosition -= new Vector2(panel.rect.width , 0);
             isShowing = true;
-            Debug.Log("Showing");
         }
 
         void Hide()
         {
             panel.anchoredPosition += new Vector2(panel.rect.width , 0);
             isShowing = false;
-            Debug.Log("Hiding");
         }
     }
 }
