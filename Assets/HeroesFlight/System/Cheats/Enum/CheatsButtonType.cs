@@ -3,7 +3,7 @@
     public enum CheatsButtonType
     {
         AddCurrency,
-        UnlockTraits,
+        Experience,
         Immortality,
         AddItems,
         KillAllMobs,

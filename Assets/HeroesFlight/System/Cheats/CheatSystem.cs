@@ -77,6 +77,14 @@ namespace HeroesFlight.System.Cheats
         }
 
         /// <summary>
+        /// Adds experience points to the account level manager.
+        /// </summary>
+        public void AddExperience()
+        {
+            dataSystem.AccountLevelManager.AddExp(10000);
+        }
+
+        /// <summary>
         /// Kills all enemies in the game.
         /// </summary>
         public void KillAllEnemies()
@@ -98,14 +106,14 @@ namespace HeroesFlight.System.Cheats
         /// <param name="eventData">The cheat button click model.</param>
         void HandleCheatButtonClicked(CheatButtonClickModel eventData)
         {
-            Debug.Log(eventData.ButtonType);
+            
             switch (eventData.ButtonType)
             {
                 case CheatsButtonType.AddCurrency:
                     AddCurrency();
                     break;
-                case CheatsButtonType.UnlockTraits:
-                    UnlockTraits();
+                case CheatsButtonType.Experience:
+                    AddExperience();
                     break;
                 case CheatsButtonType.Immortality:
                     MakePlayerImmortal(eventData.ToggleValue);

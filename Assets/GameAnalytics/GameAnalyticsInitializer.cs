@@ -5,7 +5,10 @@ namespace HeroesFlight.GameAnalyticsHandler
 {
     public class GameAnalyticsInitializer : MonoBehaviour, IGameAnalyticsATTListener
     {
-        private void Awake()
+        /// <summary>
+        /// Calling init from start as according to GameAnalytics docs it has to preinit on Awake before calling Initialize();
+        /// </summary>
+        private void Start()
         {
             if(Application.platform == RuntimePlatform.IPhonePlayer)
             {

@@ -49,7 +49,7 @@ namespace HeroesFlight.System.Cheats.UI
             });
             Unlocktraits.onClick.AddListener(() =>
             {
-                OnCheatButtonClicked?.Invoke(new CheatButtonClickModel(CheatsButtonType.UnlockTraits));
+                OnCheatButtonClicked?.Invoke(new CheatButtonClickModel(CheatsButtonType.Experience));
             });
             heroImmortalityTogle.onValueChanged.AddListener((value) =>
             {
