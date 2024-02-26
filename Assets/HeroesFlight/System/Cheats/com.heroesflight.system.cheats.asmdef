@@ -1,0 +1,24 @@
+{
+    "name": "com.heroesflight.system.cheats",
+    "rootNamespace": "",
+    "references": [
+        "GUID:50a05f6e5398f23419a76fc0348858de",
+        "GUID:fa6e815ac5f71f74dba3e8c8d640b2fb",
+        "GUID:41156cdbab6bbf9498004681b8319c94",
+        "GUID:926c1ba4360a9b041996c39a370c1c29",
+        "GUID:08a53d9257730bf49bf6ac0661e17cb3",
+        "GUID:0b10a04491966c249bfc42d493d59796",
+        "GUID:ce466f6f7f263e14db34c068af7ebea9",
+        "GUID:db0eb1f6c1244402aa4d287a997cdb47",
+        "GUID:7c5aa3ad00d203545b3329cdde8d9307"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

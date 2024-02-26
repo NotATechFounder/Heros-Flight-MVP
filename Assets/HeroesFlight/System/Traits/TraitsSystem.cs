@@ -149,6 +149,11 @@ namespace HeroesFlight.System.Stats.Handlers
             return modifiedStatsMap;
         }
 
+        public void UnlockAllTraits()
+        {
+           traitHandler.UnlockAllTraits();
+        }
+
         public void LoadData()
         {
             var saveData = FileManager.FileManager.Load<TraitsMapSaveModel>(SaveKey);

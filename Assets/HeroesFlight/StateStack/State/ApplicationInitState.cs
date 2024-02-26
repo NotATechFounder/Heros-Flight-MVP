@@ -1,5 +1,6 @@
 ﻿using System;
 using HeroesFlight.Core.StateStack.Enum;
+using HeroesFlight.System.Cheats;
 using HeroesFlight.System.Dice;
 using HeroesFlight.System.Environment;
 using HeroesFlight.System.Inventory;
@@ -40,6 +41,7 @@ namespace HeroesFlight.StateStack.State
                         CoroutineUtility.WaitForEndOfFrame(() =>
                         {
                             environmentSystem.Init(loadedScene);
+                            GetService<CheatSystemInterface>().Init(loadedScene);
                             GetService<IUISystem>().Init(loadedScene, () =>
                             {
                                 GetService<InventorySystemInterface>().InjectUiConnection();

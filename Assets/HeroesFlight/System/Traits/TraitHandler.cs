@@ -165,5 +165,13 @@ namespace HeroesFlight.System.Stats.Handlers
                 }
             }
         }
+
+        public void UnlockAllTraits()
+        {
+            foreach (var traitEntry in traitMap)
+            {
+                TryUnlockTrait(traitEntry.Key);
+            }
+        }
     }
 }

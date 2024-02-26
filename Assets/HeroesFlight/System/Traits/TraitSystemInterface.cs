@@ -13,6 +13,7 @@ namespace HeroesFlight.System.Stats.Handlers
         bool HasTraitOfType(TraitType targetType, out List<TraitStateModel> model);
         TraitEffect GetTraitEffect(string id);
         Dictionary<StatAttributeType, int> GetUnlockedEffects();
-       
+
+        void UnlockAllTraits();
     }
 }

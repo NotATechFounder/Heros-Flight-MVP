@@ -1,6 +1,7 @@
 ﻿using System;
 using HeroesFlight.Core.Application;
 using HeroesFlight.System.Character;
+using HeroesFlight.System.Cheats;
 using HeroesFlight.System.Combat;
 using HeroesFlight.System.Dice;
 using HeroesFlight.System.Environment;
@@ -55,7 +56,7 @@ namespace HeroesFlight.Core.Bootstrapper
                 new GamePlaySystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem,uiSystem,progressionSystem,traitSystem, inventorySystem,achievementSystem,shrineSystem);
             ITutorialInterface tutorialInterface = 
                 new TutorialSystem(dataSystem, characterSystem, npcSystem, environmentSystem, combatSystem, uiSystem, progressionSystem, traitSystem, inventorySystem,rewardSystem,shrineSystem);
-
+            CheatSystemInterface cheatSystem = new CheatSystem(gamePlaySystem,dataSystem,combatSystem,traitSystem,npcSystem,inventorySystem);
 
             m_ServiceLocator.Register(authenticationSystem);
             m_ServiceLocator.Register(dataSystem);
@@ -75,6 +76,7 @@ namespace HeroesFlight.Core.Bootstrapper
             m_ServiceLocator.Register(shopSystem);
             m_ServiceLocator.Register(tutorialInterface);
             m_ServiceLocator.Register(shrineSystem);
+            m_ServiceLocator.Register(cheatSystem);
             return m_ServiceLocator;
         }
 

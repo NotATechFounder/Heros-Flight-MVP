@@ -45,11 +45,16 @@ namespace HeroesFlight.System.NPC.Container
         {
             if (Input.GetKeyDown(KeyCode.K))
             {
-                foreach (var enemy in spawnedEnemies)
-                {
-                    enemy.GetComponent<HealthController>().TryDealDamage(new HealthModificationIntentModel(10000,
-                        DamageCritType.Critical, AttackType.Regular, CalculationType.Flat, null));
-                }
+                KillAllSpawnedEnemies();
+            }
+        }
+
+        public void KillAllSpawnedEnemies()
+        {
+            foreach (var enemy in spawnedEnemies)
+            {
+                enemy.GetComponent<HealthController>().TryDealDamage(new HealthModificationIntentModel(1000000,
+                    DamageCritType.Critical, AttackType.Regular, CalculationType.Flat, null));
             }
         }
 

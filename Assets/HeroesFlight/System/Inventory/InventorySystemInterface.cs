@@ -10,5 +10,6 @@ namespace HeroesFlight.System.Inventory
         void InjectUiConnection();
 
         List<CombatEffect> GetEquippedItemsCombatEffects();
+        void AddPredefinedItems();
     }
 }

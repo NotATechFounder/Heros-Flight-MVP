@@ -52,6 +52,7 @@ namespace HeroesFlight.System.Combat
         private WaitForSeconds tick;
         Dictionary<IHealthController,CombatEntityModel>  combatEntities= new ();
         private Action OnTick;
+        private bool ignoringPlayerDamageTaken;
 
         public void Init(Scene scene = default, Action onComplete = null)
         {
@@ -157,6 +158,9 @@ namespace HeroesFlight.System.Combat
 
         private void HandlePlayerHealthModified(HealthModificationRequestModel obj)
         {
+            if (ignoringPlayerDamageTaken)
+                return;
+            
             if(obj.IntentModel.Amount==0)
                 return;
             
@@ -230,6 +234,12 @@ namespace HeroesFlight.System.Combat
             OnEntityDied?.Invoke(model);
         }
 
+        public void MakePlayerImmortal(bool isImmortal)
+        {
+            ignoringPlayerDamageTaken = isImmortal;
+        }
+
+      
         public void StartCharacterComboCheck()
         {
            comboHandler.StartComboCheck();
