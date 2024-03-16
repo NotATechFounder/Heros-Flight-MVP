@@ -52,7 +52,7 @@ MonoBehaviour:
   IntroScreen: 0
   InfoLogEditor: 1
   InfoLogBuild: 1
-  VerboseLogBuild: 0
+  VerboseLogBuild: 1
   UseManualSessionHandling: 0
   SendExampleGameDataToMyGame: 0
   InternetConnectivity: 0
@@ -64,7 +64,7 @@ MonoBehaviour:
   ResourceCurrencies: []
   LastCreatedGamePlatform: -1
   Platforms: 0b000000
-  CurrentInspectorState: 1
+  CurrentInspectorState: 3
   ClosedHints: 
   DisplayHints: 0
   DisplayHintsScrollState: {x: 0, y: 0}
