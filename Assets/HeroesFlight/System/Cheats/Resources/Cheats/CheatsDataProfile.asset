@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd0352afe7174322807e2cb68a4559c5, type: 3}
   m_Name: CheatsDataProfile
   m_EditorClassIdentifier: 
-  enableCheats: 1
+  enableCheats: 0
