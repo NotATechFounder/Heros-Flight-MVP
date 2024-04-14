@@ -1,4 +1,4 @@
-# Heros Fight Prototype
+# Heros Fight MVP
 
 **Note**: Ensure you have `git-lfs` installed on your local machine before you clone this repo.
 
