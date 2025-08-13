@@ -5,5 +5,6 @@
 ## Getting Started!
 
 1. Clone this repo.
-1. Run `git lfs checkout`.
+2. Run `git lfs checkout`.
+3. Use unity editor 2021.3.11f1
 ~ Develop and Have Fun! ~
